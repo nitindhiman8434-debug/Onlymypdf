@@ -1,0 +1,103 @@
+{
+  "brand": { "name": "OnlyMyPDF", "tagline": "Fast, private, powerful PDF tools" },
+  "nav": {
+    "tools": "Tools",
+    "pricing": "Pricing",
+    "aiTools": "AI Tools",
+    "security": "Security",
+    "support": "Support",
+    "login": "Login",
+    "pro": "Get Pro"
+  },
+  "hero": {
+    "headline": "Fast, private, powerful PDF tools for work, study, and business.",
+    "subheading": "Convert, compress, merge, sign, scan, translate, and fix PDFs in seconds — with high-accuracy conversion, AI tools, and 1-hour auto-delete.",
+    "ctaPrimary": "Start Free",
+    "ctaSecondary": "View All Tools",
+    "searchPlaceholder": "Search PDF tools…",
+    "toggle3d": "3D View",
+    "toggleDemo": "Product Demo",
+    "badges": {
+      "noSignup": "No signup required",
+      "autoDelete": "1-hour auto-delete",
+      "highAccuracy": "High Accuracy Beta",
+      "bilingual": "English + Hindi"
+    }
+  },
+  "home": {
+    "popular": "Popular tools",
+    "allTools": "All PDF tools",
+    "searchHint": "Type a tool name like “compress” or “word”"
+  },
+  "badges": {
+    "highAccuracy": "High Accuracy Beta",
+    "ai": "AI",
+    "privacyBrowser": "Processed privately in your browser",
+    "privacyServer": "Files auto-delete in 1 hour"
+  },
+  "tool": {
+    "chooseFiles": "Choose Files",
+    "dropHere": "Drag & drop files here",
+    "supported": "Supported file types",
+    "planLimit": "File size limit",
+    "creditEstimate": "Estimated credits",
+    "options": "Options",
+    "process": "Process",
+    "download": "Download",
+    "share": "Share",
+    "deleteNow": "Delete Now",
+    "tryAnother": "Try another tool",
+    "relatedTools": "Related tools",
+    "faq": "Frequently asked questions"
+  },
+  "processing": {
+    "title": "Processing your file",
+    "steps": {
+      "uploading": "Uploading",
+      "checking": "Checking file",
+      "reading": "Reading PDF structure",
+      "optimizing": "Optimizing task",
+      "processing": "Processing",
+      "quality": "Quality checking",
+      "preparing": "Preparing download"
+    },
+    "qualityEstimate": "Quality estimate",
+    "autoDeleteNote": "Your file will auto-delete in 1 hour."
+  },
+  "result": {
+    "ready": "Your file is ready",
+    "autoDeleteIn": "Auto-deletes in",
+    "deletedTitle": "File deleted for your privacy",
+    "deletedBody": "Run this tool again with a new upload."
+  },
+  "errors": {
+    "fileTooLarge": "This file is larger than your plan allows.",
+    "unsupported": "This file type isn’t supported.",
+    "passwordRequired": "This PDF is password protected.",
+    "conversionFailed": "We couldn’t convert this file. Try High Accuracy Mode.",
+    "ocrRequired": "This looks scanned — OCR may be required.",
+    "tooComplex": "This file is too complex for Fast Mode.",
+    "dailyLimit": "You’ve reached today’s free limit.",
+    "insufficientCredits": "You don’t have enough credits for this task.",
+    "timeout": "This job took too long and timed out.",
+    "downloadExpired": "This download link has expired."
+  },
+  "pricing": {
+    "title": "Simple, fair pricing",
+    "subtitle": "Start free. Upgrade when you need more power.",
+    "creditsIncluded": "2100 monthly credits included",
+    "creditsNote": "Heavier AI, OCR, and High Accuracy tasks may use more credits.",
+    "guest": "Guest Free",
+    "trial": "Free Pro Trial",
+    "pro": "Pro",
+    "perMonth": "/month",
+    "perYear": "/year",
+    "choosePlan": "Choose plan"
+  },
+  "footer": {
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "rights": "Only My PDF Limited. All rights reserved."
+  }
+}

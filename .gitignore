@@ -1,0 +1,42 @@
+# ---- Node / Next.js ----
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# ---- PHP / Laravel ----
+/backend/vendor/
+/backend/node_modules/
+/backend/public/storage
+/backend/storage/*.key
+/backend/storage/framework/cache/*
+/backend/storage/framework/sessions/*
+/backend/storage/framework/views/*
+/backend/storage/logs/*
+/backend/bootstrap/cache/*
+Homestead.json
+Homestead.yaml
+
+# ---- Python worker ----
+/worker/__pycache__/
+/worker/.venv/
+*.pyc
+
+# ---- Env / secrets ----
+.env
+.env.*.local
+*.local
+!.env.example
+
+# ---- Editor / OS ----
+.DS_Store
+.idea/
+.vscode/
+*.log
+npm-debug.log*
+
+# ---- Temp / processing ----
+/storage/temp/*
+/tmp-uploads/
