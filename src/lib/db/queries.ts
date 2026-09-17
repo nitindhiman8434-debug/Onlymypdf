@@ -761,6 +761,7 @@ export const logToolUsage = async (data: {
   processingTimeMs?: number;
   status?: string;
   inputFileNames?: string[];
+  conversionMetricRecorded?: boolean;
   output?: {
     buffer: Buffer;
     fileName: string;
@@ -780,6 +781,37 @@ export const logToolUsage = async (data: {
     processing_time_ms: data.processingTimeMs ?? null,
     status: succeeded ? "success" : "failed",
   });
+
+  if (succeeded && data.output && !data.conversionMetricRecorded) {
+    const extension = data.output.fileName.split(".").pop()?.toLowerCase();
+    const kind =
+      extension && ["pdf", "docx", "xlsx", "pptx", "txt", "html"].includes(extension)
+        ? extension
+        : data.output.mimeType.startsWith("image/")
+          ? "image"
+          : null;
+    if (kind) {
+      const [{ validateConversionOutput }, { recordConversionMetric }] = await Promise.all([
+        import("@/lib/services/conversion-output-validation"),
+        import("@/lib/ops/conversion-telemetry"),
+      ]);
+      const validation = await validateConversionOutput(
+        data.output.buffer,
+        kind as import("@/lib/services/conversion-output-validation").ConversionOutputKind
+      );
+      await recordConversionMetric({
+        toolName: toolSlug,
+        status: validation.valid ? "completed" : "failed",
+        inputBytes: data.fileSize,
+        outputBytes: data.output.buffer.length,
+        processingTimeMs: data.processingTimeMs,
+        attemptCount: 1,
+        validation,
+        errorCode: validation.valid ? null : "OUTPUT_VALIDATION_FAILED",
+        occurredAt: new Date().toISOString(),
+      });
+    }
+  }
 
   if (data.userId && succeeded) {
     const { recordSuccessfulToolUse } = await import(

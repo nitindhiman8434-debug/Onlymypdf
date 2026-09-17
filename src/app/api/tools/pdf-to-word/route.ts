@@ -1,15 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import { toolJsonError } from "@/lib/server/tool-api-error";
-import fs from "fs/promises";
-import os from "os";
-import path from "path";
 import { pdfToWord, mapPdfToWordError } from "@/lib/services/pdf-to-word.service";
 import {
-  completePdfToWordJob,
   createPdfToWordJob,
+  enqueuePdfToWordJob,
   failPdfToWordJob,
-  updatePdfToWordJobProgress,
+  stagePdfToWordJobInput,
 } from "@/lib/services/pdf-to-word-jobs.service";
+import { processNextPdfToWordJob } from "@/lib/services/pdf-to-word-worker.service";
 import { checkUsageLimit } from "@/lib/services/usage-limit.service";
 import { resolveToolUserContext } from "@/lib/services/user-tool-context.service";
 import { logToolUsage, logError } from "@/lib/db/queries";
@@ -23,14 +21,19 @@ import {
   WRONG_PASSWORD_CODE,
 } from "@/lib/server/pdf-password-http";
 import { withHeavyJobGuard } from "@/lib/server/conversion-semaphore";
-import { heavyJobCapacityResponse, isHeavyJobCapacityError } from "@/lib/server/heavy-job-http";
+import { heavyJobCapacityResponse } from "@/lib/server/heavy-job-http";
 import { userBlockedResponse } from "@/lib/server/user-blocked-http";
 import { guardMaintenanceMode } from "@/lib/server/tool-request-guards";
 import { guardToolRateLimit, guardApiKeyRateLimit } from "@/lib/server/rate-limiter";
-import { toSafeApiError } from "@/lib/server/safe-error";
 import { guardToolMutationOrigin } from "@/lib/server/mutation-origin";
 import { getGuestUsageKey } from "@/lib/server/client-ip";
 import { resolveToolJobOwnerKey } from "@/lib/server/job-owner";
+import {
+  ConversionOutputValidationError,
+  recordFailedConversion,
+  validateAndRecordConversion,
+} from "@/lib/services/conversion-completion.service";
+import type { PdfToWordEngine } from "@/lib/services/pdf-to-word.service";
 
 export const maxDuration = 600;
 
@@ -80,98 +83,12 @@ async function preparePdfInput(
   return await resolvePdfBuffer(buffer, password);
 }
 
-async function runConversionJob(
-  jobId: string,
-  inputPath: string,
-  workDir: string,
-  outputPath: string,
-  fileName: string,
-  meta: {
-    userId: string | null;
-    sessionId: string;
-    ipAddress: string | null;
-    startTime: number;
-    fileSize: number;
-    pdfPassword?: string;
-    outputFileName: string;
-  }
-) {
-  const docxMime =
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-
-  try {
-    const inputStat = await fs.stat(inputPath);
-    const result = await withHeavyJobGuard(() =>
-      pdfToWord({
-        fileName,
-        inputPath,
-        outputPath,
-        pdfPassword: meta.pdfPassword,
-        onProgress: (percent) => void updatePdfToWordJobProgress(jobId, percent),
-      })
-    );
-
-    const finalOutputPath = result.outputPath ?? outputPath;
-
-    await completePdfToWordJob(jobId, {
-      outputPath: finalOutputPath,
-      workDir,
-      engine: result.engine,
-    });
-
-    const usageBase = {
-      userId: meta.userId,
-      sessionId: meta.sessionId,
-      toolSlug: "pdf-to-word" as const,
-      ipAddress: meta.ipAddress,
-      fileSize: inputStat.size,
-      processingTimeMs: Date.now() - meta.startTime,
-      status: "completed" as const,
-      inputFileNames: [fileName],
-    };
-
-    if (meta.userId) {
-      // Usage logging must never fail the (already completed) conversion — a
-      // read error here previously surfaced to the user as an ENOENT.
-      let outputBuffer: Buffer | null = null;
-      try {
-        outputBuffer = await fs.readFile(finalOutputPath);
-      } catch {
-        outputBuffer = null;
-      }
-      void logToolUsage(
-        outputBuffer
-          ? {
-              ...usageBase,
-              output: {
-                buffer: outputBuffer,
-                fileName: meta.outputFileName,
-                mimeType: docxMime,
-              },
-            }
-          : usageBase
-      ).catch(() => {});
-    } else {
-      void logToolUsage(usageBase).catch(() => {});
-    }
-  } catch (error) {
-    const raw = error instanceof Error ? error.message : "Failed to convert PDF to Word";
-    const mapped = isHeavyJobCapacityError(error) ? raw : mapPdfToWordError(raw);
-    const message = toSafeApiError(new Error(mapped), "Conversion failed. Please try again.");
-    await failPdfToWordJob(jobId, message, workDir);
-    await logError({
-      user_id: meta.userId,
-      tool_name: "pdf-to-word",
-      error_type: "CONVERT_ERROR",
-      error_message: message,
-      stack_trace: error instanceof Error ? error.stack : undefined,
-    }).catch(() => {});
-  }
-}
-
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   let userId: string | null = null;
+  let syncInputBytes: number | undefined;
+  let syncConversionAttempted = false;
+  const syncAttempts: PdfToWordEngine[] = [];
 
   try {
     const originBlocked = guardToolMutationOrigin(request);
@@ -231,37 +148,51 @@ export async function POST(request: NextRequest) {
 
     if (wantsJobMode(request)) {
       const ownerKey = await resolveToolJobOwnerKey(request);
-      const jobId = await createPdfToWordJob(outputFilename, ownerKey);
-      const workDir = await fs.mkdtemp(path.join(os.tmpdir(), "pdfdoctor-ptw-job-"));
-      const inputPath = path.join(workDir, "input.pdf");
-      // Fixed internal name — engines must not write user-facing names (spaces/special
-      // chars break Word COM / LibreOffice on Windows temp paths).
-      const outputPath = path.join(workDir, "output.docx");
-      await fs.writeFile(inputPath, prepared);
-
-      void runConversionJob(jobId, inputPath, workDir, outputPath, file.name, {
+      const jobId = await createPdfToWordJob(outputFilename, ownerKey, {
+        sourceFileName: file.name,
         userId,
         sessionId: request.headers.get("x-session-id") || "anonymous",
         ipAddress: getGuestUsageKey(request),
-        startTime,
-        fileSize: prepared.length,
-        pdfPassword,
-        outputFileName: outputFilename,
+        inputBytes: prepared.length,
       });
-      return NextResponse.json({ jobId });
+      try {
+        await stagePdfToWordJobInput(jobId, prepared);
+        await enqueuePdfToWordJob(jobId);
+      } catch (error) {
+        await failPdfToWordJob(jobId, error);
+        throw error;
+      }
+
+      after(async () => {
+        await processNextPdfToWordJob();
+      });
+      return NextResponse.json({ jobId, status: "queued" }, { status: 202 });
     }
 
+    syncInputBytes = prepared.length;
+    syncConversionAttempted = true;
     const { buffer: docxBuffer, engine } = await withHeavyJobGuard(() =>
       pdfToWord({
         buffer: prepared,
         fileName: file.name,
         pdfPassword,
+        onEngineAttempt: (attemptedEngine) => syncAttempts.push(attemptedEngine),
       })
     );
 
     if (!docxBuffer) {
       throw new Error("Conversion failed to produce a Word file");
     }
+
+    await validateAndRecordConversion({
+      toolName: "pdf-to-word",
+      output: docxBuffer,
+      outputKind: "docx",
+      inputBytes: syncInputBytes,
+      startedAt: startTime,
+      engine,
+      attemptCount: Math.max(1, syncAttempts.length),
+    });
 
     void logToolUsage({
       userId,
@@ -271,6 +202,7 @@ export async function POST(request: NextRequest) {
       fileSize: prepared.length,
       processingTimeMs: Date.now() - startTime,
       status: "completed",
+      conversionMetricRecorded: true,
       inputFileNames: [file.name],
       output: {
         buffer: docxBuffer,
@@ -291,6 +223,16 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    if (syncConversionAttempted && !(error instanceof ConversionOutputValidationError)) {
+      await recordFailedConversion({
+        toolName: "pdf-to-word",
+        startedAt: startTime,
+        inputBytes: syncInputBytes,
+        engine: syncAttempts.at(-1),
+        attemptCount: Math.max(1, syncAttempts.length),
+        error,
+      });
+    }
     const blocked = userBlockedResponse(error);
     if (blocked) return blocked;
 

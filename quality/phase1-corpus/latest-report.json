@@ -1,0 +1,3415 @@
+{
+  "generatedAt": "2026-09-17T04:22:26.050Z",
+  "jobs": 200,
+  "successful": 200,
+  "failed": 0,
+  "successRate": 100,
+  "durationMs": 23288,
+  "perJobP95Ms": 309,
+  "declaredThreshold": 99.5,
+  "thresholdPassed": true,
+  "fidelityEvidence": {
+    "textChecks": 155,
+    "textPassed": 155,
+    "visualChecks": 40,
+    "visualPassed": 40,
+    "minimumVisualSimilarity": 0.9799
+  },
+  "results": [
+    {
+      "id": "P1-001",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 1662,
+      "outputBytes": 2074,
+      "textVerified": true,
+      "visualSimilarity": 0.989,
+      "errors": []
+    },
+    {
+      "id": "P1-002",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 46,
+      "outputBytes": 1332,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-003",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 35,
+      "outputBytes": 1340,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-004",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 23,
+      "outputBytes": 1334,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-005",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 59,
+      "outputBytes": 4497,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-006",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 309,
+      "outputBytes": 3387,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-007",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 28,
+      "outputBytes": 2075,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-008",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 43,
+      "outputBytes": 1334,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-009",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 28,
+      "outputBytes": 1340,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-010",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 24,
+      "outputBytes": 1333,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-011",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 241,
+      "outputBytes": 4502,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-012",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 40,
+      "outputBytes": 3387,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-013",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 17,
+      "outputBytes": 2074,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-014",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 1333,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-015",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 25,
+      "outputBytes": 1340,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-016",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 195,
+      "outputBytes": 1332,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-017",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 41,
+      "outputBytes": 4502,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-018",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 32,
+      "outputBytes": 3387,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-019",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 17,
+      "outputBytes": 2078,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-020",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 26,
+      "outputBytes": 1332,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-021",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 200,
+      "outputBytes": 1341,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-022",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 15,
+      "outputBytes": 1333,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-023",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 39,
+      "outputBytes": 4502,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-024",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 25,
+      "outputBytes": 3392,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-025",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 2080,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-026",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 210,
+      "outputBytes": 1332,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-027",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 21,
+      "outputBytes": 1341,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-028",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 14,
+      "outputBytes": 1332,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-029",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 30,
+      "outputBytes": 4502,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-030",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 30,
+      "outputBytes": 3391,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-031",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 200,
+      "outputBytes": 2080,
+      "textVerified": true,
+      "visualSimilarity": 0.9886,
+      "errors": []
+    },
+    {
+      "id": "P1-032",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 21,
+      "outputBytes": 1333,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-033",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 23,
+      "outputBytes": 1341,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-034",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 14,
+      "outputBytes": 1332,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-035",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 35,
+      "outputBytes": 4506,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-036",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 217,
+      "outputBytes": 3392,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-037",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 2080,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-038",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 20,
+      "outputBytes": 1332,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-039",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 23,
+      "outputBytes": 1341,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-040",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 17,
+      "outputBytes": 1332,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-041",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 219,
+      "outputBytes": 4502,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-042",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 29,
+      "outputBytes": 3390,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-043",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 25,
+      "outputBytes": 2075,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-044",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 1335,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-045",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 17,
+      "outputBytes": 1341,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-046",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 198,
+      "outputBytes": 1334,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-047",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 34,
+      "outputBytes": 4502,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-048",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 31,
+      "outputBytes": 3392,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-049",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 2080,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-050",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 15,
+      "outputBytes": 1334,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-051",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 192,
+      "outputBytes": 1341,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-052",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 15,
+      "outputBytes": 1335,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-053",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 30,
+      "outputBytes": 4501,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-054",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 26,
+      "outputBytes": 3390,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-055",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 27,
+      "outputBytes": 2081,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-056",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 197,
+      "outputBytes": 1334,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-057",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 19,
+      "outputBytes": 1341,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-058",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 1334,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-059",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 36,
+      "outputBytes": 4501,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-060",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 26,
+      "outputBytes": 3391,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-061",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 182,
+      "outputBytes": 2325,
+      "textVerified": true,
+      "visualSimilarity": 0.9799,
+      "errors": []
+    },
+    {
+      "id": "P1-062",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 1452,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-063",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 1464,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-064",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 14,
+      "outputBytes": 1454,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-065",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 33,
+      "outputBytes": 5246,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-066",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 164,
+      "outputBytes": 3883,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-067",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 17,
+      "outputBytes": 2324,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-068",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 14,
+      "outputBytes": 1454,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-069",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 31,
+      "outputBytes": 1463,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-070",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 14,
+      "outputBytes": 1450,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-071",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 190,
+      "outputBytes": 5245,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-072",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 21,
+      "outputBytes": 3877,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-073",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 2318,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-074",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 1451,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-075",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 17,
+      "outputBytes": 1450,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-076",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 190,
+      "outputBytes": 1455,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-077",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 25,
+      "outputBytes": 5262,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-078",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 33,
+      "outputBytes": 3879,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-079",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 17,
+      "outputBytes": 2325,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-080",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 1448,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-081",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 186,
+      "outputBytes": 1460,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-082",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 1454,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-083",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 28,
+      "outputBytes": 5255,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-084",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 35,
+      "outputBytes": 3880,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-085",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 31,
+      "outputBytes": 2318,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-086",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 175,
+      "outputBytes": 1454,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-087",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 19,
+      "outputBytes": 1467,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-088",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 11,
+      "outputBytes": 1454,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-089",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 26,
+      "outputBytes": 5254,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-090",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 27,
+      "outputBytes": 3876,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-091",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 172,
+      "outputBytes": 2327,
+      "textVerified": true,
+      "visualSimilarity": 0.9799,
+      "errors": []
+    },
+    {
+      "id": "P1-092",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 15,
+      "outputBytes": 1454,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-093",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 15,
+      "outputBytes": 1463,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-094",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 11,
+      "outputBytes": 1455,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-095",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 23,
+      "outputBytes": 5239,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-096",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 536,
+      "outputBytes": 19714,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-097",
+      "profile": "scan",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "scan",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 271,
+      "outputBytes": 20072,
+      "errors": []
+    },
+    {
+      "id": "P1-098",
+      "profile": "scan",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 282,
+      "outputBytes": 19122,
+      "errors": []
+    },
+    {
+      "id": "P1-099",
+      "profile": "scan",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 237,
+      "outputBytes": 19621,
+      "errors": []
+    },
+    {
+      "id": "P1-100",
+      "profile": "scan",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 214,
+      "outputBytes": 19006,
+      "errors": []
+    },
+    {
+      "id": "P1-101",
+      "profile": "scan",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "scan",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 457,
+      "outputBytes": 38433,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-102",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 219,
+      "outputBytes": 19324,
+      "errors": []
+    },
+    {
+      "id": "P1-103",
+      "profile": "scan",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "scan",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 201,
+      "outputBytes": 20029,
+      "errors": []
+    },
+    {
+      "id": "P1-104",
+      "profile": "scan",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 248,
+      "outputBytes": 19702,
+      "errors": []
+    },
+    {
+      "id": "P1-105",
+      "profile": "scan",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 227,
+      "outputBytes": 19330,
+      "errors": []
+    },
+    {
+      "id": "P1-106",
+      "profile": "scan",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 437,
+      "outputBytes": 19763,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-107",
+      "profile": "scan",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "scan",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 207,
+      "outputBytes": 39927,
+      "errors": []
+    },
+    {
+      "id": "P1-108",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 205,
+      "outputBytes": 19597,
+      "errors": []
+    },
+    {
+      "id": "P1-109",
+      "profile": "scan",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "scan",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 251,
+      "outputBytes": 20253,
+      "errors": []
+    },
+    {
+      "id": "P1-110",
+      "profile": "scan",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 247,
+      "outputBytes": 19792,
+      "errors": []
+    },
+    {
+      "id": "P1-111",
+      "profile": "scan",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 481,
+      "outputBytes": 19031,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-112",
+      "profile": "scan",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 216,
+      "outputBytes": 18464,
+      "errors": []
+    },
+    {
+      "id": "P1-113",
+      "profile": "scan",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "scan",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 208,
+      "outputBytes": 38043,
+      "errors": []
+    },
+    {
+      "id": "P1-114",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 184,
+      "outputBytes": 19283,
+      "errors": []
+    },
+    {
+      "id": "P1-115",
+      "profile": "scan",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "scan",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 224,
+      "outputBytes": 19029,
+      "errors": []
+    },
+    {
+      "id": "P1-116",
+      "profile": "scan",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 424,
+      "outputBytes": 18889,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-117",
+      "profile": "scan",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 205,
+      "outputBytes": 19085,
+      "errors": []
+    },
+    {
+      "id": "P1-118",
+      "profile": "scan",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 204,
+      "outputBytes": 18751,
+      "errors": []
+    },
+    {
+      "id": "P1-119",
+      "profile": "scan",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "scan",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 205,
+      "outputBytes": 38579,
+      "errors": []
+    },
+    {
+      "id": "P1-120",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 185,
+      "outputBytes": 19381,
+      "errors": []
+    },
+    {
+      "id": "P1-121",
+      "profile": "hindi",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "hindi",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 458,
+      "outputBytes": 20359,
+      "visualSimilarity": 0.9897,
+      "errors": []
+    },
+    {
+      "id": "P1-122",
+      "profile": "hindi",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 262,
+      "outputBytes": 19465,
+      "errors": []
+    },
+    {
+      "id": "P1-123",
+      "profile": "hindi",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 206,
+      "outputBytes": 19352,
+      "errors": []
+    },
+    {
+      "id": "P1-124",
+      "profile": "hindi",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 210,
+      "outputBytes": 19934,
+      "errors": []
+    },
+    {
+      "id": "P1-125",
+      "profile": "hindi",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "hindi",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 192,
+      "outputBytes": 39255,
+      "errors": []
+    },
+    {
+      "id": "P1-126",
+      "profile": "hindi",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "hindi",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 434,
+      "outputBytes": 20428,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-127",
+      "profile": "hindi",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "hindi",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 226,
+      "outputBytes": 20342,
+      "errors": []
+    },
+    {
+      "id": "P1-128",
+      "profile": "hindi",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 225,
+      "outputBytes": 19677,
+      "errors": []
+    },
+    {
+      "id": "P1-129",
+      "profile": "hindi",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 251,
+      "outputBytes": 20153,
+      "errors": []
+    },
+    {
+      "id": "P1-130",
+      "profile": "hindi",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 258,
+      "outputBytes": 20073,
+      "errors": []
+    },
+    {
+      "id": "P1-131",
+      "profile": "hindi",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "hindi",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 438,
+      "outputBytes": 40383,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-132",
+      "profile": "hindi",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "hindi",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 203,
+      "outputBytes": 20207,
+      "errors": []
+    },
+    {
+      "id": "P1-133",
+      "profile": "hindi",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "hindi",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 186,
+      "outputBytes": 20215,
+      "errors": []
+    },
+    {
+      "id": "P1-134",
+      "profile": "hindi",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 195,
+      "outputBytes": 19482,
+      "errors": []
+    },
+    {
+      "id": "P1-135",
+      "profile": "hindi",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 221,
+      "outputBytes": 19737,
+      "errors": []
+    },
+    {
+      "id": "P1-136",
+      "profile": "hindi",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 426,
+      "outputBytes": 19934,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-137",
+      "profile": "hindi",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "hindi",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 217,
+      "outputBytes": 40351,
+      "errors": []
+    },
+    {
+      "id": "P1-138",
+      "profile": "hindi",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "hindi",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 215,
+      "outputBytes": 20408,
+      "errors": []
+    },
+    {
+      "id": "P1-139",
+      "profile": "hindi",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "hindi",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 194,
+      "outputBytes": 20585,
+      "errors": []
+    },
+    {
+      "id": "P1-140",
+      "profile": "hindi",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 225,
+      "outputBytes": 20200,
+      "errors": []
+    },
+    {
+      "id": "P1-141",
+      "profile": "mixed-orientation",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 152,
+      "outputBytes": 1347,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-142",
+      "profile": "mixed-orientation",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 32,
+      "outputBytes": 2029,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-143",
+      "profile": "mixed-orientation",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "mixed-orientation",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 67,
+      "outputBytes": 5883,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-144",
+      "profile": "mixed-orientation",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 17,
+      "outputBytes": 2045,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-145",
+      "profile": "mixed-orientation",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "mixed-orientation",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 29,
+      "outputBytes": 2801,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-146",
+      "profile": "mixed-orientation",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 188,
+      "outputBytes": 1349,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-147",
+      "profile": "mixed-orientation",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 14,
+      "outputBytes": 1347,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-148",
+      "profile": "mixed-orientation",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 2030,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-149",
+      "profile": "mixed-orientation",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "mixed-orientation",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 38,
+      "outputBytes": 5883,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-150",
+      "profile": "mixed-orientation",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 20,
+      "outputBytes": 2045,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-151",
+      "profile": "mixed-orientation",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "mixed-orientation",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 223,
+      "outputBytes": 2800,
+      "textVerified": true,
+      "visualSimilarity": 0.988,
+      "errors": []
+    },
+    {
+      "id": "P1-152",
+      "profile": "mixed-orientation",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 25,
+      "outputBytes": 1348,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-153",
+      "profile": "mixed-orientation",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 18,
+      "outputBytes": 1346,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-154",
+      "profile": "mixed-orientation",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 21,
+      "outputBytes": 2028,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-155",
+      "profile": "mixed-orientation",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "mixed-orientation",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 44,
+      "outputBytes": 5874,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-156",
+      "profile": "mixed-orientation",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 185,
+      "outputBytes": 2045,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-157",
+      "profile": "mixed-orientation",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "mixed-orientation",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 22,
+      "outputBytes": 2801,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-158",
+      "profile": "mixed-orientation",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 15,
+      "outputBytes": 1347,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-159",
+      "profile": "mixed-orientation",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 1347,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-160",
+      "profile": "mixed-orientation",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 20,
+      "outputBytes": 2030,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-161",
+      "profile": "form",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 247,
+      "outputBytes": 4221,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-162",
+      "profile": "form",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 30,
+      "outputBytes": 3674,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-163",
+      "profile": "form",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 41,
+      "outputBytes": 4356,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-164",
+      "profile": "form",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "form",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 20,
+      "outputBytes": 1882,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-165",
+      "profile": "form",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "form",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 1333,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-166",
+      "profile": "form",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 219,
+      "outputBytes": 3222,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-167",
+      "profile": "form",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 33,
+      "outputBytes": 4220,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-168",
+      "profile": "form",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 28,
+      "outputBytes": 3676,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-169",
+      "profile": "form",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 32,
+      "outputBytes": 4357,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-170",
+      "profile": "form",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "form",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 20,
+      "outputBytes": 1883,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-171",
+      "profile": "form",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "form",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 214,
+      "outputBytes": 1333,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-172",
+      "profile": "form",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 26,
+      "outputBytes": 3219,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-173",
+      "profile": "form",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 34,
+      "outputBytes": 4216,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-174",
+      "profile": "form",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 34,
+      "outputBytes": 3673,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-175",
+      "profile": "form",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 35,
+      "outputBytes": 4352,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-176",
+      "profile": "fonts",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 211,
+      "outputBytes": 1433,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-177",
+      "profile": "fonts",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 23,
+      "outputBytes": 1430,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-178",
+      "profile": "fonts",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 30,
+      "outputBytes": 2851,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-179",
+      "profile": "fonts",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "fonts",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 32,
+      "outputBytes": 3463,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-180",
+      "profile": "fonts",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 25,
+      "outputBytes": 2885,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-181",
+      "profile": "fonts",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "fonts",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 208,
+      "outputBytes": 3615,
+      "textVerified": true,
+      "visualSimilarity": 0.9884,
+      "errors": []
+    },
+    {
+      "id": "P1-182",
+      "profile": "fonts",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 14,
+      "outputBytes": 1432,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-183",
+      "profile": "fonts",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 1430,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-184",
+      "profile": "fonts",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 23,
+      "outputBytes": 2848,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-185",
+      "profile": "fonts",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "fonts",
+        "merge",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 32,
+      "outputBytes": 3463,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-186",
+      "profile": "fonts",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "compress",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 208,
+      "outputBytes": 2883,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-187",
+      "profile": "fonts",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "fonts",
+        "rotate",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 23,
+      "outputBytes": 3615,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-188",
+      "profile": "fonts",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "split",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 16,
+      "outputBytes": 1432,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-189",
+      "profile": "fonts",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "extract",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 14,
+      "outputBytes": 1430,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-190",
+      "profile": "fonts",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "delete",
+        "standard-size"
+      ],
+      "success": true,
+      "durationMs": 24,
+      "outputBytes": 2848,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-191",
+      "profile": "large-shape",
+      "operation": "merge",
+      "sourcePages": 12,
+      "expectedPages": 24,
+      "features": [
+        "large-shape",
+        "merge",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 289,
+      "outputBytes": 16162,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-192",
+      "profile": "large-shape",
+      "operation": "compress",
+      "sourcePages": 13,
+      "expectedPages": 13,
+      "features": [
+        "large-shape",
+        "compress",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 72,
+      "outputBytes": 9425,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-193",
+      "profile": "large-shape",
+      "operation": "rotate",
+      "sourcePages": 14,
+      "expectedPages": 14,
+      "features": [
+        "large-shape",
+        "rotate",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 79,
+      "outputBytes": 10107,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-194",
+      "profile": "large-shape",
+      "operation": "split",
+      "sourcePages": 15,
+      "expectedPages": 1,
+      "features": [
+        "large-shape",
+        "split",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 46,
+      "outputBytes": 1343,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-195",
+      "profile": "large-shape",
+      "operation": "extract",
+      "sourcePages": 16,
+      "expectedPages": 1,
+      "features": [
+        "large-shape",
+        "extract",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 44,
+      "outputBytes": 1344,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-196",
+      "profile": "large-shape",
+      "operation": "delete",
+      "sourcePages": 12,
+      "expectedPages": 11,
+      "features": [
+        "large-shape",
+        "delete",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 226,
+      "outputBytes": 8018,
+      "textVerified": true,
+      "visualSimilarity": 1,
+      "errors": []
+    },
+    {
+      "id": "P1-197",
+      "profile": "large-shape",
+      "operation": "merge",
+      "sourcePages": 13,
+      "expectedPages": 26,
+      "features": [
+        "large-shape",
+        "merge",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 101,
+      "outputBytes": 17488,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-198",
+      "profile": "large-shape",
+      "operation": "compress",
+      "sourcePages": 14,
+      "expectedPages": 14,
+      "features": [
+        "large-shape",
+        "compress",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 66,
+      "outputBytes": 10091,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-199",
+      "profile": "large-shape",
+      "operation": "rotate",
+      "sourcePages": 15,
+      "expectedPages": 15,
+      "features": [
+        "large-shape",
+        "rotate",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 86,
+      "outputBytes": 10776,
+      "textVerified": true,
+      "errors": []
+    },
+    {
+      "id": "P1-200",
+      "profile": "large-shape",
+      "operation": "split",
+      "sourcePages": 16,
+      "expectedPages": 1,
+      "features": [
+        "large-shape",
+        "split",
+        "multi-page-large-shape"
+      ],
+      "success": true,
+      "durationMs": 40,
+      "outputBytes": 1343,
+      "textVerified": true,
+      "errors": []
+    }
+  ]
+}

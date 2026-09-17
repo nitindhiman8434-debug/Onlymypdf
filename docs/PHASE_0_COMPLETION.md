@@ -3,7 +3,7 @@
 **Completed:** 17 September 2026
 **Branch:** `phase0-stabilization`
 **Readiness movement:** 57 to 70
-**Phase 1 status:** Not started
+**Phase 1 status:** Implementation checkpoint completed; live activation pending (`docs/PHASE_1_IMPLEMENTATION_CHECKPOINT.md`)
 
 ## Decision
 

@@ -1,0 +1,2406 @@
+{
+  "version": 1,
+  "total": 200,
+  "cases": [
+    {
+      "id": "P1-001",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-002",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-003",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-004",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-005",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-006",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-007",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-008",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-009",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-010",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-011",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-012",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-013",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-014",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-015",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-016",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-017",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-018",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-019",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-020",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-021",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-022",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-023",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-024",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-025",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-026",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-027",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-028",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-029",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-030",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-031",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-032",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-033",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-034",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-035",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-036",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-037",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-038",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-039",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-040",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-041",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-042",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-043",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-044",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-045",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-046",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-047",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-048",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-049",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-050",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-051",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-052",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-053",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-054",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-055",
+      "profile": "text",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "text",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-056",
+      "profile": "text",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-057",
+      "profile": "text",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-058",
+      "profile": "text",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "text",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-059",
+      "profile": "text",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "text",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-060",
+      "profile": "text",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "text",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-061",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-062",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-063",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-064",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-065",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-066",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-067",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-068",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-069",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-070",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-071",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-072",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-073",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-074",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-075",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-076",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-077",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-078",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-079",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-080",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-081",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-082",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-083",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-084",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-085",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-086",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-087",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-088",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-089",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-090",
+      "profile": "table",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "table",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-091",
+      "profile": "table",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "table",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-092",
+      "profile": "table",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-093",
+      "profile": "table",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-094",
+      "profile": "table",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "table",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-095",
+      "profile": "table",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "table",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-096",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-097",
+      "profile": "scan",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "scan",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-098",
+      "profile": "scan",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-099",
+      "profile": "scan",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-100",
+      "profile": "scan",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-101",
+      "profile": "scan",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "scan",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-102",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-103",
+      "profile": "scan",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "scan",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-104",
+      "profile": "scan",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-105",
+      "profile": "scan",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-106",
+      "profile": "scan",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-107",
+      "profile": "scan",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "scan",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-108",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-109",
+      "profile": "scan",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "scan",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-110",
+      "profile": "scan",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-111",
+      "profile": "scan",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-112",
+      "profile": "scan",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-113",
+      "profile": "scan",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "scan",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-114",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-115",
+      "profile": "scan",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "scan",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-116",
+      "profile": "scan",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-117",
+      "profile": "scan",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "scan",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-118",
+      "profile": "scan",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-119",
+      "profile": "scan",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "scan",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-120",
+      "profile": "scan",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "scan",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-121",
+      "profile": "hindi",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "hindi",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-122",
+      "profile": "hindi",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-123",
+      "profile": "hindi",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-124",
+      "profile": "hindi",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-125",
+      "profile": "hindi",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "hindi",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-126",
+      "profile": "hindi",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "hindi",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-127",
+      "profile": "hindi",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "hindi",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-128",
+      "profile": "hindi",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-129",
+      "profile": "hindi",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-130",
+      "profile": "hindi",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-131",
+      "profile": "hindi",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "hindi",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-132",
+      "profile": "hindi",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "hindi",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-133",
+      "profile": "hindi",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "hindi",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-134",
+      "profile": "hindi",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-135",
+      "profile": "hindi",
+      "operation": "extract",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-136",
+      "profile": "hindi",
+      "operation": "delete",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-137",
+      "profile": "hindi",
+      "operation": "merge",
+      "sourcePages": 3,
+      "expectedPages": 6,
+      "features": [
+        "hindi",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-138",
+      "profile": "hindi",
+      "operation": "compress",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "hindi",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-139",
+      "profile": "hindi",
+      "operation": "rotate",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "hindi",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-140",
+      "profile": "hindi",
+      "operation": "split",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "hindi",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-141",
+      "profile": "mixed-orientation",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-142",
+      "profile": "mixed-orientation",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-143",
+      "profile": "mixed-orientation",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "mixed-orientation",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-144",
+      "profile": "mixed-orientation",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-145",
+      "profile": "mixed-orientation",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "mixed-orientation",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-146",
+      "profile": "mixed-orientation",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-147",
+      "profile": "mixed-orientation",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-148",
+      "profile": "mixed-orientation",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-149",
+      "profile": "mixed-orientation",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "mixed-orientation",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-150",
+      "profile": "mixed-orientation",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-151",
+      "profile": "mixed-orientation",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "mixed-orientation",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-152",
+      "profile": "mixed-orientation",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-153",
+      "profile": "mixed-orientation",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-154",
+      "profile": "mixed-orientation",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-155",
+      "profile": "mixed-orientation",
+      "operation": "merge",
+      "sourcePages": 4,
+      "expectedPages": 8,
+      "features": [
+        "mixed-orientation",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-156",
+      "profile": "mixed-orientation",
+      "operation": "compress",
+      "sourcePages": 2,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-157",
+      "profile": "mixed-orientation",
+      "operation": "rotate",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "mixed-orientation",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-158",
+      "profile": "mixed-orientation",
+      "operation": "split",
+      "sourcePages": 4,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-159",
+      "profile": "mixed-orientation",
+      "operation": "extract",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "mixed-orientation",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-160",
+      "profile": "mixed-orientation",
+      "operation": "delete",
+      "sourcePages": 3,
+      "expectedPages": 2,
+      "features": [
+        "mixed-orientation",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-161",
+      "profile": "form",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-162",
+      "profile": "form",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-163",
+      "profile": "form",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-164",
+      "profile": "form",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "form",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-165",
+      "profile": "form",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "form",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-166",
+      "profile": "form",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-167",
+      "profile": "form",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-168",
+      "profile": "form",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-169",
+      "profile": "form",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-170",
+      "profile": "form",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "form",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-171",
+      "profile": "form",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "form",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-172",
+      "profile": "form",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-173",
+      "profile": "form",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-174",
+      "profile": "form",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "form",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-175",
+      "profile": "form",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "form",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-176",
+      "profile": "fonts",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-177",
+      "profile": "fonts",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-178",
+      "profile": "fonts",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-179",
+      "profile": "fonts",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "fonts",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-180",
+      "profile": "fonts",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-181",
+      "profile": "fonts",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "fonts",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-182",
+      "profile": "fonts",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-183",
+      "profile": "fonts",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-184",
+      "profile": "fonts",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-185",
+      "profile": "fonts",
+      "operation": "merge",
+      "sourcePages": 2,
+      "expectedPages": 4,
+      "features": [
+        "fonts",
+        "merge",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-186",
+      "profile": "fonts",
+      "operation": "compress",
+      "sourcePages": 3,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "compress",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-187",
+      "profile": "fonts",
+      "operation": "rotate",
+      "sourcePages": 4,
+      "expectedPages": 4,
+      "features": [
+        "fonts",
+        "rotate",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-188",
+      "profile": "fonts",
+      "operation": "split",
+      "sourcePages": 2,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "split",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-189",
+      "profile": "fonts",
+      "operation": "extract",
+      "sourcePages": 3,
+      "expectedPages": 1,
+      "features": [
+        "fonts",
+        "extract",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-190",
+      "profile": "fonts",
+      "operation": "delete",
+      "sourcePages": 4,
+      "expectedPages": 3,
+      "features": [
+        "fonts",
+        "delete",
+        "standard-size"
+      ]
+    },
+    {
+      "id": "P1-191",
+      "profile": "large-shape",
+      "operation": "merge",
+      "sourcePages": 12,
+      "expectedPages": 24,
+      "features": [
+        "large-shape",
+        "merge",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-192",
+      "profile": "large-shape",
+      "operation": "compress",
+      "sourcePages": 13,
+      "expectedPages": 13,
+      "features": [
+        "large-shape",
+        "compress",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-193",
+      "profile": "large-shape",
+      "operation": "rotate",
+      "sourcePages": 14,
+      "expectedPages": 14,
+      "features": [
+        "large-shape",
+        "rotate",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-194",
+      "profile": "large-shape",
+      "operation": "split",
+      "sourcePages": 15,
+      "expectedPages": 1,
+      "features": [
+        "large-shape",
+        "split",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-195",
+      "profile": "large-shape",
+      "operation": "extract",
+      "sourcePages": 16,
+      "expectedPages": 1,
+      "features": [
+        "large-shape",
+        "extract",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-196",
+      "profile": "large-shape",
+      "operation": "delete",
+      "sourcePages": 12,
+      "expectedPages": 11,
+      "features": [
+        "large-shape",
+        "delete",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-197",
+      "profile": "large-shape",
+      "operation": "merge",
+      "sourcePages": 13,
+      "expectedPages": 26,
+      "features": [
+        "large-shape",
+        "merge",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-198",
+      "profile": "large-shape",
+      "operation": "compress",
+      "sourcePages": 14,
+      "expectedPages": 14,
+      "features": [
+        "large-shape",
+        "compress",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-199",
+      "profile": "large-shape",
+      "operation": "rotate",
+      "sourcePages": 15,
+      "expectedPages": 15,
+      "features": [
+        "large-shape",
+        "rotate",
+        "multi-page-large-shape"
+      ]
+    },
+    {
+      "id": "P1-200",
+      "profile": "large-shape",
+      "operation": "split",
+      "sourcePages": 16,
+      "expectedPages": 1,
+      "features": [
+        "large-shape",
+        "split",
+        "multi-page-large-shape"
+      ]
+    }
+  ]
+}

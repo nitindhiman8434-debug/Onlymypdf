@@ -1,0 +1,169 @@
+{
+  "generatedAt": "2026-09-17T05:28:55.847Z",
+  "jobs": 7,
+  "passed": 7,
+  "failed": 0,
+  "allPassed": true,
+  "results": [
+    {
+      "id": "word-text",
+      "source": "P1-001.pdf",
+      "kind": "docx",
+      "success": true,
+      "engine": "word-com; attempts=word-com",
+      "durationMs": 14353,
+      "inputBytes": 2061,
+      "outputBytes": 12595,
+      "validation": {
+        "valid": true,
+        "kind": "docx",
+        "byteLength": 12595,
+        "signatureValid": true,
+        "openable": true,
+        "errors": [],
+        "warnings": [],
+        "checkedAt": "2026-09-17T05:28:33.764Z",
+        "pageCount": 1,
+        "entryCount": 11,
+        "textCharacters": 1330
+      }
+    },
+    {
+      "id": "excel-table",
+      "source": "P1-061.pdf",
+      "kind": "xlsx",
+      "success": true,
+      "engine": "table-extract+exceljs",
+      "durationMs": 2126,
+      "inputBytes": 2311,
+      "outputBytes": 7254,
+      "validation": {
+        "valid": true,
+        "kind": "xlsx",
+        "byteLength": 7254,
+        "signatureValid": true,
+        "openable": true,
+        "errors": [],
+        "warnings": [],
+        "checkedAt": "2026-09-17T05:28:35.892Z",
+        "pageCount": 2,
+        "entryCount": 17,
+        "textCharacters": 94
+      }
+    },
+    {
+      "id": "ppt-scan",
+      "source": "P1-096.pdf",
+      "kind": "pptx",
+      "success": true,
+      "engine": "python-local",
+      "durationMs": 3353,
+      "inputBytes": 19714,
+      "outputBytes": 96745,
+      "validation": {
+        "valid": true,
+        "kind": "pptx",
+        "byteLength": 96745,
+        "signatureValid": true,
+        "openable": true,
+        "errors": [],
+        "warnings": [
+          "The package is structurally valid but contains no extractable text."
+        ],
+        "checkedAt": "2026-09-17T05:28:39.246Z",
+        "pageCount": 2,
+        "entryCount": 41,
+        "textCharacters": 0
+      }
+    },
+    {
+      "id": "ppt-text",
+      "source": "P1-001.pdf",
+      "kind": "pptx",
+      "success": true,
+      "engine": "python-local",
+      "durationMs": 3617,
+      "inputBytes": 2061,
+      "outputBytes": 239189,
+      "validation": {
+        "valid": true,
+        "kind": "pptx",
+        "byteLength": 239189,
+        "signatureValid": true,
+        "openable": true,
+        "errors": [],
+        "warnings": [],
+        "checkedAt": "2026-09-17T05:28:42.864Z",
+        "pageCount": 2,
+        "entryCount": 49,
+        "textCharacters": 1330
+      }
+    },
+    {
+      "id": "word-to-pdf",
+      "sourceId": "word-text",
+      "kind": "docx",
+      "fileName": "engine-word-text.docx",
+      "success": true,
+      "engine": "office-auto",
+      "durationMs": 3313,
+      "inputBytes": 12595,
+      "outputBytes": 45884,
+      "validation": {
+        "valid": true,
+        "kind": "pdf",
+        "byteLength": 45884,
+        "signatureValid": true,
+        "openable": true,
+        "errors": [],
+        "warnings": [],
+        "checkedAt": "2026-09-17T05:28:46.180Z",
+        "pageCount": 2
+      }
+    },
+    {
+      "id": "excel-to-pdf",
+      "sourceId": "excel-table",
+      "kind": "xlsx",
+      "fileName": "engine-excel-table.xlsx",
+      "success": true,
+      "engine": "office-auto",
+      "durationMs": 3678,
+      "inputBytes": 7254,
+      "outputBytes": 84765,
+      "validation": {
+        "valid": true,
+        "kind": "pdf",
+        "byteLength": 84765,
+        "signatureValid": true,
+        "openable": true,
+        "errors": [],
+        "warnings": [],
+        "checkedAt": "2026-09-17T05:28:49.858Z",
+        "pageCount": 2
+      }
+    },
+    {
+      "id": "ppt-to-pdf",
+      "sourceId": "ppt-text",
+      "kind": "pptx",
+      "fileName": "engine-ppt-text.pptx",
+      "success": true,
+      "engine": "office-auto",
+      "durationMs": 5989,
+      "inputBytes": 239189,
+      "outputBytes": 217839,
+      "validation": {
+        "valid": true,
+        "kind": "pdf",
+        "byteLength": 217839,
+        "signatureValid": true,
+        "openable": true,
+        "errors": [],
+        "warnings": [],
+        "checkedAt": "2026-09-17T05:28:55.847Z",
+        "pageCount": 2
+      }
+    }
+  ]
+}

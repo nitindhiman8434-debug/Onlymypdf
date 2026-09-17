@@ -51,4 +51,16 @@ describe("validateSingleUpload", () => {
     const result = await validateSingleUpload(txt, ["txt"], 25);
     expect(result.ok).toBe(true);
   });
+
+  it("rejects a body whose bytes do not match the declared size", async () => {
+    const inconsistent = {
+      name: "test.pdf",
+      type: "application/pdf",
+      size: 25,
+      arrayBuffer: async () => new TextEncoder().encode("%PDF-1.4").buffer,
+    } as File;
+    const result = await validateSingleUpload(inconsistent, ["pdf"], 25);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toMatch(/size changed/i);
+  });
 });

@@ -12,6 +12,11 @@ import { FILE_LIMITS } from "@/config/constants";
 import { clientIpForLogs, ownerHashFromRequest } from "@/lib/server/request-security";
 import { createPdfSession } from "@/lib/pdf/pdf-session-store";
 import { probePdfAccess } from "@/lib/pdf/pdf-password.server";
+import {
+  ConversionOutputValidationError,
+  recordFailedConversion,
+  validateAndRecordConversion,
+} from "@/lib/services/conversion-completion.service";
 
 export const maxDuration = 60;
 
@@ -21,6 +26,8 @@ export async function POST(request: NextRequest) {
 
   const startTime = Date.now();
   let userId: string | null = null;
+  let inputBytes: number | undefined;
+  let conversionAttempted = false;
 
   try {
     const mutationAuth = await resolveMutationToolUser(request);
@@ -53,6 +60,8 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = validated.buffer;
+    inputBytes = buffer.length;
+    conversionAttempted = true;
     const pdfBuffer = await Promise.race([
       withHeavyJobGuard(() => wordToPdf(buffer, file.name)),
       new Promise<never>((_, reject) => {
@@ -67,6 +76,15 @@ export async function POST(request: NextRequest) {
         );
       }),
     ]);
+
+    await validateAndRecordConversion({
+      toolName: "word-to-pdf",
+      output: pdfBuffer,
+      outputKind: "pdf",
+      inputBytes,
+      startedAt: startTime,
+      engine: "office-auto",
+    });
 
     const originalName = file.name.replace(/\.(doc|docx)$/i, "");
 
@@ -85,6 +103,7 @@ export async function POST(request: NextRequest) {
       fileSize: buffer.length,
       processingTimeMs: processingTime,
       status: "completed",
+      conversionMetricRecorded: true,
       inputFileNames: [file.name],
       output: {
         buffer: pdfBuffer,
@@ -104,6 +123,15 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    if (conversionAttempted && !(error instanceof ConversionOutputValidationError)) {
+      await recordFailedConversion({
+        toolName: "word-to-pdf",
+        startedAt: startTime,
+        inputBytes,
+        engine: "office-auto",
+        error,
+      });
+    }
     return handleToolRouteFailure(error, { request, 
       toolSlug: "word-to-pdf",
       userId,

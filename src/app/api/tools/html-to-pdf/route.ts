@@ -12,6 +12,11 @@ import { createPdfSession } from "@/lib/pdf/pdf-session-store";
 import { clientIpForLogs, ownerHashFromRequest } from "@/lib/server/request-security";
 import { withHeavyJobGuard } from "@/lib/server/conversion-semaphore";
 import { PDFDocument } from "pdf-lib";
+import {
+  ConversionOutputValidationError,
+  recordFailedConversion,
+  validateAndRecordConversion,
+} from "@/lib/services/conversion-completion.service";
 
 export const maxDuration = 300;
 
@@ -21,6 +26,8 @@ export async function POST(request: NextRequest) {
 
   const startTime = Date.now();
   let userId: string | null = null;
+  let inputBytes: number | undefined;
+  let conversionAttempted = false;
 
   try {
     const mutationAuth = await resolveMutationToolUser(request);
@@ -56,6 +63,8 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = validated.buffer;
+    inputBytes = buffer.length;
+    conversionAttempted = true;
     const pdfBuffer = await withHeavyJobGuard(() =>
       htmlFileToPdf(buffer, file.name, {
         pageSize: pageSize as "a4" | "letter" | "auto",
@@ -63,6 +72,15 @@ export async function POST(request: NextRequest) {
         margin: margin as "none" | "small" | "medium",
       })
     );
+
+    await validateAndRecordConversion({
+      toolName: "html-to-pdf",
+      output: pdfBuffer,
+      outputKind: "pdf",
+      inputBytes,
+      startedAt: startTime,
+      engine: "chromium",
+    });
 
     const originalName = file.name.replace(/\.(html?|xhtml|mhtml|svg)$/i, "");
 
@@ -84,6 +102,7 @@ export async function POST(request: NextRequest) {
       fileSize: buffer.length,
       processingTimeMs: processingTime,
       status: "completed",
+      conversionMetricRecorded: true,
       inputFileNames: [file.name],
       output: {
         buffer: pdfBuffer,
@@ -103,6 +122,15 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    if (conversionAttempted && !(error instanceof ConversionOutputValidationError)) {
+      await recordFailedConversion({
+        toolName: "html-to-pdf",
+        startedAt: startTime,
+        inputBytes,
+        engine: "chromium",
+        error,
+      });
+    }
     return handleToolRouteFailure(error, { request, 
       toolSlug: "html-to-pdf",
       userId,

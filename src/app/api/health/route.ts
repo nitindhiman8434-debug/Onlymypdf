@@ -11,6 +11,11 @@ import {
   resolveLibreOfficeBinary,
 } from "@/lib/services/libreoffice-core.service";
 import { isUpstashConfigured } from "@/lib/server/upstash-kv";
+import {
+  getCleanupOperationalStatus,
+  getConversionOperationalMetrics,
+} from "@/lib/ops/conversion-telemetry";
+import { getPdfToWordQueueDepth } from "@/lib/services/pdf-to-word-jobs.service";
 
 export const dynamic = "force-dynamic";
 
@@ -89,6 +94,43 @@ export async function GET(request: NextRequest) {
     checks.database = { ok: false, detail: "Supabase not configured" };
   }
 
+  let conversionMetrics = null;
+  let cleanupOperational = null;
+  let conversionQueue = null;
+  try {
+    [conversionMetrics, cleanupOperational, conversionQueue] = await Promise.all([
+      getConversionOperationalMetrics(24),
+      getCleanupOperationalStatus(),
+      getPdfToWordQueueDepth(),
+    ]);
+    const cleanupAgeMs = cleanupOperational?.completedAt
+      ? Date.now() - new Date(cleanupOperational.completedAt).getTime()
+      : Number.POSITIVE_INFINITY;
+    checks.conversion_queue = {
+      ok: conversionQueue.processing < getMaxExpectedProcessingJobs(),
+      detail: `pending=${conversionQueue.pending} processing=${conversionQueue.processing}`,
+    };
+    checks.conversion_outputs = {
+      ok:
+        conversionMetrics.validOutputRate === null ||
+        conversionMetrics.validOutputRate >= 99.5,
+      detail: `jobs_24h=${conversionMetrics.jobs} success=${conversionMetrics.successRate ?? "n/a"}% valid=${conversionMetrics.validOutputRate ?? "n/a"}% p95=${conversionMetrics.processingP95Ms ?? "n/a"}ms fallback=${conversionMetrics.fallbackRate ?? "n/a"}%`,
+    };
+    checks.cleanup_last_run = {
+      ok:
+        process.env.NODE_ENV !== "production" ||
+        (cleanupOperational?.status === "completed" && cleanupAgeMs <= 2 * 60 * 60 * 1000),
+      detail: cleanupOperational
+        ? `status=${cleanupOperational.status} completed=${cleanupOperational.completedAt ?? "running"} failed=${cleanupOperational.filesFailed + cleanupOperational.tempSessionsFailed + cleanupOperational.conversionJobsFailed}`
+        : "No cleanup run recorded",
+    };
+  } catch (err) {
+    checks.operations = {
+      ok: false,
+      detail: err instanceof Error ? err.message : "Operational metrics unavailable",
+    };
+  }
+
   const isProd = process.env.NODE_ENV === "production";
   const allCriticalOk =
     checks.app.ok &&
@@ -103,7 +145,17 @@ export async function GET(request: NextRequest) {
       status: allCriticalOk ? "healthy" : "degraded",
       timestamp: new Date().toISOString(),
       checks,
+      operations: {
+        conversions24h: conversionMetrics,
+        cleanup: cleanupOperational,
+        queue: conversionQueue,
+      },
     },
     { status }
   );
+}
+
+function getMaxExpectedProcessingJobs(): number {
+  const parsed = Number(process.env.MAX_CONCURRENT_HEAVY_JOBS ?? "8");
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) + 1 : 9;
 }

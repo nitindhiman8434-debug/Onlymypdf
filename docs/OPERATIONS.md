@@ -1,6 +1,6 @@
 # OnlyMyPDF — Operations Runbook
 
-Production operations guide for monitoring, deployments, backups, and incident response. **Conversion pipelines are unchanged** by this document — only ops, infra, and observability.
+Production operations guide for monitoring, deployments, backups, conversion workers, and incident response.
 
 ## Health checks
 
@@ -24,7 +24,7 @@ curl -fsS https://yourdomain.com/status
 curl -fsS -H "Authorization: Bearer $CRON_SECRET" https://yourdomain.com/api/health
 ```
 
-Public response: `{ "status": "ok", "timestamp": "..." }`. Authenticated response includes `checks` (secrets, Upstash, database, storage cleanup).
+Public response: `{ "status": "ok", "timestamp": "..." }`. Authenticated response includes queue depth, 24-hour conversion success/validity/fallback/latency metrics, database checks, and the latest cleanup run.
 
 ## Status page
 
@@ -65,7 +65,7 @@ Quick smoke only: `npm run test:e2e:smoke`
 
 Optional locally:
 - `npm run audit:dev` — full dependency tree, high+ only (should pass after dev tooling cleanup)
-- `npm run audit:moderate` — includes accepted moderate findings such as muhammara bundled `tar`
+- `npm run audit:moderate` — includes development-only findings for review
 
 Local equivalent:
 
@@ -85,17 +85,9 @@ See `docs/TESTING.md` for the full test pyramid (unit, PDF integration, Playwrig
 
 Dependabot (`.github/dependabot.yml`) opens weekly npm/GitHub Actions update PRs.
 
-## Accepted dependency risks
+## Dependency audit policy
 
-These findings are tracked deliberately so future audits do not treat them as
-unknown regressions. They are not launch blockers unless their severity or
-runtime exposure changes.
-
-| Finding | Current use | Why accepted | Review trigger |
-|---------|-------------|--------------|----------------|
-| `muhammara` bundles `tar@7.5.15` (moderate, `GHSA-vmf3-w455-68vh`) | PDF split/unlock fallback only, after the primary PDF engines fail | The vulnerable `tar` package is part of muhammara's native install/build chain and is not used to process user uploads at runtime. npm overrides do not replace it because it is bundled. Replacing muhammara would touch the conversion pipeline and reduce split/unlock success on difficult PDFs. | Upgrade muhammara when it ships a fixed bundled tar, or revisit if we intentionally migrate fallback PDF operations to a new engine such as qpdf. |
-
-Performance budgets in CI use Playwright (`e2e/cwv.spec.ts`, `e2e/perf-budget.spec.ts`) instead of `@lhci/cli`, avoiding devDependency audit noise from Lighthouse CLI tooling.
+`npm audit --omit=dev --audit-level=moderate` must pass with zero production findings. The development tree currently has a Vitest mocker advisory that requires a breaking Vitest 5 upgrade; it is not shipped in the application or worker images built with production-only dependencies.
 
 `npm run audit:ci` (`npm audit --omit=dev --audit-level=high`) must continue to pass on production dependencies. `npm run audit:dev` audits the full tree at high+. Use `npm run audit:moderate` manually to surface accepted moderate findings.
 
@@ -104,8 +96,9 @@ Performance budgets in CI use Playwright (`e2e/cwv.spec.ts`, `e2e/perf-budget.sp
 | Job | Route | Auth |
 |-----|-------|------|
 | File cleanup + consent purge (3yr) + usage logs (90d) + AI usage logs (90d) + error logs (90d) | `GET /api/cron/cleanup` | `Authorization: Bearer $CRON_SECRET` or Vercel `x-vercel-cron` (on Vercel only) |
+| Recover/drain conversion queue | `GET /api/cron/conversion-worker?maxJobs=1` | `Authorization: Bearer $CRON_SECRET` or Vercel `x-vercel-cron` |
 
-Also deletes orphaned preview PDFs under `temp-sessions/pdf/` in Supabase storage when older than the 30-minute session TTL.
+Cleanup also deletes orphaned previews and staged PDF-to-Word inputs/outputs after their TTL and records deletion failures in `cleanup_runs`.
 
 Configure in Vercel Cron or external scheduler with **Bearer auth only** — never expose `CRON_SECRET` in client code or query strings.
 
@@ -128,6 +121,8 @@ Run in order in Supabase SQL Editor (or `supabase db push`):
 | `011_storage_rls_fix.sql` | Storage RLS fixes |
 | `012_enterprise_orgs_api_keys.sql` | Organizations, members, API keys |
 | `013_enterprise_billing.sql` | Org billing, invites |
+| `014`–`020` | Atomic usage, billing reconciliation, MFA/webhook and medium security hardening |
+| `021_phase1_conversion_operations.sql` | Conversion metrics, cleanup runs, queue fields, private bucket enforcement |
 
 After each migration, verify in Table Editor and run a smoke test (upload → convert → download).
 
@@ -182,7 +177,7 @@ LIBREOFFICE_PATH=        # local Office conversions (Dockerfile.full sets this)
 
 When **Upstash** and **Supabase storage** are both configured:
 
-- **Heavy conversions** share a distributed semaphore (Redis key `pdf-doctor:heavy-jobs:leases`). Without Upstash in production, heavy routes fail closed (503-style busy message).
+- **Heavy conversions** share a distributed semaphore. PDF-to-Word additionally uses durable Redis pending/processing queues and private staged storage. Without Upstash in production, heavy routes fail closed.
 - **PDF preview sessions** persist metadata in Redis and PDF bytes in bucket `pdf-files` under `temp-sessions/pdf/{sessionId}.pdf` (30 min TTL).
 
 See `docs/PRODUCTION_CHECKLIST.md` and `.env.example` for the full list.
@@ -202,6 +197,7 @@ See `docs/PRODUCTION_CHECKLIST.md` and `.env.example` for the full list.
 |-------|------|-------------|
 | Slim (default) | `Dockerfile` | App only — use `CONVERTAPI_SECRET` or client-side tools |
 | Full | `Dockerfile.full` | Debian + LibreOffice + Python (`pdf2docx`) |
+| Worker | `Dockerfile.worker` | Isolated PDF-to-Word queue worker with CPU, memory, PID, capability and temporary-storage limits in Compose |
 
 ```bash
 # Slim — app only
@@ -211,6 +207,9 @@ docker run -p 3000:3000 --env-file .env.production onlymypdf
 # Full — self-hosted conversions (no pipeline code changes)
 docker build -f Dockerfile.full -t onlymypdf:full .
 docker run -p 3000:3000 --env-file .env.production onlymypdf:full
+
+# Durable conversion worker
+docker compose up -d conversion-worker
 ```
 
 Uses Next.js `output: "standalone"` from `next.config.ts`. Node **20+** (see `.nvmrc`).
@@ -224,7 +223,7 @@ Uses Next.js `output: "standalone"` from `next.config.ts`. Node **20+** (see `.n
 1. **Supabase**: enable daily backups (Pro plan); export schema periodically.
 2. **Storage**: `pdf-files` bucket is ephemeral by design; no long-term backup required for user files.
 3. **Secrets**: store in Vercel/host secret manager; rotate `CRON_SECRET` and `IP_HASH_SALT` on compromise.
-4. **Recovery**: redeploy from `main`, re-run migrations 001–013 on fresh DB if needed, restore env vars, verify `/api/health`, `/status`, and one tool conversion.
+4. **Recovery**: redeploy from `main`, re-run migrations 001–021 on fresh DB if needed, restore env vars, verify `/api/health`, `/status`, the worker queue, cleanup status, and one tool conversion.
 
 ## Incident checklist
 

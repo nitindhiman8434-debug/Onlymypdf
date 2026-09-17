@@ -58,7 +58,7 @@ export async function GET(
       }
     }
 
-    const fileUrl = await getFileUrl(file.storage_path);
+    const fileUrl = await getFileUrl(file.storage_path, file.expires_at);
 
     const response = await fetch(fileUrl);
     if (!response.ok) {

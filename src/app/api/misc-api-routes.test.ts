@@ -40,11 +40,25 @@ vi.mock("@/lib/ops/health-auth", () => ({
 vi.mock("@/lib/services/cleanup.service", () => ({
   cleanupExpiredFiles: vi.fn(),
   cleanupExpiredTempSessions: vi.fn(),
+  cleanupExpiredConversionJobs: vi.fn(),
   purgeExpiredConsentRecords: vi.fn(),
   purgeOldUsageLogs: vi.fn(),
   purgeOldAiUsageLogs: vi.fn(),
   purgeOldErrorLogs: vi.fn(),
   getCleanupStats: vi.fn(),
+}));
+
+vi.mock("@/lib/ops/conversion-telemetry", () => ({
+  startCleanupRun: vi.fn(async () => ({ id: null, startedAt: new Date().toISOString() })),
+  finishCleanupRun: vi.fn(async () => undefined),
+  getConversionOperationalMetrics: vi.fn(async () => ({
+    jobs: 0,
+    successRate: null,
+    validOutputRate: null,
+    fallbackRate: null,
+    processingP95Ms: null,
+  })),
+  getCleanupOperationalStatus: vi.fn(async () => null),
 }));
 
 vi.mock("@/lib/db/queries", () => ({
@@ -80,6 +94,7 @@ import { isUpstashConfigured } from "@/lib/server/upstash-kv";
 import { isLibreOfficeAvailable } from "@/lib/services/libreoffice-core.service";
 import {
   cleanupExpiredFiles,
+  cleanupExpiredConversionJobs,
   cleanupExpiredTempSessions,
   getCleanupStats,
 } from "@/lib/services/cleanup.service";
@@ -125,6 +140,11 @@ describe("misc API route handlers", () => {
       deleted: 3,
       failed: 0,
       scanned: 3,
+    });
+    vi.mocked(cleanupExpiredConversionJobs).mockResolvedValue({
+      deleted: 2,
+      failed: 0,
+      scanned: 2,
     });
     vi.mocked(releaseStaleProcessingPayments).mockResolvedValue(0);
     vi.mocked(downgradeExpiredProProfiles).mockResolvedValue(0);
@@ -179,7 +199,9 @@ describe("misc API route handlers", () => {
 
     expect(response.status).toBe(200);
     expect(body.temp_sessions_deleted).toBe(3);
+    expect(body.conversion_jobs_deleted).toBe(2);
     expect(cleanupExpiredTempSessions).toHaveBeenCalled();
+    expect(cleanupExpiredConversionJobs).toHaveBeenCalled();
   });
 
   it("blocks cron cleanup without auth", async () => {

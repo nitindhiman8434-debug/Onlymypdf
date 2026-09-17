@@ -121,11 +121,25 @@ export async function deleteFile(storagePath: string): Promise<void> {
   }
 }
 
-export async function getFileUrl(storagePath: string): Promise<string> {
+export function signedUrlLifetimeSeconds(
+  expiresAt?: string | null,
+  nowMs = Date.now()
+): number {
+  const maximum = 2 * 60 * 60;
+  if (!expiresAt) return maximum;
+  const remaining = Math.floor((new Date(expiresAt).getTime() - nowMs) / 1000);
+  if (!Number.isFinite(remaining) || remaining <= 0) return 1;
+  return Math.max(1, Math.min(maximum, remaining));
+}
+
+export async function getFileUrl(
+  storagePath: string,
+  expiresAt?: string | null
+): Promise<string> {
   const supabase = await createServiceClient();
   const { data } = await supabase.storage
     .from(STORAGE_BUCKET)
-    .createSignedUrl(storagePath, 60 * 60 * 2); // 2-hour expiry
+    .createSignedUrl(storagePath, signedUrlLifetimeSeconds(expiresAt));
 
   if (!data?.signedUrl) {
     throw new Error(`Failed to generate signed URL for ${storagePath}`);

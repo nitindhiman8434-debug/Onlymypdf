@@ -62,6 +62,7 @@ next-env.d.ts
 /test-docx-unpack/
 /test-output/
 /scripts/output/
+/quality/phase1-corpus/generated/
 /test-*.docx
 /test-*.pdf
 /test-founder-summary.pdf

@@ -1,16 +1,32 @@
 import fs from "fs/promises";
+import os from "os";
+import path from "path";
 import type { PdfToWordEngine } from "@/lib/services/pdf-to-word.service";
 import { mapPdfToWordError } from "@/lib/services/pdf-to-word.service";
 import { toSafeApiError } from "@/lib/server/safe-error";
 import { createServiceClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/server";
 import {
+  getUpstashRedis,
   isUpstashConfigured,
   upstashDel,
   upstashGetJson,
   upstashSetJson,
 } from "@/lib/server/upstash-kv";
+import {
+  validateConversionOutput,
+  type ConversionOutputValidation,
+} from "@/lib/services/conversion-output-validation";
 
-export type PdfToWordJobStatus = "running" | "done" | "error";
+export type PdfToWordJobStatus = "queued" | "running" | "done" | "error";
+
+export type PdfToWordJobContext = {
+  sourceFileName: string;
+  userId: string | null;
+  sessionId: string;
+  ipAddress: string | null;
+  inputBytes: number;
+};
 
 export type PdfToWordJob = {
   progress: number;
@@ -18,19 +34,33 @@ export type PdfToWordJob = {
   filename: string;
   ownerKey: string;
   engine?: PdfToWordEngine;
+  attemptedEngines?: PdfToWordEngine[];
+  attemptCount?: number;
+  outputValidation?: ConversionOutputValidation;
   /** Local DOCX path (same instance only) */
   outputPath?: string;
   /** Supabase storage path (multi-instance safe) */
   storagePath?: string;
+  /** Private staged input for a worker on another instance. */
+  inputStoragePath?: string;
+  context?: PdfToWordJobContext;
   workDir?: string;
   error?: string;
   createdAt: number;
+  queuedAt: number;
+  startedAt?: number;
+  completedAt?: number;
+  queueTimeMs?: number;
+  processingTimeMs?: number;
 };
 
-const JOB_TTL_MS = 20 * 60 * 1000;
+const JOB_TTL_MS = 2 * 60 * 60 * 1000;
 const JOB_TTL_SEC = Math.ceil(JOB_TTL_MS / 1000);
+const WORKER_LEASE_MS = 15 * 60 * 1000;
 const STORAGE_BUCKET = "pdf-files";
 const REDIS_PREFIX = "pdf-to-word:job:";
+const REDIS_PENDING_QUEUE = "pdf-to-word:queue:pending";
+const REDIS_PROCESSING_QUEUE = "pdf-to-word:queue:processing";
 
 type JobStore = Map<string, PdfToWordJob>;
 
@@ -40,6 +70,16 @@ function memoryStore(): JobStore {
     globalStore.__pdfToWordJobs = new Map();
   }
   return globalStore.__pdfToWordJobs;
+}
+
+function localQueue(): { pending: string[]; processing: Set<string> } {
+  const root = globalThis as typeof globalThis & {
+    __pdfToWordQueue?: { pending: string[]; processing: Set<string> };
+  };
+  if (!root.__pdfToWordQueue) {
+    root.__pdfToWordQueue = { pending: [], processing: new Set() };
+  }
+  return root.__pdfToWordQueue;
 }
 
 function redisKey(jobId: string): string {
@@ -69,10 +109,13 @@ async function deleteJobRecord(jobId: string): Promise<void> {
 }
 
 async function cleanupJobFiles(job: PdfToWordJob) {
-  if (job.storagePath) {
+  const storagePaths = [job.storagePath, job.inputStoragePath].filter(
+    (value): value is string => Boolean(value)
+  );
+  if (storagePaths.length > 0) {
     try {
       const supabase = await createServiceClient();
-      await supabase.storage.from(STORAGE_BUCKET).remove([job.storagePath]);
+      await supabase.storage.from(STORAGE_BUCKET).remove(storagePaths);
     } catch {
       // best effort
     }
@@ -106,18 +149,187 @@ async function uploadOutputToStorage(jobId: string, localPath: string): Promise<
   return storagePath;
 }
 
-export async function createPdfToWordJob(filename: string, ownerKey: string): Promise<string> {
+export async function createPdfToWordJob(
+  filename: string,
+  ownerKey: string,
+  context?: PdfToWordJobContext
+): Promise<string> {
   await purgeExpiredJobs();
   const id = crypto.randomUUID();
   const job: PdfToWordJob = {
     progress: 0,
-    status: "running",
+    status: "queued",
     filename,
     ownerKey,
+    context,
     createdAt: Date.now(),
+    queuedAt: Date.now(),
   };
   await writeJob(id, job);
   return id;
+}
+
+export async function stagePdfToWordJobInput(jobId: string, input: Buffer): Promise<void> {
+  const job = await readJob(jobId);
+  if (!job || job.status !== "queued") throw new Error("Queued job was not found.");
+
+  const workDir = await fs.mkdtemp(path.join(os.tmpdir(), "pdfdoctor-ptw-job-"));
+  const inputPath = path.join(workDir, "input.pdf");
+  await fs.writeFile(inputPath, input);
+  job.workDir = workDir;
+  job.outputPath = path.join(workDir, "output.docx");
+
+  if (isSupabaseConfigured()) {
+    const storagePath = `temp-jobs/pdf-to-word/${jobId}/input.pdf`;
+    const supabase = await createServiceClient();
+    const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(storagePath, input, {
+      contentType: "application/pdf",
+      upsert: true,
+    });
+    if (error) throw error;
+    job.inputStoragePath = storagePath;
+  }
+  await writeJob(jobId, job);
+}
+
+export async function enqueuePdfToWordJob(jobId: string): Promise<void> {
+  const job = await readJob(jobId);
+  if (!job || job.status !== "queued") throw new Error("Queued job was not found.");
+  if (isUpstashConfigured()) {
+    const redis = await getUpstashRedis();
+    if (!redis) throw new Error("Conversion queue is unavailable.");
+    await redis.rpush(REDIS_PENDING_QUEUE, jobId);
+    return;
+  }
+  const queue = localQueue();
+  if (!queue.pending.includes(jobId) && !queue.processing.has(jobId)) {
+    queue.pending.push(jobId);
+  }
+}
+
+async function removeProcessingJob(jobId: string): Promise<void> {
+  if (isUpstashConfigured()) {
+    const redis = await getUpstashRedis();
+    if (redis) await redis.lrem(REDIS_PROCESSING_QUEUE, 1, jobId);
+  } else {
+    localQueue().processing.delete(jobId);
+  }
+}
+
+export async function recoverStalePdfToWordJobs(): Promise<number> {
+  let ids: string[] = [];
+  if (isUpstashConfigured()) {
+    const redis = await getUpstashRedis();
+    if (!redis) return 0;
+    ids = await redis.lrange<string>(REDIS_PROCESSING_QUEUE, 0, -1);
+  } else {
+    ids = [...localQueue().processing];
+  }
+
+  let recovered = 0;
+  for (const id of ids) {
+    const job = await readJob(id);
+    if (!job || job.status === "done" || job.status === "error") {
+      await removeProcessingJob(id);
+      continue;
+    }
+    if (job.status === "running" && job.startedAt && Date.now() - job.startedAt > WORKER_LEASE_MS) {
+      job.status = "queued";
+      job.startedAt = undefined;
+      job.queueTimeMs = undefined;
+      await writeJob(id, job);
+      await removeProcessingJob(id);
+      await enqueuePdfToWordJob(id);
+      recovered += 1;
+    }
+  }
+  return recovered;
+}
+
+export async function claimNextPdfToWordJob(): Promise<{ id: string; job: PdfToWordJob } | null> {
+  await recoverStalePdfToWordJobs();
+  let id: string | null | undefined;
+  if (isUpstashConfigured()) {
+    const redis = await getUpstashRedis();
+    if (!redis) return null;
+    id = (await redis.lmove<string>(
+      REDIS_PENDING_QUEUE,
+      REDIS_PROCESSING_QUEUE,
+      "left",
+      "right"
+    )) as string | null;
+  } else {
+    const queue = localQueue();
+    id = queue.pending.shift();
+    if (id) queue.processing.add(id);
+  }
+  if (!id) return null;
+
+  const job = await readJob(id);
+  if (!job || job.status !== "queued") {
+    await removeProcessingJob(id);
+    return claimNextPdfToWordJob();
+  }
+  job.status = "running";
+  job.startedAt = Date.now();
+  job.queueTimeMs = Math.max(0, job.startedAt - job.queuedAt);
+  job.progress = Math.max(1, job.progress);
+  await writeJob(id, job);
+  return { id, job };
+}
+
+export async function notePdfToWordEngineAttempt(
+  jobId: string,
+  engine: PdfToWordEngine,
+  attempt: number
+): Promise<void> {
+  const job = await readJob(jobId);
+  if (!job || job.status !== "running") return;
+  const attempted = job.attemptedEngines ?? [];
+  if (!attempted.includes(engine)) attempted.push(engine);
+  job.attemptedEngines = attempted;
+  job.attemptCount = Math.max(job.attemptCount ?? 0, attempt);
+  await writeJob(jobId, job);
+}
+
+export async function materializePdfToWordJobInput(jobId: string): Promise<{
+  job: PdfToWordJob;
+  inputPath: string;
+  outputPath: string;
+  workDir: string;
+}> {
+  const job = await readJob(jobId);
+  if (!job || job.status !== "running") throw new Error("Running job was not found.");
+
+  let input: Buffer | null = null;
+  if (job.workDir) {
+    try {
+      input = await fs.readFile(path.join(job.workDir, "input.pdf"));
+    } catch {
+      input = null;
+    }
+  }
+  if (!input && job.inputStoragePath) {
+    const supabase = await createServiceClient();
+    const { data, error } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .download(job.inputStoragePath);
+    if (error || !data) throw error ?? new Error("Staged input is unavailable.");
+    input = Buffer.from(await data.arrayBuffer());
+  }
+  if (!input?.length) throw new Error("Staged PDF input is unavailable.");
+
+  const workDir = await fs.mkdtemp(path.join(os.tmpdir(), "pdfdoctor-ptw-worker-"));
+  const inputPath = path.join(workDir, "input.pdf");
+  const outputPath = path.join(workDir, "output.docx");
+  await fs.writeFile(inputPath, input);
+  if (job.workDir && job.workDir !== workDir) {
+    await fs.rm(job.workDir, { recursive: true, force: true }).catch(() => {});
+  }
+  job.workDir = workDir;
+  job.outputPath = outputPath;
+  await writeJob(jobId, job);
+  return { job, inputPath, outputPath, workDir };
 }
 
 export async function updatePdfToWordJobProgress(jobId: string, progress: number) {
@@ -147,20 +359,32 @@ export async function completePdfToWordJob(
     );
   }
 
+  const output = await fs.readFile(payload.outputPath);
+  const validation = await validateConversionOutput(output, "docx");
+  if (!validation.valid) {
+    throw new Error(`Conversion output validation failed: ${validation.errors.join(" ")}`);
+  }
+
   job.status = "done";
   job.progress = 99;
   job.outputPath = payload.outputPath;
   job.workDir = payload.workDir;
   job.engine = payload.engine;
+  job.outputValidation = validation;
+  job.completedAt = Date.now();
+  job.processingTimeMs = job.startedAt ? Math.max(0, job.completedAt - job.startedAt) : undefined;
 
-  try {
-    job.storagePath = await uploadOutputToStorage(jobId, payload.outputPath);
-  } catch (err) {
-    console.warn("[pdf-to-word-jobs] Storage upload failed, local path only:", err);
+  if (isSupabaseConfigured()) {
+    try {
+      job.storagePath = await uploadOutputToStorage(jobId, payload.outputPath);
+    } catch (err) {
+      console.warn("[pdf-to-word-jobs] Storage upload failed, local path only:", err);
+    }
   }
 
   job.progress = 100;
   await writeJob(jobId, job);
+  await removeProcessingJob(jobId);
 }
 
 export async function failPdfToWordJob(jobId: string, error: unknown, workDir?: string) {
@@ -170,11 +394,29 @@ export async function failPdfToWordJob(jobId: string, error: unknown, workDir?: 
   const mapped = mapPdfToWordError(raw);
   job.status = "error";
   job.error = toSafeApiError(new Error(mapped), "Conversion failed. Please try again.");
-  if (workDir) {
-    job.workDir = workDir;
-    await cleanupJobFiles(job);
-  }
+  if (workDir) job.workDir = workDir;
+  await cleanupJobFiles(job);
+  job.completedAt = Date.now();
+  job.processingTimeMs = job.startedAt ? Math.max(0, job.completedAt - job.startedAt) : undefined;
   await writeJob(jobId, job);
+  await removeProcessingJob(jobId);
+}
+
+export async function getPdfToWordQueueDepth(): Promise<{
+  pending: number;
+  processing: number;
+}> {
+  if (isUpstashConfigured()) {
+    const redis = await getUpstashRedis();
+    if (!redis) return { pending: 0, processing: 0 };
+    const [pending, processing] = await Promise.all([
+      redis.llen(REDIS_PENDING_QUEUE),
+      redis.llen(REDIS_PROCESSING_QUEUE),
+    ]);
+    return { pending, processing };
+  }
+  const queue = localQueue();
+  return { pending: queue.pending.length, processing: queue.processing.size };
 }
 
 export async function getPdfToWordJob(jobId: string): Promise<PdfToWordJob | undefined> {

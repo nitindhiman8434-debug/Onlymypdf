@@ -89,6 +89,7 @@ export type PdfToWordResult = {
 type PdfToWordOptions = {
   fileName?: string;
   onProgress?: (percent: number) => void;
+  onEngineAttempt?: (engine: PdfToWordEngine, attempt: number) => void;
   inputPath?: string;
   outputPath?: string;
   pdfPassword?: string;
@@ -435,7 +436,10 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     wordComReady,
   });
 
+  let attemptNumber = 0;
   for (const engine of [...strategy.engines, ...strategy.emergency]) {
+    attemptNumber += 1;
+    options.onEngineAttempt?.(engine, attemptNumber);
     const attempt = engineAttempts[engine];
     const result = await attempt();
     if (result) {

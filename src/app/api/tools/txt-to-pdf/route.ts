@@ -11,6 +11,11 @@ import { FILE_LIMITS } from "@/config/constants";
 import { clientIpForLogs, ownerHashFromRequest } from "@/lib/server/request-security";
 import { createPdfSession } from "@/lib/pdf/pdf-session-store";
 import { PDFDocument } from "pdf-lib";
+import {
+  ConversionOutputValidationError,
+  recordFailedConversion,
+  validateAndRecordConversion,
+} from "@/lib/services/conversion-completion.service";
 
 export const maxDuration = 60;
 
@@ -20,6 +25,8 @@ export async function POST(request: NextRequest) {
 
   const startTime = Date.now();
   let userId: string | null = null;
+  let inputBytes: number | undefined;
+  let conversionAttempted = false;
 
   try {
     const mutationAuth = await resolveMutationToolUser(request);
@@ -57,12 +64,23 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = validated.buffer;
+    inputBytes = buffer.length;
+    conversionAttempted = true;
     const pdfBuffer = await txtFileToPdf(buffer, file.name, {
       pageSize: pageSize as "a4" | "letter",
       orientation: orientation as "portrait" | "landscape",
       margin: margin as "none" | "small" | "medium",
       fontSize,
       fontFamily: fontFamily as "courier" | "helvetica" | "times",
+    });
+
+    await validateAndRecordConversion({
+      toolName: "txt-to-pdf",
+      output: pdfBuffer,
+      outputKind: "pdf",
+      inputBytes,
+      startedAt: startTime,
+      engine: "pdf-lib",
     });
 
     const originalName = file.name.replace(/\.[^.]+$/i, "");
@@ -85,6 +103,7 @@ export async function POST(request: NextRequest) {
       fileSize: buffer.length,
       processingTimeMs: processingTime,
       status: "completed",
+      conversionMetricRecorded: true,
       inputFileNames: [file.name],
       output: {
         buffer: pdfBuffer,
@@ -104,6 +123,15 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    if (conversionAttempted && !(error instanceof ConversionOutputValidationError)) {
+      await recordFailedConversion({
+        toolName: "txt-to-pdf",
+        startedAt: startTime,
+        inputBytes,
+        engine: "pdf-lib",
+        error,
+      });
+    }
     return handleToolRouteFailure(error, { request, 
       toolSlug: "txt-to-pdf",
       userId,

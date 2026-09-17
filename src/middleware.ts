@@ -19,9 +19,31 @@ function copyCookies(from: NextResponse, to: NextResponse) {
   }
 }
 
-function applyGuestSessionCookie(request: NextRequest, response: NextResponse) {
-  if (!request.cookies.get(GUEST_SESSION_COOKIE)?.value) {
-    response.cookies.set(GUEST_SESSION_COOKIE, crypto.randomUUID(), {
+function resolveGuestSession(request: NextRequest): {
+  id: string;
+  created: boolean;
+} {
+  const existing = request.cookies.get(GUEST_SESSION_COOKIE)?.value?.trim();
+  return existing
+    ? { id: existing, created: false }
+    : { id: crypto.randomUUID(), created: true };
+}
+
+function forwardGuestSession(headers: Headers, session: { id: string; created: boolean }) {
+  if (!session.created) return;
+  const current = headers.get("cookie")?.trim();
+  headers.set(
+    "cookie",
+    `${current ? `${current}; ` : ""}${GUEST_SESSION_COOKIE}=${session.id}`
+  );
+}
+
+function applyGuestSessionCookie(
+  response: NextResponse,
+  session: { id: string; created: boolean }
+) {
+  if (session.created) {
+    response.cookies.set(GUEST_SESSION_COOKIE, session.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -33,12 +55,15 @@ function applyGuestSessionCookie(request: NextRequest, response: NextResponse) {
 
 export async function middleware(request: NextRequest) {
   const originalPath = request.nextUrl.pathname;
+  const guestSession = resolveGuestSession(request);
 
   if (originalPath.startsWith("/api/")) {
-    const response = NextResponse.next();
+    const apiRequestHeaders = new Headers(request.headers);
+    forwardGuestSession(apiRequestHeaders, guestSession);
+    const response = NextResponse.next({ request: { headers: apiRequestHeaders } });
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("Cache-Control", "no-store");
-    applyGuestSessionCookie(request, response);
+    applyGuestSessionCookie(response, guestSession);
     return response;
   }
 
@@ -46,6 +71,7 @@ export async function middleware(request: NextRequest) {
   const isProd = process.env.NODE_ENV === "production";
   const csp = buildContentSecurityPolicy(nonce, isProd);
   const requestHeaders = new Headers(request.headers);
+  forwardGuestSession(requestHeaders, guestSession);
   requestHeaders.set("x-nonce", nonce);
   // Next.js reads the nonce from the request CSP header and applies it to its
   // framework/hydration scripts, so 'strict-dynamic' actually protects them.
@@ -128,7 +154,7 @@ export async function middleware(request: NextRequest) {
 
   response.headers.set("x-pathname", pathname);
 
-  applyGuestSessionCookie(request, response);
+  applyGuestSessionCookie(response, guestSession);
 
   // Enforce on the response; the nonce is NOT echoed as a standalone header so
   // it cannot be trivially read back if an XSS gadget exists.

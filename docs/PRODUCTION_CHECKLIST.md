@@ -2,7 +2,7 @@
 
 
 
-Copy this checklist when deploying to Vercel, Docker, or any host. **Conversion pipelines are unchanged** — these variables enable ops, contact, monitoring, and scale.
+Copy this checklist when deploying to Vercel, Docker, or any host. Phase 1 requires a private storage bucket, durable Redis queue, and an isolated conversion worker.
 
 
 
@@ -22,7 +22,8 @@ Copy this checklist when deploying to Vercel, Docker, or any host. **Conversion 
 
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-side DB/storage (never expose to client) |
 
-| `CRON_SECRET` | Authorizes `/api/cron/cleanup` and detailed `/api/health` (`Authorization: Bearer …` or `x-health-key`) |
+| `CRON_SECRET` | Authorizes `/api/cron/cleanup` and `/api/cron/conversion-worker` |
+| `HEALTH_CHECK_SECRET` | Authorizes detailed `/api/health`; do not reuse `CRON_SECRET` |
 
 | `IP_HASH_SALT` | Hashes guest IPs for rate limits / logs |
 
@@ -168,6 +169,8 @@ Execute in order in Supabase SQL Editor:
 
 20. `supabase/migrations/020_security_medium.sql`
 
+21. `supabase/migrations/021_phase1_conversion_operations.sql`
+
 
 
 Configure **Storage** bucket `pdf-files` as **private** (see `DEPLOYMENT_GUIDE.md`).
@@ -219,6 +222,9 @@ Manual checks:
 - [ ] Cookie banner → dashboard settings syncs to server
 
 - [ ] Cron cleanup runs hourly (Vercel cron + `CRON_SECRET`, or external scheduler with Bearer auth)
+- [ ] `npm run worker:conversions` or the `conversion-worker` Compose service is continuously running
+- [ ] Detailed health shows queue, output validity, latency and latest cleanup as healthy
+- [ ] Real 25 MB and 200 MB files complete through ingress, worker, storage and download
 
 - [ ] Upload → convert → download on one tool (smoke test)
 
@@ -237,6 +243,7 @@ Manual checks:
 | Slim (default) | `Dockerfile` | App only — use `CONVERTAPI_SECRET` or client-side tools |
 
 | Full | `Dockerfile.full` | Includes LibreOffice + Python (`pdf2docx`) |
+| Worker | `Dockerfile.worker` | Durable PDF-to-Word worker; use Compose resource and security limits |
 
 
 

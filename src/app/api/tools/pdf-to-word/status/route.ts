@@ -62,8 +62,11 @@ export async function GET(request: NextRequest) {
     error: job.error ?? null,
 
     engine: job.engine ?? null,
+    queueTimeMs: job.queueTimeMs ?? null,
+    processingTimeMs: job.processingTimeMs ?? null,
+    attemptedEngines: job.attemptedEngines ?? [],
+    outputValid: job.outputValidation?.valid ?? null,
 
   });
 
 }
-

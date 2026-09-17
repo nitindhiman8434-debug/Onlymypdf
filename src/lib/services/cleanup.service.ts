@@ -6,7 +6,9 @@ const STORAGE_BUCKET = "pdf-files";
 const BATCH_SIZE = 200;
 const STORAGE_DELETE_CHUNK = 20;
 const TEMP_SESSION_PREFIX = "temp-sessions/pdf";
+const CONVERSION_JOB_PREFIX = "temp-jobs/pdf-to-word";
 const TEMP_SESSION_LIST_LIMIT = 100;
+const CONVERSION_JOB_TTL_MS = 2 * 60 * 60 * 1000;
 
 export async function cleanupExpiredFiles(): Promise<{
   deleted: number;
@@ -148,6 +150,72 @@ export async function cleanupExpiredTempSessions(): Promise<{
     });
   }
 
+  return { deleted, failed, scanned };
+}
+
+/** Remove staged queue inputs/outputs even if the API or worker crashed. */
+export async function cleanupExpiredConversionJobs(): Promise<{
+  deleted: number;
+  failed: number;
+  scanned: number;
+}> {
+  let deleted = 0;
+  let failed = 0;
+  let scanned = 0;
+  try {
+    const supabase = await createServiceClient();
+    const cutoff = Date.now() - CONVERSION_JOB_TTL_MS;
+    const { data: entries, error } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .list(CONVERSION_JOB_PREFIX, {
+        limit: 1_000,
+        sortBy: { column: "created_at", order: "asc" },
+      });
+    if (error) throw error;
+
+    const stalePaths: string[] = [];
+    for (const entry of entries ?? []) {
+      if (!entry.name) continue;
+      if (entry.id !== null) {
+        scanned += 1;
+        const stamp = storageObjectAgeMs(entry);
+        if (stamp > 0 && stamp < cutoff) {
+          stalePaths.push(`${CONVERSION_JOB_PREFIX}/${entry.name}`);
+        }
+        continue;
+      }
+
+      const folder = `${CONVERSION_JOB_PREFIX}/${entry.name}`;
+      const { data: children, error: childError } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .list(folder, { limit: 20 });
+      if (childError) {
+        failed += 1;
+        continue;
+      }
+      for (const child of children ?? []) {
+        if (!child.name || child.id === null) continue;
+        scanned += 1;
+        const stamp = storageObjectAgeMs(child);
+        if (stamp > 0 && stamp < cutoff) stalePaths.push(`${folder}/${child.name}`);
+      }
+    }
+
+    for (let index = 0; index < stalePaths.length; index += STORAGE_DELETE_CHUNK) {
+      const chunk = stalePaths.slice(index, index + STORAGE_DELETE_CHUNK);
+      const { error: removeError } = await supabase.storage.from(STORAGE_BUCKET).remove(chunk);
+      if (removeError) failed += chunk.length;
+      else deleted += chunk.length;
+    }
+  } catch (err) {
+    await logError({
+      tool_name: "cleanup",
+      error_type: "CONVERSION_JOB_CLEANUP_FAILED",
+      error_message: err instanceof Error ? err.message : String(err),
+      stack_trace: err instanceof Error ? err.stack : undefined,
+    });
+    failed += 1;
+  }
   return { deleted, failed, scanned };
 }
 

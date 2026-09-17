@@ -24,6 +24,12 @@ import { validateBufferMagic } from "@/lib/utils/file-magic";
 import { getGuestSessionLabel } from "@/lib/privacy/guest-session";
 import { clientIpForLogs } from "@/lib/server/request-security";
 import { resolvePdfBuffer } from "@/lib/pdf/pdf-password.server";
+import {
+  ConversionOutputValidationError,
+  recordFailedConversion,
+  validateAndRecordConversion,
+} from "@/lib/services/conversion-completion.service";
+import type { ConversionOutputKind } from "@/lib/services/conversion-output-validation";
 
 interface ToolRouteOptions {
   toolSlug: string;
@@ -39,11 +45,22 @@ interface ToolRouteOptions {
   outputName?: (originalName: string) => string;
 }
 
+function outputKindFor(options: ToolRouteOptions): ConversionOutputKind | null {
+  const extension = options.outputExtension.toLowerCase();
+  if (["pdf", "docx", "xlsx", "pptx", "txt", "html"].includes(extension)) {
+    return extension as ConversionOutputKind;
+  }
+  if (options.contentType.startsWith("image/")) return "image";
+  return null;
+}
+
 export function createToolRoute(options: ToolRouteOptions) {
   const handler = async (request: NextRequest) => {
     const startTime = Date.now();
     let userId: string | null = null;
     let uploadFileName: string | undefined;
+    let inputBytes: number | undefined;
+    let conversionAttempted = false;
 
     try {
       const originBlocked = guardToolMutationOrigin(request);
@@ -133,10 +150,25 @@ export function createToolRoute(options: ToolRouteOptions) {
         }
       }
 
+      inputBytes = buffer.length;
+
       const runConvert = () => options.convert(buffer, file, formData);
+      conversionAttempted = true;
       const outputBuffer = options.heavy
         ? await withHeavyJobGuard(runConvert)
         : await runConvert();
+
+      const outputKind = outputKindFor(options);
+      if (outputKind) {
+        await validateAndRecordConversion({
+          toolName: options.toolSlug,
+          output: outputBuffer,
+          outputKind,
+          inputBytes,
+          startedAt: startTime,
+          engine: options.heavy ? "heavy-auto" : "node",
+        });
+      }
 
       const baseName = options.outputName
         ? options.outputName(file.name)
@@ -151,6 +183,7 @@ export function createToolRoute(options: ToolRouteOptions) {
         fileSize: buffer.length,
         processingTimeMs: Date.now() - startTime,
         status: "completed",
+        conversionMetricRecorded: true,
         inputFileNames: [file.name],
         output: {
           buffer: outputBuffer,
@@ -176,6 +209,15 @@ export function createToolRoute(options: ToolRouteOptions) {
         },
       });
     } catch (error) {
+      if (conversionAttempted && !(error instanceof ConversionOutputValidationError)) {
+        await recordFailedConversion({
+          toolName: options.toolSlug,
+          startedAt: startTime,
+          inputBytes,
+          engine: options.heavy ? "heavy-auto" : "node",
+          error,
+        });
+      }
       const blocked = authGuardResponse(error);
       if (blocked) return blocked;
 

@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-09-17T04:17:40.690Z",
+  "cases": 6,
+  "passed": 6,
+  "failed": 0,
+  "allPassed": true,
+  "concurrentBatch": {
+    "jobs": 4,
+    "sizesMB": [
+      25,
+      50,
+      100,
+      200
+    ],
+    "durationMs": 10,
+    "allAccepted": true,
+    "results": [
+      {
+        "sizeMB": 25,
+        "accepted": true
+      },
+      {
+        "sizeMB": 50,
+        "accepted": true
+      },
+      {
+        "sizeMB": 100,
+        "accepted": true
+      },
+      {
+        "sizeMB": 200,
+        "accepted": true
+      }
+    ]
+  },
+  "evidenceScope": "Application upload validation at exact 25 MB and 200 MB limits. CDN/proxy and production worker limits require deployed-environment verification.",
+  "results": [
+    {
+      "label": "free-exact",
+      "sizeMB": 25,
+      "limitMB": 25,
+      "expected": true,
+      "sizeBytes": 26214400,
+      "accepted": true,
+      "passed": true,
+      "durationMs": 1,
+      "error": null
+    },
+    {
+      "label": "free-over",
+      "sizeMB": 25.000000953674316,
+      "limitMB": 25,
+      "expected": false,
+      "sizeBytes": 26214401,
+      "accepted": false,
+      "passed": true,
+      "durationMs": 0,
+      "error": "File size (25.0 MB) exceeds the maximum allowed size of 25 MB."
+    },
+    {
+      "label": "pro-50",
+      "sizeMB": 50,
+      "limitMB": 200,
+      "expected": true,
+      "sizeBytes": 52428800,
+      "accepted": true,
+      "passed": true,
+      "durationMs": 1,
+      "error": null
+    },
+    {
+      "label": "pro-100",
+      "sizeMB": 100,
+      "limitMB": 200,
+      "expected": true,
+      "sizeBytes": 104857600,
+      "accepted": true,
+      "passed": true,
+      "durationMs": 1,
+      "error": null
+    },
+    {
+      "label": "pro-exact",
+      "sizeMB": 200,
+      "limitMB": 200,
+      "expected": true,
+      "sizeBytes": 209715200,
+      "accepted": true,
+      "passed": true,
+      "durationMs": 0,
+      "error": null
+    },
+    {
+      "label": "pro-over",
+      "sizeMB": 200.00000095367432,
+      "limitMB": 200,
+      "expected": false,
+      "sizeBytes": 209715201,
+      "accepted": false,
+      "passed": true,
+      "durationMs": 0,
+      "error": "File size (200.0 MB) exceeds the maximum allowed size of 200 MB."
+    }
+  ]
+}

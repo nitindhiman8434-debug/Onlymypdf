@@ -29,6 +29,10 @@ export async function validateSingleUpload(
       return { ok: false, error: "Could not read uploaded file.", status: 400 };
     }
 
+    if (buffer.length !== file.size) {
+      return { ok: false, error: "Uploaded file size changed while reading.", status: 400 };
+    }
+
     if (buffer.length === 0) {
       return { ok: false, error: "File is empty.", status: 400 };
     }
