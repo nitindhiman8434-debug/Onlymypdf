@@ -4,13 +4,14 @@ import { resolveMutationToolUser } from "@/lib/auth/tool-mutation-auth";
 import { resolveToolUserContext } from "@/lib/services/user-tool-context.service";
 import { beginToolRoute, handleToolRouteFailure } from "@/lib/server/tool-request-guards";
 import { toolJsonError } from "@/lib/server/tool-api-error";
-import { createServiceClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { resolveJobOwnerKey } from "@/lib/server/job-owner";
 import { createPdfToWordUploadGrant } from "@/lib/server/direct-upload-grant";
+import {
+  createPdfBlobUploadTarget,
+  isPdfBlobStorageConfigured,
+} from "@/lib/server/pdf-blob-storage";
 import { getFileExtension, formatFileSize } from "@/lib/utils/file";
 import { isUnlimitedFileSizeMB } from "@/config/constants";
-
-const STORAGE_BUCKET = "pdf-files";
 
 type DirectUploadRequest = {
   fileName?: unknown;
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     if (auth.denied) return auth.denied;
     userId = auth.userId;
 
-    if (!isSupabaseConfigured()) {
+    if (!isPdfBlobStorageConfigured()) {
       return toolJsonError(request, "Direct upload storage is not configured.", 503);
     }
 
@@ -80,11 +81,7 @@ export async function POST(request: NextRequest) {
     const ownerKey = resolveJobOwnerKey(request, userId);
     const id = crypto.randomUUID();
     const path = `temp-jobs/pdf-to-word/uploads/${id}/input.pdf`;
-    const supabase = await createServiceClient();
-    const { data, error } = await supabase.storage
-      .from(STORAGE_BUCKET)
-      .createSignedUploadUrl(path, { upsert: false });
-    if (error || !data?.token) throw error ?? new Error("Could not create direct upload URL.");
+    const uploadTarget = await createPdfBlobUploadTarget(path, metadata.mimeType);
 
     const uploadGrant = createPdfToWordUploadGrant({
       id,
@@ -97,10 +94,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        path: data.path || path,
-        token: data.token,
+        ...uploadTarget,
         uploadGrant,
-        expiresInSeconds: 15 * 60,
       },
       { status: 201 }
     );

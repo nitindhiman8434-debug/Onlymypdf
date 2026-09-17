@@ -30,6 +30,8 @@ interface RelatedTool {
   color?: string;
 }
 
+const r2DirectUploadEnabled = process.env.NEXT_PUBLIC_FILE_STORAGE_PROVIDER === "r2";
+
 function clientTimeoutMs(fileSizeBytes: number): number {
   const sizeMb = fileSizeBytes / (1024 * 1024);
   return Math.min(1_800_000, Math.max(900_000, 120_000 + Math.ceil(sizeMb) * 120_000));
@@ -108,7 +110,7 @@ export function PdfToWordToolPage({
 
     try {
       let startRes: Response;
-      if (isSupabaseBrowserConfigured()) {
+      if (isSupabaseBrowserConfigured() || r2DirectUploadEnabled) {
         setProgress(1);
         const signRes = await fetch("/api/uploads/pdf-to-word", {
           method: "POST",
@@ -125,21 +127,41 @@ export function PdfToWordToolPage({
           throw new Error(err.error || "Could not prepare the secure upload.");
         }
         const signed = (await signRes.json()) as {
+          provider?: "supabase" | "r2";
           path?: string;
           token?: string;
+          uploadUrl?: string;
           uploadGrant?: string;
         };
-        if (!signed.path || !signed.token || !signed.uploadGrant) {
+        if (!signed.path || !signed.uploadGrant) {
           throw new Error("Server returned an incomplete secure upload response.");
         }
 
-        const supabase = createSupabaseBrowserClient();
-        const { error: uploadError } = await supabase.storage
-          .from("pdf-files")
-          .uploadToSignedUrl(signed.path, signed.token, file, {
-            contentType: "application/pdf",
+        if (signed.provider === "r2") {
+          if (!signed.uploadUrl) {
+            throw new Error("Server returned an incomplete R2 upload response.");
+          }
+          const uploadResponse = await fetch(signed.uploadUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/pdf" },
+            body: file,
+            signal: controller.signal,
           });
-        if (uploadError) throw new Error("Secure PDF upload failed. Please try again.");
+          if (!uploadResponse.ok) {
+            throw new Error("Secure PDF upload failed. Please try again.");
+          }
+        } else {
+          if (!signed.token || !isSupabaseBrowserConfigured()) {
+            throw new Error("Server returned an incomplete Supabase upload response.");
+          }
+          const supabase = createSupabaseBrowserClient();
+          const { error: uploadError } = await supabase.storage
+            .from("pdf-files")
+            .uploadToSignedUrl(signed.path, signed.token, file, {
+              contentType: "application/pdf",
+            });
+          if (uploadError) throw new Error("Secure PDF upload failed. Please try again.");
+        }
         setProgress(4);
 
         startRes = await fetch("/api/tools/pdf-to-word", {

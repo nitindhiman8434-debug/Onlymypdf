@@ -19,6 +19,7 @@ import { getPdfToWordQueueDepth } from "@/lib/services/pdf-to-word-jobs.service"
 import { getConversionWorkerHealth } from "@/lib/ops/conversion-worker-health";
 import { isDirectUploadGrantSigningConfigured } from "@/lib/server/direct-upload-grant";
 import { isJobPayloadEncryptionConfigured } from "@/lib/server/job-payload-secret";
+import { checkPdfBlobStorage } from "@/lib/server/pdf-blob-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -96,24 +97,6 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      supabase ??= await createServiceClient();
-      const { data: bucket, error: bucketError } = await supabase.storage.getBucket("pdf-files");
-      checks.storage_private = {
-        ok: !bucketError && bucket?.public === false,
-        detail: bucketError
-          ? bucketError.message
-          : bucket
-            ? `bucket=pdf-files public=${String(bucket.public)}`
-            : "pdf-files bucket not found",
-      };
-    } catch (err) {
-      checks.storage_private = {
-        ok: false,
-        detail: err instanceof Error ? err.message : "Storage bucket check failed",
-      };
-    }
-
-    try {
       const stats = await getCleanupStats();
       checks.storage_cleanup = {
         ok: stats.pendingCleanup < 10_000,
@@ -127,8 +110,13 @@ export async function GET(request: NextRequest) {
     }
   } else {
     checks.database = { ok: false, detail: "Supabase not configured" };
-    checks.storage_private = { ok: false, detail: "Supabase not configured" };
   }
+
+  const storageHealth = await checkPdfBlobStorage();
+  checks.storage_private = {
+    ok: storageHealth.ok,
+    detail: `${storageHealth.provider}: ${storageHealth.detail}`,
+  };
 
   let conversionMetrics = null;
   let cleanupOperational = null;

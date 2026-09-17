@@ -4,8 +4,6 @@ import path from "path";
 import type { PdfToWordEngine } from "@/lib/services/pdf-to-word.service";
 import { mapPdfToWordError } from "@/lib/services/pdf-to-word.service";
 import { toSafeApiError } from "@/lib/server/safe-error";
-import { createServiceClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/supabase/server";
 import {
   getUpstashRedis,
   isUpstashConfigured,
@@ -18,6 +16,13 @@ import {
   type ConversionOutputValidation,
 } from "@/lib/services/conversion-output-validation";
 import { isPdfToWordDirectUploadPath } from "@/lib/server/direct-upload-grant";
+import {
+  deletePdfBlobObjects,
+  getPdfBlobObjectInfo,
+  isPdfBlobStorageConfigured,
+  putPdfBlobObject,
+  readPdfBlobObject,
+} from "@/lib/server/pdf-blob-storage";
 
 export type PdfToWordJobStatus = "queued" | "running" | "done" | "error";
 
@@ -44,7 +49,7 @@ export type PdfToWordJob = {
   outputValidation?: ConversionOutputValidation;
   /** Local DOCX path (same instance only) */
   outputPath?: string;
-  /** Supabase storage path (multi-instance safe) */
+  /** Private object-storage path (multi-instance safe) */
   storagePath?: string;
   /** Private staged input for a worker on another instance. */
   inputStoragePath?: string;
@@ -62,7 +67,6 @@ export type PdfToWordJob = {
 const JOB_TTL_MS = 2 * 60 * 60 * 1000;
 const JOB_TTL_SEC = Math.ceil(JOB_TTL_MS / 1000);
 const WORKER_LEASE_MS = 15 * 60 * 1000;
-const STORAGE_BUCKET = "pdf-files";
 const REDIS_PREFIX = "pdf-to-word:job:";
 const REDIS_PENDING_QUEUE = "pdf-to-word:queue:pending";
 const REDIS_PROCESSING_QUEUE = "pdf-to-word:queue:processing";
@@ -119,8 +123,7 @@ async function cleanupJobFiles(job: PdfToWordJob) {
   );
   if (storagePaths.length > 0) {
     try {
-      const supabase = await createServiceClient();
-      await supabase.storage.from(STORAGE_BUCKET).remove(storagePaths);
+      await deletePdfBlobObjects(storagePaths);
     } catch {
       // best effort
     }
@@ -144,13 +147,11 @@ async function purgeExpiredJobs() {
 async function uploadOutputToStorage(jobId: string, localPath: string): Promise<string> {
   const buffer = await fs.readFile(localPath);
   const storagePath = `temp-jobs/pdf-to-word/${jobId}.docx`;
-  const supabase = await createServiceClient();
-  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(storagePath, buffer, {
-    contentType:
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    upsert: true,
-  });
-  if (error) throw error;
+  await putPdfBlobObject(
+    storagePath,
+    buffer,
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  );
   return storagePath;
 }
 
@@ -184,14 +185,9 @@ export async function stagePdfToWordJobInput(jobId: string, input: Buffer): Prom
   job.workDir = workDir;
   job.outputPath = path.join(workDir, "output.docx");
 
-  if (isSupabaseConfigured()) {
+  if (isPdfBlobStorageConfigured()) {
     const storagePath = `temp-jobs/pdf-to-word/${jobId}/input.pdf`;
-    const supabase = await createServiceClient();
-    const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(storagePath, input, {
-      contentType: "application/pdf",
-      upsert: true,
-    });
-    if (error) throw error;
+    await putPdfBlobObject(storagePath, input, "application/pdf");
     job.inputStoragePath = storagePath;
   }
   await writeJob(jobId, job);
@@ -209,21 +205,18 @@ export async function stagePdfToWordJobInputFromStorage(
     throw new Error("Direct upload path is invalid.");
   }
 
-  const supabase = await createServiceClient();
-  const bucket = supabase.storage.from(STORAGE_BUCKET);
   try {
-    const { data, error } = await bucket.info(storagePath);
-    if (error || !data) throw error ?? new Error("Uploaded PDF was not found.");
-    if (!Number.isSafeInteger(data.size) || data.size !== expectedBytes) {
+    const info = await getPdfBlobObjectInfo(storagePath);
+    if (!Number.isSafeInteger(info.size) || info.size !== expectedBytes) {
       throw new Error("Uploaded file size does not match the signed request.");
     }
-    if (data.contentType && data.contentType !== "application/pdf") {
+    if (info.contentType && info.contentType !== "application/pdf") {
       throw new Error("Uploaded file content type is not PDF.");
     }
     job.inputStoragePath = storagePath;
     await writeJob(jobId, job);
   } catch (error) {
-    await bucket.remove([storagePath]).catch(() => undefined);
+    await deletePdfBlobObjects([storagePath]).catch(() => undefined);
     throw error;
   }
 }
@@ -346,12 +339,7 @@ export async function materializePdfToWordJobInput(jobId: string): Promise<{
     }
   }
   if (!input && job.inputStoragePath) {
-    const supabase = await createServiceClient();
-    const { data, error } = await supabase.storage
-      .from(STORAGE_BUCKET)
-      .download(job.inputStoragePath);
-    if (error || !data) throw error ?? new Error("Staged input is unavailable.");
-    input = Buffer.from(await data.arrayBuffer());
+    input = await readPdfBlobObject(job.inputStoragePath);
   }
   if (!input?.length) throw new Error("Staged PDF input is unavailable.");
 
@@ -411,7 +399,7 @@ export async function completePdfToWordJob(
   job.processingTimeMs = job.startedAt ? Math.max(0, job.completedAt - job.startedAt) : undefined;
   if (job.context) delete job.context.encryptedPdfPassword;
 
-  if (isSupabaseConfigured()) {
+  if (isPdfBlobStorageConfigured()) {
     try {
       job.storagePath = await uploadOutputToStorage(jobId, payload.outputPath);
     } catch (err) {
@@ -482,10 +470,7 @@ export async function releasePdfToWordJob(job: PdfToWordJob) {
 
 export async function readPdfToWordJobOutput(job: PdfToWordJob): Promise<Buffer> {
   if (job.storagePath) {
-    const supabase = await createServiceClient();
-    const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(job.storagePath);
-    if (error || !data) throw error ?? new Error("Output file not found in storage");
-    return Buffer.from(await data.arrayBuffer());
+    return readPdfBlobObject(job.storagePath);
   }
   if (job.outputPath) {
     return fs.readFile(job.outputPath);

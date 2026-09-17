@@ -144,6 +144,13 @@ JOB_PAYLOAD_SECRET=        # optional dedicated key; otherwise CRON_SECRET fallb
 IP_HASH_SALT=
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
+# For the 200 MB PDF→Word path on Cloudflare R2:
+NEXT_PUBLIC_FILE_STORAGE_PROVIDER=r2
+FILE_STORAGE_PROVIDER=r2
+R2_ACCOUNT_ID=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_BUCKET_NAME=onlymypdf-files
 ```
 
 **Billing** — use mock mode until Razorpay is live:
@@ -178,10 +185,10 @@ PDF2DOCX_PYTHON=         # local pdf2docx (Dockerfile.full sets this)
 LIBREOFFICE_PATH=        # local Office conversions (Dockerfile.full sets this)
 ```
 
-When **Upstash** and **Supabase storage** are both configured:
+When **Upstash** and private object storage are configured:
 
 - **Heavy conversions** share a distributed semaphore. PDF-to-Word additionally uses durable Redis pending/processing queues and private staged storage. Without Upstash in production, heavy routes fail closed.
-- **Large PDF-to-Word uploads** go browser → signed private Supabase upload → durable queue, so 25/200 MB files do not cross the app server request body.
+- **Large PDF-to-Word uploads** go browser → signed private R2 or Supabase upload → durable queue, so file bytes do not cross the app server request body. Supabase Free remains capped at 50 MB; select R2 for the tested 200 MB path.
 - **Dedicated worker health** is written to Upstash every 15 seconds and becomes unhealthy after 60 seconds without a fresh heartbeat.
 - **PDF preview sessions** persist metadata in Redis and PDF bytes in bucket `pdf-files` under `temp-sessions/pdf/{sessionId}.pdf` (30 min TTL).
 

@@ -1,5 +1,10 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { PDF_SESSION_TTL_MS } from "@/lib/pdf/pdf-session-store";
+import {
+  deletePdfBlobObjects,
+  getPdfBlobStorageProvider,
+  listR2PdfBlobObjects,
+} from "@/lib/server/pdf-blob-storage";
 import { getExpiredFiles, markFileDeleted, logError, purgeOldConsentRecords, purgeOldUsageLogs as purgeOldUsageLogsFromDb, purgeOldAiUsageLogs as purgeOldAiUsageLogsFromDb, purgeOldErrorLogs as purgeOldErrorLogsFromDb } from "@/lib/db/queries";
 
 const STORAGE_BUCKET = "pdf-files";
@@ -166,6 +171,25 @@ export async function cleanupExpiredConversionJobs(): Promise<{
   let failed = 0;
   let scanned = 0;
   try {
+    if (getPdfBlobStorageProvider() === "r2") {
+      const cutoff = Date.now() - CONVERSION_JOB_TTL_MS;
+      const objects = await listR2PdfBlobObjects(CONVERSION_JOB_PREFIX);
+      scanned = objects.length;
+      const stalePaths = objects
+        .filter((entry) => entry.lastModified && entry.lastModified.getTime() < cutoff)
+        .map((entry) => entry.path);
+      for (let index = 0; index < stalePaths.length; index += STORAGE_DELETE_CHUNK) {
+        const chunk = stalePaths.slice(index, index + STORAGE_DELETE_CHUNK);
+        try {
+          await deletePdfBlobObjects(chunk);
+          deleted += chunk.length;
+        } catch {
+          failed += chunk.length;
+        }
+      }
+      return { deleted, failed, scanned };
+    }
+
     const supabase = await createServiceClient();
     const bucket = supabase.storage.from(STORAGE_BUCKET);
     const cutoff = Date.now() - CONVERSION_JOB_TTL_MS;

@@ -5,7 +5,7 @@ This guide covers high-traffic production deployment for OnlyMyPDF PDF→Word co
 ## Recommended architecture (big traffic)
 
 ```
-User upload → API route → Redis job queue → Worker converts → Supabase storage → Download
+User upload → private R2/Supabase object → Redis queue → Worker converts → private object → Download
                               ↓
                     1. ConvertAPI (primary)
                     2. pdf2docx (Linux fallback)
@@ -42,6 +42,14 @@ CONVERTAPI_TIMEOUT_MS=180000
 # Already required for async PDF→Word jobs at scale
 UPSTASH_REDIS_REST_URL=...
 UPSTASH_REDIS_REST_TOKEN=...
+
+# Lowest-cost 200 MB object path
+NEXT_PUBLIC_FILE_STORAGE_PROVIDER=r2
+FILE_STORAGE_PROVIDER=r2
+R2_ACCOUNT_ID=...
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=onlymypdf-files
 ```
 
 | Variable | Purpose |
@@ -50,6 +58,8 @@ UPSTASH_REDIS_REST_TOKEN=...
 | `PDF_TO_WORD_CONVERTAPI_ONLY=1` | Production mode: ConvertAPI → pdf2docx → visual only |
 | `CONVERTAPI_TIMEOUT_MS` | Max wait per API call (default 180s) |
 | `UPSTASH_REDIS_*` | Job queue + rate limits across instances |
+| `FILE_STORAGE_PROVIDER=r2` | Use private Cloudflare R2 objects instead of the Supabase 50 MB Free limit |
+| `R2_*` | Server-only R2 S3 credentials and private bucket |
 
 ---
 
@@ -115,7 +125,7 @@ Look for:
 |------|--------|
 | Async jobs | Use existing `/api/tools/pdf-to-word` job flow (Redis-backed) |
 | Concurrency | Default `MAX_CONCURRENT_HEAVY_JOBS=8` per instance (raise on dedicated workers) |
-| File limits | Pro: 200 MB — ConvertAPI cap is 100 MB per file |
+| File limits | Pro: 200 MB through R2; files above an engine limit must use a validated local worker engine |
 | Monitoring | Alert if `convertapi.ok: false` in detailed health |
 | Cost control | Monitor ConvertAPI dashboard; set monthly spend cap |
 | Fallback | pdf2docx on full Docker image if ConvertAPI is down |
@@ -174,6 +184,7 @@ PDF_TO_WORD_CONVERTAPI_ONLY=1
 | Slow conversions | Normal for large PDFs; use async job + polling UI |
 | ConvertAPI 429 | Auto-retries once; upgrade plan or add queue backoff |
 | High cost | Enable `PDF_TO_WORD_CONVERTAPI_ONLY=1`; disable unnecessary fallbacks |
+| Browser R2 upload blocked | Add the production origin and localhost development origin to the bucket CORS `PUT` allowlist |
 
 ---
 

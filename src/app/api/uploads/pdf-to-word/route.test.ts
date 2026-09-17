@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/server/tool-request-guards", () => ({
   beginToolRoute: vi.fn(async () => null),
@@ -47,6 +47,7 @@ function request(body: unknown) {
 describe("PDF to Word direct upload signing", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv("FILE_STORAGE_PROVIDER", "supabase");
     createSignedUploadUrl.mockResolvedValue({
       data: {
         path: "temp-jobs/pdf-to-word/uploads/123e4567-e89b-42d3-a456-426614174000/input.pdf",
@@ -54,6 +55,10 @@ describe("PDF to Word direct upload signing", () => {
       },
       error: null,
     });
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it("returns a private signed upload token and owner-bound grant", async () => {
@@ -80,6 +85,30 @@ describe("PDF to Word direct upload signing", () => {
     );
 
     expect(response.status).toBe(400);
+    expect(createSignedUploadUrl).not.toHaveBeenCalled();
+  });
+
+  it("returns a private R2 presigned PUT URL without exposing the secret key", async () => {
+    const secretAccessKey = "test-r2-secret-access-key";
+    vi.stubEnv("FILE_STORAGE_PROVIDER", "r2");
+    vi.stubEnv("R2_ACCOUNT_ID", "0123456789abcdef0123456789abcdef");
+    vi.stubEnv("R2_ACCESS_KEY_ID", "test-r2-access-key");
+    vi.stubEnv("R2_SECRET_ACCESS_KEY", secretAccessKey);
+    vi.stubEnv("R2_BUCKET_NAME", "onlymypdf-files");
+
+    const response = await POST(
+      request({ fileName: "source.pdf", fileSize: 1024, mimeType: "application/pdf" })
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(body.provider).toBe("r2");
+    expect(body.path).toMatch(/^temp-jobs\/pdf-to-word\/uploads\/.+\/input\.pdf$/);
+    expect(body.uploadUrl).toContain(".r2.cloudflarestorage.com/");
+    expect(body.uploadUrl).toContain("X-Amz-Signature=");
+    expect(body.expiresInSeconds).toBe(15 * 60);
+    expect(body.uploadGrant).toBe("signed-owner-bound-grant");
+    expect(JSON.stringify(body)).not.toContain(secretAccessKey);
     expect(createSignedUploadUrl).not.toHaveBeenCalled();
   });
 });
