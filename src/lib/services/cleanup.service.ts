@@ -162,7 +162,16 @@ export async function cleanupExpiredTempSessions(): Promise<{
 }
 
 /** Remove staged queue inputs/outputs even if the API or worker crashed. */
-export async function cleanupExpiredConversionJobs(): Promise<{
+type ConversionCleanupOptions = {
+  /** Operational drill seam; production callers use the two-hour default. */
+  nowMs?: number;
+  ttlMs?: number;
+  deleteObjects?: typeof deletePdfBlobObjects;
+};
+
+export async function cleanupExpiredConversionJobs(
+  options: ConversionCleanupOptions = {}
+): Promise<{
   deleted: number;
   failed: number;
   scanned: number;
@@ -170,9 +179,12 @@ export async function cleanupExpiredConversionJobs(): Promise<{
   let deleted = 0;
   let failed = 0;
   let scanned = 0;
+  const nowMs = options.nowMs ?? Date.now();
+  const ttlMs = Math.max(0, options.ttlMs ?? CONVERSION_JOB_TTL_MS);
+  const deleteObjects = options.deleteObjects ?? deletePdfBlobObjects;
   try {
     if (getPdfBlobStorageProvider() === "r2") {
-      const cutoff = Date.now() - CONVERSION_JOB_TTL_MS;
+      const cutoff = nowMs - ttlMs;
       const objects = await listR2PdfBlobObjects(CONVERSION_JOB_PREFIX);
       scanned = objects.length;
       const stalePaths = objects
@@ -181,7 +193,7 @@ export async function cleanupExpiredConversionJobs(): Promise<{
       for (let index = 0; index < stalePaths.length; index += STORAGE_DELETE_CHUNK) {
         const chunk = stalePaths.slice(index, index + STORAGE_DELETE_CHUNK);
         try {
-          await deletePdfBlobObjects(chunk);
+          await deleteObjects(chunk);
           deleted += chunk.length;
         } catch {
           failed += chunk.length;
@@ -192,7 +204,7 @@ export async function cleanupExpiredConversionJobs(): Promise<{
 
     const supabase = await createServiceClient();
     const bucket = supabase.storage.from(STORAGE_BUCKET);
-    const cutoff = Date.now() - CONVERSION_JOB_TTL_MS;
+    const cutoff = nowMs - ttlMs;
     const stalePaths: string[] = [];
     const directories: Array<{ path: string; depth: number }> = [
       { path: CONVERSION_JOB_PREFIX, depth: 0 },

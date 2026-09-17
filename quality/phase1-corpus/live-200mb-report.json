@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-09-17T22:08:57.712Z",
+  "jobId": "ae1436a7-c80e-4b85-a4eb-7779d69dd43a",
+  "inputBytes": 209715200,
+  "uploadProvider": "r2",
+  "uploadPath": "temp-jobs/pdf-to-word/uploads/d175ce4d-d0ae-4bbd-a8f2-89d4d437583f/input.pdf",
+  "uploadTimeMs": 20630,
+  "queueTimeMs": 3050,
+  "processingTimeMs": 8963,
+  "outputBytes": 66627,
+  "outputSha256": "51668b4db7b367a9128958023c18812f688e1ee9966e4c9b78bddf6018376bd3",
+  "engine": "pdf2docx",
+  "validation": {
+    "valid": true,
+    "kind": "docx",
+    "byteLength": 66627,
+    "signatureValid": true,
+    "openable": true,
+    "errors": [],
+    "warnings": [],
+    "checkedAt": "2026-09-17T22:08:57.263Z",
+    "pageCount": 1,
+    "entryCount": 19,
+    "textCharacters": 1052
+  },
+  "workerState": "processed",
+  "workerResult": "completed",
+  "fixtureKind": "valid-pdf-with-zero-padding"
+}

@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-09-17T22:14:32.634Z",
+  "storageProvider": "r2",
+  "markerPath": "temp-jobs/pdf-to-word/retention-drill/47289cdf-4019-4ccd-843c-dfa7805938c9.pdf",
+  "markerBytes": 46,
+  "configuredRetentionHours": 2,
+  "drillTtlMs": 0,
+  "controlledFailure": {
+    "deleted": 0,
+    "failed": 1,
+    "scanned": 1
+  },
+  "retry": {
+    "deleted": 1,
+    "failed": 0,
+    "scanned": 1
+  },
+  "markerRemainingAfterRetry": 0,
+  "result": "pass",
+  "scope": "Live R2 failure accounting and retry deletion. The production worker keeps the two-hour TTL and runs the same cleanup hourly."
+}
