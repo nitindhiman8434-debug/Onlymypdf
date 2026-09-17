@@ -35,6 +35,8 @@ export function FileUpload({
   const [rawFiles, setRawFiles] = React.useState<File[]>([]);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const helpId = React.useId();
+  const errorId = React.useId();
 
   const unlimited = isUnlimitedFileSizeMB(maxSizeMB);
   const maxSizeBytes = unlimited ? Number.MAX_SAFE_INTEGER : maxSizeMB * 1024 * 1024;
@@ -106,18 +108,7 @@ export function FileUpload({
   return (
     <div className={cn("w-full max-w-xl mx-auto", className)}>
       {files.length === 0 ? (
-        <div
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={() => inputRef.current?.click()}
-          className={cn(
-            "relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-10 text-center transition-all duration-200 cursor-pointer",
-            state === "dragging"
-              ? "border-blue-500 bg-blue-50"
-              : "border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100"
-          )}
-        >
+        <>
           <input
             ref={inputRef}
             type="file"
@@ -126,34 +117,50 @@ export function FileUpload({
             onChange={handleInputChange}
             className="sr-only"
             tabIndex={-1}
-            aria-label="File upload input"
+            aria-label={multiple ? "Choose files" : "Choose a file"}
+            aria-describedby={errorMsg ? `${helpId} ${errorId}` : helpId}
           />
-          <div
+          <button
+            type="button"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => inputRef.current?.click()}
+            aria-describedby={errorMsg ? `${helpId} ${errorId}` : helpId}
+            className={cn(
+              "relative flex w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-10 text-center transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand focus-visible:ring-offset-2",
+              state === "dragging"
+                ? "border-blue-500 bg-blue-50"
+                : "border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100"
+            )}
+          >
+            <div
             className={cn(
               "mb-4 flex h-14 w-14 items-center justify-center rounded-2xl transition-colors",
               state === "dragging"
                 ? "bg-blue-100 text-blue-600"
                 : "bg-red-50 text-red-600"
             )}
-          >
+            >
             {state === "dragging" ? (
-              <Upload className="h-7 w-7" />
+              <Upload className="h-7 w-7" aria-hidden="true" />
             ) : (
-              <FileText className="h-7 w-7" />
+              <FileText className="h-7 w-7" aria-hidden="true" />
             )}
-          </div>
-          <p className="text-base font-semibold text-gray-900">
+            </div>
+            <span className="text-base font-semibold text-gray-900">
             {state === "dragging"
               ? "Drop your files here"
               : "Drag & drop your files here"}
-          </p>
-          <p className="mt-1 text-sm text-pd-muted">
+            </span>
+            <span className="mt-1 text-sm text-pd-muted">
             or click to select files
-          </p>
-          <p className="mt-3 text-xs text-pd-muted">
+            </span>
+            <span id={helpId} className="mt-3 text-xs text-pd-muted">
             {uploadDropzoneSizeLabel(maxSizeMB)}
-          </p>
-        </div>
+            </span>
+          </button>
+        </>
       ) : (
         <div className="space-y-3">
           {files.map((file, idx) => (
@@ -166,16 +173,18 @@ export function FileUpload({
 
           {!multiple && files.length < 1 && (
             <button
+              type="button"
               onClick={() => inputRef.current?.click()}
-              className="w-full rounded-xl border-2 border-dashed border-gray-300 py-3 text-sm text-pd-muted transition-colors hover:border-gray-400 hover:text-pd-foreground cursor-pointer"
+              className="w-full cursor-pointer rounded-xl border-2 border-dashed border-gray-300 py-3 text-sm text-pd-muted transition-colors hover:border-gray-400 hover:text-pd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand focus-visible:ring-offset-2"
             >
               Add another file
             </button>
           )}
           {multiple && (
             <button
+              type="button"
               onClick={() => inputRef.current?.click()}
-              className="w-full rounded-xl border-2 border-dashed border-gray-300 py-3 text-sm text-pd-muted transition-colors hover:border-gray-400 hover:text-pd-foreground cursor-pointer"
+              className="w-full cursor-pointer rounded-xl border-2 border-dashed border-gray-300 py-3 text-sm text-pd-muted transition-colors hover:border-gray-400 hover:text-pd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand focus-visible:ring-offset-2"
             >
               Add more files
             </button>
@@ -189,19 +198,22 @@ export function FileUpload({
             onChange={handleInputChange}
             className="sr-only"
             tabIndex={-1}
-            aria-label="File upload input"
+            aria-label={multiple ? "Choose files" : "Choose a file"}
+            aria-describedby={errorMsg ? errorId : undefined}
           />
         </div>
       )}
 
       {isUploading && (
         <div className="mt-4">
-          <Progress value={uploadProgress} showPercentage />
+          <Progress value={uploadProgress} label="File upload progress" showPercentage />
         </div>
       )}
 
       {errorMsg && (
-        <p className="mt-3 text-center text-sm text-red-600">{errorMsg}</p>
+        <p id={errorId} className="mt-3 text-center text-sm text-red-600" role="alert">
+          {errorMsg}
+        </p>
       )}
 
       <div className="mt-4 flex justify-center">

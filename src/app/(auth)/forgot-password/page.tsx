@@ -14,7 +14,7 @@ import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turn
 type Step = "email" | "verify" | "done";
 
 const inputClass =
-  "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
+  "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition-colors focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
 
 const stepSubtitles: Record<Step, string> = {
   email: "Enter your email to receive a verification code",
@@ -138,10 +138,13 @@ export default function ForgotPasswordPage() {
               Email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" />
+              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" aria-hidden="true" />
               <input
                 id="email"
+                name="email"
                 type="email"
+                autoComplete="email"
+                spellCheck={false}
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -178,10 +181,12 @@ export default function ForgotPasswordPage() {
               Verification Code
             </label>
             <div className="relative">
-              <ShieldCheck className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" />
+              <ShieldCheck className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" aria-hidden="true" />
               <input
                 id="code"
+                name="one-time-code"
                 type="text"
+                autoComplete="one-time-code"
                 inputMode="numeric"
                 pattern="[0-9]{6}"
                 maxLength={6}

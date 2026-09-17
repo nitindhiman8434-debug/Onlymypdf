@@ -3,7 +3,15 @@
 import { useEffect, useRef } from "react";
 
 const FOCUSABLE =
-  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  'a[href]:not([tabindex="-1"]), button:not([disabled]):not([tabindex="-1"]), textarea:not([disabled]):not([tabindex="-1"]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), [contenteditable="true"]:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])';
+
+function getFocusableNodes(container: HTMLElement) {
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+    (node) =>
+      node.getAttribute("aria-hidden") !== "true" &&
+      node.getClientRects().length > 0
+  );
+}
 
 export function useFocusTrap(active: boolean) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -16,13 +24,17 @@ export function useFocusTrap(active: boolean) {
     const container = containerRef.current;
     if (!container) return;
 
-    const focusables = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE));
-    focusables[0]?.focus();
+    const focusables = getFocusableNodes(container);
+    (focusables[0] ?? container).focus();
 
     function onKeyDown(e: KeyboardEvent) {
       if (e.key !== "Tab" || !container) return;
-      const nodes = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE));
-      if (nodes.length === 0) return;
+      const nodes = getFocusableNodes(container);
+      if (nodes.length === 0) {
+        e.preventDefault();
+        container.focus();
+        return;
+      }
 
       const first = nodes[0];
       const last = nodes[nodes.length - 1];

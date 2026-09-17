@@ -115,7 +115,7 @@ export function ToolDropzone({
         onDragLeave={onDragLeave}
         onDrop={onDrop}
         className={cn(
-          "rounded-xl border-2 border-dashed px-4 py-3 text-center transition-all duration-200",
+          "rounded-xl border-2 border-dashed px-4 py-3 text-center transition-colors duration-200",
           dragOver
             ? "border-pd-brand bg-pd-brand-muted/80"
             : "border-pd-border bg-pd-background hover:border-pd-brand/40 hover:bg-pd-brand-muted/30"
@@ -127,11 +127,11 @@ export function ToolDropzone({
             dragOver ? "bg-pd-brand text-white" : "bg-pd-brand-muted text-pd-brand"
           )}
         >
-          <Upload className="h-5 w-5" strokeWidth={2} />
+          <Upload className="h-5 w-5" strokeWidth={2} aria-hidden />
         </div>
 
         <Button type="button" size="md" className="gap-2" onClick={onChooseFiles}>
-          <FileUp className="h-4 w-4" />
+          <FileUp className="h-4 w-4" aria-hidden />
           {resolvedChooseLabel}
         </Button>
 

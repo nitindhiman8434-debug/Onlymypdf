@@ -16,7 +16,7 @@ import { resolveLoginFlashError, resolveLoginFlashMessage } from "@/lib/auth/log
 import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
 
 const inputClass =
-  "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
+  "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition-colors focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
 
 type MfaState = {
   factorId: string;
@@ -148,10 +148,13 @@ export default function LoginPage() {
             {t("auth.email")}
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" />
+            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" aria-hidden="true" />
             <input
               id="email"
+              name="email"
               type="email"
+              autoComplete="email"
+              spellCheck={false}
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -166,10 +169,12 @@ export default function LoginPage() {
             {t("auth.password")}
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" />
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" aria-hidden="true" />
             <input
               id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -180,9 +185,10 @@ export default function LoginPage() {
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-pd-muted hover:text-pd-foreground"
+              aria-pressed={showPassword}
+              className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-pd-muted hover:bg-pd-background hover:text-pd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand"
             >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showPassword ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -198,7 +204,7 @@ export default function LoginPage() {
           disabled={loading || (turnstileSiteKey ? !turnstileToken : false)}
           className="w-full"
         >
-          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+          {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
           {t("auth.loginButton")}
         </Button>
       </form>

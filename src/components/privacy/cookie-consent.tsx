@@ -48,9 +48,9 @@ export function CookieConsentBanner() {
   }, [visible]);
 
   async function finish(state: CookieConsentState) {
-    await applyConsent(state);
     setVisible(false);
     setShowPrefs(false);
+    await applyConsent(state);
   }
 
   if (!visible) return null;
@@ -122,14 +122,14 @@ export function CookieConsentBanner() {
               <button
                 type="button"
                 onClick={() => void finish(defaultConsentAcceptAll())}
-                className="rounded-lg bg-pd-brand px-4 py-2 text-xs font-semibold text-white hover:opacity-90"
+                className="rounded-lg bg-pd-brand px-4 py-2 text-xs font-semibold text-white hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand focus-visible:ring-offset-2"
               >
                 {t("cookieBanner.acceptAll")}
               </button>
               <button
                 type="button"
                 onClick={() => void finish(defaultConsentReject())}
-                className="rounded-lg border border-pd-border px-4 py-2 text-xs font-semibold text-pd-foreground hover:bg-pd-background"
+                className="rounded-lg border border-pd-border px-4 py-2 text-xs font-semibold text-pd-foreground hover:bg-pd-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand focus-visible:ring-offset-2"
               >
                 {t("cookieBanner.rejectNonEssential")}
               </button>
@@ -148,7 +148,8 @@ export function CookieConsentBanner() {
                     setShowPrefs(true);
                   }
                 }}
-                className="rounded-lg border border-pd-border px-4 py-2 text-xs font-semibold text-pd-muted hover:bg-pd-background"
+                aria-expanded={showPrefs}
+                className="rounded-lg border border-pd-border px-4 py-2 text-xs font-semibold text-pd-muted hover:bg-pd-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand focus-visible:ring-offset-2"
               >
                 {showPrefs ? t("cookieBanner.savePreferences") : t("cookieBanner.customize")}
               </button>
@@ -157,10 +158,10 @@ export function CookieConsentBanner() {
           <button
             type="button"
             onClick={() => void finish(defaultConsentReject())}
-            className="shrink-0 rounded-lg p-1 text-pd-muted hover:bg-pd-background"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-pd-muted hover:bg-pd-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand"
             aria-label={t("cookieBanner.dismissAria")}
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
       </div>

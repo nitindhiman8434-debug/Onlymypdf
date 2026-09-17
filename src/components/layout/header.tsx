@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { useFocusTrap } from "@/lib/a11y/use-focus-trap";
 import { cn } from "@/lib/utils/cn";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { LanguageSwitch } from "@/components/common/language-switch";
 import { Logo } from "@/components/common/logo";
 import { useAuthContext } from "@/components/providers/auth-provider";
@@ -250,6 +250,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [megaMenuOpen, setMegaMenuOpen] = React.useState(false);
   const megaMenuRef = React.useRef<HTMLDivElement>(null);
+  const megaMenuTriggerRef = React.useRef<HTMLButtonElement>(null);
   const { user, profile, loading, signOut } = useAuthContext();
   const { t } = useTranslation();
   const localeHref = useLocaleHref();
@@ -291,14 +292,16 @@ export function Header() {
   React.useEffect(() => {
     if (!megaMenuOpen) return;
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setMegaMenuOpen(false);
+      if (e.key === "Escape") {
+        setMegaMenuOpen(false);
+        megaMenuTriggerRef.current?.focus();
+      }
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [megaMenuOpen]);
 
   const mobileMenuRef = useFocusTrap(mobileOpen);
-  const megaMenuTrapRef = useFocusTrap(megaMenuOpen);
 
   return (
     <header className="pd-site-header sticky top-0 z-40 w-full bg-pd-surface">
@@ -318,6 +321,7 @@ export function Header() {
 
           <div ref={megaMenuRef} className="relative">
             <button
+              ref={megaMenuTriggerRef}
               type="button"
               onClick={() => setMegaMenuOpen((prev) => !prev)}
               aria-expanded={megaMenuOpen}
@@ -333,6 +337,7 @@ export function Header() {
             >
               {t("nav.allTools")}
               <ChevronDown
+                aria-hidden="true"
                 className={cn(
                   "h-5 w-5 shrink-0 transition-transform duration-200",
                   megaMenuOpen && "rotate-180"
@@ -342,7 +347,6 @@ export function Header() {
 
             {megaMenuOpen && (
               <div
-                ref={megaMenuTrapRef}
                 id="mega-menu-panel"
                 role="region"
                 aria-label="All PDF tools"
@@ -384,13 +388,15 @@ export function Header() {
           </Link>
           {isLoggedIn ? (
             <>
-              <Link href={localeHref("/dashboard")}>
-                <Button
-                  variant="ghost"
-                  className={cn(headerNavTextClass, "h-auto px-3 py-2 hover:bg-pd-brand-muted hover:text-pd-brand")}
-                >
-                  {t("nav.dashboard")}
-                </Button>
+              <Link
+                href={localeHref("/dashboard")}
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  headerNavTextClass,
+                  "h-auto px-3 py-2 hover:bg-pd-brand-muted hover:text-pd-brand"
+                )}
+              >
+                {t("nav.dashboard")}
               </Link>
               <Button
                 variant="ghost"
@@ -401,28 +407,32 @@ export function Header() {
               </Button>
             </>
           ) : (
-            <Link href={localeHref("/login")}>
-              <Button
-                variant="ghost"
-                className={cn(headerNavTextClass, "h-auto px-3 py-2 hover:bg-pd-brand-muted hover:text-pd-brand")}
-              >
-                {t("nav.login")}
-              </Button>
+            <Link
+              href={localeHref("/login")}
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                headerNavTextClass,
+                "h-auto px-3 py-2 hover:bg-pd-brand-muted hover:text-pd-brand"
+              )}
+            >
+              {t("nav.login")}
             </Link>
           )}
-          <Link href={localeHref("/pricing")}>
-            <Button size="sm" className="text-base font-bold px-4 py-2.5">
-              {t("nav.getPro")}
-            </Button>
+          <Link
+            href={localeHref("/pricing")}
+            className={cn(buttonVariants({ size: "sm" }), "px-4 py-2.5 text-base font-bold")}
+          >
+            {t("nav.getPro")}
           </Link>
         </div>
 
         <button
+          type="button"
           onClick={() => setMobileOpen(true)}
           className="cursor-pointer rounded-lg p-2 text-pd-muted hover:bg-pd-brand-muted lg:hidden"
           aria-label="Open menu"
         >
-          <Menu className="h-6 w-6" />
+          <Menu className="h-6 w-6" aria-hidden="true" />
         </button>
       </div>
 
@@ -436,6 +446,7 @@ export function Header() {
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation menu"
+          tabIndex={-1}
         >
           <div className="pd-header-row flex items-center justify-between px-4">
             <Link
@@ -446,11 +457,12 @@ export function Header() {
               <Logo variant="wordmark" />
             </Link>
             <button
+              type="button"
               onClick={() => setMobileOpen(false)}
               className="cursor-pointer rounded-lg p-2 text-pd-muted hover:bg-pd-background"
               aria-label="Close menu"
             >
-              <X className="h-6 w-6" />
+              <X className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
 
@@ -470,6 +482,7 @@ export function Header() {
                         className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-pd-foreground transition-colors hover:bg-pd-background"
                       >
                         <span
+                          aria-hidden="true"
                           className={cn(
                             "flex h-8 w-8 items-center justify-center rounded-lg shadow-sm",
                             tool.iconBg,
@@ -500,10 +513,12 @@ export function Header() {
               <div className="flex gap-3 pt-2">
                 {isLoggedIn ? (
                   <>
-                    <Link href={localeHref("/dashboard")} className="flex-1" onClick={() => setMobileOpen(false)}>
-                      <Button variant="outline" className="w-full">
-                        Dashboard
-                      </Button>
+                    <Link
+                      href={localeHref("/dashboard")}
+                      className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Dashboard
                     </Link>
                     <Button
                       variant="gradient"
@@ -518,13 +533,19 @@ export function Header() {
                   </>
                 ) : (
                   <>
-                    <Link href={localeHref("/login")} className="flex-1" onClick={() => setMobileOpen(false)}>
-                      <Button variant="outline" className="w-full">
-                        Login
-                      </Button>
+                    <Link
+                      href={localeHref("/login")}
+                      className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Login
                     </Link>
-                    <Link href={localeHref("/pricing")} className="flex-1" onClick={() => setMobileOpen(false)}>
-                      <Button className="w-full">{t("nav.getPro")}</Button>
+                    <Link
+                      href={localeHref("/pricing")}
+                      className={cn(buttonVariants(), "flex-1")}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {t("nav.getPro")}
                     </Link>
                   </>
                 )}

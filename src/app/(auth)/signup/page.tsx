@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, type FormEvent } from "react";
+import { Suspense, useRef, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -21,7 +21,7 @@ import { resolveSafeNextPath } from "@/lib/auth/safe-redirect";
 import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
 
 const inputClass =
-  "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
+  "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition-colors focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
 
 export default function SignupPage() {
   return (
@@ -43,6 +43,9 @@ function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  const termsRef = useRef<HTMLInputElement>(null);
   const turnstileSiteKey = getTurnstileSiteKey();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -54,16 +57,19 @@ function SignupForm() {
 
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
+      passwordRef.current?.focus();
       return;
     }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      confirmPasswordRef.current?.focus();
       return;
     }
 
     if (!agreeTerms) {
       setError("You must agree to the Terms of Service and Privacy Policy.");
+      termsRef.current?.focus();
       return;
     }
 
@@ -122,10 +128,12 @@ function SignupForm() {
             Full Name
           </label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" />
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" aria-hidden="true" />
             <input
               id="fullName"
+              name="name"
               type="text"
+              autoComplete="name"
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -140,10 +148,13 @@ function SignupForm() {
             Email
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" />
+            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" aria-hidden="true" />
             <input
               id="email"
+              name="email"
               type="email"
+              autoComplete="email"
+              spellCheck={false}
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -158,10 +169,13 @@ function SignupForm() {
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" />
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" aria-hidden="true" />
             <input
+              ref={passwordRef}
               id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -175,7 +189,7 @@ function SignupForm() {
               aria-pressed={showPassword}
               className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-pd-muted hover:bg-pd-background hover:text-pd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand"
             >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showPassword ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
             </button>
           </div>
           <p className="mt-1.5 text-xs text-pd-muted">Must be at least 8 characters</p>
@@ -189,10 +203,13 @@ function SignupForm() {
             Confirm Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" />
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-pd-muted" aria-hidden="true" />
             <input
+              ref={confirmPasswordRef}
               id="confirmPassword"
+              name="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
+              autoComplete="new-password"
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -206,13 +223,15 @@ function SignupForm() {
               aria-pressed={showConfirmPassword}
               className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-pd-muted hover:bg-pd-background hover:text-pd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand"
             >
-              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showConfirmPassword ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
             </button>
           </div>
         </div>
 
         <label className="flex items-start gap-2.5 pt-1">
           <input
+            ref={termsRef}
+            name="termsAccepted"
             type="checkbox"
             checked={agreeTerms}
             onChange={(e) => setAgreeTerms(e.target.checked)}
@@ -235,7 +254,7 @@ function SignupForm() {
           disabled={loading || (turnstileSiteKey ? !turnstileToken : false)}
           className="w-full"
         >
-          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+          {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
           {t("auth.signupButton")}
         </Button>
       </form>
