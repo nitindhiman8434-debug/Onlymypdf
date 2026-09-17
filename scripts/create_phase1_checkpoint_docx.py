@@ -367,7 +367,7 @@ def build_document() -> Document:
     cover_note.paragraph_format.space_before = Pt(34)
     cover_note.add_run("Main conclusion  ").bold = True
     cover_note.add_run(
-        "Phase 1 is 100 percent complete against its defined Dependable Beta gate. Persistent worker hosting, private R2 storage, the exact 200 MB path, scheduled cleanup, deletion retry, independent watchdog, and real in-app crash alert are live verified. Phase 2 is eligible to start."
+        "Phase 1 is 100 percent complete against its defined Dependable Beta gate. Persistent worker hosting, private R2 storage, the exact 200 MB path, scheduled cleanup, deletion retry, independent watchdog, and real in-app crash alert are live verified. Final checkpoint commit 5f8df5f is pushed and both Railway services passed post-push health checks. Phase 2 is eligible to start."
     )
     cover_scope = doc.add_paragraph(style="Body Text")
     cover_scope.add_run("Scope  ").bold = True
@@ -412,7 +412,7 @@ def build_document() -> Document:
             ["Supabase URL and service role", "Live connected", "25 tables use RLS and 35 public policies"],
             ["Upstash Redis URL and token", "Live connected", "Pending and processing queues plus worker heartbeat verified"],
             ["Cloudflare R2", "Live connected", "Private scoped storage; exact 200 MB upload and cleanup verified"],
-            ["Railway worker and watchdog", "Live active", "Persistent converter plus five minute watchdog and crash alert verified"],
+            ["Railway worker and watchdog", "Live active", "Post-push worker 07ef7dca and watchdog 7c433e3a verified healthy"],
             ["HEALTH CHECK SECRET", "Available", "Authenticated detailed health returned healthy"],
             ["ConvertAPI secret", "Missing", "Paid fallback is not configured or tested"],
         ],
@@ -474,14 +474,14 @@ def build_document() -> Document:
         ["Artifact validation", "Pass", "DOCX signature and openability valid; 19 entries; one page; 1,052 text characters"],
         ["Protected download", "Pass", "First valid DOCX returned; repeated consume returned 404"],
         ["Live Supabase Upstash and R2", "Pass", "Private storage; queue depth zero; worker heartbeat healthy; scoped credentials"],
-        ["Railway conversion worker", "Pass", "Persistent service active; startup and hourly cleanup logged; live jobs completed"],
+        ["Railway conversion worker", "Pass", "Post-push deployment 07ef7dca active; ready; queue pending zero processing zero"],
         ["Exact 25 MB worker path", "Pass", "26,214,400 byte PDF; 4.688 s queue; 2.573 s processing; valid DOCX"],
         ["Exact 200 MB worker path", "Pass", "209,715,200 byte R2 input; 20.630 s upload; 3.050 s queue; 8.963 s processing"],
         ["200 MB cleanup", "Pass", "Valid 66,627 byte DOCX; input and output removed; R2 prefix count zero"],
         ["Browser signed upload", "Pass", "Upload grant 201; direct private upload; job 202; DOCX download 200"],
         ["Authenticated cleanup", "Pass", "Completed run; zero file session and job deletion failures"],
         ["Retention deletion retry", "Pass", "Controlled failure deleted zero failed one; retry deleted one failed zero; marker gone"],
-        ["Independent watchdog", "Pass", "Five minute Railway cron logged healthy heartbeat and empty queue"],
+        ["Independent watchdog", "Pass", "Post-push deployment 7c433e3a; 04:25 runs healthy; idle worker; empty queue; forced false"],
         ["Alert delivery", "Pass", "Forced unhealthy run crashed and Railway delivered an in app Deployment crashed alert"],
         ["Authenticated health", "Pass", "All critical checks healthy; queue pending zero and processing zero"],
         ["Upload limits", "Pass live", "Exact 25 MB and 200 MB paths completed end to end"],
@@ -557,6 +557,7 @@ def build_document() -> Document:
         "Completed: run production cleanup on worker startup and hourly with a two hour TTL, then verify one controlled R2 deletion failure and successful retry.",
         "Completed: run exact 25 MB and 200 MB PDF to Word paths end to end and validate the downloaded DOCX artifacts.",
         "Completed: run an independent Railway watchdog every five minutes, verify healthy and forced unhealthy executions, and record a real in app crash alert.",
+        "Completed: push final checkpoint commit 5f8df5f to GitHub and verify successful post-push Railway worker and watchdog deployments.",
     ]
     add_numbered(doc, live_items)
     add_heading(doc, "Acceptance evidence", 2)

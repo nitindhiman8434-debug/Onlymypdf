@@ -15,6 +15,8 @@ Phase 1 is **100% complete against its defined Dependable Beta acceptance gate**
 
 The live system now has Supabase database controls, Upstash queueing, private Cloudflare R2 storage, a persistent Railway conversion worker, an independent five-minute Railway watchdog, hourly two-hour-retention cleanup, a verified failed-deletion retry, and end-to-end 25 MB and exact 200 MB PDF-to-Word paths. The 200 MB job produced a signature-valid, openable DOCX and left no R2 objects behind. A controlled watchdog failure exited non-zero and produced a real Railway in-app deployment-crashed notification; the failure flag was then disabled and the service was restored to healthy mode.
 
+The final checkpoint is pushed to GitHub branch `phase1-dependable-beta` at commit `5f8df5f`. That push rebuilt both Railway services. Conversion-worker deployment `07ef7dca` started successfully and logged `ready` with queue pending 0/processing 0. Watchdog deployment `7c433e3a` completed, and its 04:25 post-push runs logged `healthy: true`, an idle fresh worker, queue 0/0, and `forced: false`.
+
 This phase result does not mean every possible PDF will convert with identical layout or speed. Paid ConvertAPI fallback remains unconfigured, and the exact 200 MB fixture proves the transfer, queue, worker, validation, and cleanup path rather than a worst-case 200 MB document with complex content.
 
 ## Issues found and resolved
@@ -54,14 +56,14 @@ This phase result does not mean every possible PDF will convert with identical l
 | Artifact validation | Pass | DOCX signature/openability valid; 19 ZIP entries; 1 page; 1,052 text characters |
 | Protected download | Pass | First download returned the valid DOCX; repeated consume returned 404 |
 | Live Supabase, Upstash, and R2 | Pass | Private storage; queue depth zero; fresh worker heartbeat; scoped storage credentials |
-| Railway conversion worker | Pass | Persistent service Active; startup/hourly cleanup logged; live jobs completed |
+| Railway conversion worker | Pass | Post-push deployment `07ef7dca` Active; worker ready; queue pending 0/processing 0; startup cleanup passed |
 | Exact 25 MB worker path | Pass | 26,214,400-byte PDF; 4.688 s queue; 2.573 s processing; valid DOCX |
 | Exact 200 MB worker path | Pass | 209,715,200-byte R2 input; 20.630 s upload; 3.050 s queue; 8.963 s processing; valid 66,627-byte DOCX |
 | 200 MB cleanup | Pass | Input and output removed; verified R2 prefix remaining count 0 and bytes 0 |
 | Browser signed upload | Pass | `/api/uploads/pdf-to-word` 201; direct private upload; job 202; DOCX download 200 |
 | Retention deletion retry | Pass | Controlled failure recorded deleted 0/failed 1; retry recorded deleted 1/failed 0; marker remaining 0 |
 | Scheduled cleanup | Pass | Conversion worker runs cleanup on startup and hourly with production two-hour TTL |
-| Independent watchdog | Pass | Railway cron every five minutes; healthy run logged heartbeat and queue pending 0/processing 0 |
+| Independent watchdog | Pass | Post-push deployment `7c433e3a` Completed; 04:25 runs logged healthy, fresh idle worker, queue 0/0, forced false |
 | Alert delivery | Pass | Forced unhealthy run crashed as designed and Railway delivered an in-app Deployment crashed notification |
 | Authenticated health | Pass | All critical checks healthy; queue pending 0 and processing 0 |
 | Upload boundaries | Pass live | Exact 25 MB and exact 200 MB paths completed end to end using configured storage routes |
@@ -110,6 +112,7 @@ Evidence files:
 4. **Completed:** Production cleanup uses a two-hour TTL, runs on worker startup and hourly, and a live R2 deletion-failure retry drill passed.
 5. **Completed:** Exact 25 MB and 200 MB PDF-to-Word paths passed end to end; the 200 MB route used R2 and returned a valid, openable DOCX.
 6. **Completed:** An independent Railway watchdog runs every five minutes. Healthy and forced-unhealthy executions were recorded, and the forced failure produced a real Railway in-app alert.
+7. **Completed:** Final checkpoint commit `5f8df5f` was pushed to GitHub; both Railway services rebuilt successfully and post-push worker/watchdog health was verified.
 
 ## Remaining product limits after Phase 1
 
