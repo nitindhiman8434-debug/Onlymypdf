@@ -1,4 +1,4 @@
-"""Render each PDF page to a PNG image at 1920px width using PyMuPDF."""
+"""Render each PDF page to a PNG image using PyMuPDF."""
 import sys
 import os
 import json
@@ -9,14 +9,26 @@ except ImportError:
     print(json.dumps({"error": "pymupdf not installed. Run: pip install pymupdf"}))
     sys.exit(1)
 
+
+def resolve_target_width(page_count: int) -> int:
+    """Lower resolution for large PDFs — faster render, smaller PPTX, less memory."""
+    if page_count <= 30:
+        return 1920
+    if page_count <= 80:
+        return 1440
+    if page_count <= 200:
+        return 1280
+    return 960
+
+
 def main():
     if len(sys.argv) < 3:
-        print(json.dumps({"error": "Usage: python pdf-render-pages.py <input.pdf> <output-dir>"}))
+        print(json.dumps({"error": "Usage: python pdf-render-pages.py <input.pdf> <output-dir> [width|auto]"}))
         sys.exit(1)
 
     pdf_path = sys.argv[1]
     output_dir = sys.argv[2]
-    target_width = int(sys.argv[3]) if len(sys.argv) > 3 else 1920
+    width_arg = sys.argv[3] if len(sys.argv) > 3 else "auto"
 
     if not os.path.isfile(pdf_path):
         print(json.dumps({"error": f"File not found: {pdf_path}"}))
@@ -26,6 +38,12 @@ def main():
 
     pdf = fitz.open(pdf_path)
     page_count = pdf.page_count
+
+    if width_arg == "auto":
+        target_width = resolve_target_width(page_count)
+    else:
+        target_width = int(width_arg)
+
     pages = []
 
     for i in range(page_count):
@@ -48,7 +66,11 @@ def main():
 
     pdf.close()
 
-    print(json.dumps({"pageCount": page_count, "pages": pages}))
+    print(json.dumps({
+        "pageCount": page_count,
+        "targetWidth": target_width,
+        "pages": pages,
+    }))
 
 if __name__ == "__main__":
     main()

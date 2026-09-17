@@ -11,6 +11,7 @@ import {
   ToolErrorBanner,
   ToolHiddenFileInput,
 } from '@/components/tools/tool-ui';
+import { useToolErrors } from '@/hooks/use-tool-errors';
 import { Button } from '@/components/ui/button';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { useConversionProgress } from '@/hooks/use-conversion-progress';
@@ -63,6 +64,7 @@ function OptionPill({ active, onClick, children }: { active: boolean; onClick: (
 }
 
 export default function JpgToPdfPage() {
+  const { upload, resolveApiError, resolveCatchError } = useToolErrors();
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [processing, setProcessing] = useState(false);
@@ -86,7 +88,7 @@ export default function JpgToPdfPage() {
   const insertFilesAt = useCallback((newFiles: FileList | File[], afterIndex: number | null) => {
     const imageFiles = Array.from(newFiles).filter(isImageFile);
     if (imageFiles.length === 0) {
-      setError('Please select JPG, PNG, or WebP images only.');
+      setError(upload.imagesOnly);
       return;
     }
 
@@ -109,7 +111,7 @@ export default function JpgToPdfPage() {
     setError(null);
     setCompleted(false);
     setResultUrl(null);
-  }, []);
+  }, [upload]);
 
   const handleFiles = useCallback(
     (newFiles: FileList | File[]) => insertFilesAt(newFiles, null),
@@ -168,7 +170,7 @@ export default function JpgToPdfPage() {
           const res = await fetch('/api/tools/jpg-to-pdf', { method: 'POST', body: formData });
           if (!res.ok) {
             const err = await res.json().catch(() => ({}));
-            throw new Error(err.error || 'Failed to convert images to PDF.');
+            throw new Error(resolveApiError(err, 'errors.processingFailed'));
           }
           return res.blob();
         },
@@ -181,7 +183,7 @@ export default function JpgToPdfPage() {
       setResultSize(blob.size);
       setCompleted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
+      setError(resolveCatchError(err));
       stopProgress();
     } finally {
       setProcessing(false);

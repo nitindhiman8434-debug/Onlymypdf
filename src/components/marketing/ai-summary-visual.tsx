@@ -12,11 +12,12 @@ export function AiSummaryVisual() {
 
       <div className="relative overflow-hidden rounded-[1.5rem] border border-violet-200/60 bg-white shadow-2xl shadow-violet-500/10">
         <Image
-          src="/images/hero-product-ai.webp"
+          src="/images/hero-product-ai.webp?v=s5"
           alt="OnlyMyPDF AI PDF Summarizer report interface screenshot"
           width={900}
           height={1100}
           loading="lazy"
+          unoptimized
           sizes="(max-width: 1024px) 100vw, 508px"
           className="h-auto w-full object-cover object-top"
         />

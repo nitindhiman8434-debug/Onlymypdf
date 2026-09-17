@@ -13,6 +13,7 @@ import {
 } from "@/lib/privacy/consent";
 import { applyConsent, hydrateConsentFromServerIfMissing } from "@/lib/privacy/consent-client";
 import { useTranslation } from "@/i18n";
+import { StepUpAuthControls } from "@/components/auth/step-up-auth-controls";
 
 export default function DashboardSettingsPage() {
   const { t } = useTranslation();
@@ -21,6 +22,8 @@ export default function DashboardSettingsPage() {
   const [exportPassword, setExportPassword] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
+  const [exportStepUpReady, setExportStepUpReady] = useState(false);
+  const [deleteStepUpReady, setDeleteStepUpReady] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -28,8 +31,8 @@ export default function DashboardSettingsPage() {
   }, []);
 
   async function handleExport() {
-    if (!exportPassword || exportPassword.length < 8) {
-      setMessage(t("settingsPage.exportPasswordLabel"));
+    if (!exportStepUpReady && (!exportPassword || exportPassword.length < 8)) {
+      setMessage(t("settingsPage.exportConfirmRequired"));
       return;
     }
 
@@ -71,8 +74,8 @@ export default function DashboardSettingsPage() {
   }
 
   async function handleDeleteAccount() {
-    if (!deletePassword || deletePassword.length < 8) {
-      setMessage(t("settingsPage.passwordLabel"));
+    if (!deleteStepUpReady && (!deletePassword || deletePassword.length < 8)) {
+      setMessage(t("settingsPage.deleteConfirmRequired"));
       return;
     }
 
@@ -147,6 +150,12 @@ export default function DashboardSettingsPage() {
                 autoComplete="current-password"
               />
             </div>
+            <StepUpAuthControls
+              purpose="export"
+              redirectTo="/dashboard/settings"
+              onStepUpReady={() => setExportStepUpReady(true)}
+              className="mt-4"
+            />
             <Button className="mt-3" onClick={() => void handleExport()} disabled={exporting}>
               {exporting ? t("settingsPage.exporting") : t("settingsPage.exportBtn")}
             </Button>
@@ -211,6 +220,12 @@ export default function DashboardSettingsPage() {
                 autoComplete="current-password"
               />
             </div>
+            <StepUpAuthControls
+              purpose="delete"
+              redirectTo="/dashboard/settings"
+              onStepUpReady={() => setDeleteStepUpReady(true)}
+              className="mt-4"
+            />
             <Button
               variant="outline"
               className="mt-3 border-red-300 text-red-700 hover:bg-red-100"

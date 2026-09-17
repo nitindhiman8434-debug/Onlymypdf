@@ -4,6 +4,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/lib/server/rate-limiter", () => ({
   guardGeneralApiRateLimit: vi.fn(),
   checkAuthRateLimit: vi.fn(),
+  checkContactRateLimit: vi.fn(),
+  checkContactEmailRateLimit: vi.fn(),
   rateLimitResponse: vi.fn((retryAfterSec: number) =>
     NextResponse.json({ error: "rate limited", retryAfterSec }, { status: 429 })
   ),
@@ -64,7 +66,11 @@ vi.mock("@/lib/server/upstash-kv", () => ({
   isUpstashConfigured: vi.fn(),
 }));
 
-import { guardGeneralApiRateLimit } from "@/lib/server/rate-limiter";
+import {
+  checkContactEmailRateLimit,
+  checkContactRateLimit,
+  guardGeneralApiRateLimit,
+} from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { sendContactEmail } from "@/lib/email/contact-mailer";
 import { createServiceClient, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -97,6 +103,16 @@ describe("misc API route handlers", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(guardGeneralApiRateLimit).mockResolvedValue(null);
+    vi.mocked(checkContactRateLimit).mockResolvedValue({
+      allowed: true,
+      remaining: 99,
+      retryAfterSec: 0,
+    });
+    vi.mocked(checkContactEmailRateLimit).mockResolvedValue({
+      allowed: true,
+      remaining: 99,
+      retryAfterSec: 0,
+    });
     vi.mocked(guardMutationOrigin).mockReturnValue(null);
     vi.mocked(sendContactEmail).mockResolvedValue({ delivered: true, mode: "email" });
     vi.mocked(isSupabaseConfigured).mockReturnValue(true);

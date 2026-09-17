@@ -1,6 +1,7 @@
 import { beginToolRoute, handleToolRouteFailure } from "@/lib/server/tool-request-guards";
 import { NextRequest, NextResponse } from "next/server";
 import { toolJsonError } from "@/lib/server/tool-api-error";
+import { toolWrongPasswordError } from "@/lib/server/pdf-password-http";
 import { unlockPDF } from "@/lib/services/pdf-security.service";
 import { checkUsageLimit, checkFileSizeLimit } from "@/lib/services/usage-limit.service";
 import { logToolUsage } from "@/lib/db/queries";
@@ -66,7 +67,11 @@ export async function POST(request: NextRequest) {
         errMsg.toLowerCase().includes("wrong") ||
         errMsg.toLowerCase().includes("invalid")
       ) {
-        return toolJsonError(request, "Incorrect password. Please try again with the correct password.", 400);
+        return toolWrongPasswordError(
+          request,
+          "Incorrect password. Please try again with the correct password.",
+          file.name
+        );
       }
       throw err;
     }

@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { hasApiKeyHeader } from "@/lib/auth/api-key-auth";
+import { shouldEnforceMutationOrigin } from "@/lib/config/runtime-env";
 
 function allowedHosts(): Set<string> {
   const hosts = new Set<string>(["localhost", "127.0.0.1"]);
@@ -27,10 +28,10 @@ function hostFromHeader(value: string | null): string | null {
 
 /**
  * CSRF mitigation for cookie-authenticated POST routes.
- * Skipped in development and for requests without Origin/Referer (same-origin fetch).
+ * Skipped only for trusted local dev or when ALLOW_INSECURE_CSRF=1.
  */
 export function isMutationOriginAllowed(request: NextRequest): boolean {
-  if (process.env.NODE_ENV !== "production") return true;
+  if (!shouldEnforceMutationOrigin()) return true;
 
   const originHost = hostFromHeader(request.headers.get("origin"));
   const refererHost = hostFromHeader(request.headers.get("referer"));
@@ -58,8 +59,22 @@ export function guardMutationOrigin(request: NextRequest): Response | null {
   return null;
 }
 
-/** CSRF for browser sessions; skipped when a valid API key header is present. */
+/** CSRF guard for state-changing GET handlers (e.g. one-time file download). */
+export function guardSensitiveReadOrigin(request: NextRequest): Response | null {
+  return guardMutationOrigin(request);
+}
+
+/** CSRF for browser sessions; API keys allowed only without browser Origin/Referer. */
 export function guardToolMutationOrigin(request: NextRequest): Response | null {
-  if (hasApiKeyHeader(request)) return null;
+  if (hasApiKeyHeader(request)) {
+    if (shouldEnforceMutationOrigin()) {
+      const origin = request.headers.get("origin");
+      const referer = request.headers.get("referer");
+      if (origin || referer) {
+        return mutationOriginDeniedResponse();
+      }
+    }
+    return null;
+  }
   return guardMutationOrigin(request);
 }

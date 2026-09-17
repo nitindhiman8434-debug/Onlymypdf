@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     await logConsentRecord({
       user_id: userId,
       guest_session_id: getGuestSessionIdFromRequest(request),
-      consent_version: body.consent_version ?? CONSENT_VERSION,
+      consent_version: CONSENT_VERSION,
       essential: true,
       analytics: Boolean(body.analytics),
       marketing: Boolean(body.marketing),

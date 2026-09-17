@@ -10,7 +10,7 @@ import {
 import { releaseStaleProcessingPayments, downgradeExpiredProProfiles } from "@/lib/db/queries";
 import { purgeOldAdminAuditLogs } from "@/lib/admin/purge-audit-logs";
 import { isCronAuthorized } from "@/lib/ops/cron-auth";
-import { captureApiError } from "@/lib/server/safe-error";
+import { captureApiError, toSafeApiError } from "@/lib/server/safe-error";
 
 export async function GET(request: NextRequest) {
   try {
@@ -52,7 +52,9 @@ export async function GET(request: NextRequest) {
     });
   } catch (err) {
     captureApiError(err, { route: "cron/cleanup" });
-    const message = err instanceof Error ? err.message : "Cleanup cron failed";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: toSafeApiError(err, "Cleanup cron failed") },
+      { status: 500 }
+    );
   }
 }

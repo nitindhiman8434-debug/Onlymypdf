@@ -1,24 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendContactEmail } from "@/lib/email/contact-mailer";
-import { guardGeneralApiRateLimit } from "@/lib/server/rate-limiter";
+import {
+  checkContactEmailRateLimit,
+  checkContactRateLimit,
+  rateLimitResponse,
+} from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { validateContactPayload } from "@/lib/validation/contact-validation";
 import { captureApiError, toSafeApiError } from "@/lib/server/safe-error";
+import { guardTurnstileRequest } from "@/lib/security/verify-turnstile-request";
 
 export async function POST(request: NextRequest) {
-  const rateLimited = await guardGeneralApiRateLimit(request);
-  if (rateLimited) return rateLimited;
+  const rate = await checkContactRateLimit(request);
+  if (!rate.allowed) return rateLimitResponse(rate.retryAfterSec);
 
   const originBlocked = guardMutationOrigin(request);
   if (originBlocked) return originBlocked;
 
   try {
-    const body = (await request.json()) as Parameters<typeof validateContactPayload>[0];
+    const body = (await request.json()) as Parameters<typeof validateContactPayload>[0] & {
+      turnstileToken?: string;
+    };
+
+    const turnstileBlocked = await guardTurnstileRequest(request, body.turnstileToken);
+    if (turnstileBlocked) return turnstileBlocked;
+
     const validated = validateContactPayload(body);
 
     if (!validated.ok) {
       return NextResponse.json({ error: validated.error }, { status: validated.status });
     }
+
+    const emailRate = await checkContactEmailRateLimit(request, validated.data.email);
+    if (!emailRate.allowed) return rateLimitResponse(emailRate.retryAfterSec);
 
     const result = await sendContactEmail(validated.data);
 

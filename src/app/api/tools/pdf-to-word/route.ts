@@ -18,11 +18,16 @@ import { validateSingleUpload, uploadValidationResponse } from "@/lib/server/upl
 import { sanitizeFilename } from "@/lib/utils/file";
 import { clientIpForLogs } from "@/lib/server/request-security";
 import { resolvePdfBuffer } from "@/lib/pdf/pdf-password.server";
+import {
+  PASSWORD_REQUIRED_CODE,
+  WRONG_PASSWORD_CODE,
+} from "@/lib/server/pdf-password-http";
 import { withHeavyJobGuard } from "@/lib/server/conversion-semaphore";
 import { heavyJobCapacityResponse, isHeavyJobCapacityError } from "@/lib/server/heavy-job-http";
 import { userBlockedResponse } from "@/lib/server/user-blocked-http";
 import { guardMaintenanceMode } from "@/lib/server/tool-request-guards";
 import { guardToolRateLimit, guardApiKeyRateLimit } from "@/lib/server/rate-limiter";
+import { toSafeApiError } from "@/lib/server/safe-error";
 import { guardToolMutationOrigin } from "@/lib/server/mutation-origin";
 import { getGuestUsageKey } from "@/lib/server/client-ip";
 import { resolveToolJobOwnerKey } from "@/lib/server/job-owner";
@@ -46,16 +51,23 @@ function parsePassword(formData: FormData): string | undefined {
   }
 }
 
-function passwordErrorResponse(request: NextRequest, message: string) {
+function passwordErrorResponse(request: NextRequest, message: string, fileName?: string) {
   const mapped = mapPdfToWordError(message);
   if (mapped === "PASSWORD_REQUIRED") {
-    return toolJsonError(request, "This PDF is password-protected. Enter the password to convert.", 422, {
-      code: "PASSWORD_REQUIRED",
-    });
+    return toolJsonError(
+      request,
+      "This PDF is password-protected. Enter the password to convert.",
+      422,
+      {
+        code: PASSWORD_REQUIRED_CODE,
+        ...(fileName ? { fileName } : {}),
+      }
+    );
   }
   if (mapped === "WRONG_PASSWORD") {
     return toolJsonError(request, "Incorrect password. Please try again.", 422, {
-      code: "WRONG_PASSWORD",
+      code: WRONG_PASSWORD_CODE,
+      ...(fileName ? { fileName } : {}),
     });
   }
   return null;
@@ -119,21 +131,33 @@ async function runConversionJob(
     };
 
     if (meta.userId) {
-      const outputBuffer = await fs.readFile(finalOutputPath);
-      void logToolUsage({
-        ...usageBase,
-        output: {
-          buffer: outputBuffer,
-          fileName: meta.outputFileName,
-          mimeType: docxMime,
-        },
-      }).catch(() => {});
+      // Usage logging must never fail the (already completed) conversion — a
+      // read error here previously surfaced to the user as an ENOENT.
+      let outputBuffer: Buffer | null = null;
+      try {
+        outputBuffer = await fs.readFile(finalOutputPath);
+      } catch {
+        outputBuffer = null;
+      }
+      void logToolUsage(
+        outputBuffer
+          ? {
+              ...usageBase,
+              output: {
+                buffer: outputBuffer,
+                fileName: meta.outputFileName,
+                mimeType: docxMime,
+              },
+            }
+          : usageBase
+      ).catch(() => {});
     } else {
       void logToolUsage(usageBase).catch(() => {});
     }
   } catch (error) {
     const raw = error instanceof Error ? error.message : "Failed to convert PDF to Word";
-    const message = isHeavyJobCapacityError(error) ? raw : mapPdfToWordError(raw);
+    const mapped = isHeavyJobCapacityError(error) ? raw : mapPdfToWordError(raw);
+    const message = toSafeApiError(new Error(mapped), "Conversion failed. Please try again.");
     await failPdfToWordJob(jobId, message, workDir);
     await logError({
       user_id: meta.userId,
@@ -210,7 +234,9 @@ export async function POST(request: NextRequest) {
       const jobId = await createPdfToWordJob(outputFilename, ownerKey);
       const workDir = await fs.mkdtemp(path.join(os.tmpdir(), "pdfdoctor-ptw-job-"));
       const inputPath = path.join(workDir, "input.pdf");
-      const outputPath = path.join(workDir, outputFilename);
+      // Fixed internal name — engines must not write user-facing names (spaces/special
+      // chars break Word COM / LibreOffice on Windows temp paths).
+      const outputPath = path.join(workDir, "output.docx");
       await fs.writeFile(inputPath, prepared);
 
       void runConversionJob(jobId, inputPath, workDir, outputPath, file.name, {

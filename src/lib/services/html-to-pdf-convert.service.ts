@@ -2,7 +2,7 @@ import { writeFile, unlink } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 import { randomUUID } from "crypto";
-import { pathToFileURL } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import { PDFDocument } from "pdf-lib";
 import { getPuppeteerBrowser } from "@/lib/services/puppeteer-browser.server";
 import type { Page } from "puppeteer";
@@ -30,8 +30,14 @@ const BODY_CHUNK_CHARS = 400_000;
 /** Prefer temp file over setContent for heavy HTML strings. */
 const TEMP_FILE_THRESHOLD_CHARS = 600_000;
 
+/** Cap font loading so conversion does not stall on slow/missing web fonts. */
+const FONT_READY_TIMEOUT_MS = 1_500;
+
 /** Parallel chunk renders — same output, faster on multi-core hosts. */
-const CHUNK_RENDER_CONCURRENCY = 2;
+const CHUNK_RENDER_CONCURRENCY = Math.min(
+  4,
+  Math.max(2, Number(process.env.HTML_TO_PDF_CHUNK_CONCURRENCY) || 3)
+);
 
 const BREAK_MARKERS = [
   "</section>",
@@ -121,7 +127,32 @@ function chunkBodyContent(body: string, maxChars: number): string[] {
   return chunks;
 }
 
+/**
+ * Uploaded HTML is untrusted. Only the temp document we just wrote may load
+ * over `file:` — anything else (`<iframe src="file:///etc/passwd">`) would be
+ * fetched by Chromium and rendered into the PDF the caller downloads.
+ */
+function isAllowedDocumentFileUrl(url: string, allowedHref: string | null): boolean {
+  if (!allowedHref) return false;
+  if (url === allowedHref) return true;
+  try {
+    return fileURLToPath(new URL(url)) === fileURLToPath(new URL(allowedHref));
+  } catch {
+    return false;
+  }
+}
+
 async function loadHtmlInPage(page: Page, html: string): Promise<void> {
+  const tmpPath =
+    html.length >= TEMP_FILE_THRESHOLD_CHARS
+      ? join(tmpdir(), `o4pdf-${randomUUID()}.html`)
+      : null;
+  const documentFileUrl = tmpPath ? pathToFileURL(tmpPath).href : null;
+
+  // Uploaded HTML is content, not an application. Disable JavaScript before
+  // navigation so inline scripts cannot consume CPU, probe browser APIs or
+  // mutate the rendered document. CSS and data/blob images continue to work.
+  await page.setJavaScriptEnabled(false);
   await page.setRequestInterception(true);
   page.on("request", (req) => {
     const url = req.url();
@@ -129,7 +160,7 @@ async function loadHtmlInPage(page: Page, html: string): Promise<void> {
       url.startsWith("data:") ||
       url.startsWith("blob:") ||
       url === "about:blank" ||
-      url.startsWith("file:")
+      isAllowedDocumentFileUrl(url, documentFileUrl)
     ) {
       req.continue();
     } else {
@@ -137,11 +168,10 @@ async function loadHtmlInPage(page: Page, html: string): Promise<void> {
     }
   });
 
-  if (html.length >= TEMP_FILE_THRESHOLD_CHARS) {
-    const tmpPath = join(tmpdir(), `o4pdf-${randomUUID()}.html`);
+  if (tmpPath && documentFileUrl) {
     await writeFile(tmpPath, html, "utf-8");
     try {
-      await page.goto(pathToFileURL(tmpPath).href, {
+      await page.goto(documentFileUrl, {
         waitUntil: "domcontentloaded",
         timeout: RENDER_TIMEOUT_MS,
       });
@@ -156,7 +186,10 @@ async function loadHtmlInPage(page: Page, html: string): Promise<void> {
   }
 
   await page.emulateMediaType("print");
-  await page.evaluate(() => document.fonts?.ready).catch(() => {});
+  await Promise.race([
+    page.evaluate(() => document.fonts?.ready).catch(() => {}),
+    new Promise<void>((resolve) => setTimeout(resolve, FONT_READY_TIMEOUT_MS)),
+  ]);
 }
 
 function buildPdfOptions(
@@ -179,6 +212,7 @@ function buildPdfOptions(
     preferCSSPageSize: false,
     timeout: RENDER_TIMEOUT_MS,
     tagged: false,
+    outline: false,
   };
 
   if (pageSize === "auto") {
@@ -202,7 +236,7 @@ async function renderPageToPdf(
   await page.setViewport({
     width: 1280,
     height: 900,
-    deviceScaleFactor: isLarge ? 1 : 2,
+    deviceScaleFactor: 1,
   });
   await loadHtmlInPage(page, html);
   const pdfBytes = await page.pdf(buildPdfOptions(options, isLarge));

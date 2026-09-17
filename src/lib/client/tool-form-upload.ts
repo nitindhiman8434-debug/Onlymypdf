@@ -1,21 +1,46 @@
 /** POST multipart tool requests with upload + server-wait progress (no pipeline changes). */
 
+import {
+  parseToolApiErrorPayload,
+  type ToolApiErrorPayload,
+} from "@/lib/client/pdf-password-errors";
+
 const UPLOAD_WEIGHT = 40;
 const PROCESSING_CAP = 92;
+const STALL_CAP = 99;
 const TICK_MS = 450;
+const STALL_TICK_MS = 1800;
 
-function parseErrorFromBlob(blob: Blob): Promise<string> {
-  return blob
-    .text()
-    .then((text) => {
-      try {
-        const data = JSON.parse(text) as { error?: string };
-        return data.error ?? "Processing failed. Please try again.";
-      } catch {
-        return "Processing failed. Please try again.";
-      }
-    })
-    .catch(() => "Processing failed. Please try again.");
+async function readBlobText(blob: Blob): Promise<string> {
+  if (typeof blob.text === "function") {
+    try {
+      return await blob.text();
+    } catch {
+      // Fall back for test / legacy environments.
+    }
+  }
+  const buffer = await blob.arrayBuffer();
+  return new TextDecoder().decode(buffer);
+}
+
+async function parseErrorFromBlob(blob: Blob): Promise<never> {
+  let text: string;
+  try {
+    text = await readBlobText(blob);
+  } catch {
+    throw new Error("Processing failed. Please try again.");
+  }
+
+  let data: ToolApiErrorPayload;
+  try {
+    data = JSON.parse(text) as ToolApiErrorPayload;
+  } catch {
+    throw new Error("Processing failed. Please try again.");
+  }
+
+  const passwordError = parseToolApiErrorPayload(data);
+  if (passwordError) throw passwordError;
+  throw new Error(data.error ?? "Processing failed. Please try again.");
 }
 
 export async function postToolFormDataWithProgress(
@@ -42,8 +67,18 @@ export async function postToolFormDataWithProgress(
 
     const startProcessingTimer = () => {
       stopProcessingTimer();
+      let stallTicks = 0;
       processingTimer = setInterval(() => {
-        if (latestProgress >= PROCESSING_CAP) return;
+        if (latestProgress >= STALL_CAP) return;
+        if (latestProgress >= PROCESSING_CAP) {
+          stallTicks += 1;
+          // ~1.8s between ticks after the 92% cap so long jobs don't look frozen.
+          if (stallTicks % Math.max(1, Math.round(STALL_TICK_MS / TICK_MS)) === 0) {
+            emit(Math.min(STALL_CAP, latestProgress + 1));
+          }
+          return;
+        }
+        stallTicks = 0;
         const step = latestProgress < 60 ? 3 : latestProgress < 80 ? 2 : 1;
         emit(Math.min(PROCESSING_CAP, latestProgress + step));
       }, TICK_MS);
@@ -76,8 +111,8 @@ export async function postToolFormDataWithProgress(
       }
 
       const failedBlob = xhr.response as Blob;
-      void parseErrorFromBlob(failedBlob).then((message) => {
-        reject(new Error(message));
+      void parseErrorFromBlob(failedBlob).catch((err) => {
+        reject(err);
       });
     };
 

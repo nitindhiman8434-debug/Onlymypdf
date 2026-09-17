@@ -27,6 +27,8 @@ import { useTranslation } from "@/i18n";
 import { useAuthContext } from "@/components/providers/auth-provider";
 import { PRO_PRICING, planFileSizeMarketingLabel } from "@/config/constants";
 import { useProCheckout } from "@/hooks/use-pro-checkout";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import { CurrencyToggle } from "@/components/pricing/currency-toggle";
 import { DashboardMobileNav } from "@/components/dashboard/dashboard-layout";
 import { DashboardBillingPanel } from "@/components/dashboard/dashboard-billing-panel";
 import { MockBillingNotice } from "@/components/billing/mock-billing-notice";
@@ -172,6 +174,7 @@ export function DashboardPricingContent() {
   const { t } = useTranslation();
   const { user, profile, isPro } = useAuthContext();
   const { checkout, loading: checkoutLoading, error: checkoutError } = useProCheckout();
+  const { currency, setCurrency, formatInr, isInr } = useDisplayCurrency();
   const [isYearly, setIsYearly] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [filesUsed, setFilesUsed] = useState(0);
@@ -199,8 +202,9 @@ export function DashboardPricingContent() {
     };
   }, [isPro]);
 
-  const proPrice = isYearly ? PRO_YEARLY : PRO_MONTHLY;
-  const monthlyEq = Math.round(PRO_YEARLY / 12);
+  const proPriceInr = isYearly ? PRO_YEARLY : PRO_MONTHLY;
+  const monthlyEqInr = Math.round(PRO_YEARLY / 12);
+  const proPriceDisplay = formatInr(proPriceInr);
 
   const renewDate = profile?.plan_expires_at
     ? new Date(profile.plan_expires_at).toLocaleDateString(undefined, {
@@ -329,9 +333,17 @@ export function DashboardPricingContent() {
 
           <MockBillingNotice className="mt-4 max-w-2xl" />
 
+          <CurrencyToggle
+            value={currency}
+            onChange={setCurrency}
+            label={t("pricing.currencyLabel")}
+            variant="dark"
+            className="mt-4 items-start sm:items-start"
+          />
+
           {isYearly && (
             <p className="text-right text-xs text-white/55">
-              {t("dashboard.pricing.yearlyEquiv", { amount: monthlyEq.toLocaleString("en-IN") })}
+              {t("dashboard.pricing.yearlyEquiv", { amount: monthlyEqInr.toLocaleString("en-IN") })}
             </p>
           )}
 
@@ -388,7 +400,9 @@ export function DashboardPricingContent() {
           </div>
 
           <div className="mt-6 flex items-end gap-1">
-            <span className="text-5xl font-black tracking-tight text-pd-foreground">₹0</span>
+            <span className="text-5xl font-black tracking-tight text-pd-foreground">
+              {formatInr(0)}
+            </span>
             <span className="mb-1.5 text-pd-muted">{t("pricing.perMonth")}</span>
           </div>
           <p className="mt-1 text-xs font-medium text-emerald-600">{t("dashboard.pricing.noCard")}</p>
@@ -456,7 +470,7 @@ export function DashboardPricingContent() {
 
             <div className="mt-6 flex flex-wrap items-end gap-x-2 gap-y-1">
               <span className="text-5xl font-black tracking-tight text-white">
-                ₹{proPrice.toLocaleString("en-IN")}
+                {proPriceDisplay}
               </span>
               <span className="mb-1.5 text-white/60">
                 {isYearly ? t("pricing.perYear") : t("pricing.perMonth")}
@@ -464,11 +478,18 @@ export function DashboardPricingContent() {
             </div>
             {isYearly && (
               <p className="mt-1 text-sm font-medium text-amber-300/90">
-                ≈ ₹{monthlyEq.toLocaleString("en-IN")}
+                ≈ {formatInr(monthlyEqInr)}
                 {t("pricing.perMonth")} · {t("dashboard.pricing.saveYearly")}
               </p>
             )}
-            <p className="mt-1 text-xs text-white/45">{t("dashboard.pricing.gst")}</p>
+            <p className="mt-1 text-xs text-white/45">
+              {isInr
+                ? t("dashboard.pricing.gst")
+                : t("pricing.displayCurrencyNote", {
+                    currency,
+                    inrAmount: proPriceInr.toLocaleString("en-IN"),
+                  })}
+            </p>
 
             <ul className="mt-6 flex-1 space-y-3">
               {PRO_FEATURES.map((key) => (
@@ -620,7 +641,7 @@ export function DashboardPricingContent() {
       </section>
 
       {/* Trust + payments */}
-      <section className="grid gap-4 lg:grid-cols-[1fr_auto]">
+      <section>
         <div className="rounded-2xl border border-pd-border/70 bg-pd-surface p-5 shadow-sm">
           <div className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-emerald-600" aria-hidden />
@@ -634,13 +655,6 @@ export function DashboardPricingContent() {
               </div>
             ))}
           </div>
-        </div>
-        <div className="flex flex-col justify-center rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-teal-50/80 p-5 lg:min-w-[240px]">
-          <BadgeCheck className="h-8 w-8 text-emerald-600" aria-hidden />
-          <p className="mt-3 font-bold text-pd-foreground">{t("dashboard.pricing.guarantee")}</p>
-          <p className="mt-1 text-xs leading-relaxed text-pd-muted">
-            {t("dashboard.pricing.guaranteeDesc")}
-          </p>
         </div>
       </section>
 
@@ -664,7 +678,7 @@ export function DashboardPricingContent() {
           {[1, 2, 3, 4, 5].map((i) => (
             <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden />
           ))}
-          <span className="ml-1 text-sm font-semibold text-pd-foreground">4.9/5</span>
+          <span className="ml-1 text-sm font-semibold text-pd-foreground">Clear plan limits</span>
         </div>
         <div className="hidden h-8 w-px bg-pd-border sm:block" aria-hidden />
         <div className="flex items-center gap-2 text-sm text-pd-muted">
@@ -730,7 +744,7 @@ export function DashboardPricingContent() {
             loading={checkoutLoading}
             onClick={() => void handleUpgrade()}
           >
-            {t("dashboard.pricing.upgradeNow")} · ₹{proPrice.toLocaleString("en-IN")}
+            {t("dashboard.pricing.upgradeNow")} · {proPriceDisplay}
           </Button>
         </div>
       )}

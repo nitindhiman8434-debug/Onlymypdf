@@ -25,8 +25,8 @@ describe("status-page", () => {
     expect(getExternalStatusPageUrl()).toBeNull();
   });
 
-  it("accepts http URLs", () => {
+  it("rejects http URLs", () => {
     vi.stubEnv("NEXT_PUBLIC_STATUS_PAGE_URL", "http://localhost:8080/status");
-    expect(getExternalStatusPageUrl()).toBe("http://localhost:8080/status");
+    expect(getExternalStatusPageUrl()).toBeNull();
   });
 });

@@ -24,14 +24,6 @@ export const MergePdfWorkspace = dynamic(
   { ...loading, ssr: false }
 );
 
-export const SplitPdfWorkspace = dynamic(
-  () =>
-    import("@/components/tools/split-pdf/split-pdf-workspace").then((m) => ({
-      default: m.SplitPdfWorkspace,
-    })),
-  { ...loading, ssr: false }
-);
-
 export const SignPdfWorkspace = dynamic(
   () =>
     import("@/components/tools/sign-pdf/sign-pdf-workspace").then((m) => ({

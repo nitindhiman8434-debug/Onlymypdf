@@ -52,7 +52,7 @@ export const privacyLegal: Record<"en" | "hi", LegalDocument> = {
       {
         title: "Sub-processors",
         bullets: [
-          "Supabase (database/storage), Upstash (rate limits/jobs), Razorpay (payments), Resend (email), ConvertAPI (optional conversions), cloud host (Vercel or self-hosted).",
+          "Supabase (database/storage), Upstash (rate limits/jobs), Razorpay (payments), Resend (email), ConvertAPI (optional conversions), Google Gemini (AI summarization), Sentry (error monitoring), cloud host (Vercel or self-hosted).",
         ],
       },
       {
@@ -111,7 +111,7 @@ export const privacyLegal: Record<"en" | "hi", LegalDocument> = {
       {
         title: "Sub-processors",
         bullets: [
-          "Supabase, Upstash, Razorpay, Resend, ConvertAPI (वैकल्पिक), क्लाउड होस्ट (Vercel या self-hosted)।",
+          "Supabase, Upstash, Razorpay, Resend, ConvertAPI (वैकल्पिक), Google Gemini (AI सारांश), Sentry (error monitoring), क्लाउड होस्ट (Vercel या self-hosted)।",
         ],
       },
       {

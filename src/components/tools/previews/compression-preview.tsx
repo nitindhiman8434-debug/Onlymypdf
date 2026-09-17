@@ -2,6 +2,20 @@ import { ToolPreviewShell } from "@/components/tools/previews/tool-preview-shell
 import { formatFileSize } from "@/lib/utils/file";
 import { cn } from "@/lib/utils/cn";
 
+/** Strong-mode estimate only; Basic may safely return the original unchanged. */
+function estimateRatio(level: "basic" | "strong", originalSize: number): number {
+  if (level === "basic") return 1;
+  // Tiny files rarely shrink much.
+  if (originalSize > 0 && originalSize < 400_000) {
+    return 0.8;
+  }
+  // Large textbooks / image-heavy PDFs: Strong re-encodes pages.
+  if (originalSize >= 5_000_000) {
+    return 0.55;
+  }
+  return 0.6;
+}
+
 export function CompressionLevelPreview({
   level,
   originalSize,
@@ -9,18 +23,16 @@ export function CompressionLevelPreview({
   level: "basic" | "strong";
   originalSize: number;
 }) {
-  const estimateRatio = level === "basic" ? 0.72 : 0.48;
-  const estimatedSize = originalSize > 0 ? Math.round(originalSize * estimateRatio) : 0;
-  const savedPct =
-    originalSize > 0 ? Math.round((1 - estimateRatio) * 100) : level === "basic" ? 28 : 52;
+  const ratio = estimateRatio(level, originalSize);
+  const estimatedSize = originalSize > 0 ? Math.round(originalSize * ratio) : 0;
+  const savedPct = Math.round((1 - ratio) * 100);
 
-  const basicPct = originalSize > 0 ? Math.round((1 - 0.72) * 100) : 28;
-  const strongPct = originalSize > 0 ? Math.round((1 - 0.48) * 100) : 52;
+  const strongPct = Math.round((1 - estimateRatio("strong", originalSize || 8_900_000)) * 100);
 
   return (
     <ToolPreviewShell
       stretch={false}
-      hint="Estimated result — actual compression depends on PDF content"
+      hint="Basic is lossless and may return an already-optimized file. Strong can flatten text, links, forms and bookmarks."
     >
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-2 text-center text-xs">
@@ -33,7 +45,7 @@ export function CompressionLevelPreview({
             )}
           >
             <p className="font-semibold text-pd-foreground">Basic</p>
-            <p className="text-pd-muted">~{basicPct}% smaller</p>
+            <p className="text-pd-muted">Lossless</p>
           </div>
           <div
             className={cn(
@@ -54,7 +66,9 @@ export function CompressionLevelPreview({
             <p className="mt-1 text-sm font-semibold text-pd-foreground">
               {formatFileSize(originalSize)} → {formatFileSize(estimatedSize)}
             </p>
-            <p className="mt-0.5 text-xs font-medium text-pd-brand">~{savedPct}% smaller</p>
+            <p className="mt-0.5 text-xs font-medium text-pd-brand">
+              {level === "basic" ? "Lossless; actual saving measured after processing" : `~${savedPct}% smaller`}
+            </p>
           </div>
         )}
       </div>

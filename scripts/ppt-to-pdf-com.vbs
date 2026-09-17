@@ -30,6 +30,11 @@ If Err.Number <> 0 Then
 End If
 Err.Clear
 
+' Uploaded presentations are untrusted: block macro auto-execution.
+On Error Resume Next
+ppt.AutomationSecurity = 3
+On Error GoTo 0
+
 Set pres = ppt.Presentations.Open(inputPath, 0, 0, -1)
 
 Const ppSaveAsOpenXMLPresentation = 24

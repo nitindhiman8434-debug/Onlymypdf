@@ -23,10 +23,10 @@ test.describe("Legal & branding", () => {
     await expect(page.getByText("Only4PDF")).toHaveCount(0);
   });
 
-  test("refund page mentions 7-day policy and Razorpay", async ({ page }) => {
+  test("refund page mentions refund policy and Razorpay", async ({ page }) => {
     await gotoAndSettle(page, "/refund");
     await expect(page.getByText("OnlyMyPDF").first()).toBeVisible();
-    await expect(page.getByText(/7 days/i).first()).toBeVisible();
+    await expect(page.getByText(/refund policy|Refund Policy/i).first()).toBeVisible();
     await expect(page.getByText(/Razorpay/i).first()).toBeVisible();
   });
 

@@ -125,7 +125,7 @@ function CompressDemo({ active }: { active: boolean }) {
   return (
     <div className="flex h-full flex-col items-center justify-center px-4">
       <p className="mb-3 text-center text-[11px] font-semibold text-pd-muted">
-        Shrink file size without losing quality
+        Basic is lossless · Strong makes smaller image-based pages
       </p>
       <div
         className="flex flex-col items-center justify-center rounded-2xl border border-pd-border bg-white shadow-md transition-all duration-200 ease-out"

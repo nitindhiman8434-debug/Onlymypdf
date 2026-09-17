@@ -2,7 +2,7 @@ import { Shield, Clock, Zap } from "lucide-react";
 
 export function TrustStrip({ className = "" }: { className?: string }) {
   const items = [
-    { icon: Clock, text: "Files auto-deleted in 2 hours" },
+    { icon: Clock, text: "2h Free file retention" },
     { icon: Shield, text: "Secure SSL processing" },
     { icon: Zap, text: "No signup for basic tools" },
   ];

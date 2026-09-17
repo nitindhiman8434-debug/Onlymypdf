@@ -9,6 +9,7 @@ import {
   ApiKeyOrganizationAccessError,
 } from "@/lib/enterprise/api-keys.service";
 import { toSafeApiError, captureApiError } from "@/lib/server/safe-error";
+import { resolveProAccessForUser } from "@/lib/enterprise/org-access.service";
 
 export async function GET(request: NextRequest) {
   const rateLimited = await guardGeneralApiRateLimit(request);
@@ -42,7 +43,8 @@ export async function POST(request: NextRequest) {
     if (!auth.ok) return auth.response;
     const user = auth.user;
 
-    if (user.plan !== "pro") {
+    const access = await resolveProAccessForUser(user.id);
+    if (!access.isPro) {
       return NextResponse.json(
         { error: "API keys require an active Pro or Enterprise plan." },
         { status: 403 }

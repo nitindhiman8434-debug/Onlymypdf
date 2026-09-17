@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { extractApiKeyFromRequest, hashApiKey } from "@/lib/auth/api-key-auth";
 import { buildRateLimitMessage, type RateLimitScope } from "@/lib/rate-limit-message";
-import { getTrustedClientIp } from "@/lib/server/client-ip";
+import { getGuestUsageKey, getTrustedClientIp } from "@/lib/server/client-ip";
 import { CORRELATION_ID_HEADER, getCorrelationId } from "@/lib/server/correlation-id";
 
 type Bucket = { count: number; resetAt: number };
@@ -20,6 +20,13 @@ export type RateLimitResult = {
   retryAfterSec: number;
 };
 
+/** Per-client bucket: real IP when trusted, otherwise guest-session-scoped hash. */
+export function rateLimitClientKey(request: NextRequest): string {
+  const ip = getTrustedClientIp(request);
+  if (ip !== "unknown") return ip;
+  return getGuestUsageKey(request);
+}
+
 function memoryRateLimit(
   request: NextRequest,
   options: {
@@ -29,8 +36,8 @@ function memoryRateLimit(
     keySuffix?: string;
   }
 ): RateLimitResult {
-  const ip = getTrustedClientIp(request);
-  const key = `${options.keyPrefix}:${ip}${options.keySuffix ? `:${options.keySuffix}` : ""}`;
+  const clientKey = rateLimitClientKey(request);
+  const key = `${options.keyPrefix}:${clientKey}${options.keySuffix ? `:${options.keySuffix}` : ""}`;
   const now = Date.now();
   const map = store();
 
@@ -92,8 +99,8 @@ export async function checkRateLimit(
     keySuffix?: string;
   }
 ): Promise<RateLimitResult> {
-  const ip = getTrustedClientIp(request);
-  const key = `${options.keyPrefix}:${ip}${options.keySuffix ? `:${options.keySuffix}` : ""}`;
+  const clientKey = rateLimitClientKey(request);
+  const key = `${options.keyPrefix}:${clientKey}${options.keySuffix ? `:${options.keySuffix}` : ""}`;
   const windowSec = Math.max(1, Math.ceil(options.windowMs / 1000));
 
   try {
@@ -169,6 +176,134 @@ export async function checkPasswordResetRateLimit(
   });
 }
 
+/** Login: 8 attempts per 15 minutes per normalized email (credential stuffing mitigation). */
+export async function checkLoginEmailRateLimit(
+  request: NextRequest,
+  email: string
+): Promise<RateLimitResult> {
+  const { emailRateLimitSuffix } = await import("@/lib/security/turnstile");
+  return checkRateLimit(request, {
+    keyPrefix: "auth-login-email",
+    keySuffix: emailRateLimitSuffix(email),
+    maxRequests: 8,
+    windowMs: 15 * 60 * 1000,
+  });
+}
+
+/** Signup: 5 attempts per hour per normalized email (anti-harassment / inbox flooding). */
+export async function checkSignupEmailRateLimit(
+  request: NextRequest,
+  email: string
+): Promise<RateLimitResult> {
+  const { emailRateLimitSuffix } = await import("@/lib/security/turnstile");
+  return checkRateLimit(request, {
+    keyPrefix: "auth-signup-email",
+    keySuffix: emailRateLimitSuffix(email),
+    maxRequests: 5,
+    windowMs: 60 * 60 * 1000,
+  });
+}
+
+/** Password reset: 3 attempts per hour per normalized email (anti-harassment). */
+export async function checkPasswordResetEmailRateLimit(
+  request: NextRequest,
+  email: string
+): Promise<RateLimitResult> {
+  const { emailRateLimitSuffix } = await import("@/lib/security/turnstile");
+  return checkRateLimit(request, {
+    keyPrefix: "auth-password-reset-email",
+    keySuffix: emailRateLimitSuffix(email),
+    maxRequests: 3,
+    windowMs: 60 * 60 * 1000,
+  });
+}
+
+/** Contact form: 5 submissions per hour per client. */
+export async function checkContactRateLimit(request: NextRequest): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "contact",
+    maxRequests: 5,
+    windowMs: 60 * 60 * 1000,
+  });
+}
+
+/** Contact form: 3 submissions per hour per sender email. */
+export async function checkContactEmailRateLimit(
+  request: NextRequest,
+  email: string
+): Promise<RateLimitResult> {
+  const { emailRateLimitSuffix } = await import("@/lib/security/turnstile");
+  return checkRateLimit(request, {
+    keyPrefix: "contact-email",
+    keySuffix: emailRateLimitSuffix(email),
+    maxRequests: 3,
+    windowMs: 60 * 60 * 1000,
+  });
+}
+
+/** Coupon attempts: 10 per 15 minutes per user. */
+export async function checkCouponAttemptRateLimit(
+  request: NextRequest,
+  userId: string
+): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "coupon-attempt",
+    keySuffix: userId,
+    maxRequests: 10,
+    windowMs: 15 * 60 * 1000,
+  });
+}
+
+/** Recovery session probe: 30 per 15 minutes per client. */
+export async function checkRecoverySessionRateLimit(
+  request: NextRequest
+): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "auth-recovery-session",
+    maxRequests: 30,
+    windowMs: 15 * 60 * 1000,
+  });
+}
+
+/** Subscription cancel: 3 per hour per user. */
+export async function checkSubscriptionCancelRateLimit(
+  request: NextRequest,
+  userId: string
+): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "subscription-cancel",
+    keySuffix: userId,
+    maxRequests: 3,
+    windowMs: 60 * 60 * 1000,
+  });
+}
+
+/** MFA verify: 8 attempts per 15 minutes per client + factor suffix. */
+export async function checkMfaVerifyRateLimit(
+  request: NextRequest,
+  factorId: string
+): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "auth-mfa-verify",
+    keySuffix: factorId.slice(0, 36),
+    maxRequests: 8,
+    windowMs: 15 * 60 * 1000,
+  });
+}
+
+/** Password re-auth for export/delete: 5 per 15 minutes per user. */
+export async function checkReauthRateLimit(
+  request: NextRequest,
+  userId: string
+): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "auth-reauth",
+    keySuffix: userId,
+    maxRequests: 5,
+    windowMs: 15 * 60 * 1000,
+  });
+}
+
 /** Other auth mutations (OAuth, MFA, logout): 10 per 15 minutes per IP */
 export async function checkAuthRateLimit(request: NextRequest): Promise<RateLimitResult> {
   return checkRateLimit(request, {
@@ -200,11 +335,24 @@ export async function checkAdminRateLimit(request: NextRequest): Promise<RateLim
   });
 }
 
-/** PDF helper routes (previews/meta): 30 requests per minute per IP */
+/** PDF helper routes (thumbnails/previews): 600/min — a multi-page PDF loads
+ * many thumbnails at once, and these are cheap preview renders, not conversions. */
 export async function checkPdfHelperRateLimit(request: NextRequest): Promise<RateLimitResult> {
   return checkRateLimit(request, {
     keyPrefix: "pdf-helper",
-    maxRequests: 30,
+    maxRequests: 600,
+    windowMs: 60 * 1000,
+  });
+}
+
+/**
+ * Thumbnail GET reads: separate high-cap bucket. A 500-page PDF can fire hundreds
+ * of parallel image requests; they must not share the pdf-helper mutation budget.
+ */
+export async function checkPdfThumbRateLimit(request: NextRequest): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "pdf-thumb",
+    maxRequests: 5000,
     windowMs: 60 * 1000,
   });
 }
@@ -218,8 +366,40 @@ export async function guardToolRateLimit(
   return null;
 }
 
+/**
+ * Job status/download polling: dedicated generous bucket, separate from the
+ * per-tool convert limit. Long conversions poll status frequently, so these
+ * lightweight owner-gated reads must not exhaust the convert bucket.
+ */
+export async function checkPollRateLimit(
+  request: NextRequest,
+  jobSlug: string
+): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "poll",
+    keySuffix: jobSlug,
+    maxRequests: 1800,
+    windowMs: 60 * 1000,
+  });
+}
+
+export async function guardPollRateLimit(
+  request: NextRequest,
+  jobSlug: string
+): Promise<Response | null> {
+  const rate = await checkPollRateLimit(request, jobSlug);
+  if (!rate.allowed) return rateLimitResponse(rate.retryAfterSec);
+  return null;
+}
+
 export async function guardPdfHelperRateLimit(request: NextRequest): Promise<Response | null> {
   const rate = await checkPdfHelperRateLimit(request);
+  if (!rate.allowed) return rateLimitResponse(rate.retryAfterSec);
+  return null;
+}
+
+export async function guardPdfThumbRateLimit(request: NextRequest): Promise<Response | null> {
+  const rate = await checkPdfThumbRateLimit(request);
   if (!rate.allowed) return rateLimitResponse(rate.retryAfterSec);
   return null;
 }

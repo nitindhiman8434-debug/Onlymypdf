@@ -12,6 +12,7 @@ import {
   ToolPrimaryButton,
 } from '@/components/tools/tool-ui';
 import { PdfResultPreview } from '@/components/tools/pdf-result-preview';
+import { useToolErrors } from '@/hooks/use-tool-errors';
 
 const RELATED_TOOLS = [
   { name: 'PDF to Word', href: '/pdf-to-word' },
@@ -22,12 +23,13 @@ const RELATED_TOOLS = [
 
 const FAQS = [
   { q: 'What Word formats are supported?', a: 'We support both .doc and .docx formats. For best results, use the newer .docx format.' },
-  { q: 'Will the formatting be preserved?', a: 'Yes, all formatting including fonts, images, tables, and styles are perfectly preserved using native rendering.' },
+  { q: 'Will the formatting be preserved?', a: 'Common fonts, images, tables, and styles are retained when supported. Complex layouts or unavailable fonts can vary, so preview the result before use.' },
   { q: 'Is there a file size limit?', a: planFileSizeFaqLine() },
   { q: 'Can I convert multiple files at once?', a: 'Currently, conversion works one file at a time. You can use our Merge tool to combine the resulting PDFs.' },
 ];
 
 export default function WordToPdfPage() {
+  const { resolveApiError, resolveCatchError } = useToolErrors();
   const [files, setFiles] = useState<File[]>([]);
   const [processing, setProcessing] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -35,6 +37,8 @@ export default function WordToPdfPage() {
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFilename, setResultFilename] = useState<string | null>(null);
   const [resultSize, setResultSize] = useState<number | undefined>();
+  const [previewSessionId, setPreviewSessionId] = useState<string | null>(null);
+  const [previewTotalPages, setPreviewTotalPages] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -50,6 +54,8 @@ export default function WordToPdfPage() {
       setError(null);
       setCompleted(false);
       setResultUrl(null);
+      setPreviewSessionId(null);
+      setPreviewTotalPages(0);
       setProgress(0);
     }
   }, []);
@@ -85,28 +91,30 @@ export default function WordToPdfPage() {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Failed to convert Word to PDF. Please try again.');
+        throw new Error(resolveApiError(err, 'errors.processingFailed'));
       }
 
       setProgress(92);
       const blob = await res.blob();
       if (!blob.size) {
-        throw new Error('Conversion returned an empty file. Please try again.');
+        throw new Error(resolveApiError('Conversion returned an empty file.', 'errors.processingFailed'));
       }
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
       setResultSize(blob.size);
+      setPreviewSessionId(res.headers.get("X-Pdf-Session-Id"));
+      setPreviewTotalPages(
+        parseInt(res.headers.get("X-Pdf-Total-Pages") ?? "0", 10) || 0
+      );
       setResultFilename(files[0].name.replace(/\.docx?$/, '.pdf'));
       setProgress(100);
       setCompleted(true);
       const { notifyActivityUpdated } = await import("@/lib/client/activity-events");
       notifyActivityUpdated();
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
-        setError('Conversion timed out. Word or LibreOffice may be busy — please retry.');
-      } else {
-        setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
-      }
+      setError(
+        resolveCatchError(err, { timeoutKey: 'toolPage.errors.wordConversionTimeout' })
+      );
       setProgress(0);
     } finally {
       window.clearInterval(progressTimer);
@@ -121,6 +129,8 @@ export default function WordToPdfPage() {
     setFiles([]);
     setResultUrl(null);
     setResultSize(undefined);
+    setPreviewSessionId(null);
+    setPreviewTotalPages(0);
     setProgress(0);
   };
 
@@ -137,6 +147,8 @@ export default function WordToPdfPage() {
           blobUrl={resultUrl}
           filename={resultFilename || 'converted.pdf'}
           fileSize={resultSize}
+          initialSessionId={previewSessionId}
+          initialTotalPages={previewTotalPages}
           onReset={handleReset}
           resetLabel="Convert another file"
         />

@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import { ToolPageShell } from '@/components/layout/tool-page-shell';
 import { EditPdfWorkspace } from '@/components/tools/lazy-workspaces';
 import { mapRelatedTools } from '@/components/tools/tool-helpers';
-import { ToolDropzone, ToolErrorBanner } from '@/components/tools/tool-ui';
+import { ToolDropzone, ToolErrorBanner, PdfPasswordInfoBanner } from '@/components/tools/tool-ui';
 import { TOOLS } from '@/config/constants';
 import { planFileSizeFaqLine } from '@/lib/billing/billing-copy';
 import type { FAQ } from '@/types';
@@ -85,7 +85,7 @@ export default function EditPdfPage() {
             fileInputAccept=".pdf,application/pdf"
             onFileInputChange={(e) => e.target.files && handleFiles(e.target.files)}
           />
-          
+          <PdfPasswordInfoBanner className="mt-3" />
           {uploadError && <ToolErrorBanner message={uploadError} />}
           <p className="mt-4 text-center text-xs text-pd-muted">
             After upload you&apos;ll enter a full-screen editor with page thumbnails, toolbar, and

@@ -7,7 +7,7 @@ import { cancelRazorpaySubscription, verifyRazorpaySubscriptionPaymentBinding } 
 import { storedPaymentAmountToPaise } from "@/lib/payment/payment-amount";
 import { toSafeApiError } from "@/lib/server/safe-error";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
-import { checkAuthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
+import { checkAuthRateLimit, checkSubscriptionCancelRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 
 export async function POST(request: NextRequest) {
   try {
@@ -95,6 +95,9 @@ export async function DELETE(request: NextRequest) {
     const auth = await tryGetApiUser();
     if (!auth.ok) return auth.response;
     const user = auth.user;
+
+    const cancelRate = await checkSubscriptionCancelRateLimit(request, user.id);
+    if (!cancelRate.allowed) return rateLimitResponse(cancelRate.retryAfterSec);
 
     const supabase = await createServiceClient();
     const { data: sub } = await supabase

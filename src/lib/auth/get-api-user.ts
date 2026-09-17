@@ -12,7 +12,7 @@ import {
 
 import { getUserProfile } from "@/lib/db/queries";
 
-import { isBlockedProfile, UserBlockedError } from "@/lib/auth/plan-access";
+import { isActivePro, isBlockedProfile, UserBlockedError } from "@/lib/auth/plan-access";
 
 import { resolveProAccessForUser } from "@/lib/enterprise/org-access.service";
 
@@ -111,9 +111,7 @@ export async function getApiUser(options?: GetApiUserOptions): Promise<ApiUser |
     plan = access.isPro ? "pro" : "free";
 
   } catch {
-
-    plan = profile?.plan === "pro" ? "pro" : "free";
-
+    plan = isActivePro(profile ?? {}) ? "pro" : "free";
   }
 
 

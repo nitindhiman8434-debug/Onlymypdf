@@ -37,7 +37,7 @@ export function compressToolAeoSizeFact(): string {
 }
 
 export const BILLING_COPY = {
-  refundSummary: `Contact ${SUPPORT_EMAIL} within 7 days of your most recent Pro payment for a refund. Include your Razorpay payment ID and registered email.`,
+  refundSummary: `Contact ${SUPPORT_EMAIL} for refund requests. Include your Razorpay payment ID and registered email. Eligibility is reviewed per our refund policy.`,
   cancelAutoRenew:
     "Cancel auto-renew anytime from Dashboard → Billing. Pro access continues until the end of your current billing period.",
   paymentMethods:

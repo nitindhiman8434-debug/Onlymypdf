@@ -1,11 +1,12 @@
 import { test, expect } from "@playwright/test";
+import { gotoAndSettle } from "./helpers";
 
 test.describe("Pricing", () => {
   test("pricing page shows Pro plan and OnlyMyPDF branding", async ({ page }) => {
     await page.goto("/pricing");
     await expect(page.getByText("OnlyMyPDF").first()).toBeVisible();
-    await expect(page.getByText("₹299").first()).toBeVisible();
-    await expect(page.getByText("₹2,399").first()).toBeVisible();
+    await expect(page.getByText("$4.00").first()).toBeVisible();
+    await expect(page.getByText("charged ₹299").first()).toBeVisible();
     await expect(page.getByText("Only4PDF")).toHaveCount(0);
   });
 
@@ -27,11 +28,12 @@ test.describe("Pricing", () => {
   });
 
   test("pricing page includes Product JSON-LD", async ({ page }) => {
-    await page.goto("/pricing");
+    await gotoAndSettle(page, "/pricing");
     const ld = page.locator('script[type="application/ld+json"]');
     await expect(ld.first()).toBeAttached();
-    const text = await ld.first().textContent();
-    expect(text).toContain("Product");
-    expect(text).toContain("2399");
+    const entries = await ld.allTextContents();
+    const product = entries.find((text) => text.includes('"@type":"Product"'));
+    expect(product).toBeDefined();
+    expect(product).toContain("2399");
   });
 });

@@ -45,6 +45,19 @@ export async function fulfillSubscriptionCharge(input: {
     return { ok: false, status: 409, error: "Payment already used" };
   }
 
+  // If the user already cancelled auto-renew, an in-flight charge webhook must
+  // NOT reactivate/extend the plan. Acknowledge (200) so Razorpay stops retrying.
+  const cancelCheckClient = await createServiceClient();
+  const { data: cancelledSub } = await cancelCheckClient
+    .from("subscriptions")
+    .select("id")
+    .eq("razorpay_subscription_id", input.razorpaySubscriptionId)
+    .not("cancelled_at", "is", null)
+    .maybeSingle();
+  if (cancelledSub) {
+    return { ok: true, already_verified: true };
+  }
+
   const proof = await verifyRazorpaySubscriptionPaymentBinding(
     input.razorpayPaymentId,
     input.razorpaySubscriptionId

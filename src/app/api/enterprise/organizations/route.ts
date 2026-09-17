@@ -4,6 +4,8 @@ import { guardGeneralApiRateLimit } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import {
   createOrganization,
+  countUserOrganizations,
+  MAX_ORGANIZATIONS_PER_USER,
   listUserOrganizations,
 } from "@/lib/enterprise/organizations.service";
 import { toSafeApiError, captureApiError } from "@/lib/server/safe-error";
@@ -44,6 +46,14 @@ export async function POST(request: NextRequest) {
     const name = typeof body.name === "string" ? body.name.trim() : "";
     if (name.length < 2) {
       return NextResponse.json({ error: "Organization name is required." }, { status: 400 });
+    }
+
+    const ownedCount = await countUserOrganizations(user.id);
+    if (ownedCount >= MAX_ORGANIZATIONS_PER_USER) {
+      return NextResponse.json(
+        { error: `You can create at most ${MAX_ORGANIZATIONS_PER_USER} organizations.` },
+        { status: 400 }
+      );
     }
 
     const org = await createOrganization(user.id, {

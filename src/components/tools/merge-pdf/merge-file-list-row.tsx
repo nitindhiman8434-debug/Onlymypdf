@@ -2,17 +2,19 @@
 
 import { formatFileSize } from "@/lib/utils/file";
 import { MergeSelectionCheckbox } from "@/components/tools/merge-pdf/merge-selection-checkbox";
-import { Copy, RotateCcw, Trash2 } from "lucide-react";
+import { Copy, Lock, RotateCcw, Trash2 } from "lucide-react";
 import type { MergeFileItem } from "@/components/tools/merge-pdf/merge-file-types";
 
 interface MergeFileListRowProps {
   item: MergeFileItem;
   selected: boolean;
   rotation: number;
+  unlockLabel?: string;
   onSelect: () => void;
   onRotateLeft: () => void;
   onDuplicate: () => void;
   onRemove: () => void;
+  onUnlock?: () => void;
 }
 
 export function MergeFileListRow({
@@ -23,9 +25,16 @@ export function MergeFileListRow({
   onRotateLeft,
   onDuplicate,
   onRemove,
+  onUnlock,
+  unlockLabel = "Unlock",
 }: MergeFileListRowProps) {
-  const pageLabel =
-    item.pageCount === 1 ? "1 page" : item.pageCount > 0 ? `${item.pageCount} pages` : "…";
+  const pageLabel = item.passwordSkipped
+    ? "Password required"
+    : item.pageCount === 1
+      ? "1 page"
+      : item.pageCount > 0
+        ? `${item.pageCount} pages`
+        : "…";
 
   return (
     <div
@@ -44,6 +53,10 @@ export function MergeFileListRow({
             style={{ transform: `rotate(${rotation}deg)` }}
             draggable={false}
           />
+        ) : item.passwordSkipped ? (
+          <div className="flex h-full flex-col items-center justify-center bg-slate-50 text-pd-brand">
+            <Lock className="h-3.5 w-3.5" aria-hidden />
+          </div>
         ) : (
           <div className="flex h-full items-center justify-center text-[10px] text-pd-muted">…</div>
         )}
@@ -57,6 +70,15 @@ export function MergeFileListRow({
       </div>
 
       <div className="flex shrink-0 items-center gap-0.5">
+        {item.passwordSkipped && onUnlock && (
+          <button
+            type="button"
+            onClick={onUnlock}
+            className="rounded-md bg-pd-brand px-2 py-1 text-xs font-semibold text-white hover:bg-pd-brand/90"
+          >
+            {unlockLabel}
+          </button>
+        )}
         <button
           type="button"
           onClick={onRotateLeft}

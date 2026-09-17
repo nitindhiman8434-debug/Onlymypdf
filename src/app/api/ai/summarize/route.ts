@@ -11,6 +11,7 @@ import { clientIpForLogs } from "@/lib/server/request-security";
 import { beginToolRoute } from "@/lib/server/tool-request-guards";
 import { resolveToolUserContext } from "@/lib/services/user-tool-context.service";
 import { toSafeApiError, captureApiError } from "@/lib/server/safe-error";
+import { toolPasswordRequiredError } from "@/lib/server/pdf-password-http";
 
 export const maxDuration = 120;
 
@@ -71,7 +72,9 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    const provider = (formData.get("provider") as string) || "gemini";
+    const requestedProvider = (formData.get("provider") as string) || "gemini";
+    const provider: "gemini" | "openai" =
+      requestedProvider === "openai" ? "openai" : "gemini";
     const pdfPassword = (formData.get("password") as string | null)?.trim() || undefined;
 
     if (!file) {
@@ -102,10 +105,10 @@ export async function POST(request: NextRequest) {
       const message = getErrorMessage(error).toLowerCase();
 
       if (message.includes("password")) {
-        return toolJsonError(
+        return toolPasswordRequiredError(
           request,
           "This PDF is password-protected. Unlock it first using the Unlock PDF tool, or enter the PDF password and try again.",
-          400
+          file.name
         );
       }
 
@@ -120,14 +123,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const summary = await summarizePDF(
-      textContent,
-      userId,
-      provider as "gemini" | "openai"
-    );
+    const summary = await summarizePDF(textContent, userId, provider);
 
     const processingTime = Date.now() - startTime;
-    const usedLocalSummary = !isAIProviderConfigured(provider as "gemini" | "openai");
+    const usedLocalSummary = !isAIProviderConfigured(provider);
 
     await logToolUsage({
       userId,

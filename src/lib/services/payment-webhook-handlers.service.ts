@@ -6,6 +6,7 @@ import {
   updateUserProfile,
 } from "@/lib/db/queries";
 import { createServiceClient } from "@/lib/supabase/server";
+import { getPrimaryOrganizationForUser } from "@/lib/enterprise/org-access.service";
 
 type RazorpayPaymentEntity = {
   id?: string;
@@ -57,10 +58,41 @@ async function revokeEntitlementsForRefundedPayment(payment: PaymentRow): Promis
     await updateSubscription(payment.subscription_id, { status: "cancelled" });
   }
 
-  await updateUserProfile(payment.user_id, {
-    plan: "free",
-    plan_expires_at: null,
-  });
+  // Only downgrade the individual plan if no OTHER active entitlement remains
+  // (another live subscription or an active organization membership). Prevents a
+  // single one-time refund from wiping Pro that the user still legitimately holds.
+  const stillEntitled = await userHasOtherActiveEntitlement(
+    supabase,
+    payment.user_id,
+    payment.subscription_id ?? null
+  );
+  if (!stillEntitled) {
+    await updateUserProfile(payment.user_id, {
+      plan: "free",
+      plan_expires_at: null,
+    });
+  }
+}
+
+async function userHasOtherActiveEntitlement(
+  supabase: Awaited<ReturnType<typeof createServiceClient>>,
+  userId: string,
+  excludeSubscriptionId: string | null
+): Promise<boolean> {
+  const now = new Date().toISOString();
+  const { data: subs } = await supabase
+    .from("subscriptions")
+    .select("id, current_period_end")
+    .eq("user_id", userId)
+    .eq("status", "active")
+    .is("cancelled_at", null)
+    .gt("current_period_end", now);
+
+  const hasOtherSub = (subs ?? []).some((s) => s.id !== excludeSubscriptionId);
+  if (hasOtherSub) return true;
+
+  const org = await getPrimaryOrganizationForUser(userId);
+  return Boolean(org);
 }
 
 /** Mark a pending/processing checkout payment as failed (one-time orders). */

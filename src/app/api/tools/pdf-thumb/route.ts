@@ -1,4 +1,4 @@
-import { guardPdfHelperRateLimit } from "@/lib/server/rate-limiter";
+import { beginPdfHelperRoute } from "@/lib/server/pdf-helper-guards";
 import { NextRequest, NextResponse } from "next/server";
 import { toolJsonError } from "@/lib/server/tool-api-error";
 import {
@@ -7,6 +7,7 @@ import {
   getPdfSessionBuffer,
 } from "@/lib/pdf/pdf-session-store";
 import { renderPageThumb } from "@/lib/pdf/pdf-thumbnails.server";
+import { getPreviewThumbMaxWidth } from "@/lib/config/preview-limits";
 import { createClient } from "@/lib/supabase/server";
 import { ownerHashFromRequest } from "@/lib/server/request-security";
 import { toSafeApiError } from "@/lib/server/safe-error";
@@ -19,21 +20,22 @@ function thumbCacheKey(page: number, width: number): string {
 }
 
 export async function GET(request: NextRequest) {
-  const rateLimited = await guardPdfHelperRateLimit(request);
-  if (rateLimited) return rateLimited;
+  const early = await beginPdfHelperRoute(request, "pdf-thumb", { thumbRead: true });
+  if (early) return early;
 
   try {
     const supabase = await createClient();
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const ownerHash = ownerHashFromRequest(request, session?.user?.id ?? null);
+      data: { user },
+    } = await supabase.auth.getUser();
+    const ownerHash = ownerHashFromRequest(request, user?.id ?? null);
 
     const sessionId = request.nextUrl.searchParams.get("session");
     const page = parseInt(request.nextUrl.searchParams.get("page") ?? "0", 10);
     const widthParam = request.nextUrl.searchParams.get("width");
+    const thumbMax = getPreviewThumbMaxWidth();
     const desiredWidth = widthParam
-      ? Math.min(1200, Math.max(40, parseInt(widthParam, 10) || 300))
+      ? Math.min(thumbMax, Math.max(40, parseInt(widthParam, 10) || 300))
       : 300;
 
     if (!sessionId || page < 1) {

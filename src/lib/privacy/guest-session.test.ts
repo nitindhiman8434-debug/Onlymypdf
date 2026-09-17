@@ -20,14 +20,14 @@ function mockRequest(init: {
 }
 
 describe("guest session", () => {
-  it("reads guest id from cookie first", () => {
+  it("reads guest id from cookie", () => {
     const request = mockRequest({ cookie: "cookie-id", header: "header-id" });
     expect(getGuestSessionIdFromRequest(request)).toBe("cookie-id");
   });
 
-  it("falls back to x-session-id header", () => {
+  it("ignores x-session-id header for authorization", () => {
     const request = mockRequest({ header: "header-id" });
-    expect(getGuestSessionIdFromRequest(request)).toBe("header-id");
+    expect(getGuestSessionIdFromRequest(request)).toBeNull();
   });
 
   it("returns null when absent", () => {

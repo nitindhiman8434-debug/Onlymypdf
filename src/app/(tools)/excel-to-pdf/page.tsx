@@ -10,7 +10,7 @@ export default function ExcelToPdfPage() {
       accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       uploadHint="Select an Excel file (.xls or .xlsx)"
       processLabel="Convert to PDF"
-      processingLabel="Converting to PDF (large files may take 1–2 min)..."
+      processingLabel="Converting to PDF..."
       successTitle="PDF ready!"
       successDescription="Your Excel workbook has been converted to PDF."
       downloadLabel="Download PDF"

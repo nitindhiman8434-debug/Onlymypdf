@@ -1,8 +1,14 @@
 import { ImageResponse } from "next/og";
-import { APP_NAME } from "@/config/constants";
+import { readFileSync } from "fs";
+import { join } from "path";
 
+export const runtime = "nodejs";
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
+
+const iconSrc = `data:image/png;base64,${readFileSync(
+  join(process.cwd(), "public/logos/clean/logo-om-icon.png")
+).toString("base64")}`;
 
 export default function Icon() {
   return new ImageResponse(
@@ -14,14 +20,16 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#2563eb",
-          color: "#fff",
-          fontSize: 18,
-          fontWeight: 800,
-          borderRadius: 6,
         }}
       >
-        {APP_NAME.charAt(0)}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={iconSrc}
+          alt=""
+          width={32}
+          height={32}
+          style={{ objectFit: "contain" }}
+        />
       </div>
     ),
     { ...size }

@@ -2,9 +2,6 @@
 
 import { useState, useRef, useCallback } from "react";
 import {
-  CheckCircle2,
-  ChevronRight,
-  Download,
   FileText,
   Layers,
   Loader2,
@@ -16,12 +13,14 @@ import {
   Upload,
   X,
   Eye,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { formatFileSize } from "@/lib/utils/file";
 import { ToolResultSizeBadge, ToolHiddenFileInput, ToolUploadSizeHint } from "@/components/tools/tool-ui";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { PdfResultPreview } from "@/components/tools/pdf-result-preview";
+import { useToolErrors } from "@/hooks/use-tool-errors";
 
 type PageSize = "a4" | "letter";
 type Orientation = "portrait" | "landscape";
@@ -29,13 +28,6 @@ type Margin = "none" | "small" | "medium";
 type FontFamily = "courier" | "helvetica" | "times";
 
 const ACCEPTED_EXTENSIONS = ".txt,.text,.log,.csv,.md,.json,.xml,.yaml,.yml,.ini,.cfg,.conf,.env";
-
-const RELATED_TOOLS = [
-  { name: "Compress", slug: "compress-pdf", icon: Minimize2, color: "text-orange-500", bg: "bg-orange-50" },
-  { name: "Merge", slug: "merge-pdf", icon: Layers, color: "text-green-500", bg: "bg-green-50" },
-  { name: "Split", slug: "split-pdf", icon: Scissors, color: "text-blue-500", bg: "bg-blue-50" },
-  { name: "Delete Pages", slug: "delete-pdf", icon: Trash2, color: "text-red-500", bg: "bg-red-50" },
-];
 
 const FONT_OPTIONS: { value: FontFamily; label: string; css: string }[] = [
   { value: "helvetica", label: "Helvetica", css: "font-sans" },
@@ -46,6 +38,7 @@ const FONT_OPTIONS: { value: FontFamily; label: string; css: string }[] = [
 const FONT_SIZE_OPTIONS = [9, 10, 11, 12, 14, 16];
 
 export default function TxtToPdfPage() {
+  const { upload, resolveApiError, resolveCatchError } = useToolErrors();
   const [file, setFile] = useState<File | null>(null);
   const [textContent, setTextContent] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -54,6 +47,8 @@ export default function TxtToPdfPage() {
   const [error, setError] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultSize, setResultSize] = useState(0);
+  const [previewSessionId, setPreviewSessionId] = useState<string | null>(null);
+  const [previewTotalPages, setPreviewTotalPages] = useState(0);
 
   const [pageSize, setPageSize] = useState<PageSize>("a4");
   const [orientation, setOrientation] = useState<Orientation>("portrait");
@@ -68,18 +63,20 @@ export default function TxtToPdfPage() {
     const ext = picked.name.split(".").pop()?.toLowerCase() ?? "";
     const allowed = ["txt", "text", "log", "csv", "md", "json", "xml", "yaml", "yml", "ini", "cfg", "conf", "env"];
     if (!allowed.includes(ext)) {
-      setError("Invalid file type. Only text-based files are accepted.");
+      setError(upload.textFilesOnly);
       return;
     }
     setFile(picked);
     setError(null);
     setCompleted(false);
     setResultUrl(null);
+    setPreviewSessionId(null);
+    setPreviewTotalPages(0);
 
     const reader = new FileReader();
     reader.onload = () => setTextContent(reader.result as string);
     reader.readAsText(picked);
-  }, []);
+  }, [upload]);
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -112,15 +109,19 @@ export default function TxtToPdfPage() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error((data as { error?: string }).error || "Failed to convert text to PDF.");
+        throw new Error(resolveApiError(data, "errors.processingFailed"));
       }
 
       const blob = await res.blob();
       setResultUrl(URL.createObjectURL(blob));
       setResultSize(blob.size);
+      setPreviewSessionId(res.headers.get("X-Pdf-Session-Id"));
+      setPreviewTotalPages(
+        parseInt(res.headers.get("X-Pdf-Total-Pages") ?? "0", 10) || 0
+      );
       setCompleted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+      setError(resolveCatchError(err));
     } finally {
       setProcessing(false);
     }
@@ -131,7 +132,11 @@ export default function TxtToPdfPage() {
     setTextContent(null);
     setCompleted(false);
     setResultUrl(null);
+    setPreviewSessionId(null);
+    setPreviewTotalPages(0);
     setResultSize(0);
+    setPreviewSessionId(null);
+    setPreviewTotalPages(0);
     setError(null);
   };
 
@@ -144,75 +149,15 @@ export default function TxtToPdfPage() {
   if (completed && resultUrl) {
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <div className="flex flex-col lg:flex-row">
-            {/* Left: PDF preview */}
-            <div className="flex-1 bg-gradient-to-b from-gray-50 to-gray-100 p-6 lg:max-h-[calc(100vh-200px)] lg:overflow-y-auto">
-              <div className="mx-auto max-w-xl">
-                <iframe
-                  src={resultUrl}
-                  className="h-[70vh] w-full rounded-lg border border-gray-200 bg-white shadow-md"
-                  title="PDF Preview"
-                />
-              </div>
-            </div>
-
-            {/* Right: Sidebar */}
-            <div className="w-full shrink-0 border-t border-gray-200 bg-white p-6 lg:w-80 lg:border-l lg:border-t-0 xl:w-96">
-              <div className="mb-5 flex items-start gap-3">
-                <CheckCircle2 className="mt-0.5 h-7 w-7 shrink-0 text-green-500" />
-                <div className="min-w-0">
-                  <h2 className="text-lg font-bold text-gray-900">Done</h2>
-                  <p className="mt-0.5 truncate text-sm font-medium text-gray-700" title={resultFileName}>
-                    {resultFileName}
-                  </p>
-                </div>
-              </div>
-
-              {resultSize > 0 ? (
-                <ToolResultSizeBadge sizeBytes={resultSize} className="mb-4" />
-              ) : null}
-
-              <a href={resultUrl} download={resultFileName} className="block">
-                <Button className="w-full gap-2 rounded-xl py-3 text-base font-semibold">
-                  <Download className="h-5 w-5" />
-                  Download PDF
-                </Button>
-              </a>
-
-              <div className="mt-6">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-pd-muted">
-                  Continue in
-                </p>
-                <div className="flex flex-col gap-1">
-                  {RELATED_TOOLS.map((tool) => (
-                    <Link
-                      key={tool.slug}
-                      href={`/${tool.slug}`}
-                      className="flex items-center justify-between rounded-lg px-3 py-2.5 transition-colors hover:bg-gray-50"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${tool.bg}`}>
-                          <tool.icon className={`h-3.5 w-3.5 ${tool.color}`} />
-                        </div>
-                        <span className="text-sm font-medium text-gray-700">{tool.name}</span>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-gray-300" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={reset}
-                className="mt-6 w-full rounded-lg border border-gray-200 py-2.5 text-center text-sm font-medium text-pd-muted transition-colors hover:bg-gray-50 hover:text-pd-foreground"
-              >
-                Convert another file
-              </button>
-            </div>
-          </div>
-        </div>
+        <PdfResultPreview
+          blobUrl={resultUrl}
+          filename={resultFileName}
+          fileSize={resultSize}
+          initialSessionId={previewSessionId}
+          initialTotalPages={previewTotalPages}
+          onReset={reset}
+          resetLabel="Convert another file"
+        />
       </div>
     );
   }

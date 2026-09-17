@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { useTranslation } from "@/i18n";
+import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
 
 type OAuthProvider = "google" | "github" | "azure";
 
@@ -66,6 +67,8 @@ export function OAuthButtons({
   const { t } = useTranslation();
   const [loadingProvider, setLoadingProvider] = useState<OAuthProvider | null>(null);
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileSiteKey = getTurnstileSiteKey();
 
   if (!isSupabaseConfigured()) return null;
 
@@ -77,7 +80,11 @@ export function OAuthButtons({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ provider, redirectTo }),
+        body: JSON.stringify({
+          provider,
+          redirectTo,
+          ...(turnstileSiteKey ? { turnstileToken } : {}),
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.url) {
@@ -105,7 +112,7 @@ export function OAuthButtons({
           <button
             key={id}
             type="button"
-            disabled={loadingProvider !== null}
+            disabled={loadingProvider !== null || (turnstileSiteKey ? !turnstileToken : false)}
             onClick={() => void startOAuth(id)}
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-pd-border bg-pd-surface px-4 py-2.5 text-sm font-semibold text-pd-foreground transition hover:border-pd-brand/40 hover:bg-pd-brand-muted/30 disabled:opacity-60"
           >
@@ -114,6 +121,14 @@ export function OAuthButtons({
           </button>
         ))}
       </div>
+      {turnstileSiteKey ? (
+        <TurnstileWidget
+          siteKey={turnstileSiteKey}
+          onToken={setTurnstileToken}
+          onExpire={() => setTurnstileToken("")}
+          className="flex justify-center pt-1"
+        />
+      ) : null}
     </div>
   );
 }

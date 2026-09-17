@@ -3,10 +3,18 @@ import { logError } from "@/lib/db/queries";
 import {
   isConvertApiAvailable,
   pdfToWordConvertApi,
+  pdfToWordConvertApiToPath,
 } from "@/lib/services/pdf-to-word-convertapi.service";
 import {
+  isConvertApiOnlyMode,
+  resolveConversionStrategy,
+} from "@/lib/services/pdf-to-word-engine-plan";
+import {
+  canTrustEngineOutputWithoutFullScan,
   isDocxConversionAcceptable,
+  isDocxFileBasicallyValid,
   postProcessDocx,
+  shouldPostProcessDocx,
 } from "@/lib/services/pdf-to-word-docx-post.service";
 import {
   isLibreOfficePdfToDocxAvailable,
@@ -19,20 +27,37 @@ import {
 import { pdfToWordNode } from "@/lib/services/pdf-to-word-node.service";
 import { pdfToWordVisual } from "@/lib/services/pdf-to-word-visual.service";
 import { pdfToWordWordCom, isWordComPdfImportAvailable } from "@/lib/services/pdf-to-word-word-com.service";
+import {
+  resolvePdfHintsSafe,
+  isTextRichManual,
+} from "@/lib/services/pdf-to-word-hints.service";
 
-export type PdfToWordEngine =
-  | "convertapi"
-  | "word-com"
-  | "libreoffice"
-  | "pdf2docx"
-  | "visual"
-  | "node";
+export type { PdfToWordEngine } from "@/lib/services/pdf-to-word-engine-plan";
+import type { PdfToWordEngine } from "@/lib/services/pdf-to-word-engine-plan";
 
 let pdf2docxReadyCache: boolean | null = null;
 
 function estimateTimeoutMs(byteLength: number): number {
   const sizeMb = byteLength / (1024 * 1024);
   return Math.min(1_800_000, Math.max(900_000, 120_000 + Math.ceil(sizeMb) * 120_000));
+}
+
+/** Slowly tick progress while a long engine runs so the UI does not look frozen. */
+function startProgressHeartbeat(
+  onProgress: ((percent: number) => void) | undefined,
+  start: number,
+  cap: number,
+  intervalMs = 4000
+): () => void {
+  if (!onProgress) return () => undefined;
+  let current = start;
+  const timer = setInterval(() => {
+    if (current < cap - 1) {
+      current += 1;
+      onProgress(current);
+    }
+  }, intervalMs);
+  return () => clearInterval(timer);
 }
 
 export function mapPdfToWordError(message: string): string {
@@ -44,6 +69,13 @@ export function mapPdfToWordError(message: string): string {
   }
   if (/document closed or encrypted/i.test(message)) {
     return "This PDF is locked. Use Unlock PDF first, or enter the correct password.";
+  }
+  if (
+    /ENOENT|EACCES|EPERM|no such file|not produce a Word file|produced no output/i.test(
+      message
+    )
+  ) {
+    return "Conversion did not produce a Word file. Please try again or use a different PDF.";
   }
   return message.replace(/^ERROR PASSWORD_REQUIRED\s*/i, "").replace(/^ERROR\s*/i, "").trim();
 }
@@ -66,6 +98,8 @@ type PdfToWordOptions = {
 type QualityHints = {
   pageCount?: number;
   pdfTextChars?: number;
+  byteLength?: number;
+  hybridScanned?: boolean;
 };
 
 async function finalizeDocxResult(
@@ -75,16 +109,36 @@ async function finalizeDocxResult(
     diskOnly: boolean;
     outputPath?: string;
     hints: QualityHints;
+    onProgress?: (percent: number) => void;
   }
 ): Promise<PdfToWordResult | null> {
   const docx = raw;
   if (!docx?.length) return null;
-  if (!(await isDocxConversionAcceptable(docx, options.hints))) {
+  options.onProgress?.(97);
+
+  if (
+    options.hints.hybridScanned &&
+    engine === "word-com" &&
+    options.hints.byteLength &&
+    docx.length < options.hints.byteLength * 0.05
+  ) {
+    console.warn("[pdf-to-word] word-com output too small for hybrid scanned PDF (figures lost)");
+    return null;
+  }
+
+  if (!(await isDocxConversionAcceptable(docx, options.hints).catch(() => false))) {
     console.warn(`[pdf-to-word] ${engine} output failed quality check`);
     return null;
   }
 
-  const processed = await postProcessDocx(docx);
+  const processed =
+    engine === "word-com" ||
+    engine === "convertapi" ||
+    engine === "pdf2docx" ||
+    !(await shouldPostProcessDocx(docx))
+      ? docx
+      : await postProcessDocx(docx);
+  options.onProgress?.(99);
   if (options.diskOnly && options.outputPath) {
     await fs.writeFile(options.outputPath, processed);
     return { outputPath: options.outputPath, engine };
@@ -92,51 +146,61 @@ async function finalizeDocxResult(
   return { buffer: processed, engine };
 }
 
+async function outputFileReady(outputPath: string): Promise<boolean> {
+  try {
+    const stat = await fs.stat(outputPath);
+    return stat.isFile() && stat.size > 0;
+  } catch {
+    return false;
+  }
+}
+
 async function finalizeDiskPathResult(
   engine: PdfToWordEngine,
   outputPath: string,
-  hints: QualityHints
+  hints: QualityHints,
+  onProgress?: (percent: number) => void
 ): Promise<PdfToWordResult | null> {
-  const docx = await fs.readFile(outputPath);
+  if (!(await outputFileReady(outputPath))) return null;
+
+  if (canTrustEngineOutputWithoutFullScan(engine)) {
+    onProgress?.(96);
+    if (!(await isDocxFileBasicallyValid(outputPath))) return null;
+    onProgress?.(99);
+    return { outputPath, engine };
+  }
+
+  onProgress?.(94);
+  let docx: Buffer;
+  try {
+    docx = await fs.readFile(outputPath);
+  } catch {
+    return null;
+  }
+  onProgress?.(96);
   return finalizeDocxResult(engine, docx, {
     diskOnly: true,
     outputPath,
     hints,
+    onProgress,
   });
 }
 
-async function estimatePdfHints(
-  inputPath?: string,
-  buffer?: Buffer
+async function resolveHints(
+  inputPath: string | undefined,
+  buffer: Buffer | undefined,
+  byteLength: number
 ): Promise<QualityHints> {
-  try {
-    const { PDFParse } = await import("pdf-parse");
-    const data = inputPath ? await fs.readFile(inputPath) : buffer;
-    if (!data?.length) return {};
-    const parser = new PDFParse({ data });
-    try {
-      const info = await parser.getInfo();
-      const text = await parser.getText();
-      return {
-        pageCount: info.total || undefined,
-        pdfTextChars: text.text?.replace(/\s+/g, " ").trim().length,
-      };
-    } finally {
-      await parser.destroy();
-    }
-  } catch {
-    return {};
-  }
+  return resolvePdfHintsSafe({ inputPath, buffer, byteLength });
 }
 
 /**
  * PDF → Word with engine priority (professional-grade quality):
  * 1. ConvertAPI (commercial, if CONVERTAPI_SECRET set)
- * 2. LibreOffice headless (cross-platform, invoice-grade layout)
- * 3. pdf2docx (Python — fast server fallback)
- * 4. Microsoft Word COM (Windows — optional boost when PDF import works)
- * 5. Visual page render (exact layout, non-editable text)
- * 6. Node text extractor (last resort, small PDFs only)
+ * 2. Windows: Word COM → pdf2docx → LibreOffice (LO PDF import often hangs)
+ *    Linux:  LibreOffice → pdf2docx → Word COM (N/A on Linux)
+ * 3. Visual page render (exact layout, non-editable text)
+ * 4. Node text extractor (last resort, small PDFs only)
  */
 export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordResult> {
   const fileName = options.fileName ?? "document.pdf";
@@ -145,40 +209,71 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
 
   let byteLength = options.buffer?.length ?? 0;
   if (options.inputPath) {
-    const stat = await fs.stat(options.inputPath);
-    byteLength = stat.size;
+    try {
+      const stat = await fs.stat(options.inputPath);
+      byteLength = stat.size;
+    } catch {
+      throw new Error("PDF input is missing. Please upload the file again.");
+    }
   }
   if (byteLength === 0) {
     throw new Error("PDF input is empty");
   }
 
   const timeoutMs = estimateTimeoutMs(byteLength);
-  const largePdf = byteLength > 8 * 1024 * 1024;
-  const officeTimeoutMs = Math.min(timeoutMs, 120_000);
-  const wordComTimeoutMs = Math.min(officeTimeoutMs, 45_000);
+  // Only treat truly huge PDFs as "large" (disables the render/text fallbacks).
+  // Below this, the visual + node fallbacks stay available so a result is always
+  // produced even when LibreOffice/pdf2docx are slow or reject the output.
+  const largePdf = byteLength > 40 * 1024 * 1024;
+  // LibreOffice PDF import often hangs on complex files — cap aggressively so
+  // faster engines (Word COM / pdf2docx / visual) get a turn.
+  const libreOfficePdfTimeoutMs = Math.min(timeoutMs, 90_000);
+  const officeTimeoutMs = Math.min(timeoutMs, 300_000);
 
   if (pdf2docxReadyCache === null) {
     pdf2docxReadyCache = await isPdf2docxAvailable();
   }
   const pdf2docxReady = pdf2docxReadyCache;
   const libreOfficeReady = isLibreOfficePdfToDocxAvailable();
+  const wordComReady = await isWordComPdfImportAvailable();
+
+  let cachedBuffer: Buffer | null = options.buffer?.length ? options.buffer : null;
 
   async function loadBuffer(): Promise<Buffer> {
-    if (options.buffer?.length) return options.buffer;
-    if (options.inputPath) return fs.readFile(options.inputPath);
+    if (cachedBuffer) return cachedBuffer;
+    if (options.inputPath) {
+      cachedBuffer = await fs.readFile(options.inputPath);
+      return cachedBuffer;
+    }
     throw new Error("PDF input is required");
   }
 
-  const hints = await estimatePdfHints(options.inputPath, options.buffer);
+  const hints = await resolveHints(options.inputPath, options.buffer, byteLength);
+  const textRichManual = isTextRichManual(hints, byteLength);
+  const hybridScanned = hints.hybridScanned ?? false;
+  const wordComTimeoutMs = Math.min(
+    officeTimeoutMs,
+    Math.max(120_000, (hints.pageCount ?? Math.ceil(byteLength / (350 * 1024))) * 15_000)
+  );
 
   async function tryConvertApi(): Promise<PdfToWordResult | null> {
     if (!isConvertApiAvailable()) return null;
     try {
       onProgress?.(5);
+      if (diskOnly && options.inputPath && options.outputPath) {
+        await pdfToWordConvertApiToPath(options.inputPath, options.outputPath, fileName);
+        onProgress?.(95);
+        return finalizeDiskPathResult("convertapi", options.outputPath, hints, onProgress);
+      }
       const buffer = await loadBuffer();
       const apiBuffer = await pdfToWordConvertApi(buffer, fileName);
       onProgress?.(95);
-      return finalizeDocxResult("convertapi", apiBuffer, { diskOnly, outputPath: options.outputPath, hints });
+      return finalizeDocxResult("convertapi", apiBuffer, {
+        diskOnly,
+        outputPath: options.outputPath,
+        hints,
+        onProgress,
+      });
     } catch (err) {
       console.warn("[pdf-to-word] ConvertAPI failed:", err);
       return null;
@@ -187,6 +282,7 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
 
   async function tryWordCom(): Promise<PdfToWordResult | null> {
     if (!(await isWordComPdfImportAvailable())) return null;
+    const stopHeartbeat = startProgressHeartbeat(onProgress, 8, 88);
     try {
       onProgress?.(8);
       const buffer = options.inputPath ? Buffer.alloc(0) : await loadBuffer();
@@ -197,7 +293,7 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
       });
       onProgress?.(92);
       if (diskOnly && options.outputPath) {
-        return finalizeDiskPathResult("word-com", options.outputPath, hints);
+        return finalizeDiskPathResult("word-com", options.outputPath, hints, onProgress);
       }
       return finalizeDocxResult("word-com", result as Buffer | undefined, {
         diskOnly,
@@ -207,22 +303,25 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     } catch (err) {
       console.warn("[pdf-to-word] Word COM failed:", err);
       return null;
+    } finally {
+      stopHeartbeat();
     }
   }
 
   async function tryLibreOffice(): Promise<PdfToWordResult | null> {
     if (!libreOfficeReady) return null;
+    const stopHeartbeat = startProgressHeartbeat(onProgress, 10, 88);
     try {
       onProgress?.(10);
       const buffer = options.inputPath ? Buffer.alloc(0) : await loadBuffer();
       const result = await pdfToWordLibreOffice(buffer, {
         inputPath: options.inputPath,
         outputPath: options.outputPath,
-        timeoutMs: officeTimeoutMs,
+        timeoutMs: libreOfficePdfTimeoutMs,
       });
       onProgress?.(92);
       if (diskOnly && options.outputPath) {
-        return finalizeDiskPathResult("libreoffice", options.outputPath, hints);
+        return finalizeDiskPathResult("libreoffice", options.outputPath, hints, onProgress);
       }
       return finalizeDocxResult("libreoffice", result as Buffer | undefined, {
         diskOnly,
@@ -232,29 +331,37 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     } catch (err) {
       console.warn("[pdf-to-word] LibreOffice failed:", err);
       return null;
+    } finally {
+      stopHeartbeat();
     }
   }
 
   async function tryPdf2docx(): Promise<PdfToWordResult | null> {
     if (!pdf2docxReady) return null;
+    const stopHeartbeat = startProgressHeartbeat(onProgress, 12, 90);
     try {
       onProgress?.(12);
       const buffer = options.inputPath ? Buffer.alloc(0) : await loadBuffer();
+      const pages = hints.pageCount ?? Math.ceil(byteLength / (350 * 1024));
+      const perPageMs = textRichManual ? 15_000 : hybridScanned ? 12_000 : 8_000;
+      const pdf2docxFloorMs = textRichManual || hybridScanned ? 600_000 : 180_000;
+      const pdf2docxTimeoutMs = Math.min(timeoutMs, Math.max(pdf2docxFloorMs, pages * perPageMs));
       const result = await pdfToWordPdf2docx(buffer, {
-        timeoutMs,
+        timeoutMs: pdf2docxTimeoutMs,
         onProgress,
         inputPath: options.inputPath,
         outputPath: options.outputPath,
         pdfPassword: options.pdfPassword,
       });
-      onProgress?.(92);
+      onProgress?.(95);
       if (diskOnly && options.outputPath) {
-        return finalizeDiskPathResult("pdf2docx", options.outputPath, hints);
+        return finalizeDiskPathResult("pdf2docx", options.outputPath, hints, onProgress);
       }
       return finalizeDocxResult("pdf2docx", result as Buffer | undefined, {
         diskOnly,
         outputPath: options.outputPath,
         hints,
+        onProgress,
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -266,6 +373,8 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
         stack_trace: err instanceof Error ? err.stack : undefined,
       }).catch(() => {});
       return null;
+    } finally {
+      stopHeartbeat();
     }
   }
 
@@ -306,9 +415,28 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     }
   }
 
-  const engines = [tryConvertApi, tryLibreOffice, tryPdf2docx, tryWordCom, tryVisual, tryNode];
+  const engineAttempts: Record<PdfToWordEngine, () => Promise<PdfToWordResult | null>> = {
+    convertapi: tryConvertApi,
+    "word-com": tryWordCom,
+    pdf2docx: tryPdf2docx,
+    libreoffice: tryLibreOffice,
+    visual: tryVisual,
+    node: tryNode,
+  };
 
-  for (const attempt of engines) {
+  const strategy = resolveConversionStrategy({
+    platform: process.platform,
+    convertApiAvailable: isConvertApiAvailable(),
+    convertApiOnly: isConvertApiOnlyMode(),
+    textRichManual,
+    hybridScanned,
+    largePdf,
+    pdf2docxReady,
+    wordComReady,
+  });
+
+  for (const engine of [...strategy.engines, ...strategy.emergency]) {
+    const attempt = engineAttempts[engine];
     const result = await attempt();
     if (result) {
       onProgress?.(99);

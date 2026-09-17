@@ -6,6 +6,7 @@ import {
 } from "@/lib/auth/local-dev-auth";
 import { checkAuthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
+import { clearStepUpCookie } from "@/lib/auth/step-up-auth";
 
 function getSupabaseEnv(): { url: string; key: string } | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -40,12 +41,12 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ message: "Logged out successfully" });
 
     if (isLocalDevAuthEnabled()) {
-      return clearLocalDevSessionCookie(response);
+      return clearStepUpCookie(clearLocalDevSessionCookie(response));
     }
 
     const env = getSupabaseEnv();
     if (!env) {
-      return response;
+      return clearStepUpCookie(response);
     }
 
     const supabase = createServerClient(env.url, env.key, {
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
       console.warn("Supabase signOut error:", error.message);
     }
 
-    return response;
+    return clearStepUpCookie(response);
   } catch (err) {
     console.error("Logout error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

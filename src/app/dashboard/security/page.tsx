@@ -6,6 +6,8 @@ import { ArrowLeft, Loader2, ShieldCheck, Smartphone } from "lucide-react";
 import { DashboardMobileNav } from "@/components/dashboard/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
+import { totpQrSvgToDataUrl } from "@/lib/auth/totp-qr";
+import { StepUpAuthControls } from "@/components/auth/step-up-auth-controls";
 
 type MfaStatus = {
   enabled: boolean;
@@ -27,6 +29,8 @@ export default function DashboardSecurityPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [enrollPassword, setEnrollPassword] = useState("");
+  const [enrollStepUpReady, setEnrollStepUpReady] = useState(false);
 
   const loadStatus = useCallback(async () => {
     setLoading(true);
@@ -48,6 +52,10 @@ export default function DashboardSecurityPage() {
   }, [loadStatus]);
 
   async function startEnroll() {
+    if (!enrollStepUpReady && !enrollPassword) {
+      setError("Confirm your identity to set up two-factor authentication.");
+      return;
+    }
     setActionLoading(true);
     setError("");
     setMessage("");
@@ -55,6 +63,8 @@ export default function DashboardSecurityPage() {
       const res = await fetch("/api/auth/mfa/enroll", {
         method: "POST",
         credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: enrollPassword }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Enrollment failed");
@@ -160,9 +170,12 @@ export default function DashboardSecurityPage() {
             ) : enroll ? (
               <div className="mt-4 space-y-4">
                 {enroll.qrCode && (
-                  <div
+                  <img
+                    src={totpQrSvgToDataUrl(enroll.qrCode)}
+                    alt={t("securityPage.mfaQrAlt")}
                     className="mx-auto w-fit rounded-xl border border-pd-border bg-white p-3"
-                    dangerouslySetInnerHTML={{ __html: enroll.qrCode }}
+                    width={200}
+                    height={200}
                   />
                 )}
                 {enroll.secret && (
@@ -203,10 +216,26 @@ export default function DashboardSecurityPage() {
                 </div>
               </div>
             ) : (
-              <Button type="button" className="mt-4" disabled={actionLoading} onClick={() => void startEnroll()}>
+              <div className="mt-4 space-y-3">
+                <input
+                  type="password"
+                  autoComplete="current-password"
+                  value={enrollPassword}
+                  onChange={(e) => setEnrollPassword(e.target.value)}
+                  placeholder={t("auth.password")}
+                  className="w-full rounded-xl border border-pd-border px-4 py-2.5 text-sm"
+                />
+                <StepUpAuthControls
+                  purpose="mfa_enroll"
+                  redirectTo="/dashboard/security"
+                  onStepUpReady={() => setEnrollStepUpReady(true)}
+                  className="mt-2"
+                />
+                <Button type="button" className="mt-3" disabled={actionLoading} onClick={() => void startEnroll()}>
                 {actionLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {t("securityPage.enableMfa")}
               </Button>
+              </div>
             )}
           </div>
         </div>

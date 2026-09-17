@@ -20,6 +20,16 @@ describe("resolveSafeNextPath", () => {
     expect(resolveSafeNextPath("/evil")).toBe("/dashboard");
   });
 
+  it("blocks path traversal bypasses", () => {
+    expect(resolveSafeNextPath("/dashboard/../../login")).toBe("/dashboard");
+    expect(resolveSafeNextPath("/pricing/../../../contact")).toBe("/dashboard");
+  });
+
+  it("allows admin redirect paths", () => {
+    expect(resolveSafeNextPath("/admin")).toBe("/admin");
+    expect(resolveSafeNextPath("/admin/users")).toBe("/admin/users");
+  });
+
   it("falls back when next is null", () => {
     expect(resolveSafeNextPath(null)).toBe("/dashboard");
     expect(resolveSafeNextPath(null, "/login")).toBe("/login");

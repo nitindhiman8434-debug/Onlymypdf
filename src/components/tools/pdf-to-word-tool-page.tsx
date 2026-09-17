@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useRef, useState, type ReactNode } from "react";
-import { FileText, Info } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+import { FileText } from "lucide-react";
 import { formatFileSize } from "@/lib/utils/file";
 import { ToolPageShell } from "@/components/layout/tool-page-shell";
 import {
@@ -9,9 +9,14 @@ import {
   ToolErrorBanner,
   ToolPrimaryButton,
   ToolSuccessPanel,
+  PdfPasswordInfoBanner,
 } from "@/components/tools/tool-ui";
 import { mapRelatedTools } from "@/components/tools/tool-helpers";
 import { PdfPasswordModal } from "@/components/tools/pdf-password-modal";
+import {
+  isPasswordRequiredCode,
+  isWrongPasswordCode,
+} from "@/lib/client/pdf-password-errors";
 import { notifyActivityUpdated } from "@/lib/client/activity-events";
 import { useToolErrors } from "@/hooks/use-tool-errors";
 
@@ -28,9 +33,11 @@ function clientTimeoutMs(fileSizeBytes: number): number {
 
 function progressLabel(percent: number): string {
   if (percent >= 100) return "Finishing download…";
+  if (percent >= 96) return "Saving Word document…";
   if (percent >= 92) return "Finalizing Word document…";
-  if (percent >= 87) return `Merging sections… ${percent}%`;
-  if (percent >= 10 && percent < 20) return `Processing sections… ${percent}%`;
+  if (percent >= 87) return `Extracting content… ${percent}%`;
+  if (percent >= 12) return `Converting pages… ${percent}%`;
+  if (percent >= 8) return `Converting with Microsoft Word… ${percent}%`;
   if (percent >= 5) return `Converting to Word… ${percent}%`;
   return "Preparing conversion…";
 }
@@ -115,11 +122,11 @@ export function PdfToWordToolPage({
           error?: string;
           code?: string;
         };
-        if (err.code === "PASSWORD_REQUIRED" || err.code === "WRONG_PASSWORD") {
+        if (isPasswordRequiredCode(err.code) || isWrongPasswordCode(err.code)) {
           setPasswordPrompt({
             fileName: file.name,
             errorMsg:
-              err.code === "WRONG_PASSWORD"
+              isWrongPasswordCode(err.code)
                 ? err.error || "Incorrect password."
                 : undefined,
             loading: false,
@@ -198,7 +205,7 @@ export function PdfToWordToolPage({
           break;
         }
 
-        await sleep(400);
+        await sleep(1000);
       }
 
       const downloadRes = await fetch(
@@ -232,13 +239,6 @@ export function PdfToWordToolPage({
   const handleConvert = async () => {
     await runConversion(pdfPassword);
   };
-
-  const extraFields: ReactNode = (
-    <div className="flex items-start gap-2 rounded-lg bg-pd-brand-muted/50 p-3 text-sm text-pd-foreground">
-      <Info className="mt-0.5 h-4 w-4 shrink-0 text-pd-brand" />
-      <p>For scanned PDFs, OCR will be used to extract text. Password-protected PDFs will ask for your password.</p>
-    </div>
-  );
 
   return (
     <>
@@ -293,7 +293,7 @@ export function PdfToWordToolPage({
             </div>
           )}
 
-          {extraFields && <div className="mt-4">{extraFields}</div>}
+          <PdfPasswordInfoBanner className="mt-4" />
           {error && <ToolErrorBanner message={error} />}
 
           <ToolPrimaryButton

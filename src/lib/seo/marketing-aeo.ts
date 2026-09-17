@@ -7,7 +7,7 @@ import { ALL_PUBLIC_TOOL_SLUGS } from "@/lib/seo/routes";
 
 export const SITE_AEO = {
   shortAnswer:
-    "OnlyMyPDF is a free online PDF toolkit to merge, split, compress, convert, edit, sign, protect, unlock, scan, and summarize PDFs in your browser. Free users get 5 tool uses per day; files are auto-deleted within 2 hours.",
+    "OnlyMyPDF is a free online PDF toolkit to merge, split, compress, convert, edit, sign, protect, unlock, scan, and summarize PDFs in your browser. Free users get 5 tool uses per day; files are auto-deleted within 2 hours (Free) or 24 hours (Pro).",
   definition:
     "OnlyMyPDF (onlymypdf) is a web-based PDF application that runs tools server-side with encrypted uploads and automatic file deletion — no desktop install required.",
   keyFacts: [
@@ -15,7 +15,7 @@ export const SITE_AEO = {
     "Pro tier: 100 uses/day, AI summarizer, sign PDF, priority processing",
     "Supported formats: PDF, DOCX, DOC, XLSX, XLS, PPTX, PPT, JPG, PNG, HTML, TXT",
     "Files deleted after 2 hours (free) or 24 hours (Pro)",
-    "256-bit SSL encryption for all uploads",
+    "HTTPS/TLS encryption for uploads in transit",
     "Based in India; pricing in INR via Razorpay",
   ],
   howToGetStarted: [
@@ -32,7 +32,7 @@ export const PRICING_AEO = {
     "Free: ₹0 — 5 uses/day, basic tools, 2-hour file retention",
     "Pro: ₹299/month or ₹2,399/year — 100 uses/day, all tools, AI summarizer",
     "Payment via Razorpay (cards, UPI, net banking, wallets)",
-    "7-day money-back guarantee on new Pro subscriptions",
+    "Cancel anytime from dashboard billing",
   ],
 } as const;
 

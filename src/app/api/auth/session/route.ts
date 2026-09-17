@@ -11,10 +11,11 @@ import {
 } from "@/lib/auth/local-dev-activity";
 import { buildSessionPayload, buildSessionPayloadForUser } from "@/lib/auth/session-payload";
 import {
-  createMfaLoginChallenge,
-  MfaAssuranceUnavailableError,
   resolveMfaAssurance,
+  MfaAssuranceUnavailableError,
 } from "@/lib/auth/mfa-assurance";
+import { isBlockedProfile } from "@/lib/auth/plan-access";
+import { BLOCKED_LOGIN_MESSAGE } from "@/lib/auth/blocked-login";
 
 /** Session bootstrap — higher limit than general API (header auth sync). */
 async function guardSessionRateLimit(request: NextRequest): Promise<Response | null> {
@@ -89,10 +90,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
     }
 
+    if (profile && isBlockedProfile(profile as { is_blocked?: boolean | null })) {
+      return NextResponse.json(
+        { error: BLOCKED_LOGIN_MESSAGE, code: "ACCOUNT_BLOCKED" },
+        { status: 403 }
+      );
+    }
+
     const assurance = await resolveMfaAssurance(supabase);
-    const mfaChallenge = assurance.requiresMfaVerification
-      ? await createMfaLoginChallenge(supabase)
-      : null;
 
     const payload = await buildSessionPayloadForUser(
       {
@@ -105,23 +110,15 @@ export async function GET(request: NextRequest) {
 
     if (assurance.requiresMfaVerification) {
       return NextResponse.json({
-        user: {
-          id: user.id,
-          email: user.email ?? "",
-          created_at: user.created_at,
-        },
+        user: null,
         profile: null,
-        accountStatus: "active" as const,
-        effectivePlan: "free" as const,
         requiresMfa: true,
-        ...(mfaChallenge ? { mfaChallenge } : {}),
       });
     }
 
     return NextResponse.json({
       ...payload,
       requiresMfa: false,
-      ...(mfaChallenge ? { mfaChallenge } : {}),
     });
   } catch (err) {
     if (err instanceof MfaAssuranceUnavailableError) {

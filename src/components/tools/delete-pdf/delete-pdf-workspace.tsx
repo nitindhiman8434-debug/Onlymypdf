@@ -14,6 +14,10 @@ import { useToolWorkspaceMessages } from "@/hooks/use-tool-workspace-messages";
 import { loadPdfThumbnailsBatched } from "@/lib/pdf/pdf-thumbnails.client";
 import { ToolErrorBanner, ToolHiddenFileInput, ToolWorkspaceReadyPanel } from "@/components/tools/tool-ui";
 import { PdfPasswordModal } from "@/components/tools/pdf-password-modal";
+import {
+  passwordPromptFromError,
+  readToolApiFailure,
+} from "@/lib/client/pdf-password-errors";
 import { runClientOrServerPdfExport } from "@/lib/pdf/client-pdf-export";
 import { deletePagesInBrowser } from "@/lib/pdf/pdf-browser";
 import { DeletePageCard } from "@/components/tools/delete-pdf/delete-page-card";
@@ -352,10 +356,7 @@ export function DeletePdfWorkspace({
           body: formData,
         });
         if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(
-            (data as { error?: string }).error || ws.failedExportPdf
-          );
+          await readToolApiFailure(res, ws.failedExportPdf);
         }
 
         const blob = await res.blob();
@@ -374,16 +375,13 @@ export function DeletePdfWorkspace({
       const { blob } = await runClientOrServerPdfExport({
         tool: "delete-pdf",
         client: async () => deletePagesInBrowser(file, pagesToKeep),
-        server: async () => {
+          server: async () => {
           const res = await fetch("/api/tools/delete-pdf", {
             method: "POST",
             body: formData,
           });
           if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(
-              (data as { error?: string }).error || ws.failedDeletePages
-            );
+            await readToolApiFailure(res, ws.failedDeletePages);
           }
           return res.blob();
         },
@@ -395,12 +393,11 @@ export function DeletePdfWorkspace({
     } catch (err) {
       const message =
         err instanceof Error ? err.message : ws.unexpectedError;
-      if (/password/i.test(message)) {
-        setPasswordPrompt({
-          file,
-          fileName: file.name,
-          errorMsg: message,
-        });
+      const prompt = passwordPromptFromError(err, file.name);
+      if (prompt) {
+        setPasswordPrompt({ file, ...prompt });
+        setError(null);
+        return;
       }
       setError(message);
     } finally {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Copy, RotateCcw, Trash2, ZoomIn } from "lucide-react";
+import { Copy, Lock, RotateCcw, Trash2, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { MergeSelectionCheckbox } from "@/components/tools/merge-pdf/merge-selection-checkbox";
 
@@ -16,6 +16,9 @@ interface MergeFileCardProps {
   showCheckbox?: boolean;
   footerLabel?: string;
   showActions?: boolean;
+  passwordSkipped?: boolean;
+  unlockLabel?: string;
+  onUnlock?: () => void;
   onSelect?: () => void;
   onZoom: () => void;
   onRotateLeft: () => void;
@@ -34,6 +37,9 @@ export function MergeFileCard({
   showCheckbox = true,
   footerLabel,
   showActions = true,
+  passwordSkipped = false,
+  unlockLabel = "Unlock",
+  onUnlock,
   onSelect,
   onZoom,
   onRotateLeft,
@@ -53,9 +59,10 @@ export function MergeFileCard({
 
   const showLoading = Boolean(thumb) && !imageReady && !imageFailed;
   const showImage = Boolean(thumb) && imageReady;
-  const pageLabel =
-    footerLabel ??
-    (pageCount === 1 ? "1 page" : pageCount > 0 ? `${pageCount} pages` : "…");
+  const pageLabel = passwordSkipped
+    ? "Password required"
+    : footerLabel ??
+      (pageCount === 1 ? "1 page" : pageCount > 0 ? `${pageCount} pages` : "…");
 
   return (
     <div className="group/card relative w-[136px] sm:w-[156px]">
@@ -179,6 +186,22 @@ export function MergeFileCard({
                   </>
                 ) : loadingThumb ? (
                   <div className="h-full w-full animate-pulse bg-gradient-to-b from-slate-50 to-slate-100" />
+                ) : passwordSkipped ? (
+                  <div className="flex h-full flex-col items-center justify-center gap-2 bg-slate-50 px-2 text-center">
+                    <Lock className="h-5 w-5 text-pd-brand" aria-hidden />
+                    {onUnlock && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onUnlock();
+                        }}
+                        className="rounded-md bg-pd-brand px-2 py-1 text-[10px] font-semibold text-white hover:bg-pd-brand/90"
+                      >
+                        {unlockLabel}
+                      </button>
+                    )}
+                  </div>
                 ) : (
                   <div className="flex h-full items-center justify-center text-xs text-pd-muted">…</div>
                 )}

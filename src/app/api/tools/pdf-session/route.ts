@@ -1,4 +1,4 @@
-import { beginToolRoute, handleToolRouteFailure } from "@/lib/server/tool-request-guards";
+import { beginToolRoute, guardToolUsageLimit, handleToolRouteFailure } from "@/lib/server/tool-request-guards";
 import { NextRequest, NextResponse } from "next/server";
 import { toolJsonError } from "@/lib/server/tool-api-error";
 import { createPdfSession } from "@/lib/pdf/pdf-session-store";
@@ -7,8 +7,12 @@ import { validateSingleUpload, uploadValidationResponse } from "@/lib/server/upl
 import { FILE_LIMITS } from "@/config/constants";
 import { createClient } from "@/lib/supabase/server";
 import { assertMfaAal2Satisfied } from "@/lib/auth/mfa-assurance";
+import { assertAccountActive } from "@/lib/auth/account-status";
 import { probePdfAccess } from "@/lib/pdf/pdf-password.server";
 import { unlockPDF } from "@/lib/services/pdf-security.service";
+import {
+  toolWrongPasswordError,
+} from "@/lib/server/pdf-password-http";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -26,7 +30,12 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
     if (user) {
       await assertMfaAal2Satisfied(supabase);
+      await assertAccountActive(user.id);
     }
+
+    const usageBlocked = await guardToolUsageLimit(request, "pdf-session", user?.id ?? null);
+    if (usageBlocked) return usageBlocked;
+
     const ownerHash = ownerHashFromRequest(request, user?.id ?? null);
 
     const formData = await request.formData();
@@ -56,15 +65,25 @@ export async function POST(request: NextRequest) {
 
     if (withoutPassword.status === "password_required") {
       if (!password) {
-        return toolJsonError(request, "This PDF is password-protected.", 400);
+        return toolJsonError(request, "This PDF is password-protected.", 400, {
+          code: "password_required",
+          fileName: file.name,
+        });
       }
 
       const withPassword = await probePdfAccess(buffer, password);
       if (withPassword.status === "wrong_password") {
-        return toolJsonError(request, WRONG_PASSWORD_MSG, 400);
+        return toolJsonError(request, WRONG_PASSWORD_MSG, 400, {
+          code: "wrong_password",
+          fileName: file.name,
+        });
       }
       if (withPassword.status !== "ok") {
-        return toolJsonError(request, withPassword.status === "unreadable" ? withPassword.message : WRONG_PASSWORD_MSG, 400);
+        return toolWrongPasswordError(
+          request,
+          withPassword.status === "unreadable" ? withPassword.message : WRONG_PASSWORD_MSG,
+          file.name
+        );
       }
 
       try {
@@ -77,7 +96,11 @@ export async function POST(request: NextRequest) {
         }
       } catch (unlockErr) {
         const msg = unlockErr instanceof Error ? unlockErr.message : WRONG_PASSWORD_MSG;
-        return toolJsonError(request, msg.includes("Incorrect password") ? msg : WRONG_PASSWORD_MSG, 400);
+        return toolWrongPasswordError(
+          request,
+          msg.includes("Incorrect password") ? msg : WRONG_PASSWORD_MSG,
+          file.name
+        );
       }
     }
 

@@ -11,21 +11,46 @@ import {
 import { buildContentSecurityPolicy } from "@/lib/security/csp";
 
 const PROTECTED_ROUTES = ["/dashboard", "/admin"];
-const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
+const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
 
 function copyCookies(from: NextResponse, to: NextResponse) {
   for (const cookie of from.cookies.getAll()) {
-    to.cookies.set(cookie.name, cookie.value);
+    to.cookies.set(cookie);
+  }
+}
+
+function applyGuestSessionCookie(request: NextRequest, response: NextResponse) {
+  if (!request.cookies.get(GUEST_SESSION_COOKIE)?.value) {
+    response.cookies.set(GUEST_SESSION_COOKIE, crypto.randomUUID(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    });
   }
 }
 
 export async function middleware(request: NextRequest) {
+  const originalPath = request.nextUrl.pathname;
+
+  if (originalPath.startsWith("/api/")) {
+    const response = NextResponse.next();
+    response.headers.set("X-Content-Type-Options", "nosniff");
+    response.headers.set("Cache-Control", "no-store");
+    applyGuestSessionCookie(request, response);
+    return response;
+  }
+
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const isProd = process.env.NODE_ENV === "production";
+  const csp = buildContentSecurityPolicy(nonce, isProd);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
-  const isProd = process.env.NODE_ENV === "production";
+  // Next.js reads the nonce from the request CSP header and applies it to its
+  // framework/hydration scripts, so 'strict-dynamic' actually protects them.
+  requestHeaders.set("content-security-policy", csp);
 
-  const originalPath = request.nextUrl.pathname;
   const isHindiRoute = pathnameHasHindiPrefix(originalPath);
   const pathname = isHindiRoute ? stripLocalePrefix(originalPath) : originalPath;
   const isAdminRoute = pathname.startsWith("/admin");
@@ -103,24 +128,18 @@ export async function middleware(request: NextRequest) {
 
   response.headers.set("x-pathname", pathname);
 
-  if (!request.cookies.get(GUEST_SESSION_COOKIE)?.value) {
-    response.cookies.set(GUEST_SESSION_COOKIE, crypto.randomUUID(), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-    });
-  }
+  applyGuestSessionCookie(request, response);
 
-  response.headers.set("Content-Security-Policy", buildContentSecurityPolicy(nonce, isProd));
-  response.headers.set("x-nonce", nonce);
+  // Enforce on the response; the nonce is NOT echoed as a standalone header so
+  // it cannot be trivially read back if an XSS gadget exists.
+  response.headers.set("Content-Security-Policy", csp);
 
   return response;
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/api/:path*",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

@@ -12,6 +12,7 @@ import {
   ToolPrimaryButton,
   ToolSuccessPanel,
 } from '@/components/tools/tool-ui';
+import { useToolErrors } from '@/hooks/use-tool-errors';
 
 const RELATED_TOOLS = [
   { name: 'Unlock PDF', href: '/unlock-pdf' },
@@ -21,7 +22,7 @@ const RELATED_TOOLS = [
 ];
 
 const FAQS = [
-  { q: 'How secure is the password protection?', a: 'We use AES-256 encryption to protect your PDF files. This is the same encryption standard used by banks and government agencies.' },
+  { q: 'How secure is the password protection?', a: 'The generated PDF uses AES-256 password encryption. Use a unique, strong password and share it separately.' },
   { q: 'Can I remove the password later?', a: 'Yes! Use our Unlock PDF tool to remove the password protection. You will need the correct password to do so.' },
   { q: 'What makes a strong password?', a: 'A strong password is at least 8 characters long and includes a mix of uppercase letters, lowercase letters, numbers, and special characters.' },
   { q: 'Will password protection change the PDF content?', a: 'No. Password protection only adds an encryption layer. Your PDF content, formatting, and images remain exactly the same.' },
@@ -49,6 +50,7 @@ const strengthConfig: Record<PasswordStrength, { label: string; color: string; b
 };
 
 export default function ProtectPdfPage() {
+  const { resolveApiError, resolveCatchError } = useToolErrors();
   const [files, setFiles] = useState<File[]>([]);
   const [processing, setProcessing] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -103,18 +105,17 @@ export default function ProtectPdfPage() {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        const apiMessage = typeof err?.error === 'string' ? err.error : '';
-        throw new Error(apiMessage || `Failed to protect PDF (${res.status}).`);
+        throw new Error(resolveApiError(err, 'errors.processingFailed'));
       }
 
       const contentType = res.headers.get('content-type') ?? '';
       if (!contentType.includes('application/pdf')) {
-        throw new Error('Server did not return a PDF file. Please try again.');
+        throw new Error(resolveApiError('Server did not return a PDF file.', 'errors.processingFailed'));
       }
 
       const blob = await res.blob();
       if (blob.size === 0) {
-        throw new Error('Protected PDF is empty. Please try again.');
+        throw new Error(resolveApiError('Protected PDF is empty.', 'errors.processingFailed'));
       }
 
       const url = URL.createObjectURL(blob);
@@ -125,11 +126,9 @@ export default function ProtectPdfPage() {
       const { notifyActivityUpdated } = await import("@/lib/client/activity-events");
       notifyActivityUpdated();
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
-        setError('Protection timed out after 2 minutes. Try a smaller PDF or refresh and retry.');
-      } else {
-        setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
-      }
+      setError(
+        resolveCatchError(err, { timeoutKey: 'toolPage.errors.protectionTimeout' })
+      );
     } finally {
       window.clearTimeout(timeoutId);
       setProcessing(false);

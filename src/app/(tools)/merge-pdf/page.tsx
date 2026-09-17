@@ -4,7 +4,8 @@ import { useState, useRef, useCallback } from 'react';
 import { ToolPageShell } from '@/components/layout/tool-page-shell';
 import { mapFaqs, mapRelatedTools } from '@/components/tools/tool-helpers';
 import { MergePdfWorkspace } from '@/components/tools/lazy-workspaces';
-import { ToolDropzone, ToolErrorBanner } from '@/components/tools/tool-ui';
+import { ToolDropzone, ToolErrorBanner, PdfPasswordInfoBanner } from '@/components/tools/tool-ui';
+import { useToolErrors } from '@/hooks/use-tool-errors';
 
 const RELATED_TOOLS = [
   { name: 'Split PDF', href: '/split-pdf' },
@@ -17,7 +18,7 @@ const FAQS = [
   { q: 'Is there a limit to how many PDFs I can merge?', a: 'You can merge up to 20 PDF files at once (50 for Pro). File size limits follow your plan — see Pricing for current limits.' },
   { q: 'Will the merged PDF keep the original formatting?', a: 'Yes, merging preserves all formatting, images, links, and bookmarks from the original documents.' },
   { q: 'Can I reorder the files before merging?', a: 'Yes! Drag files in the grid or use the + buttons to add documents in the order you want.' },
-  { q: 'Is my data secure?', a: 'All uploaded files are processed securely and automatically deleted from our servers after processing.' },
+  { q: 'Is my data secure?', a: 'Uploads use HTTPS/TLS and follow the published retention window: up to 2 hours on Free and 24 hours on Pro.' },
 ];
 
 function isPdfFile(file: File) {
@@ -25,7 +26,9 @@ function isPdfFile(file: File) {
 }
 
 export default function MergePdfPage() {
+  const { upload } = useToolErrors();
   const [sessionFiles, setSessionFiles] = useState<File[] | null>(null);
+  const [workspaceKey, setWorkspaceKey] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,18 +36,23 @@ export default function MergePdfPage() {
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
     const pdfFiles = Array.from(newFiles).filter(isPdfFile);
     if (pdfFiles.length === 0) {
-      setUploadError('Please select PDF files only.');
+      setUploadError(upload.pdfOnly);
       return;
     }
-    setSessionFiles((prev) => (prev ? [...prev, ...pdfFiles] : pdfFiles));
+    setSessionFiles(pdfFiles);
+    setWorkspaceKey((key) => key + 1);
     setUploadError(null);
-  }, []);
+  }, [upload]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
     handleFiles(e.dataTransfer.files);
   }, [handleFiles]);
+
+  const handleWorkspaceEmpty = useCallback(() => {
+    setSessionFiles(null);
+  }, []);
 
   const showWorkspace = sessionFiles !== null && sessionFiles.length > 0;
 
@@ -74,7 +82,7 @@ export default function MergePdfPage() {
             fileInputMultiple
             onFileInputChange={(e) => e.target.files && handleFiles(e.target.files)}
           />
-          
+          <PdfPasswordInfoBanner className="mt-3" />
           {uploadError && <ToolErrorBanner message={uploadError} />}
           <p className="mt-4 text-center text-xs text-pd-muted">
             After upload you&apos;ll see a file grid with page thumbnails — drag to reorder before merging.
@@ -83,9 +91,9 @@ export default function MergePdfPage() {
       ) : (
         <div className="w-full">
           <MergePdfWorkspace
+            key={workspaceKey}
             initialFiles={sessionFiles}
-            onFilesChange={setSessionFiles}
-            onReset={() => setSessionFiles(null)}
+            onEmpty={handleWorkspaceEmpty}
           />
         </div>
       )}

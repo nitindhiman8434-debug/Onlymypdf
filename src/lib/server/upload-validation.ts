@@ -12,22 +12,36 @@ export async function validateSingleUpload(
   allowedCategories: string[],
   maxSizeMB: number
 ): Promise<UploadValidationResult> {
-  if (!isValidFileType(file, allowedCategories)) {
-    return { ok: false, error: "Invalid file type.", status: 400 };
-  }
+  try {
+    if (!isValidFileType(file, allowedCategories)) {
+      return { ok: false, error: "Invalid file type.", status: 400 };
+    }
 
-  const sizeCheck = validateFileSize(file, maxSizeMB);
-  if (!sizeCheck.valid) {
-    return { ok: false, error: sizeCheck.message, status: 400 };
-  }
+    const sizeCheck = validateFileSize(file, maxSizeMB);
+    if (!sizeCheck.valid) {
+      return { ok: false, error: sizeCheck.message, status: 400 };
+    }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const magic = validateBufferMagic(buffer, allowedCategories);
-  if (!magic.valid) {
-    return { ok: false, error: magic.message ?? "Invalid file content.", status: 400 };
-  }
+    let buffer: Buffer;
+    try {
+      buffer = Buffer.from(await file.arrayBuffer());
+    } catch {
+      return { ok: false, error: "Could not read uploaded file.", status: 400 };
+    }
 
-  return { ok: true, buffer };
+    if (buffer.length === 0) {
+      return { ok: false, error: "File is empty.", status: 400 };
+    }
+
+    const magic = validateBufferMagic(buffer, allowedCategories);
+    if (!magic.valid) {
+      return { ok: false, error: magic.message ?? "Invalid file content.", status: 400 };
+    }
+
+    return { ok: true, buffer };
+  } catch {
+    return { ok: false, error: "Upload validation failed.", status: 400 };
+  }
 }
 
 export async function validateMultipleUploads(

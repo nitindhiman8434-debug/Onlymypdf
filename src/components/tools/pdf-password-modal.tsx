@@ -29,6 +29,27 @@ export function PdfPasswordModal({
     inputRef.current?.focus();
   }, []);
 
+  const cancelInProgressRef = useRef(false);
+  const onCancelRef = useRef(onCancel);
+  onCancelRef.current = onCancel;
+
+  const handleBackdropCancel = useCallback(() => {
+    if (cancelInProgressRef.current || loading) return;
+    cancelInProgressRef.current = true;
+    onCancelRef.current();
+    queueMicrotask(() => {
+      cancelInProgressRef.current = false;
+    });
+  }, [loading]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleBackdropCancel();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [handleBackdropCancel]);
+
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
@@ -40,17 +61,21 @@ export function PdfPasswordModal({
   const shortName = fileName.length > 32 ? `${fileName.slice(0, 29)}…` : fileName;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      onClick={handleBackdropCancel}
+    >
       <div
         ref={dialogRef}
         className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
-          onClick={onCancel}
+          onClick={handleBackdropCancel}
           aria-label="Close password dialog"
           className="absolute right-3 top-3 rounded-full p-1 text-pd-muted hover:bg-slate-100 hover:text-pd-foreground"
         >
@@ -107,7 +132,7 @@ export function PdfPasswordModal({
           <div className="mt-5 flex items-center justify-end gap-3">
             <button
               type="button"
-              onClick={onCancel}
+              onClick={handleBackdropCancel}
               disabled={loading}
               className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-pd-foreground hover:bg-slate-50 disabled:opacity-60"
             >

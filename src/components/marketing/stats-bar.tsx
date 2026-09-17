@@ -1,6 +1,6 @@
 "use client";
 
-import { Wrench, Timer, Infinity, Globe } from "lucide-react";
+import { Wrench, Timer, FileUp, CalendarCheck } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils/cn";
 
@@ -16,7 +16,7 @@ interface StatItem {
 
 const STATS: StatItem[] = [
   {
-    value: "12+",
+    value: "20+",
     labelKey: "landing.statTools",
     icon: Wrench,
     gradient: "from-blue-500 to-indigo-600",
@@ -34,18 +34,18 @@ const STATS: StatItem[] = [
     accent: "text-rose-600",
   },
   {
-    value: "∞",
+    value: "25 MB",
     labelKey: "landing.statLimit",
-    icon: Infinity,
+    icon: FileUp,
     gradient: "from-amber-500 to-orange-600",
     iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
     glow: "bg-amber-400/25",
     accent: "text-amber-600",
   },
   {
-    value: "100%",
+    value: "5/day",
     labelKey: "landing.statBrowser",
-    icon: Globe,
+    icon: CalendarCheck,
     gradient: "from-emerald-500 to-teal-600",
     iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
     glow: "bg-emerald-400/25",

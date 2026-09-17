@@ -30,7 +30,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Is my data safe when merging PDFs online?",
         answer:
-          "Absolutely. All files are transferred using 256-bit SSL encryption and are automatically deleted from our servers within 2 hours of processing.",
+          "Files are transferred over HTTPS/TLS and scheduled for deletion within 2 hours (Free) or 24 hours (Pro).",
       },
     ],
   },
@@ -64,20 +64,20 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "compress-pdf": {
     title: "Compress PDF — Reduce PDF File Size Online | OnlyMyPDF",
     metaDescription:
-      "Compress PDF files to reduce size without losing quality. Choose from multiple compression levels. Free, fast, and secure.",
+      "Compress PDF files with lossless Basic mode or smaller Strong mode. Strong mode can flatten searchable text and interactive content.",
     h1: "Compress PDF — Reduce File Size Instantly",
     seoContent:
-      "Reduce the size of your PDF files without sacrificing quality. OnlyMyPDF's Compress PDF tool offers three compression levels — low, medium, and high — so you can find the perfect balance between file size and quality. Ideal for emailing large documents, uploading to portals with size limits, or saving storage space. Our intelligent compression algorithm preserves text clarity and image quality while significantly reducing file size.",
+      "Basic compression applies lossless structural optimization and returns the original file when savings would be insignificant. Strong compression rasterizes pages for larger reductions, which can flatten searchable text, links, forms, and bookmarks. The result screen reports the actual method and size change.",
     faqs: [
       {
         question: "How much can I reduce my PDF file size?",
         answer:
-          "Depending on the content and compression level you choose, you can typically reduce PDF file sizes by 30% to 80%. Image-heavy PDFs see the most significant size reductions.",
+          "Savings depend on the PDF. Basic mode may return the original when no meaningful lossless saving is possible. Strong mode usually helps most on image-heavy files, and the exact before/after size is shown.",
       },
       {
         question: "Will compression affect the quality of my PDF?",
         answer:
-          "Our low compression setting maintains near-original quality. Medium offers a good balance, and high compression prioritizes smaller file size which may slightly reduce image quality while keeping text sharp.",
+          "Basic mode is lossless. Strong mode rasterizes pages, so it can reduce image quality and flatten searchable text, links, forms, and bookmarks.",
       },
       {
         question: "What is the maximum file size I can compress?",
@@ -121,15 +121,15 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "word-to-pdf": {
     title: "Word to PDF — Convert DOCX to PDF Online | OnlyMyPDF",
     metaDescription:
-      "Convert Word documents (.doc, .docx) to PDF format online for free. Perfect formatting preservation. Fast and secure.",
+      "Convert Word documents (.doc, .docx) to PDF online with layout-aware rendering. Fast and secure.",
     h1: "Convert Word to PDF — Free Online Tool",
     seoContent:
-      "Convert your Word documents to PDF format with perfect formatting preservation. OnlyMyPDF's Word to PDF converter handles .doc and .docx files, maintaining all your fonts, images, tables, headers, and footers exactly as they appear in the original document. Ideal for sharing professional documents, submitting assignments, or creating print-ready files. The resulting PDF looks identical on every device and platform.",
+      "Convert Word documents to PDF using a server-side office rendering engine. Common fonts, images, tables, headers, and footers are retained when supported; complex layouts or unavailable fonts can render differently, so preview the result before sharing or printing.",
     faqs: [
       {
         question: "Will the formatting be preserved in the PDF?",
         answer:
-          "Yes, our converter maintains the formatting of your Word document including fonts, images, tables, margins, headers, and footers in the output PDF.",
+          "The converter preserves common fonts, images, tables, margins, headers, and footers when supported. Complex layouts and unavailable fonts can vary, so preview the output before use.",
       },
       {
         question: "Can I convert .doc files (older Word format)?",
@@ -178,10 +178,10 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "html-to-pdf": {
     title: "HTML to PDF — Convert HTML Pages to PDF Online | OnlyMyPDF",
     metaDescription:
-      "Convert HTML files to pixel-perfect PDF documents online for free. Supports CSS, images, SVG, and complex layouts. Fast and accurate.",
-    h1: "Convert HTML to PDF — Pixel Perfect Results",
+      "Render HTML files to PDF with Chromium. Supports embedded CSS, images, SVG, and complex layouts while blocking scripts and external requests for safety.",
+    h1: "Convert HTML to PDF — Chromium Rendering",
     seoContent:
-      "Convert any HTML page to a professional PDF document with OnlyMyPDF's HTML to PDF converter. Our tool renders your HTML exactly as a browser would — supporting full CSS (Flexbox, Grid, animations), embedded images, SVG graphics, web fonts, and complex layouts. Upload your .html, .htm, .xhtml, or .svg file and get a pixel-perfect PDF. Customize page size (A4, Letter, Auto), orientation (Portrait, Landscape), and margins. Perfect for converting web reports, dashboards, invoices, resumes, and documentation to PDF format.",
+      "Render HTML files to PDF with a Chromium print engine. Embedded CSS, Flexbox, Grid, data images, SVG, media queries, and print styles are supported. For safety, JavaScript and external network or file requests are blocked, so embed required fonts and images. Choose A4, Letter, or CSS page size, orientation, and margins.",
     faqs: [
       {
         question: "What file types can I convert?",
@@ -191,7 +191,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Will CSS styles be preserved in the PDF?",
         answer:
-          "Yes, our converter renders HTML with full CSS support including Flexbox, Grid, animations, custom fonts, media queries, and print stylesheets. The PDF output matches what you see in a browser.",
+          "The Chromium print engine supports embedded CSS including Flexbox, Grid, media queries, and print styles. JavaScript is disabled and external resources are blocked, so embed required fonts and images for consistent output.",
       },
       {
         question: "Can I customize the PDF page size?",
@@ -272,10 +272,10 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "ai-pdf-summarizer": {
     title: "AI PDF Summarizer — Get Instant PDF Summary | OnlyMyPDF",
     metaDescription:
-      "Use AI to summarize your PDF documents instantly. Get key points, summaries, and insights powered by advanced AI. Pro feature.",
+      "Use AI to summarize PDF text and get key points, action items, and important dates. Signed-in Free users get 1 summary per day; Pro users get unlimited summaries.",
     h1: "AI PDF Summarizer — Instant Summaries & Insights",
     seoContent:
-      "Let AI read your PDF and provide a concise summary in seconds. OnlyMyPDF's AI PDF Summarizer uses advanced language models to extract key points, main ideas, and important details from your documents. Perfect for research papers, reports, legal documents, and lengthy articles. Get a structured summary with bullet points, main themes, and actionable insights. Available exclusively for Pro users with a login account.",
+      "Let AI read extracted text from your PDF and provide a structured summary with key points, main ideas, important dates, and action items. It works best on text-heavy documents; scanned or image-heavy files may require OCR. A login is required. Signed-in Free users get 1 summary per day and Pro users get unlimited summaries, subject to service availability.",
     faqs: [
       {
         question: "How does the AI PDF Summarizer work?",
@@ -295,7 +295,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Is this tool free to use?",
         answer:
-          "The AI PDF Summarizer is a Pro feature that requires both a login account and a Pro subscription.",
+          "A login account is required. Signed-in Free users get 1 AI summary per day; Pro users get unlimited AI summaries, subject to service availability.",
       },
       {
         question: "How long does summarization take?",
@@ -337,7 +337,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       "Remove password protection from your PDF files online. You must know the password. Free, fast, and secure.",
     h1: "Unlock PDF — Remove Password Protection",
     seoContent:
-      "Remove password protection from your PDF files easily with OnlyMyPDF. If you know the password to your protected PDF, our tool can remove the restriction so you can freely open, print, and edit the document without entering a password each time. This tool is designed for legitimate use — you must provide the correct password to unlock the document. Your files are processed securely and deleted automatically after processing.",
+      "Remove an open password from a PDF you own or are authorized to access. You must provide the correct password. Uploads use HTTPS/TLS and follow the published file-retention window.",
     faqs: [
       {
         question: "Can I unlock a PDF without the password?",
@@ -363,17 +363,17 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       "Add password protection to your PDF files online. Set open and permission passwords. Secure your sensitive documents for free.",
     h1: "Protect PDF — Add Password & Encrypt",
     seoContent:
-      "Secure your sensitive PDF documents with password protection using OnlyMyPDF. Set a password that recipients must enter to open the document, and optionally set permissions to control whether the document can be printed, edited, or copied. Our tool uses strong AES-256 encryption to ensure your documents are genuinely secure. Perfect for confidential reports, financial documents, legal files, and any sensitive information you need to share safely.",
+      "Add an AES-256 open password to a PDF so recipients must enter it before viewing the document. Use a unique, strong password and share it through a separate channel.",
     faqs: [
       {
         question: "What type of encryption is used?",
         answer:
-          "We use AES-256 encryption, which is the same encryption standard used by banks and government agencies, to protect your PDF documents.",
+          "The generated PDF uses AES-256 password encryption.",
       },
       {
         question: "Can I set different permissions?",
         answer:
-          "Yes, you can set a password to open the document and optionally restrict permissions for printing, editing, copying text, and adding annotations.",
+          "This version sets an open password. Separate printing, editing, copying, and annotation permission controls are not currently exposed.",
       },
       {
         question: "Can I remove the password later?",
@@ -431,7 +431,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "pdf-to-ppt": {
     title: "PDF to PowerPoint — Convert PDF to PPTX Online | OnlyMyPDF",
     metaDescription:
-      "Convert PDF files to PowerPoint presentations (.pptx) online for free. Turn PDF pages into editable slides.",
+      "Convert PDF files to PowerPoint presentations (.pptx) online. Each PDF page becomes a full-slide image; the page appearance is preserved but individual text, chart, link, and form elements are not editable.",
     h1: "Convert PDF to PowerPoint — Free Online Tool",
     seoContent:
       "Transform PDF pages into a PowerPoint presentation (.pptx). Each PDF page is rendered as a full slide image that preserves layout, fonts, and graphics — ideal for repurposing reports and invoices into presentations.",
@@ -443,7 +443,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       },
       {
         question: "Can I edit the slides after conversion?",
-        answer: "Yes, the output .pptx file opens in Microsoft PowerPoint, Google Slides, and other compatible apps.",
+        answer: "The .pptx file opens in PowerPoint and compatible apps, and slides can be reordered or annotated. The original page content is a flattened image, so individual text, charts, links, and form elements are not editable.",
       },
     ],
   },
@@ -507,7 +507,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Does rotating affect PDF quality?",
         answer:
-          "No, rotation only changes page orientation metadata. Your content, images, and text remain pixel-perfect with zero quality loss.",
+          "Rotation changes page orientation without rasterizing the page, so existing text and images are copied without image recompression.",
       },
       {
         question: "Can I add pages from another PDF?",
@@ -537,7 +537,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Does deleting pages affect PDF quality?",
         answer:
-          "No, the remaining pages keep their original quality, content, images, and text — completely unchanged and pixel-perfect.",
+          "The remaining pages are copied into the result without rasterizing their text or images.",
       },
       {
         question: "Can I add pages from another PDF?",
@@ -567,7 +567,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Does extracting pages affect quality?",
         answer:
-          "No, pages are copied at their original quality. Your content, images, and text remain pixel-perfect with zero quality loss.",
+          "Selected pages are copied into the result without rasterizing their text or images.",
       },
       {
         question: "Can I add pages from another PDF before extracting?",

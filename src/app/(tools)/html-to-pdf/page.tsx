@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   Code2,
   Download,
@@ -25,6 +25,8 @@ import Link from "next/link";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { useConversionProgress } from "@/hooks/use-conversion-progress";
 import { PdfResultWorkspaceViewer } from "@/components/tools/pdf-result-workspace-viewer";
+import { sanitizeHtmlPreview, HTML_PREVIEW_WARNING } from "@/lib/security/sanitize-html-preview";
+import { useToolErrors } from "@/hooks/use-tool-errors";
 
 type PageSize = "a4" | "letter" | "auto";
 type Orientation = "portrait" | "landscape";
@@ -40,6 +42,7 @@ const RELATED_TOOLS = [
 const ACCEPTED_EXTENSIONS = ".html,.htm,.xhtml,.mhtml,.svg";
 
 export default function HtmlToPdfPage() {
+  const { upload, resolveApiError, resolveCatchError } = useToolErrors();
   const [file, setFile] = useState<File | null>(null);
   const [htmlPreview, setHtmlPreview] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -56,14 +59,19 @@ export default function HtmlToPdfPage() {
   const [margin, setMargin] = useState<Margin>("small");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { progress, start: startProgress, complete: completeProgress, stop: stopProgress, reset: resetProgress } =
-    useConversionProgress({ cap: 96, intervalMs: 400 });
+  const {
+    progress,
+    start: startProgress,
+    complete: completeProgress,
+    stop: stopProgress,
+    reset: resetProgress,
+    advanceTo,
+  } = useConversionProgress({ cap: 96, intervalMs: 400 });
 
   const handleFile = useCallback((picked: File) => {
     const ext = picked.name.split(".").pop()?.toLowerCase() ?? "";
     if (!["html", "htm", "xhtml", "mhtml", "svg"].includes(ext)) {
-      setError("Invalid file type. Only HTML, HTM, XHTML, MHTML, and SVG files are accepted.");
+      setError(upload.htmlFilesOnly);
       return;
     }
     setFile(picked);
@@ -78,7 +86,7 @@ export default function HtmlToPdfPage() {
       setHtmlPreview(reader.result as string);
     };
     reader.readAsText(picked);
-  }, []);
+  }, [upload]);
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -114,9 +122,10 @@ export default function HtmlToPdfPage() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error((data as { error?: string }).error || "Failed to convert HTML to PDF.");
+        throw new Error(resolveApiError(data, "errors.processingFailed"));
       }
 
+      advanceTo(96);
       const blob = await res.blob();
       completeProgress();
       setResultUrl(URL.createObjectURL(blob));
@@ -127,13 +136,9 @@ export default function HtmlToPdfPage() {
       );
       setCompleted(true);
     } catch (err) {
-      const message =
-        err instanceof DOMException && err.name === "AbortError"
-          ? "Conversion timed out. Large HTML files can take 3–5 minutes — please try again."
-          : err instanceof Error
-            ? err.message
-            : "An unexpected error occurred.";
-      setError(message);
+      setError(
+        resolveCatchError(err, { timeoutKey: "toolPage.errors.htmlConversionTimeout" })
+      );
       stopProgress();
     } finally {
       window.clearTimeout(timeoutId);
@@ -156,18 +161,7 @@ export default function HtmlToPdfPage() {
   };
 
   const resultFileName = file?.name.replace(/\.(html?|xhtml|mhtml|svg)$/i, ".pdf") ?? "converted.pdf";
-
-  useEffect(() => {
-    if (htmlPreview && iframeRef.current) {
-      const iframe = iframeRef.current;
-      const doc = iframe.contentDocument || iframe.contentWindow?.document;
-      if (doc) {
-        doc.open();
-        doc.write(htmlPreview);
-        doc.close();
-      }
-    }
-  }, [htmlPreview]);
+  const safeHtmlPreview = htmlPreview ? sanitizeHtmlPreview(htmlPreview) : null;
 
   /* ─── Result View ─── */
   if (completed && resultUrl) {
@@ -257,7 +251,7 @@ export default function HtmlToPdfPage() {
         </div>
         <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">HTML to PDF</h1>
         <p className="mt-1.5 text-sm text-pd-muted">
-          Convert HTML pages to pixel-perfect PDF documents
+          Render HTML pages to PDF with a secured Chromium print engine
         </p>
       </div>
 
@@ -410,11 +404,14 @@ export default function HtmlToPdfPage() {
                 Live Preview
               </span>
             </div>
+            <p className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+              {HTML_PREVIEW_WARNING}
+            </p>
             <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-              {htmlPreview ? (
+              {safeHtmlPreview ? (
                 <iframe
-                  ref={iframeRef}
-                  sandbox="allow-same-origin"
+                  sandbox=""
+                  srcDoc={safeHtmlPreview}
                   className="h-[50vh] w-full"
                   title="HTML Preview"
                 />
@@ -453,12 +450,12 @@ export default function HtmlToPdfPage() {
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { icon: Globe, title: "Pixel Perfect", desc: "Renders HTML exactly as a browser does — CSS, images, fonts, layouts" },
-            { icon: Code2, title: "Full CSS Support", desc: "Handles Flexbox, Grid, animations, media queries, and print styles" },
+            { icon: Globe, title: "Chromium Rendering", desc: "Renders embedded CSS, images, fonts, SVG, and layouts" },
+            { icon: Code2, title: "Modern CSS", desc: "Handles Flexbox, Grid, media queries, and print styles" },
             { icon: Eye, title: "Live Preview", desc: "See your HTML rendered before converting — what you see is what you get" },
             { icon: Settings2, title: "Customizable", desc: "Choose page size, orientation, and margins for your PDF output" },
             { icon: FileText, title: "Any HTML", desc: "Works with complex pages, SVGs, charts, dashboards, and reports" },
-            { icon: CheckCircle2, title: "Privacy First", desc: "Files are processed on our servers and auto-deleted after 2 hours" },
+            { icon: CheckCircle2, title: "Limited Retention", desc: "Free-plan files are scheduled for deletion within 2 hours" },
           ].map((feat) => (
             <div
               key={feat.title}

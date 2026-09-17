@@ -9,9 +9,13 @@ export type WorkspacePageSlot =
       sessionId: string;
     };
 
-export function createOriginalSlots(pageCount: number): WorkspacePageSlot[] {
+export function createOriginalSlots(
+  pageCount: number,
+  scopeKey?: string
+): WorkspacePageSlot[] {
+  const scope = scopeKey ? `${scopeKey}:` : "";
   return Array.from({ length: pageCount }, (_, i) => ({
-    id: `orig-${i + 1}`,
+    id: `${scope}orig-${i + 1}`,
     kind: "original" as const,
     page: i + 1,
   }));

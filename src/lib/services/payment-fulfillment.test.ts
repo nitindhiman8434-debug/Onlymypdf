@@ -9,9 +9,11 @@ vi.mock("@/lib/db/queries", () => ({
   updatePayment: vi.fn(),
   updateUserProfile: vi.fn(),
   incrementCouponUsage: vi.fn(),
+  decrementCouponUsage: vi.fn(),
   claimPaymentForFulfillment: vi.fn(),
   finalizeClaimedPayment: vi.fn(),
   releasePaymentClaim: vi.fn(),
+  markCouponRedeemed: vi.fn(),
   getUserProfile: vi.fn(),
   getUserSubscription: vi.fn(),
   updateSubscription: vi.fn(),
@@ -31,6 +33,7 @@ import {
   getPlanUuidByName,
   createSubscription,
   updateUserProfile,
+  incrementCouponUsage,
   claimPaymentForFulfillment,
   finalizeClaimedPayment,
   getUserProfile,
@@ -65,6 +68,7 @@ describe("fulfillPendingPayment", () => {
     vi.mocked(updateUserProfile).mockResolvedValue(undefined as never);
     vi.mocked(getUserProfile).mockResolvedValue({ plan: "free" } as never);
     vi.mocked(getUserSubscription).mockResolvedValue(null);
+    vi.mocked(incrementCouponUsage).mockResolvedValue(true);
   });
 
   it("rejects amount mismatch from webhook", async () => {
@@ -141,5 +145,41 @@ describe("fulfillPendingPayment", () => {
 
     expect(result.ok).toBe(true);
     expect(createSubscription).toHaveBeenCalled();
+  });
+
+  it("rejects fulfillment when coupon usage is exhausted", async () => {
+    vi.mocked(getPaymentByRazorpayOrderId).mockResolvedValue({
+      id: "pay-1",
+      user_id: "user-1",
+      status: "pending",
+      amount: 99,
+      plan_name: "pro",
+      plan_duration: "monthly",
+      coupon_code: "SAVE50",
+    } as never);
+    vi.mocked(claimPaymentForFulfillment).mockResolvedValue({
+      id: "pay-1",
+      user_id: "user-1",
+      status: "processing",
+      amount: 99,
+      plan_name: "pro",
+      plan_duration: "monthly",
+      coupon_code: "SAVE50",
+    } as never);
+    vi.mocked(incrementCouponUsage).mockResolvedValue(false);
+
+    const result = await fulfillPendingPayment({
+      razorpay_order_id: "order_1",
+      razorpay_payment_id: "pay_1",
+      amount: 9900,
+      requireSignature: false,
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toBe("Coupon is no longer available");
+      expect(result.status).toBe(409);
+    }
+    expect(updateUserProfile).not.toHaveBeenCalled();
   });
 });

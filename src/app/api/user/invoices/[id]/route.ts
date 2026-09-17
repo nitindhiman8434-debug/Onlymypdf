@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tryGetApiUser } from "@/lib/auth/get-api-user";
 import { getInvoiceForUser, renderInvoicePdf } from "@/lib/billing/invoice.service";
+import { guardGeneralApiRateLimit } from "@/lib/server/rate-limiter";
+import { guardSensitiveReadOrigin } from "@/lib/server/mutation-origin";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  const rateLimited = await guardGeneralApiRateLimit(request);
+  if (rateLimited) return rateLimited;
+
+  const originBlocked = guardSensitiveReadOrigin(request);
+  if (originBlocked) return originBlocked;
+
   const auth = await tryGetApiUser();
   if (!auth.ok) return auth.response;
   const user = auth.user;

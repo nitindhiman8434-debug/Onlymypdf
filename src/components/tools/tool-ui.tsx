@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useId, type ChangeEvent, type InputHTMLAttributes, type RefObject } from "react";
-import { Loader2, Download, AlertCircle, Upload, FileUp, Check } from "lucide-react";
+import { Loader2, Download, AlertCircle, Upload, FileUp, Check, Info } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { formatFileSize } from "@/lib/utils/file";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,22 @@ export function ToolUploadSizeHint({
     <div className={cn("space-y-0.5 text-xs text-pd-muted/90", className)}>
       {formatNote ? <p>{formatNote}</p> : null}
       <p className="text-balance">{formatUploadSizeDisplay(sizeLine)}</p>
+    </div>
+  );
+}
+
+/** Shown on PDF tools that prompt for a password via PdfPasswordModal. */
+export function PdfPasswordInfoBanner({ className }: { className?: string }) {
+  const { t } = useTranslation();
+  return (
+    <div
+      className={cn(
+        "flex items-start gap-2 rounded-lg bg-pd-brand-muted/50 p-3 text-sm text-pd-foreground",
+        className
+      )}
+    >
+      <Info className="mt-0.5 h-4 w-4 shrink-0 text-pd-brand" aria-hidden />
+      <p>{t("toolPage.pdfPasswordUploadHint")}</p>
     </div>
   );
 }
@@ -309,8 +325,8 @@ export function ToolSuccessPanel({
 
       <div className="mt-6 flex w-full flex-col items-center gap-3">
         {showSizeBadge ? <ToolResultSizeBadge sizeBytes={resultSizeBytes} /> : null}
-        <a href={downloadUrl} download={downloadFilename} className="w-full">
-          <Button size="lg" className="h-11 w-full gap-2 font-semibold">
+        <a href={downloadUrl} download={downloadFilename}>
+          <Button size="lg" className="h-11 min-w-[13rem] gap-2 px-8 font-semibold">
             <Download className="h-4 w-4" />
             {downloadLabel}
           </Button>

@@ -20,12 +20,12 @@ const CARDS: {
   badgeBg?: string;
   accent: string;
 }[] = [
-  { id: "users", icon: Users, iconBg: "bg-gradient-to-br from-blue-500 to-blue-600", badge: "10K+", badgeBg: "bg-blue-500", accent: "from-blue-50 to-white" },
-  { id: "business", icon: Star, iconBg: "bg-gradient-to-br from-amber-400 to-orange-500", badge: "4.9/5", badgeBg: "bg-amber-500", accent: "from-amber-50 to-white" },
+  { id: "users", icon: Users, iconBg: "bg-gradient-to-br from-blue-600 to-blue-700", badge: "20+ tools", badgeBg: "bg-blue-800", accent: "from-blue-50 to-white" },
+  { id: "business", icon: Star, iconBg: "bg-gradient-to-br from-amber-600 to-orange-700", badge: "Clear limits", badgeBg: "bg-amber-800", accent: "from-amber-50 to-white" },
   { id: "everywhere", icon: Globe, iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600", accent: "from-emerald-50 to-white" },
-  { id: "support", icon: MessageCircle, iconBg: "bg-gradient-to-br from-violet-500 to-purple-600", badge: "24/7", badgeBg: "bg-violet-500", accent: "from-violet-50 to-white" },
-  { id: "encryption", icon: Lock, iconBg: "bg-gradient-to-br from-rose-500 to-pink-600", badge: "256-Bit", badgeBg: "bg-rose-500", accent: "from-rose-50 to-white" },
-  { id: "standards", icon: ShieldCheck, iconBg: "bg-gradient-to-br from-cyan-500 to-sky-600", badge: "GDPR", badgeBg: "bg-cyan-600", accent: "from-cyan-50 to-white" },
+  { id: "support", icon: MessageCircle, iconBg: "bg-gradient-to-br from-violet-600 to-purple-700", badge: "Contact", badgeBg: "bg-violet-800", accent: "from-violet-50 to-white" },
+  { id: "encryption", icon: Lock, iconBg: "bg-gradient-to-br from-rose-600 to-pink-700", badge: "HTTPS", badgeBg: "bg-rose-800", accent: "from-rose-50 to-white" },
+  { id: "standards", icon: ShieldCheck, iconBg: "bg-gradient-to-br from-cyan-700 to-sky-800", badge: "Privacy", badgeBg: "bg-cyan-900", accent: "from-cyan-50 to-white" },
 ];
 
 export function WhyChooseSection() {

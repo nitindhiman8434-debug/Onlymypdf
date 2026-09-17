@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "node --max-old-space-size=4096 ./node_modules/next/dist/bin/next dev --webpack",
-    "build": "next build --webpack",
+    "build": "node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:pdf-to-word-quality": "vitest run src/lib/services/pdf-to-word-quality.ci.test.ts src/lib/services/pdf-to-word-hints.test.ts src/lib/services/pdf-to-word-hints.safety.test.ts src/lib/services/tool-isolation.test.ts src/lib/services/pdf-to-word-convertapi.service.test.ts src/lib/services/pdf-to-word-docx-post.test.ts src/lib/server/upload-validation.test.ts",
+    "verify:pdf-to-word": "npx tsx scripts/verify-pdf-to-word-fixes.ts",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install --with-deps chromium",
@@ -22,11 +24,28 @@
     "clean:next": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\""
   },
   "overrides": {
-    "postcss": "^8.5.10",
+    "postcss": "^8.5.28",
     "esbuild": "^0.25.0",
-    "tar": "^7.5.19",
-    "muhammara": {
-      "tar": "^7.5.19"
+    "tar": "^7.5.22",
+    "axios": "^1.20.0",
+    "browserslist": "^4.29.0",
+    "dompurify": "^3.4.15",
+    "fast-uri": "^3.1.8",
+    "image-size": "^2.0.4",
+    "js-yaml": "^4.3.2",
+    "undici": "^7.29.1",
+    "@xmldom/xmldom": "^0.9.12",
+    "docx": {
+      "nanoid": "^5.1.16"
+    },
+    "minimatch@^3": {
+      "brace-expansion": "^1.1.21"
+    },
+    "minimatch@^5": {
+      "brace-expansion": "^2.1.7"
+    },
+    "minimatch@^10": {
+      "brace-expansion": "^5.0.12"
     },
     "exceljs": {
       "uuid": "^11.1.1"
@@ -53,12 +72,12 @@
     "date-fns": "^4.2.1",
     "docx": "^9.7.0",
     "exceljs": "^4.4.0",
+    "isomorphic-dompurify": "^3.18.0",
     "jszip": "^3.10.1",
     "libreoffice-convert": "^1.8.1",
     "lucide-react": "^1.16.0",
     "mammoth": "^1.12.0",
-    "muhammara": "^6.0.5",
-    "next": "16.2.6",
+    "next": "16.3.5",
     "pdf-lib": "^1.17.1",
     "pdf-parse": "^2.4.5",
     "pdfjs-dist": "^5.4.296",
@@ -68,7 +87,7 @@
     "razorpay": "^2.9.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.4",
     "tailwind-merge": "^3.6.0",
     "uuid": "^14.0.0",
     "xlsx": "npm:@e965/xlsx@^0.20.3",
@@ -85,7 +104,7 @@
     "@types/uuid": "^10.0.0",
     "@vitest/coverage-v8": "^3.2.6",
     "eslint": "^9",
-    "eslint-config-next": "16.2.6",
+    "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.2.4"

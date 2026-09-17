@@ -37,10 +37,18 @@ On Error GoTo 0
 
 wordApp.Visible = False
 wordApp.DisplayAlerts = 0
+' Uploaded documents are untrusted: block macros and never fetch external refs.
+wordApp.AutomationSecurity = 3
+' Optional Word.Options properties vary by Office version — ignore if unsupported.
+On Error Resume Next
+wordApp.Options.ConfirmConversions = False
+wordApp.Options.PromptUpdateLinks = False
+wordApp.Options.UpdateLinksAtOpen = False
+On Error GoTo 0
 
 Dim doc
 On Error Resume Next
-Set doc = wordApp.Documents.Open(inputPath, False, True)
+Set doc = wordApp.Documents.Open(inputPath, False, True, False, "", "", True, , , , False, , False)
 If Err.Number <> 0 Then
     WScript.Echo "ERROR: Cannot open document - " & Err.Description
     wordApp.Quit 0

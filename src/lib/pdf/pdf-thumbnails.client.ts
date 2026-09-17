@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  isPasswordRequiredPayload,
+  isWrongPasswordPayload,
+} from "@/lib/client/pdf-password-errors";
+
 const MAX_THUMBNAIL_PAGES = 500;
 
 function appendPdfToForm(formData: FormData, file: File) {
@@ -43,7 +48,7 @@ async function createPdfSession(
     };
 
     if (!res.ok) {
-      if (data.code === "password_required") {
+      if (isPasswordRequiredPayload(data)) {
         return {
           sessionId: "",
           totalPages: 0,
@@ -52,7 +57,7 @@ async function createPdfSession(
           fileName: data.fileName ?? file.name,
         };
       }
-      if (data.code === "wrong_password") {
+      if (isWrongPasswordPayload(data)) {
         return {
           sessionId: "",
           totalPages: 0,

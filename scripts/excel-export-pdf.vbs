@@ -38,10 +38,16 @@ On Error GoTo 0
 excelApp.Visible = False
 excelApp.DisplayAlerts = False
 excelApp.ScreenUpdating = False
+' Uploaded workbooks are untrusted: block macros and never fetch external refs.
+excelApp.AutomationSecurity = 3
+On Error Resume Next
+excelApp.AskToUpdateLinks = False
+On Error GoTo 0
 
 Dim wb
 On Error Resume Next
-Set wb = excelApp.Workbooks.Open(inputPath, False, True)
+' UpdateLinks:=0 stops Excel resolving external workbook / DDE references.
+Set wb = excelApp.Workbooks.Open(inputPath, 0, True)
 If Err.Number <> 0 Then
     WScript.Echo "ERROR: Cannot open workbook - " & Err.Description
     excelApp.Quit

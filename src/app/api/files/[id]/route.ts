@@ -4,11 +4,12 @@ import { deleteFile, getFileUrl } from "@/lib/services/upload.service";
 import { getUploadedFileById, deleteUploadedFileRecord, logError } from "@/lib/db/queries";
 import { createClient } from "@/lib/supabase/server";
 import { assertMfaAal2Satisfied } from "@/lib/auth/mfa-assurance";
+import { assertAccountActive } from "@/lib/auth/account-status";
 import { authGuardResponse } from "@/lib/server/auth-guard-http";
 import { sanitizeFilename } from "@/lib/utils/file";
 import { toSafeApiError } from "@/lib/server/safe-error";
 import { getGuestSessionIdFromRequest } from "@/lib/privacy/guest-session";
-import { guardMutationOrigin } from "@/lib/server/mutation-origin";
+import { guardMutationOrigin, guardSensitiveReadOrigin } from "@/lib/server/mutation-origin";
 
 export async function GET(
   request: NextRequest,
@@ -16,6 +17,9 @@ export async function GET(
 ) {
   const rateLimited = await guardGeneralApiRateLimit(request);
   if (rateLimited) return rateLimited;
+
+  const originBlocked = guardSensitiveReadOrigin(request);
+  if (originBlocked) return originBlocked;
 
   try {
     const { id } = await params;
@@ -26,6 +30,7 @@ export async function GET(
     } = await supabase.auth.getUser();
     if (user) {
       await assertMfaAal2Satisfied(supabase);
+      await assertAccountActive(user.id);
     }
 
     const file = await getUploadedFileById(id);
@@ -107,6 +112,7 @@ export async function DELETE(
     } = await supabase.auth.getUser();
     if (user) {
       await assertMfaAal2Satisfied(supabase);
+      await assertAccountActive(user.id);
     }
 
     const file = await getUploadedFileById(id);

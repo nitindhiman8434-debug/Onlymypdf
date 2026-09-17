@@ -1,13 +1,23 @@
 import type { NextRequest } from "next/server";
+import { timingSafeEqualString } from "@/lib/security/timing-safe";
 
-/** Authorize detailed health diagnostics (Bearer CRON_SECRET or x-health-key header). */
+function healthSecrets(): string[] {
+  const dedicated = process.env.HEALTH_CHECK_SECRET?.trim();
+  return dedicated ? [dedicated] : [];
+}
+
+/** Authorize detailed health diagnostics (Bearer secret or x-health-key header). */
 export function isHealthDetailAuthorized(request: NextRequest): boolean {
-  const secret = process.env.CRON_SECRET?.trim();
-  if (!secret) return false;
+  const secrets = healthSecrets();
+  if (secrets.length === 0) return false;
 
   const auth = request.headers.get("authorization");
-  if (auth === `Bearer ${secret}`) return true;
+  const healthKey = request.headers.get("x-health-key")?.trim();
+  const token = auth?.startsWith("Bearer ") ? auth.slice("Bearer ".length).trim() : "";
 
-  const healthKey = request.headers.get("x-health-key");
-  return healthKey === secret;
+  return secrets.some(
+    (secret) =>
+      (token ? timingSafeEqualString(token, secret) : false) ||
+      (healthKey ? timingSafeEqualString(healthKey, secret) : false)
+  );
 }

@@ -66,7 +66,15 @@ export async function POST(request: NextRequest) {
       role === "admin" ? "admin" : "member"
     );
 
-    const acceptUrl = `${APP_URL}/dashboard/enterprise?invite=${invite.token}`;
+    if ("duplicate" in invite) {
+      return NextResponse.json({
+        success: true,
+        message: "If the recipient is eligible, an invitation will be sent.",
+        emailSent: true,
+      });
+    }
+
+    const acceptUrl = `${APP_URL}/dashboard/enterprise#invite=${encodeURIComponent(invite.token)}`;
     let emailResult: { delivered: boolean; mode: string } | null = null;
     let emailError: string | null = null;
 
@@ -87,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      acceptUrl,
+      ...(process.env.NODE_ENV !== "production" ? { acceptUrl } : {}),
       expiresAt: invite.expiresAt,
       emailSent: emailResult?.delivered ?? false,
       emailMode: emailResult?.mode ?? null,
@@ -123,9 +131,11 @@ export async function PUT(request: NextRequest) {
     const result = await acceptOrganizationInvite(token, user.id, user.email);
     return NextResponse.json({ success: true, ...result });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to accept invite";
     captureApiError(error, { route: "enterprise/organizations/invite", method: "PUT" });
-    return NextResponse.json({ error: message }, { status: 400 });
+    return NextResponse.json(
+      { error: "Unable to accept this invitation." },
+      { status: 400 }
+    );
   }
 }
 
@@ -133,6 +143,9 @@ export async function DELETE(request: NextRequest) {
   try {
     const originBlocked = guardMutationOrigin(request);
     if (originBlocked) return originBlocked;
+
+    const rate = await guardGeneralApiRateLimit(request);
+    if (rate) return rate;
 
     const auth = await tryGetApiUser();
     if (!auth.ok) return auth.response;

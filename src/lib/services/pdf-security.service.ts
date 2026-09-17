@@ -3,7 +3,6 @@ import { decryptPDF } from "@pdfsmaller/pdf-decrypt";
 import {
   isWrongPasswordMessage,
   probePdfAccess,
-  unlockWithMuhammara,
 } from "@/lib/pdf/pdf-password.server";
 
 export interface PDFEncryptionAdapter {
@@ -92,12 +91,6 @@ export async function unlockPDF(
   try {
     const decrypted = await decryptPDF(fileBuffer, password);
     return Buffer.from(decrypted);
-  } catch (err) {
-    attempts.push(err instanceof Error ? err.message : String(err));
-  }
-
-  try {
-    return await unlockWithMuhammara(fileBuffer, password);
   } catch (err) {
     attempts.push(err instanceof Error ? err.message : String(err));
   }

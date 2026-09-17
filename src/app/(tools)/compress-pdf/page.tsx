@@ -4,7 +4,7 @@ import { planFileSizeFaqLine } from '@/lib/billing/billing-copy';
 import { useState, useRef, useCallback } from 'react';
 import { Minimize2, Zap, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
-import { formatFileSize, validateFileSize } from '@/lib/utils/file';
+import { formatFileSize } from '@/lib/utils/file';
 import { getMaxFileSizeMB } from '@/config/constants';
 import { useAuth } from '@/hooks/use-auth';
 import { ToolPageShell } from '@/components/layout/tool-page-shell';
@@ -17,9 +17,12 @@ import {
   ToolHiddenFileInput,
   ToolPrimaryButton,
   ToolSuccessPanel,
+  PdfPasswordInfoBanner,
 } from '@/components/tools/tool-ui';
 import { postToolFormDataWithProgress } from '@/lib/client/tool-form-upload';
+import { passwordPromptFromError } from '@/lib/client/pdf-password-errors';
 import { useToolWorkspaceMessages } from '@/hooks/use-tool-workspace-messages';
+import { useToolErrors } from '@/hooks/use-tool-errors';
 
 const RELATED_TOOLS = [
   { name: 'Merge PDF', href: '/merge-pdf' },
@@ -39,6 +42,7 @@ type CompressionLevel = 'basic' | 'strong';
 
 export default function CompressPdfPage() {
   const ws = useToolWorkspaceMessages();
+  const { fileSizeError, resolveCatchError } = useToolErrors();
   const { isPro } = useAuth();
   const maxSizeMB = getMaxFileSizeMB(isPro);
   const [files, setFiles] = useState<File[]>([]);
@@ -52,6 +56,8 @@ export default function CompressPdfPage() {
   const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>('basic');
   const [originalSize, setOriginalSize] = useState<number>(0);
   const [compressedSize, setCompressedSize] = useState<number>(0);
+  const [compressionStatus, setCompressionStatus] = useState<"compressed" | "already-optimized">("compressed");
+  const [compressionMethod, setCompressionMethod] = useState<"structural" | "rasterized" | "original">("original");
   const [pdfPassword, setPdfPassword] = useState<string | null>(null);
   const [passwordPrompt, setPasswordPrompt] = useState<{
     fileName: string;
@@ -71,10 +77,10 @@ export default function CompressPdfPage() {
       setPdfPassword(null);
       setPasswordPrompt(null);
 
-      const sizeCheck = validateFileSize(file, maxSizeMB);
-      setError(sizeCheck.valid ? null : sizeCheck.message);
+      const sizeMsg = fileSizeError(file, maxSizeMB);
+      setError(sizeMsg);
     }
-  }, [maxSizeMB]);
+  }, [maxSizeMB, fileSizeError]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -85,9 +91,9 @@ export default function CompressPdfPage() {
   const runCompress = useCallback(async (password?: string | null) => {
     if (files.length === 0) return;
 
-    const sizeCheck = validateFileSize(files[0], maxSizeMB);
-    if (!sizeCheck.valid) {
-      setError(sizeCheck.message);
+    const sizeMsg = fileSizeError(files[0], maxSizeMB);
+    if (sizeMsg) {
+      setError(sizeMsg);
       return;
     }
 
@@ -112,7 +118,15 @@ export default function CompressPdfPage() {
       setResultFilename('compressed.pdf');
       const headerOriginal = getHeader('X-Original-Size');
       const headerCompressed = getHeader('X-Compressed-Size');
+      const headerStatus = getHeader('X-Compression-Status');
+      const headerMethod = getHeader('X-Compression-Method');
       setCompressedSize(headerCompressed ? parseInt(headerCompressed, 10) : blob.size);
+      setCompressionStatus(headerStatus === 'already-optimized' ? 'already-optimized' : 'compressed');
+      setCompressionMethod(
+        headerMethod === 'rasterized' || headerMethod === 'structural'
+          ? headerMethod
+          : 'original'
+      );
       if (headerOriginal) setOriginalSize(parseInt(headerOriginal, 10));
       if (pw) setPdfPassword(pw);
       setPasswordPrompt(null);
@@ -120,21 +134,17 @@ export default function CompressPdfPage() {
       const { notifyActivityUpdated } = await import("@/lib/client/activity-events");
       notifyActivityUpdated();
     } catch (err) {
-      const msg = err instanceof Error ? err.message : ws.unexpectedError;
-      if (msg.toLowerCase().includes('password')) {
-        setPasswordPrompt({
-          fileName: files[0].name,
-          errorMsg: msg.toLowerCase().includes('incorrect') ? msg : undefined,
-          loading: false,
-        });
+      const prompt = passwordPromptFromError(err, files[0].name);
+      if (prompt) {
+        setPasswordPrompt(prompt);
         return;
       }
-      setError(msg);
+      setError(resolveCatchError(err));
     } finally {
       setProcessing(false);
       setProgress(0);
     }
-  }, [files, compressionLevel, pdfPassword, maxSizeMB, ws.unexpectedError]);
+  }, [files, compressionLevel, pdfPassword, maxSizeMB, fileSizeError, resolveCatchError]);
 
   const handleProcess = () => runCompress();
 
@@ -143,7 +153,7 @@ export default function CompressPdfPage() {
   return (
     <ToolPageShell
       title="Compress PDF"
-      description="Reduce your PDF file size without losing quality"
+      description="Choose lossless Basic optimization or smaller Strong compression"
       splitWorkspace={!completed}
       previewPlaceholder="Select a PDF to see estimated compression"
       relatedTools={mapRelatedTools(RELATED_TOOLS)}
@@ -169,11 +179,18 @@ export default function CompressPdfPage() {
             setFiles([]);
             setResultUrl(null);
             setCompressedSize(0);
+            setCompressionStatus('compressed');
+            setCompressionMethod('original');
           }}
         >
-          {compressionPercentage === 0 ? (
+          {compressionStatus === 'already-optimized' ? (
             <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
               {ws.alreadyOptimized}
+            </p>
+          ) : null}
+          {compressionMethod === 'rasterized' ? (
+            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              {ws.rasterizedResultWarning}
             </p>
           ) : null}
         </ToolSuccessPanel>
@@ -196,7 +213,7 @@ export default function CompressPdfPage() {
             />
           )}
 
-          
+          <PdfPasswordInfoBanner className="mt-3" />
 
           {files.length === 0 ? (
             <ToolDropzone
@@ -271,6 +288,11 @@ export default function CompressPdfPage() {
                     {ws.compressionStrong}
                   </button>
                 </div>
+                <p className="mt-2 text-xs leading-relaxed text-pd-muted">
+                  {compressionLevel === 'basic'
+                    ? ws.basicCompressionHint
+                    : ws.strongCompressionWarning}
+                </p>
               </div>
             </>
           )}

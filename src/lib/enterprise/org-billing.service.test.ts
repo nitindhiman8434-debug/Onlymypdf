@@ -28,6 +28,7 @@ vi.mock("@/lib/supabase/server", () => ({
 
 vi.mock("@/lib/db/queries", () => ({
   createPayment: vi.fn(),
+  getPaymentByRazorpayPaymentId: vi.fn(),
 }));
 
 vi.mock("@/lib/billing/invoice.service", () => ({
@@ -41,7 +42,7 @@ import {
   getOrganizationMemberRole,
 } from "@/lib/enterprise/organizations.service";
 import { createServiceClient } from "@/lib/supabase/server";
-import { createPayment } from "@/lib/db/queries";
+import { createPayment, getPaymentByRazorpayPaymentId } from "@/lib/db/queries";
 import { issueGstInvoiceForPayment } from "@/lib/billing/invoice.service";
 
 function mockOrgLookup() {
@@ -159,7 +160,17 @@ describe("cancelOrganizationAutoRenew", () => {
       eq: vi.fn().mockResolvedValue({ error: null }),
     });
     vi.mocked(createServiceClient).mockResolvedValue({
-      from: vi.fn().mockReturnValue({ update }),
+      from: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            maybeSingle: vi.fn().mockResolvedValue({
+              data: { razorpay_subscription_id: null },
+              error: null,
+            }),
+          }),
+        }),
+        update,
+      }),
     } as never);
 
     await cancelOrganizationAutoRenew("org-1", "owner-1");
@@ -172,24 +183,48 @@ describe("cancelOrganizationAutoRenew", () => {
   });
 });
 
+function mockRenewalLookup(
+  org: Record<string, unknown> | null,
+  lastPayment: { plan_duration?: string } | null = null
+) {
+  vi.mocked(createServiceClient).mockResolvedValue({
+    from: vi.fn((table: string) => {
+      if (table === "payments") {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              order: vi.fn().mockReturnValue({
+                limit: vi.fn().mockReturnValue({
+                  maybeSingle: vi.fn().mockResolvedValue({ data: lastPayment, error: null }),
+                }),
+              }),
+            }),
+          }),
+        };
+      }
+      return {
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            maybeSingle: vi.fn().mockResolvedValue({ data: org, error: null }),
+          }),
+        }),
+      };
+    }),
+  } as never);
+}
+
 describe("renewOrganizationPlanFromWebhook", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(activateOrganizationPlan).mockResolvedValue(undefined);
     vi.mocked(createPayment).mockResolvedValue({ id: "pay-2" } as never);
     vi.mocked(issueGstInvoiceForPayment).mockResolvedValue(undefined as never);
+    vi.mocked(getPaymentByRazorpayPaymentId).mockResolvedValue(null);
+    vi.mocked(countOrganizationMembers).mockResolvedValue(2);
   });
 
   it("returns false when subscription is unknown", async () => {
-    vi.mocked(createServiceClient).mockResolvedValue({
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-          }),
-        }),
-      }),
-    } as never);
+    mockRenewalLookup(null);
 
     const ok = await renewOrganizationPlanFromWebhook({
       razorpaySubscriptionId: "sub_unknown",
@@ -200,24 +235,13 @@ describe("renewOrganizationPlanFromWebhook", () => {
   });
 
   it("extends organization plan and records payment when payload includes payment", async () => {
-    vi.mocked(createServiceClient).mockResolvedValue({
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            maybeSingle: vi.fn().mockResolvedValue({
-              data: {
-                id: "org-1",
-                owner_id: "owner-1",
-                name: "Acme",
-                seat_limit: 5,
-                plan_expires_at: null,
-              },
-              error: null,
-            }),
-          }),
-        }),
-      }),
-    } as never);
+    mockRenewalLookup({
+      id: "org-1",
+      owner_id: "owner-1",
+      name: "Acme",
+      seat_limit: 5,
+      plan_expires_at: null,
+    });
 
     const ok = await renewOrganizationPlanFromWebhook({
       razorpaySubscriptionId: "sub_rzp_team_1",
@@ -234,25 +258,35 @@ describe("renewOrganizationPlanFromWebhook", () => {
     expect(issueGstInvoiceForPayment).toHaveBeenCalled();
   });
 
+  it("does not extend the plan again when the payment id already exists", async () => {
+    mockRenewalLookup({
+      id: "org-1",
+      owner_id: "owner-1",
+      name: "Acme",
+      seat_limit: 5,
+      plan_expires_at: null,
+    });
+    vi.mocked(getPaymentByRazorpayPaymentId).mockResolvedValue({ id: "pay-existing" } as never);
+
+    const ok = await renewOrganizationPlanFromWebhook({
+      razorpaySubscriptionId: "sub_rzp_team_1",
+      amountPaise: 49900,
+      paymentId: "pay_rzp_1",
+    });
+
+    expect(ok).toBe(true);
+    expect(activateOrganizationPlan).not.toHaveBeenCalled();
+    expect(createPayment).not.toHaveBeenCalled();
+  });
+
   it("extends organization plan without payment when webhook omits payment fields", async () => {
-    vi.mocked(createServiceClient).mockResolvedValue({
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            maybeSingle: vi.fn().mockResolvedValue({
-              data: {
-                id: "org-1",
-                owner_id: "owner-1",
-                name: "Acme",
-                seat_limit: 5,
-                plan_expires_at: new Date(Date.now() + 86_400_000).toISOString(),
-              },
-              error: null,
-            }),
-          }),
-        }),
-      }),
-    } as never);
+    mockRenewalLookup({
+      id: "org-1",
+      owner_id: "owner-1",
+      name: "Acme",
+      seat_limit: 5,
+      plan_expires_at: new Date(Date.now() + 86_400_000).toISOString(),
+    });
 
     const ok = await renewOrganizationPlanFromWebhook({
       razorpaySubscriptionId: "sub_rzp_team_1",

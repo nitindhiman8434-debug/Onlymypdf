@@ -8,6 +8,7 @@ import {
   listOrganizationMembers,
   removeOrganizationMember,
 } from "@/lib/enterprise/organizations.service";
+import { sanitizeOrganizationMemberForRole } from "@/lib/enterprise/org-member-view";
 
 export async function GET(request: NextRequest) {
   try {
@@ -28,7 +29,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Not a member of this organization" }, { status: 403 });
     }
 
-    const members = await listOrganizationMembers(organizationId);
+    const members = (await listOrganizationMembers(organizationId)).map((member) =>
+      sanitizeOrganizationMemberForRole(member, role)
+    );
     return NextResponse.json({ members });
   } catch (error) {
     captureApiError(error, { route: "enterprise/organizations/members", method: "GET" });

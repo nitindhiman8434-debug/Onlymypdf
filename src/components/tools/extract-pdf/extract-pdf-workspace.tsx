@@ -14,6 +14,10 @@ import { loadPdfThumbnailsBatched } from "@/lib/pdf/pdf-thumbnails.client";
 import { ToolErrorBanner, ToolHiddenFileInput } from "@/components/tools/tool-ui";
 import { useToolWorkspaceMessages } from "@/hooks/use-tool-workspace-messages";
 import { PdfPasswordModal } from "@/components/tools/pdf-password-modal";
+import {
+  passwordPromptFromError,
+  readToolApiFailure,
+} from "@/lib/client/pdf-password-errors";
 import { runClientOrServerPdfExport } from "@/lib/pdf/client-pdf-export";
 import { extractPagesInBrowser } from "@/lib/pdf/pdf-browser";
 import { ExtractResultView } from "@/components/tools/extract-pdf/extract-result-view";
@@ -57,6 +61,7 @@ export function ExtractPdfWorkspace({
   const [error, setError] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const [pdfPassword, setPdfPassword] = useState<string | null>(null);
   const [passwordPrompt, setPasswordPrompt] = useState<{
     file: File;
     fileName: string;
@@ -92,6 +97,7 @@ export function ExtractPdfWorkspace({
     const requestId = ++loadRequestRef.current;
     setLoadingThumbs(true);
     setError(null);
+    setPdfPassword(null);
     setThumbnails([]);
     setTotalPages(0);
     setHiddenSlotIds(new Set());
@@ -165,6 +171,7 @@ export function ExtractPdfWorkspace({
         return;
       }
       setPasswordPrompt(null);
+      setPdfPassword(pw);
       if (result.error) setError(ws.resolveApiError(result.error));
     });
   }, [passwordPrompt, ws]);
@@ -327,6 +334,9 @@ export function ExtractPdfWorkspace({
     try {
       const formData = new FormData();
       formData.append("file", file, file.name || "document.pdf");
+      if (pdfPassword) {
+        formData.append("password", pdfPassword);
+      }
 
       const hasExtraSlots = visibleSlots.some(
         (s) =>
@@ -355,10 +365,7 @@ export function ExtractPdfWorkspace({
           body: formData,
         });
         if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(
-            (data as { error?: string }).error || ws.failedExportPdf
-          );
+          await readToolApiFailure(res, ws.failedExportPdf);
         }
 
         const blob = await res.blob();
@@ -385,10 +392,7 @@ export function ExtractPdfWorkspace({
             body: formData,
           });
           if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(
-              (data as { error?: string }).error || ws.failedExtractPages
-            );
+            await readToolApiFailure(res, ws.failedExtractPages);
           }
           return res.blob();
         },
@@ -397,6 +401,12 @@ export function ExtractPdfWorkspace({
       setResultUrl(URL.createObjectURL(blob));
       setCompleted(true);
     } catch (err) {
+      const prompt = passwordPromptFromError(err, file.name);
+      if (prompt) {
+        setPasswordPrompt({ file, ...prompt });
+        setError(null);
+        return;
+      }
       setError(
         err instanceof Error ? err.message : ws.unexpectedError
       );

@@ -9,7 +9,7 @@ export function PrivacyBadge({ className }: PrivacyBadgeProps) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 text-xs text-gray-400",
+        "inline-flex items-center gap-1.5 text-xs text-pd-muted",
         className
       )}
     >

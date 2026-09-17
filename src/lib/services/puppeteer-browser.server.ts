@@ -4,9 +4,7 @@ let browserInstance: Browser | null = null;
 let browserUses = 0;
 const MAX_USES_BEFORE_RESTART = 40;
 
-const LAUNCH_ARGS = [
-  "--no-sandbox",
-  "--disable-setuid-sandbox",
+const BASE_LAUNCH_ARGS = [
   "--disable-dev-shm-usage",
   "--disable-gpu",
   "--no-first-run",
@@ -15,6 +13,26 @@ const LAUNCH_ARGS = [
   "--disable-background-networking",
   "--js-flags=--max-old-space-size=2048",
 ];
+
+/**
+ * This browser renders untrusted uploaded HTML, so the Chromium sandbox stays
+ * on by default — without it a renderer bug reaches the host directly. Set
+ * PUPPETEER_DISABLE_SANDBOX=1 only where the container itself is the boundary
+ * (e.g. running as root in a disposable, network-isolated image).
+ */
+export function resolvePuppeteerLaunchArgs(
+  env: Record<string, string | undefined> = process.env
+): string[] {
+  if (env.PUPPETEER_DISABLE_SANDBOX === "1") {
+    if (env.NODE_ENV === "production" && env.PUPPETEER_HARDENED_CONTAINER !== "1") {
+      throw new Error(
+        "PUPPETEER_DISABLE_SANDBOX=1 is blocked in production unless PUPPETEER_HARDENED_CONTAINER=1 confirms a disposable, network-isolated container boundary."
+      );
+    }
+    return ["--no-sandbox", "--disable-setuid-sandbox", ...BASE_LAUNCH_ARGS];
+  }
+  return BASE_LAUNCH_ARGS;
+}
 
 export async function getPuppeteerBrowser(): Promise<Browser> {
   if (browserInstance?.connected) {
@@ -29,7 +47,7 @@ export async function getPuppeteerBrowser(): Promise<Browser> {
 
   browserInstance = await puppeteer.launch({
     headless: true,
-    args: LAUNCH_ARGS,
+    args: resolvePuppeteerLaunchArgs(),
   });
   browserUses = 1;
   return browserInstance;

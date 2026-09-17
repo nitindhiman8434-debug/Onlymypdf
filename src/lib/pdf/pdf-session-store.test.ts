@@ -27,6 +27,23 @@ describe("pdf-session-store (local)", () => {
     expect(thumb).toBe("data:image/png;base64,abc");
   });
 
+  it("creates a localOnly session without distributed persistence", async () => {
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "https://example.upstash.io");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "token");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "service-key");
+
+    const { createPdfSession, getPdfSessionBuffer } = await import(
+      "@/lib/pdf/pdf-session-store"
+    );
+
+    const sessionId = await createPdfSession(Buffer.from("%PDF-local"), "owner-local", {
+      localOnly: true,
+    });
+    const read = await getPdfSessionBuffer(sessionId, "owner-local");
+    expect(read?.toString()).toBe("%PDF-local");
+  });
+
   it("rejects mismatched owner hash", async () => {
     vi.stubEnv("UPSTASH_REDIS_REST_URL", "");
     vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "");
@@ -37,6 +54,19 @@ describe("pdf-session-store (local)", () => {
 
     const sessionId = await createPdfSession(Buffer.from("%PDF"), "owner-a");
     const read = await getPdfSessionBuffer(sessionId, "owner-b");
+    expect(read).toBeNull();
+  });
+
+  it("rejects legacy sessions with empty owner hash", async () => {
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "");
+
+    const { createPdfSession, getPdfSessionBuffer } = await import(
+      "@/lib/pdf/pdf-session-store"
+    );
+
+    const sessionId = await createPdfSession(Buffer.from("%PDF"), "");
+    const read = await getPdfSessionBuffer(sessionId);
     expect(read).toBeNull();
   });
 });

@@ -5,6 +5,7 @@ import { Building2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { useTranslation } from "@/i18n";
+import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
 
 const inputClass =
   "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
@@ -14,6 +15,8 @@ export function EnterpriseSsoForm({ redirectTo = "/dashboard" }: { redirectTo?: 
   const [domain, setDomain] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileSiteKey = getTurnstileSiteKey();
 
   if (!isSupabaseConfigured()) return null;
 
@@ -32,7 +35,11 @@ export function EnterpriseSsoForm({ redirectTo = "/dashboard" }: { redirectTo?: 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ domain: trimmed, redirectTo }),
+        body: JSON.stringify({
+          domain: trimmed,
+          redirectTo,
+          ...(turnstileSiteKey ? { turnstileToken } : {}),
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.url) {
@@ -71,13 +78,21 @@ export function EnterpriseSsoForm({ redirectTo = "/dashboard" }: { redirectTo?: 
         />
         <button
           type="submit"
-          disabled={loading || !domain.trim()}
+          disabled={loading || !domain.trim() || (turnstileSiteKey ? !turnstileToken : false)}
           className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-900 disabled:opacity-60"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           {t("auth.ssoContinue")}
         </button>
       </form>
+      {turnstileSiteKey ? (
+        <TurnstileWidget
+          siteKey={turnstileSiteKey}
+          onToken={setTurnstileToken}
+          onExpire={() => setTurnstileToken("")}
+          className="mt-3 flex justify-center"
+        />
+      ) : null}
     </div>
   );
 }

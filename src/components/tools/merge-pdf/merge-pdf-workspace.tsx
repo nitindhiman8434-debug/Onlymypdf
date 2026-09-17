@@ -34,7 +34,18 @@ import {
   type MergeFileItem,
   type MergePageSlot,
 } from "@/components/tools/merge-pdf/merge-file-types";
+import {
+  passwordPromptFromError,
+  readToolApiFailure,
+  ToolApiPasswordError,
+} from "@/lib/client/pdf-password-errors";
 import { PdfPasswordModal } from "@/components/tools/pdf-password-modal";
+import {
+  allowMergeFilePreview,
+  rejectMergeFilePreview,
+  runMergeFilePreview,
+  type MergePasswordPromptState,
+} from "@/components/tools/merge-pdf/merge-pdf-preview";
 import { runClientOrServerPdfExport } from "@/lib/pdf/client-pdf-export";
 import {
   buildSessionBufferMap,
@@ -44,8 +55,7 @@ import {
 
 interface MergePdfWorkspaceProps {
   initialFiles: File[];
-  onReset: () => void;
-  onFilesChange?: (files: File[]) => void;
+  onEmpty: () => void;
 }
 
 function isPdfFile(file: File) {
@@ -73,8 +83,7 @@ function sortPageSlots(slots: MergePageSlot[], order: MergeSortOrder): MergePage
 
 export function MergePdfWorkspace({
   initialFiles,
-  onReset,
-  onFilesChange,
+  onEmpty,
 }: MergePdfWorkspaceProps) {
   const ws = useToolWorkspaceMessages();
   const [items, setItems] = useState<MergeFileItem[]>(() =>
@@ -99,88 +108,128 @@ export function MergePdfWorkspace({
   const insertAfterPageIndexRef = useRef<number | null>(null);
   const insertModeRef = useRef<"files" | "pages">("files");
   const insertFileRef = useRef<HTMLInputElement>(null);
-  const [passwordPrompt, setPasswordPrompt] = useState<{
-    itemId: string;
-    file: File;
-    fileName: string;
-    errorMsg?: string;
-    loading?: boolean;
-  } | null>(null);
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
+  const incorrectPasswordRef = useRef(ws.incorrectPassword);
+  incorrectPasswordRef.current = ws.incorrectPassword;
+  const [passwordPrompt, setPasswordPrompt] = useState<MergePasswordPromptState>(null);
+  const passwordPromptRef = useRef(passwordPrompt);
+  passwordPromptRef.current = passwordPrompt;
+  const cancelInFlightRef = useRef(false);
 
-  const loadPreview = useCallback(async (id: string, file: File, password?: string) => {
-    const preview = await loadPdfDocumentPreview(file, password);
-
-    if (preview.passwordRequired) {
-      setItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, loadingThumb: false } : item
-        )
-      );
-      setPasswordPrompt((prev) =>
-        prev ??
-        {
-          itemId: id,
-          file,
-          fileName: preview.fileName ?? file.name,
-        }
-      );
-      return;
+  const handleExportPasswordError = useCallback((err: unknown): boolean => {
+    const prompt = passwordPromptFromError(err, "");
+    const fileName =
+      err instanceof ToolApiPasswordError
+        ? err.fileName
+        : prompt?.fileName;
+    if (!fileName && !(err instanceof ToolApiPasswordError) && !prompt) {
+      return false;
     }
 
-    if (preview.wrongPassword) {
-      setPasswordPrompt((prev) =>
-        prev?.itemId === id
-          ? { ...prev, errorMsg: preview.error ?? ws.incorrectPassword, loading: false }
-          : prev
-      );
-      return;
-    }
+    const item =
+      itemsRef.current.find((entry) => entry.file.name === fileName) ??
+      itemsRef.current.find((entry) => !entry.password);
+    if (!item) return false;
 
-    setPasswordPrompt((prev) => (prev?.itemId === id ? null : prev));
-
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              loadingThumb: false,
-              pageCount: preview.totalPages,
-              thumbUrl: preview.thumbUrl || undefined,
-              sessionId: preview.sessionId || undefined,
-              ...(password ? { password } : {}),
-            }
-          : item
-      )
-    );
-    if (preview.error) {
-      setError(preview.error);
-    } else {
-      setError((prev) =>
-        prev && /password/i.test(prev) ? null : prev
-      );
-    }
-  }, [ws]);
-
-  useEffect(() => {
-    for (const item of items) {
-      if (item.loadingThumb && item.pageCount === 0) {
-        loadPreview(item.id, item.file);
-      }
-    }
-  }, [items, loadPreview]);
-
-  useEffect(() => {
-    if (passwordPrompt) return;
-    const locked = items.find((item) => item.pageCount === 0 && !item.loadingThumb);
-    if (!locked) return;
     setPasswordPrompt({
-      itemId: locked.id,
-      file: locked.file,
-      fileName: locked.file.name,
+      itemId: item.id,
+      file: item.file,
+      fileName: fileName || item.file.name,
+      errorMsg:
+        err instanceof ToolApiPasswordError && err.code === "wrong_password"
+          ? err.message
+          : prompt?.errorMsg,
+      loading: false,
     });
-  }, [items, passwordPrompt]);
+    setError(null);
+    return true;
+  }, []);
 
-  const allItemsLoaded = items.length > 0 && items.every((i) => !i.loadingThumb && i.pageCount > 0);
+  const notifyIfEmpty = useCallback(
+    (nextItems: MergeFileItem[]) => {
+      if (nextItems.length === 0) {
+        setPasswordPrompt(null);
+        onEmpty();
+      }
+    },
+    [onEmpty]
+  );
+
+  const queuePreview = useCallback((itemId: string, file: File, password?: string) => {
+    void runMergeFilePreview(
+      itemId,
+      file,
+      {
+        incorrectPassword: incorrectPasswordRef.current,
+        isItemActive: (id) => itemsRef.current.some((item) => item.id === id),
+        onPasswordRequired: (prompt) => {
+          if (cancelInFlightRef.current) return;
+          setError(null);
+          setPasswordPrompt((prev) =>
+            prev?.itemId === prompt.itemId ? prev : prompt
+          );
+        },
+        onPasswordWrong: (prompt) => {
+          if (cancelInFlightRef.current) return;
+          setPasswordPrompt(prompt);
+        },
+        onPreviewReady: (id, update) => {
+          if (update.pageCount && update.pageCount > 0) {
+            setPasswordPrompt((prev) => (prev?.itemId === id ? null : prev));
+          }
+          setItems((prev) =>
+            prev.map((item) => (item.id === id ? { ...item, ...update } : item))
+          );
+        },
+        onPreviewError: (message) => setError(message),
+      },
+      password
+    );
+  }, []);
+
+  const initialFilesRef = useRef(initialFiles);
+  useEffect(() => {
+    for (const file of initialFilesRef.current.filter(isPdfFile)) {
+      allowMergeFilePreview(file);
+      const itemId = itemsRef.current.find((item) => item.file === file)?.id;
+      if (itemId) queuePreview(itemId, file);
+    }
+    // Intentionally mount-only: previews must not restart on re-renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handlePasswordCancel = useCallback(() => {
+    const prompt = passwordPromptRef.current;
+    if (!prompt) return;
+    cancelInFlightRef.current = true;
+    rejectMergeFilePreview(prompt.file);
+    setPasswordPrompt(null);
+    setError(null);
+    const next = itemsRef.current.filter((item) => item.id !== prompt.itemId);
+    setItems(next);
+    if (next.length === 0) {
+      onEmpty();
+    }
+    queueMicrotask(() => {
+      cancelInFlightRef.current = false;
+    });
+  }, [onEmpty]);
+
+  const handlePasswordSubmit = useCallback(
+    (password: string) => {
+      const prompt = passwordPromptRef.current;
+      if (!prompt) return;
+      setPasswordPrompt((prev) =>
+        prev ? { ...prev, loading: true, errorMsg: undefined } : prev
+      );
+      queuePreview(prompt.itemId, prompt.file, password);
+    },
+    [queuePreview]
+  );
+
+  const allItemsLoaded =
+    items.length > 0 && items.every((i) => !i.loadingThumb && i.pageCount > 0);
 
   useEffect(() => {
     if (!allItemsLoaded || pageSlotsCustomized) return;
@@ -216,16 +265,6 @@ export function MergePdfWorkspace({
   const toolbarSelectedCount = viewTab === "pages" ? selectedPageCount : selectedFileCount;
   const toolbarTotalCount = viewTab === "pages" ? pageSlots.length : items.length;
 
-  const skipParentSyncRef = useRef(true);
-
-  useEffect(() => {
-    if (skipParentSyncRef.current) {
-      skipParentSyncRef.current = false;
-      return;
-    }
-    onFilesChange?.(items.map((item) => item.file));
-  }, [items, onFilesChange]);
-
   const addFilesAt = (newFiles: File[], afterFileIndex: number | null) => {
     const pdfs = newFiles.filter(isPdfFile);
     if (pdfs.length === 0) {
@@ -240,6 +279,10 @@ export function MergePdfWorkspace({
       next.splice(afterFileIndex + 1, 0, ...newItems);
       return next;
     });
+    for (const item of newItems) {
+      allowMergeFilePreview(item.file);
+      queuePreview(item.id, item.file);
+    }
     setPageSlotsCustomized(false);
     setError(null);
     setCompleted(false);
@@ -258,6 +301,9 @@ export function MergePdfWorkspace({
 
     for (const file of pdfs) {
       const preview = await loadPdfDocumentPreview(file);
+      if (preview.passwordRequired) {
+        continue;
+      }
       if (!preview.sessionId || preview.totalPages === 0) {
         setError(preview.error ?? ws.couldNotAddDocument);
         continue;
@@ -344,7 +390,12 @@ export function MergePdfWorkspace({
   };
 
   const removeFile = (id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
+    const removed = items.find((i) => i.id === id);
+    if (removed) rejectMergeFilePreview(removed.file);
+    setPasswordPrompt((prev) => (prev?.itemId === id ? null : prev));
+    const next = items.filter((i) => i.id !== id);
+    setItems(next);
+    notifyIfEmpty(next);
     setPageSlotsCustomized(false);
     setSelectedFileIds((prev) => {
       const next = new Set(prev);
@@ -435,19 +486,23 @@ export function MergePdfWorkspace({
       return;
     }
     const toRemove = new Set(items.filter((i) => selectedFileIds.has(i.id)).map((i) => i.id));
-    setItems((prev) => prev.filter((i) => !toRemove.has(i.id)));
+    for (const id of toRemove) {
+      const removed = items.find((item) => item.id === id);
+      if (removed) rejectMergeFilePreview(removed.file);
+    }
+    setPasswordPrompt((prev) => (prev && toRemove.has(prev.itemId) ? null : prev));
+    const next = items.filter((i) => !toRemove.has(i.id));
+    setItems(next);
+    notifyIfEmpty(next);
     setPageSlotsCustomized(false);
     setSelectedFileIds(new Set());
   };
 
   const promptNextLockedFile = () => {
-    const locked = items.find((item) => item.pageCount === 0);
+    const locked = items.find(
+      (item) => item.pageCount === 0 && !item.loadingThumb
+    );
     if (!locked) return false;
-    setPasswordPrompt({
-      itemId: locked.id,
-      file: locked.file,
-      fileName: locked.file.name,
-    });
     setError(ws.enterPasswordBeforeExport);
     return true;
   };
@@ -494,10 +549,7 @@ export function MergePdfWorkspace({
             if (mainItem?.password) formData.append("password", mainItem.password);
             const res = await fetch("/api/tools/compose-pdf", { method: "POST", body: formData });
             if (!res.ok) {
-              const data = await res.json().catch(() => ({}));
-              throw new Error(
-                (data as { error?: string }).error || ws.failedMergePdf
-              );
+              await readToolApiFailure(res, ws.failedMergePdf);
             }
             return res.blob();
           },
@@ -506,7 +558,9 @@ export function MergePdfWorkspace({
         setResultSize(blob.size);
         setCompleted(true);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+        if (!handleExportPasswordError(err)) {
+          setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+        }
       } finally {
         setProcessing(false);
       }
@@ -533,10 +587,7 @@ export function MergePdfWorkspace({
           formData.append("options", JSON.stringify({}));
           const res = await fetch("/api/tools/merge-pdf", { method: "POST", body: formData });
           if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(
-              (data as { error?: string }).error || ws.failedMergePdf
-            );
+            await readToolApiFailure(res, ws.failedMergePdf);
           }
           return res.blob();
         },
@@ -545,7 +596,9 @@ export function MergePdfWorkspace({
       setResultSize(blob.size);
       setCompleted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+      if (!handleExportPasswordError(err)) {
+        setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+      }
     } finally {
       setProcessing(false);
     }
@@ -567,7 +620,7 @@ export function MergePdfWorkspace({
           setCompleted(false);
           setResultUrl(null);
           setResultSize(0);
-          onReset();
+          onEmpty();
         }}
       />
     );
@@ -617,14 +670,8 @@ export function MergePdfWorkspace({
           fileName={passwordPrompt.fileName}
           errorMessage={passwordPrompt.errorMsg}
           loading={passwordPrompt.loading}
-          onSubmit={(pw) => {
-            setPasswordPrompt((prev) => (prev ? { ...prev, loading: true, errorMsg: undefined } : prev));
-            loadPreview(passwordPrompt.itemId, passwordPrompt.file, pw);
-          }}
-          onCancel={() => {
-            setPasswordPrompt(null);
-            setError("Password is required to add this PDF. Remove the file or try again.");
-          }}
+          onSubmit={handlePasswordSubmit}
+          onCancel={handlePasswordCancel}
         />
       )}
 
@@ -703,7 +750,14 @@ export function MergePdfWorkspace({
           trailing={
             <button
               type="button"
-              onClick={onReset}
+              onClick={() => {
+                for (const item of items) {
+                  rejectMergeFilePreview(item.file);
+                }
+                setPasswordPrompt(null);
+                setItems([]);
+                onEmpty();
+              }}
               className="text-xs text-pd-muted hover:text-pd-brand sm:mr-2"
             >
               Clear all

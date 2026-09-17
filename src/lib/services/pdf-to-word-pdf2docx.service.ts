@@ -182,6 +182,14 @@ export async function pdfToWordPdf2docx(
 
     onProgress?.(96);
     if (diskOnly) {
+      try {
+        const stat = await fs.stat(docxPath);
+        if (!stat.isFile() || stat.size === 0) {
+          throw new Error("pdf2docx produced no output file");
+        }
+      } catch {
+        throw new Error("pdf2docx produced no output file");
+      }
       onProgress?.(99);
       return;
     }

@@ -30,6 +30,8 @@ import { useTranslation } from "@/i18n";
 import { useAuthContext } from "@/components/providers/auth-provider";
 import { PRO_PRICING, planFileSizeMarketingLabel, FILE_LIMITS } from "@/config/constants";
 import { useProCheckout } from "@/hooks/use-pro-checkout";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import { CurrencyToggle } from "@/components/pricing/currency-toggle";
 import { FREE_FEATURES, PRO_FEATURES } from "@/components/marketing/home/home-shared";
 import { MockBillingNotice } from "@/components/billing/mock-billing-notice";
 
@@ -202,11 +204,13 @@ export function PricingPageContent() {
   const { t } = useTranslation();
   const { user, profile, isPro, loading: authLoading } = useAuthContext();
   const { checkout, loading: checkoutLoading, error: checkoutError } = useProCheckout();
+  const { currency, setCurrency, formatInr, isInr } = useDisplayCurrency();
   const [isYearly, setIsYearly] = useState(false);
 
-  const proPrice = isYearly ? PRO_YEARLY : PRO_MONTHLY;
+  const proPriceInr = isYearly ? PRO_YEARLY : PRO_MONTHLY;
   const proPeriod = isYearly ? t("pricing.perYear") : t("pricing.perMonth");
-  const monthlyEquivalent = isYearly ? Math.round(PRO_YEARLY / 12) : null;
+  const monthlyEquivalentInr = isYearly ? Math.round(PRO_YEARLY / 12) : null;
+  const proPriceDisplay = formatInr(proPriceInr);
 
   const freeCtaHref = user ? "/#tools" : "/signup";
 
@@ -301,8 +305,8 @@ export function PricingPageContent() {
       </section>
 
       <div className="pd-container max-w-6xl pb-16 pt-8">
-        {/* Billing toggle */}
-        <div className="flex justify-center">
+        {/* Billing + display currency toggles */}
+        <div className="flex flex-col items-center gap-4">
           <div className="inline-flex items-center rounded-full border border-pd-border bg-white/90 p-1 shadow-sm backdrop-blur-sm">
             <button
               type="button"
@@ -337,13 +341,25 @@ export function PricingPageContent() {
               </span>
             </button>
           </div>
+
+          <CurrencyToggle
+            value={currency}
+            onChange={setCurrency}
+            label={t("pricing.currencyLabel")}
+          />
         </div>
 
-        {isYearly && (
+        {isYearly && monthlyEquivalentInr ? (
           <p className="mt-3 text-center text-sm text-pd-muted">
-            {t("pricing.page.yearlyNote", { amount: monthlyEquivalent?.toLocaleString("en-IN") ?? "200" })}
+            {isInr
+              ? t("pricing.page.yearlyNote", {
+                  amount: monthlyEquivalentInr.toLocaleString("en-IN"),
+                })
+              : t("pricing.displayYearlyNote", {
+                  amount: `${formatInr(monthlyEquivalentInr)}${t("pricing.perMonth")}`,
+                })}
           </p>
-        )}
+        ) : null}
 
         {/* Pricing cards — Free · Pro · Business */}
         <div className="mx-auto mt-8 grid max-w-lg gap-5 sm:max-w-none sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
@@ -379,7 +395,9 @@ export function PricingPageContent() {
             </div>
 
             <div className="mt-3 flex items-baseline gap-1">
-              <span className="text-4xl font-extrabold tracking-tight text-pd-foreground">₹0</span>
+              <span className="text-4xl font-extrabold tracking-tight text-pd-foreground">
+                {formatInr(0)}
+              </span>
               <span className="text-sm font-medium text-slate-600">{t("pricing.perMonth")}</span>
             </div>
             <p className="mt-1 text-sm font-semibold text-emerald-800">{t("pricing.page.noCardRequired")}</p>
@@ -443,17 +461,24 @@ export function PricingPageContent() {
 
             <div className="mt-3 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
               <span className="text-4xl font-extrabold tracking-tight text-pd-foreground">
-                ₹{proPrice.toLocaleString("en-IN")}
+                {proPriceDisplay}
               </span>
               <span className="text-sm font-medium text-slate-600">{proPeriod}</span>
-              {isYearly && monthlyEquivalent ? (
+              {isYearly && monthlyEquivalentInr ? (
                 <span className="w-full text-sm font-semibold text-pd-brand">
-                  ≈ ₹{monthlyEquivalent.toLocaleString("en-IN")}
+                  ≈ {formatInr(monthlyEquivalentInr)}
                   {t("pricing.perMonth")} {t("pricing.page.billedYearly")}
                 </span>
               ) : null}
             </div>
-            <p className="mt-1 text-sm font-medium text-pd-brand">{t("pricing.page.gstNote")}</p>
+            <p className="mt-1 text-sm font-medium text-pd-brand">
+              {isInr
+                ? t("pricing.page.gstNote")
+                : t("pricing.displayCurrencyNote", {
+                    currency,
+                    inrAmount: proPriceInr.toLocaleString("en-IN"),
+                  })}
+            </p>
 
             <div className="my-3 h-px bg-blue-200/80" />
 
@@ -521,7 +546,7 @@ export function PricingPageContent() {
             <div className="mt-3 rounded-xl border border-violet-200/80 bg-violet-50/60 px-3 py-3">
               <div className="flex items-center gap-2">
                 <KeyRound className="h-4 w-4 text-violet-700" aria-hidden />
-                <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                <span className="rounded-full bg-emerald-800 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
                   {t("pricing.page.businessHighlightBadge")}
                 </span>
               </div>
@@ -635,22 +660,6 @@ export function PricingPageContent() {
             ))}
           </div>
         </section>
-
-        {/* Guarantee */}
-        <div className="mt-12 flex flex-col items-center gap-4 rounded-3xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/90 to-teal-50/90 px-6 py-8 text-center sm:flex-row sm:text-left">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-500 shadow-lg shadow-emerald-200/50">
-            <BadgeCheck className="h-7 w-7 text-white" aria-hidden />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-pd-foreground">{t("pricing.page.guaranteeTitle")}</h3>
-            <p className="mt-1 text-sm text-pd-muted">{t("pricing.page.guaranteeDesc")}</p>
-          </div>
-          <Link href="/contact" className="shrink-0">
-            <Button variant="outline" className="rounded-xl border-emerald-300 bg-white/80 font-semibold hover:bg-emerald-50">
-              {t("pricing.page.contactSupport")}
-            </Button>
-          </Link>
-        </div>
 
         {/* FAQ */}
         <section className="mt-20">

@@ -90,6 +90,40 @@ test.describe("PDF conversion (client-side)", () => {
 
     await expect(page.getByText(/\d+ pages/i).first()).toBeVisible({ timeout: 60_000 });
   });
+
+  test("split PDF extract tab starts with no pages selected", async ({ page }) => {
+    test.setTimeout(120_000);
+
+    const file = path.join(FIXTURES_DIR, "split-two-pages.pdf");
+
+    await gotoAndSettle(page, "/split-pdf");
+    await uploadPdfFiles(page, file);
+
+    // Click Extract immediately — before thumbnails finish loading
+    await page.getByRole("button", { name: "Extract", exact: true }).click();
+    await expect(page.getByText(/^0 of \d+ selected$/)).toBeVisible({ timeout: 60_000 });
+
+    const selectAll = page.getByRole("button", { name: "Select all" });
+    await expect(selectAll).toHaveAttribute("aria-pressed", "false");
+    await expect(page.locator('button[aria-pressed="true"]')).toHaveCount(0);
+  });
+
+  test("split PDF extract tab stays unselected after thumbnails load", async ({ page }) => {
+    test.setTimeout(120_000);
+
+    const file = path.join(FIXTURES_DIR, "split-two-pages.pdf");
+
+    await gotoAndSettle(page, "/split-pdf");
+    await uploadPdfFiles(page, file);
+    await expect(page.getByText(/\d+ pages/i).first()).toBeVisible({ timeout: 60_000 });
+
+    await page.getByRole("button", { name: "Extract", exact: true }).click();
+    await expect(page.getByText(/^0 of \d+ selected$/)).toBeVisible({ timeout: 15_000 });
+
+    const selectAll = page.getByRole("button", { name: "Select all" });
+    await expect(selectAll).toHaveAttribute("aria-pressed", "false");
+    await expect(page.locator('button[aria-pressed="true"]')).toHaveCount(0);
+  });
 });
 
 test.describe("Status page", () => {

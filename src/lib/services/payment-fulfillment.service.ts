@@ -8,7 +8,9 @@ import {
   getUserProfile,
   getUserSubscription,
   incrementCouponUsage,
+  decrementCouponUsage,
   releasePaymentClaim,
+  markCouponRedeemed,
   updateSubscription,
   updateUserProfile,
 } from "@/lib/db/queries";
@@ -32,6 +34,14 @@ export type FulfillPaymentResult =
 
 type PaymentRow = NonNullable<Awaited<ReturnType<typeof getPaymentByRazorpayOrderId>>>;
 
+const STALE_PROCESSING_MS = 15 * 60 * 1000;
+
+function isStaleProcessingClaim(order: PaymentRow): boolean {
+  const updated = order.updated_at ? Date.parse(String(order.updated_at)) : NaN;
+  if (!Number.isFinite(updated)) return true;
+  return Date.now() - updated >= STALE_PROCESSING_MS;
+}
+
 async function fulfillClaimedOrder(
   claimed: PaymentRow,
   input: {
@@ -42,82 +52,129 @@ async function fulfillClaimedOrder(
   }
 ): Promise<FulfillPaymentResult> {
   const duration = claimed.plan_duration === "yearly" ? "yearly" : "monthly";
+
   const existingSub = await getUserSubscription(claimed.user_id);
 
-  const periodEnd = new Date();
-  const extendFrom =
-    existingSub?.current_period_end &&
-    new Date(existingSub.current_period_end) > new Date()
-      ? new Date(existingSub.current_period_end)
-      : new Date();
-  periodEnd.setTime(extendFrom.getTime());
+  // A prior (possibly crashed) run already extended the period for THIS payment
+  // iff the subscription's marker equals this payment id. The marker is written
+  // in the SAME row-update as the period, so it is a reliable idempotency key
+  // across webhook retries and cron stale-processing resets.
+  const alreadyExtended = Boolean(
+    existingSub &&
+      (existingSub as { last_fulfilled_payment_id?: string | null })
+        .last_fulfilled_payment_id === claimed.id
+  );
 
-  if (duration === "yearly") {
-    periodEnd.setFullYear(periodEnd.getFullYear() + 1);
-  } else {
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
-  }
-
-  const planUuid = await getPlanUuidByName(claimed.plan_name || "pro");
-
-  const subscription = existingSub
-    ? await updateSubscription(existingSub.id, {
-        status: "active",
-        current_period_start: new Date().toISOString(),
-        current_period_end: periodEnd.toISOString(),
-      })
-    : await createSubscription({
-        user_id: claimed.user_id,
-        plan_id: planUuid,
-        status: "active",
-        current_period_start: new Date().toISOString(),
-        current_period_end: periodEnd.toISOString(),
-      });
-
-  const payment = await finalizeClaimedPayment(claimed.id, {
-    razorpay_payment_id: input.razorpay_payment_id,
-    razorpay_signature: input.razorpay_signature ?? null,
-    subscription_id: subscription.id,
-    ...(input.amount != null ? { amount: paiseToInr(Number(input.amount)) } : {}),
-    ...(input.payment_method ? { payment_method: input.payment_method } : {}),
-  });
-
-  if (!payment) {
-    const profile = await getUserProfile(claimed.user_id);
-    if (isActivePro(profile)) {
-      return { ok: true, already_verified: true };
+  // Redeem the coupon at most once per payment. `coupon_redeemed_at` is stamped
+  // immediately after increment to bound the crash/retry double-count window.
+  const alreadyRedeemed = Boolean(
+    (claimed as { coupon_redeemed_at?: string | null }).coupon_redeemed_at
+  );
+  let couponIncremented = false;
+  if (claimed.coupon_code && !alreadyRedeemed && !alreadyExtended) {
+    const couponOk = await incrementCouponUsage(claimed.coupon_code);
+    if (!couponOk) {
+      await releasePaymentClaim(claimed.id);
+      return { ok: false, status: 409, error: "Coupon is no longer available" };
     }
-    return { ok: false, status: 409, error: "Payment verification failed" };
+    couponIncremented = true;
+    await markCouponRedeemed(claimed.id);
   }
 
-  await updateUserProfile(claimed.user_id, {
-    plan: "pro",
-    plan_expires_at: periodEnd.toISOString(),
-  });
+  try {
+    let subscription;
+    let periodEnd: Date;
 
-  if (claimed.coupon_code) {
-    await incrementCouponUsage(claimed.coupon_code);
+    if (alreadyExtended && existingSub?.current_period_end) {
+      // Reuse the already-applied period; only finalize the payment below.
+      subscription = existingSub;
+      periodEnd = new Date(existingSub.current_period_end);
+    } else {
+      periodEnd = new Date();
+      const extendFrom =
+        existingSub?.current_period_end &&
+        new Date(existingSub.current_period_end) > new Date()
+          ? new Date(existingSub.current_period_end)
+          : new Date();
+      periodEnd.setTime(extendFrom.getTime());
+
+      if (duration === "yearly") {
+        periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+      } else {
+        periodEnd.setMonth(periodEnd.getMonth() + 1);
+      }
+
+      const planUuid = await getPlanUuidByName(claimed.plan_name || "pro");
+
+      // The period AND the idempotency marker are set atomically in one update.
+      subscription = existingSub
+        ? await updateSubscription(existingSub.id, {
+            status: "active",
+            current_period_start: new Date().toISOString(),
+            current_period_end: periodEnd.toISOString(),
+            last_fulfilled_payment_id: claimed.id,
+          })
+        : await createSubscription({
+            user_id: claimed.user_id,
+            plan_id: planUuid,
+            status: "active",
+            current_period_start: new Date().toISOString(),
+            current_period_end: periodEnd.toISOString(),
+            last_fulfilled_payment_id: claimed.id,
+          });
+    }
+
+    const payment = await finalizeClaimedPayment(claimed.id, {
+      razorpay_payment_id: input.razorpay_payment_id,
+      razorpay_signature: input.razorpay_signature ?? null,
+      subscription_id: subscription.id,
+      ...(input.amount != null ? { amount: paiseToInr(Number(input.amount)) } : {}),
+      ...(input.payment_method ? { payment_method: input.payment_method } : {}),
+    });
+
+    if (!payment) {
+      // Another path already advanced this payment; undo our coupon increment.
+      if (couponIncremented && claimed.coupon_code) {
+        await decrementCouponUsage(claimed.coupon_code);
+      }
+      const profile = await getUserProfile(claimed.user_id);
+      if (isActivePro(profile)) {
+        return { ok: true, already_verified: true };
+      }
+      return { ok: false, status: 409, error: "Payment verification failed" };
+    }
+
+    await updateUserProfile(claimed.user_id, {
+      plan: "pro",
+      plan_expires_at: periodEnd.toISOString(),
+    });
+
+    const amountPaise =
+      input.amount != null
+        ? Math.round(Number(input.amount))
+        : storedPaymentAmountToPaise(Number(claimed.amount));
+
+    await issueGstInvoiceForPayment({
+      userId: claimed.user_id,
+      paymentId: payment.id,
+      amountPaise,
+      razorpayPaymentId: input.razorpay_payment_id,
+      planLabel: `Pro ${duration}`,
+    }).catch(() => {});
+
+    return {
+      ok: true,
+      already_verified: false,
+      payment_id: payment.id,
+      subscription_id: subscription.id,
+    };
+  } catch (err) {
+    // Roll back the coupon so a retry (or the user) is not silently charged a use.
+    if (couponIncremented && claimed.coupon_code) {
+      await decrementCouponUsage(claimed.coupon_code).catch(() => {});
+    }
+    throw err;
   }
-
-  const amountPaise =
-    input.amount != null
-      ? Math.round(Number(input.amount))
-      : storedPaymentAmountToPaise(Number(claimed.amount));
-
-  await issueGstInvoiceForPayment({
-    userId: claimed.user_id,
-    paymentId: payment.id,
-    amountPaise,
-    razorpayPaymentId: input.razorpay_payment_id,
-    planLabel: `Pro ${duration}`,
-  }).catch(() => {});
-
-  return {
-    ok: true,
-    already_verified: false,
-    payment_id: payment.id,
-    subscription_id: subscription.id,
-  };
 }
 
 async function resumeProcessingPayment(
@@ -142,6 +199,10 @@ async function resumeProcessingPayment(
     return { ok: true, already_verified: true, payment_id: order.id };
   }
 
+  if (!isStaleProcessingClaim(order)) {
+    return { ok: false, status: 409, error: "Payment is being processed" };
+  }
+
   try {
     return await fulfillClaimedOrder(order, input);
   } catch (err) {
@@ -164,6 +225,12 @@ export async function fulfillPendingPayment(
 
   const existingByPayment = await getPaymentByRazorpayPaymentId(razorpay_payment_id);
   if (existingByPayment?.status === "completed") {
+    if (
+      existingByPayment.razorpay_order_id &&
+      existingByPayment.razorpay_order_id !== razorpay_order_id
+    ) {
+      return { ok: false, status: 400, error: "Payment verification failed" };
+    }
     return { ok: true, already_verified: true };
   }
 

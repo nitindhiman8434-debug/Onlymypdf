@@ -14,6 +14,9 @@ const CORE_REQUIRED_IN_PRODUCTION = [
   "UPSTASH_REDIS_REST_TOKEN",
   "SENTRY_DSN",
   "RESEND_API_KEY",
+  "TURNSTILE_SECRET_KEY",
+  "NEXT_PUBLIC_TURNSTILE_SITE_KEY",
+  "STEP_UP_SECRET",
 ] as const;
 
 /** Required only when BILLING_MODE is live (real Razorpay checkout). */
@@ -54,10 +57,38 @@ function assertMockBillingNotInProduction(): void {
   }
 }
 
+function assertInsecureCsrfNotInProduction(): void {
+  if (process.env.NODE_ENV !== "production") return;
+  if (process.env.ALLOW_INSECURE_CSRF === "1") {
+    throw new Error(
+      "ALLOW_INSECURE_CSRF=1 is not allowed in production. Remove this flag from deploy environment."
+    );
+  }
+}
+
+function isVercelRuntime(): boolean {
+  return (
+    process.env.VERCEL === "1" &&
+    Boolean(process.env.VERCEL_ENV?.trim()) &&
+    Boolean(process.env.VERCEL_URL?.trim())
+  );
+}
+
+function assertTrustedProxyInProduction(): void {
+  if (process.env.NODE_ENV !== "production") return;
+  if (isVercelRuntime()) return;
+  if (process.env.TRUSTED_PROXY_IP_HEADERS === "1") return;
+  throw new Error(
+    "Self-hosted production must set TRUSTED_PROXY_IP_HEADERS=1 after configuring x-real-ip or cf-connecting-ip on the reverse proxy."
+  );
+}
+
 export function assertProductionSecrets(): void {
   if (process.env.NODE_ENV !== "production") return;
 
   assertMockBillingNotInProduction();
+  assertInsecureCsrfNotInProduction();
+  assertTrustedProxyInProduction();
 
   const missing = missingKeys(getProductionRequiredSecretKeys());
 

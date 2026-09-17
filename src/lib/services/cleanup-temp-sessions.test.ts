@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { PDF_SESSION_TTL_MS } from "@/lib/pdf/pdf-session-store";
+import { getPreviewSessionTtlMs } from "@/lib/config/preview-limits";
 
 describe("cleanupExpiredTempSessions age logic", () => {
-  it("uses the same TTL as pdf session store (30 minutes)", () => {
-    expect(PDF_SESSION_TTL_MS).toBe(30 * 60 * 1000);
+  it("uses the same TTL as pdf session store (default 15 minutes)", () => {
+    expect(getPreviewSessionTtlMs()).toBe(15 * 60 * 1000);
   });
 
   it("treats objects older than TTL as stale", () => {
-    const cutoff = Date.now() - PDF_SESSION_TTL_MS;
+    const ttlMs = getPreviewSessionTtlMs();
+    const cutoff = Date.now() - ttlMs;
     const staleCreatedAt = new Date(cutoff - 60_000).toISOString();
     const freshCreatedAt = new Date(cutoff + 60_000).toISOString();
 

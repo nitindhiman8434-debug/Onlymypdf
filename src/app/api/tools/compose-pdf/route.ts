@@ -3,6 +3,7 @@ import { toolJsonError } from "@/lib/server/tool-api-error";
 import { composePdfFromSlots } from "@/lib/services/pdf-compose.service";
 import { buildPdfBuffersDownloadResponse } from "@/lib/pdf/pdf-buffers-response";
 import { resolvePdfBuffer } from "@/lib/pdf/pdf-password.server";
+import { resolvePdfBufferErrorResponse } from "@/lib/server/pdf-password-http";
 import { splitPDF } from "@/lib/services/pdf-split.service";
 import { parseComposeSlots } from "@/lib/api/compose-validation";
 import { isValidFileType, validateFileSize } from "@/lib/utils/file";
@@ -70,13 +71,11 @@ export async function POST(request: NextRequest) {
     try {
       buffer = await resolvePdfBuffer(rawBuffer, password);
     } catch (err) {
+      const passwordError = resolvePdfBufferErrorResponse(request, err, {
+        fileName: file.name,
+      });
+      if (passwordError) return passwordError;
       const msg = err instanceof Error ? err.message : "Failed to open PDF";
-      if (msg === "PASSWORD_REQUIRED") {
-        return toolJsonError(request, "This PDF is password-protected. Enter the password to continue.", 400);
-      }
-      if (msg === "WRONG_PASSWORD") {
-        return toolJsonError(request, "Incorrect password. Please try again.", 400);
-      }
       return toolJsonError(request, msg, 400);
     }
     const splitRangesRaw = formData.get("splitRanges") as string | null;

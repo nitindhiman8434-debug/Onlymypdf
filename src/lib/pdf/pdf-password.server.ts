@@ -1,7 +1,3 @@
-import fs from "fs/promises";
-import os from "os";
-import path from "path";
-import { randomUUID } from "crypto";
 import { PDFParse, PasswordException } from "pdf-parse";
 import { loadPdfDocument } from "@/lib/pdf/pdf-thumbnails.server";
 
@@ -101,26 +97,6 @@ export async function probePdfAccess(
   }
 
   return { status: "unreadable", message: "Could not read this PDF." };
-}
-
-export async function unlockWithMuhammara(
-  fileBuffer: Buffer,
-  password: string
-): Promise<Buffer> {
-  const id = randomUUID();
-  const inputPath = path.join(os.tmpdir(), `pdf-unlock-in-${id}.pdf`);
-  const outputPath = path.join(os.tmpdir(), `pdf-unlock-out-${id}.pdf`);
-
-  await fs.writeFile(inputPath, fileBuffer);
-
-  try {
-    const muhammara = await import("muhammara");
-    muhammara.recrypt(inputPath, outputPath, { password });
-    return await fs.readFile(outputPath);
-  } finally {
-    await fs.unlink(inputPath).catch(() => {});
-    await fs.unlink(outputPath).catch(() => {});
-  }
 }
 
 export async function resolvePdfBuffer(

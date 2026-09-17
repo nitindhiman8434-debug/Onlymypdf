@@ -1,18 +1,12 @@
-import {
-  getUserDailyUsage,
-  getGuestDailyUsage,
-  getUserProfile,
-} from "@/lib/db/queries";
+import { getUserProfile, logError } from "@/lib/db/queries";
 import { getCachedAdminSettings } from "@/lib/db/admin-settings-cache";
 import { resolveToolUserContext } from "@/lib/services/user-tool-context.service";
-import { logError } from "@/lib/db/queries";
 import { isLocalDevAuthEnabled } from "@/lib/auth/auth-config";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { isActivePro } from "@/lib/auth/plan-access";
 import { resolveProAccessForUser } from "@/lib/enterprise/org-access.service";
 import {
   checkUsageLimitWithOrg,
-  incrementOrganizationDailyUsage,
 } from "@/lib/enterprise/org-limits.service";
 import {
   resolveFreeDailyToolLimit,
@@ -22,6 +16,9 @@ import {
 import { FILE_LIMITS, isUnlimitedFileSizeMB } from "@/config/constants";
 import type { NextRequest } from "next/server";
 import { getGuestUsageKey } from "@/lib/server/client-ip";
+import {
+  reserveDailyUsageSlot,
+} from "@/lib/db/daily-usage-reserve";
 
 function resolveGuestKey(guestIpHash: string | null | NextRequest): string {
   if (guestIpHash && typeof guestIpHash === "object" && "headers" in guestIpHash) {
@@ -80,51 +77,35 @@ export async function checkUsageLimit(
           try {
             return await checkUsageLimitWithOrg(userId, tool);
           } catch {
-            // fall through to individual Pro limits
+            return {
+              allowed: false,
+              remaining: 0,
+              limit: 0,
+              message: "Service temporarily unavailable. Please try again shortly.",
+            };
           }
         }
 
         const dailyLimit = resolveProDailyToolLimit(settings);
-        const used = await getUserDailyUsage(userId);
+        const limitMessage =
+          `Daily Pro limit of ${dailyLimit} tool uses reached. Resets tomorrow.`;
 
-        return {
-          allowed: used < dailyLimit,
-          remaining: Math.max(0, dailyLimit - used),
-          limit: dailyLimit,
-          message:
-            used >= dailyLimit
-              ? `Daily Pro limit of ${dailyLimit} tool uses reached. Resets tomorrow.`
-              : undefined,
-        };
+        return reserveDailyUsageSlot(`user:${userId}`, dailyLimit, limitMessage);
       }
 
       const dailyLimit = resolveFreeDailyLimit(settings);
-      const used = await getUserDailyUsage(userId);
+      const limitMessage =
+        `Daily limit of ${dailyLimit} files reached. Sign up or upgrade to Pro for more uses per day.`;
 
-      return {
-        allowed: used < dailyLimit,
-        remaining: Math.max(0, dailyLimit - used),
-        limit: dailyLimit,
-        message:
-          used >= dailyLimit
-            ? `Daily limit of ${dailyLimit} files reached. Sign up or upgrade to Pro for more uses per day.`
-            : undefined,
-      };
+      return reserveDailyUsageSlot(`user:${userId}`, dailyLimit, limitMessage);
     }
 
     const guestKey = resolveGuestKey(guestIpHash);
     const dailyLimit = resolveFreeDailyLimit(settings);
-    const used = await getGuestDailyUsage(guestKey);
+    const limitMessage =
+      `Daily limit of ${dailyLimit} files reached. Sign up or upgrade to Pro for more.`;
 
-    return {
-      allowed: used < dailyLimit,
-      remaining: Math.max(0, dailyLimit - used),
-      limit: dailyLimit,
-      message:
-        used >= dailyLimit
-          ? `Daily limit of ${dailyLimit} files reached. Sign up or upgrade to Pro for more.`
-          : undefined,
-    };
+    return reserveDailyUsageSlot(`guest:${guestKey}`, dailyLimit, limitMessage);
   } catch (err) {
     await logError({
       user_id: userId,
@@ -191,17 +172,11 @@ export async function checkAIUsageLimit(
         ? settings.free_daily_ai_limit
         : Number(settings.free_daily_ai_limit) || 1;
 
-    const used = await getUserDailyUsage(userId, "ai-pdf-summarizer");
-
-    return {
-      allowed: used < dailyLimit,
-      remaining: Math.max(0, dailyLimit - used),
-      limit: dailyLimit,
-      message:
-        used >= dailyLimit
-          ? `Daily AI summary limit of ${dailyLimit} reached. Upgrade to Pro for unlimited AI summaries.`
-          : undefined,
-    };
+    return reserveDailyUsageSlot(
+      `ai:user:${userId}`,
+      dailyLimit,
+      `Daily AI summary limit of ${dailyLimit} reached. Upgrade to Pro for unlimited AI summaries.`
+    );
   } catch (err) {
     await logError({
       user_id: userId,
@@ -215,15 +190,8 @@ export async function checkAIUsageLimit(
 
 
 export async function recordSuccessfulToolUse(userId: string | null): Promise<void> {
-  if (!userId) return;
-  try {
-    const access = await resolveProAccessForUser(userId);
-    if (access.source === "organization" && access.organizationId) {
-      await incrementOrganizationDailyUsage(access.organizationId);
-    }
-  } catch {
-    // ignore
-  }
+  void userId;
+  // Daily limits are reserved atomically in checkUsageLimit; no post-success increment needed.
 }
 
 export async function checkFileSizeLimit(

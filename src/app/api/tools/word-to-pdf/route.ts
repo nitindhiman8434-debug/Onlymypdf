@@ -9,7 +9,9 @@ import { resolveMutationToolUser } from "@/lib/auth/tool-mutation-auth";
 import { validateSingleUpload, uploadValidationResponse } from "@/lib/server/upload-validation";
 import { sanitizeFilename } from "@/lib/utils/file";
 import { FILE_LIMITS } from "@/config/constants";
-import { clientIpForLogs } from "@/lib/server/request-security";
+import { clientIpForLogs, ownerHashFromRequest } from "@/lib/server/request-security";
+import { createPdfSession } from "@/lib/pdf/pdf-session-store";
+import { probePdfAccess } from "@/lib/pdf/pdf-password.server";
 
 export const maxDuration = 60;
 
@@ -68,6 +70,11 @@ export async function POST(request: NextRequest) {
 
     const originalName = file.name.replace(/\.(doc|docx)$/i, "");
 
+    const ownerHash = ownerHashFromRequest(request, userId);
+    const probe = await probePdfAccess(pdfBuffer);
+    const totalPages = probe.status === "ok" ? probe.pages : 0;
+    const previewSessionId = await createPdfSession(pdfBuffer, ownerHash, { localOnly: true });
+
     const processingTime = Date.now() - startTime;
     const outputFileName = `${sanitizeFilename(originalName)}.pdf`;
     await logToolUsage({
@@ -92,6 +99,8 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${outputFileName}"`,
         "Content-Length": String(pdfBuffer.length),
+        "X-Pdf-Session-Id": previewSessionId,
+        "X-Pdf-Total-Pages": String(totalPages),
       },
     });
   } catch (error) {

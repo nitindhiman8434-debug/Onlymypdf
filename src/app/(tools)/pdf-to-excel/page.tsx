@@ -16,6 +16,7 @@ export default function PdfToExcelPage() {
       downloadLabel="Download XLSX"
       outputExtension="xlsx"
       apiPath="/api/tools/pdf-to-excel"
+      supportsPdfPassword
       fetchTimeoutMs={3_600_000}
       progressCap={96}
       relatedTools={[

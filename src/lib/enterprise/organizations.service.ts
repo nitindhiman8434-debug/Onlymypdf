@@ -1,5 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { TEAM_PRICING } from "@/config/constants";
+import { logOrganizationAudit } from "@/lib/enterprise/org-audit";
+import { sanitizeOrganizationForRole } from "@/lib/enterprise/org-member-view";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export type OrganizationRecord = {
@@ -50,12 +52,26 @@ function slugify(name: string): string {
     .slice(0, 48);
 }
 
+/** Max organizations a single user may create (owner role). */
+export const MAX_ORGANIZATIONS_PER_USER = 3;
+
+export async function countUserOrganizations(userId: string): Promise<number> {
+  const supabase = await createServiceClient();
+  const { count, error } = await supabase
+    .from("organization_members")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("role", "owner");
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function listUserOrganizations(userId: string): Promise<OrganizationRecord[]> {
   const supabase = await createServiceClient();
   const { data, error } = await supabase
     .from("organization_members")
     .select(
-      "organizations ( id, name, slug, billing_email, plan, seat_limit, owner_id, created_at, plan_status, plan_expires_at, daily_tool_limit, daily_usage_count, daily_usage_date, razorpay_subscription_id )"
+      "role, organizations ( id, name, slug, billing_email, plan, seat_limit, owner_id, created_at, plan_status, plan_expires_at, daily_tool_limit, daily_usage_count, daily_usage_date, razorpay_subscription_id )"
     )
     .eq("user_id", userId);
 
@@ -63,9 +79,14 @@ export async function listUserOrganizations(userId: string): Promise<Organizatio
 
   return (data ?? [])
     .map((row) => {
-      const org = (row as { organizations: OrganizationRecord | OrganizationRecord[] | null })
-        .organizations;
-      return Array.isArray(org) ? org[0] : org;
+      const typed = row as {
+        role: string;
+        organizations: OrganizationRecord | OrganizationRecord[] | null;
+      };
+      const org = typed.organizations;
+      const record = (Array.isArray(org) ? org[0] : org) as OrganizationRecord | null;
+      if (!record) return null;
+      return sanitizeOrganizationForRole(record, typed.role);
     })
     .filter(Boolean) as OrganizationRecord[];
 }
@@ -184,6 +205,27 @@ export async function addOrganizationMember(
     if (error.code === "23505") throw new Error("User is already a member.");
     throw error;
   }
+
+  // Close the seat-limit TOCTOU: re-count after insert and roll back if a
+  // concurrent accept pushed the org over its seat limit.
+  const { data: org } = await supabase
+    .from("organizations")
+    .select("seat_limit")
+    .eq("id", organizationId)
+    .single();
+  if (org) {
+    const count = await countOrganizationMembers(organizationId);
+    if (count > org.seat_limit) {
+      await supabase
+        .from("organization_members")
+        .delete()
+        .eq("organization_id", organizationId)
+        .eq("user_id", userId);
+      throw new Error(
+        `Seat limit reached (${org.seat_limit}). Remove a member or upgrade seats.`
+      );
+    }
+  }
 }
 
 export async function removeOrganizationMember(
@@ -213,6 +255,13 @@ export async function removeOrganizationMember(
     .eq("organization_id", organizationId)
     .eq("user_id", memberUserId);
   if (error) throw error;
+  await logOrganizationAudit({
+    organizationId,
+    actorUserId,
+    action: "member.remove",
+    targetType: "user",
+    targetId: memberUserId,
+  });
 }
 
 export async function createOrganizationInvite(
@@ -220,7 +269,7 @@ export async function createOrganizationInvite(
   invitedBy: string,
   email: string,
   role: "admin" | "member" = "member"
-): Promise<{ token: string; expiresAt: string }> {
+): Promise<{ token: string; expiresAt: string } | { duplicate: true }> {
   await assertSeatAvailable(organizationId);
   const actorRole = await getOrganizationMemberRole(organizationId, invitedBy);
   if (!actorRole || !["owner", "admin"].includes(actorRole)) {
@@ -241,12 +290,22 @@ export async function createOrganizationInvite(
   });
 
   if (error) {
-    if (error.code === "23505") throw new Error("An invite for this email already exists.");
+    if (error.code === "23505") return { duplicate: true };
     throw error;
   }
 
+  await logOrganizationAudit({
+    organizationId,
+    actorUserId: invitedBy,
+    action: "invite.create",
+    targetType: "email",
+    payload: { role },
+  });
+
   return { token, expiresAt };
 }
+
+export const INVITE_ACCEPT_FAILED_MESSAGE = "Unable to accept this invitation.";
 
 export async function acceptOrganizationInvite(
   token: string,
@@ -260,11 +319,11 @@ export async function acceptOrganizationInvite(
     .eq("token", token)
     .maybeSingle();
 
-  if (error || !invite) throw new Error("Invalid invite.");
-  if (invite.accepted_at) throw new Error("Invite already accepted.");
-  if (new Date(invite.expires_at) <= new Date()) throw new Error("Invite expired.");
+  if (error || !invite) throw new Error(INVITE_ACCEPT_FAILED_MESSAGE);
+  if (invite.accepted_at) throw new Error(INVITE_ACCEPT_FAILED_MESSAGE);
+  if (new Date(invite.expires_at) <= new Date()) throw new Error(INVITE_ACCEPT_FAILED_MESSAGE);
   if (invite.email !== userEmail.trim().toLowerCase()) {
-    throw new Error("Invite email does not match your account.");
+    throw new Error(INVITE_ACCEPT_FAILED_MESSAGE);
   }
 
   await addOrganizationMember(
@@ -281,6 +340,14 @@ export async function acceptOrganizationInvite(
   const orgName =
     (invite as { organizations?: { name?: string } | { name?: string }[] }).organizations;
   const name = Array.isArray(orgName) ? orgName[0]?.name : orgName?.name;
+
+  await logOrganizationAudit({
+    organizationId: invite.organization_id,
+    actorUserId: userId,
+    action: "invite.accept",
+    targetType: "user",
+    targetId: userId,
+  });
 
   return {
     organizationId: invite.organization_id,
@@ -329,6 +396,13 @@ export async function revokeOrganizationInvite(
     .is("accepted_at", null);
 
   if (error) throw error;
+  await logOrganizationAudit({
+    organizationId,
+    actorUserId,
+    action: "invite.revoke",
+    targetType: "invite",
+    targetId: inviteId,
+  });
 }
 
 export async function getOrganizationById(
@@ -350,7 +424,8 @@ export async function getOrganizationById(
   if (error || !org) return null;
 
   const memberCount = await countOrganizationMembers(organizationId);
-  return { ...(org as OrganizationRecord), memberCount, userRole: role };
+  const orgRecord = { ...(org as OrganizationRecord), memberCount, userRole: role };
+  return sanitizeOrganizationForRole(orgRecord, role);
 }
 
 export async function activateOrganizationPlan(
@@ -372,5 +447,45 @@ export async function activateOrganizationPlan(
       updated_at: new Date().toISOString(),
     })
     .eq("id", organizationId);
+  if (error) throw error;
+}
+
+/** Owner-only: cancel billing and delete the organization (members/invites cascade). */
+export async function deleteOrganizationByOwner(
+  organizationId: string,
+  ownerUserId: string
+): Promise<void> {
+  const role = await getOrganizationMemberRole(organizationId, ownerUserId);
+  if (role !== "owner") {
+    throw new Error("Only the organization owner can delete this team.");
+  }
+
+  const supabase = await createServiceClient();
+  const { data: org, error: loadError } = await supabase
+    .from("organizations")
+    .select("id, owner_id, razorpay_subscription_id")
+    .eq("id", organizationId)
+    .single();
+
+  if (loadError || !org || org.owner_id !== ownerUserId) {
+    throw new Error("Organization not found");
+  }
+
+  const razorpayId = org.razorpay_subscription_id?.trim();
+  if (razorpayId) {
+    const { cancelRazorpaySubscription } = await import("@/lib/services/payment.service");
+    try {
+      await cancelRazorpaySubscription(razorpayId);
+    } catch {
+      // proceed with local delete if gateway is unreachable
+    }
+  }
+
+  const { error } = await supabase
+    .from("organizations")
+    .delete()
+    .eq("id", organizationId)
+    .eq("owner_id", ownerUserId);
+
   if (error) throw error;
 }

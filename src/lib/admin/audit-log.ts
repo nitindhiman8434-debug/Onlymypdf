@@ -23,7 +23,8 @@ export async function logAdminAction(input: AdminAuditInput): Promise<void> {
       ip_hash: input.ipHash ?? null,
     });
   } catch (err) {
-    console.warn("[admin-audit] Failed to write audit log:", err);
+    const { logSafeError } = await import("@/lib/server/safe-log");
+    logSafeError("admin-audit", err);
   }
 }
 

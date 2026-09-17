@@ -9,5 +9,8 @@ export const POST = createToolRoute({
   contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   outputExtension: "xlsx",
   heavy: true,
+  unlockPdf: true,
+  passwordRequiredMessage:
+    "This PDF is password-protected. Enter the password to convert to Excel.",
   convert: (buffer) => pdfToExcel(buffer),
 });

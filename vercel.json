@@ -6,11 +6,26 @@
     }
   ],
   "functions": {
+    "src/app/api/tools/pdf-to-ppt/route.ts": {
+      "maxDuration": 900
+    },
     "src/app/api/tools/pdf-to-word/route.ts": {
-      "maxDuration": 300
+      "maxDuration": 600
     },
     "src/app/api/tools/pdf-to-excel/route.ts": {
       "maxDuration": 600
+    },
+    "src/app/api/tools/html-to-pdf/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/tools/sign-pdf/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/tools/compress-pdf/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/tools/excel-to-pdf/route.ts": {
+      "maxDuration": 180
     },
     "src/app/api/tools/*/route.ts": {
       "maxDuration": 120

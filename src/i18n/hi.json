@@ -41,7 +41,7 @@
     "subtitle": "PDF मर्ज, स्प्लिट, कम्प्रेस, कन्वर्ट, एडिट और साइन करें — सब एक जगह। फ्री, फास्ट और सिक्योर।",
     "cta": "सभी टूल्स देखें",
     "ctaSecondary": "प्राइसिंग देखें",
-    "trustedBy": "पूरे भारत में हज़ारों यूज़र्स का भरोसा",
+    "trustedBy": "साफ़ Free और Pro सीमाओं के साथ 20+ PDF tools",
     "filesProcessed": "फ़ाइलें प्रोसेस की गईं",
     "activeUsers": "एक्टिव यूज़र्स",
     "toolsAvailable": "PDF टूल्स"
@@ -141,7 +141,7 @@
     "pdfToPpt": {
       "name": "PDF से PowerPoint",
       "description": "PDF को PowerPoint स्लाइड में बदलें",
-      "longDescription": "PDF पेजों को एडिट करने योग्य PowerPoint (.pptx) प्रेज़ेंटेशन में बदलें।"
+      "longDescription": "हर PDF पेज को PowerPoint (.pptx) में full-slide image के रूप में बदलें। पेज का दिखना सुरक्षित रहता है, लेकिन अलग टेक्स्ट, चार्ट, लिंक और form elements editable नहीं होते।"
     },
     "excelToPdf": {
       "name": "Excel से PDF",
@@ -198,6 +198,7 @@
     "password": "पासवर्ड",
     "confirmPassword": "पासवर्ड कन्फ़र्म करें",
     "passwordHint": "इस PDF का पासवर्ड डालें",
+    "pdfPasswordUploadHint": "पासवर्ड-सुरक्षित PDF के लिए आपसे पासवर्ड पूछा जाएगा।",
     "newPassword": "नया पासवर्ड",
     "setPassword": "पासवर्ड सेट करें",
     "relatedTools": "संबंधित टूल्स",
@@ -209,7 +210,18 @@
     "sizeOriginal": "ओरिजिनल",
     "sizeOutput": "आउटपुट",
     "sizeSaved": "बचत",
-    "processingLabel": "प्रोसेस हो रहा है…"
+    "processingLabel": "प्रोसेस हो रहा है…",
+    "errors": {
+      "textFilesOnly": "गलत फ़ाइल टाइप। केवल टेक्स्ट फ़ाइलें स्वीकार हैं।",
+      "htmlFilesOnly": "गलत फ़ाइल टाइप। केवल HTML, HTM, XHTML, MHTML और SVG फ़ाइलें स्वीकार हैं।",
+      "imagesOnly": "कृपया केवल JPG, PNG या WebP इमेज चुनें।",
+      "wordConversionTimeout": "कन्वर्ज़न समय समाप्त। Word या LibreOffice व्यस्त हो सकता है — फिर कोशिश करें।",
+      "htmlConversionTimeout": "कन्वर्ज़न समय समाप्त। बड़ी HTML फ़ाइलों में 3–5 मिनट लग सकते हैं — फिर कोशिश करें।",
+      "protectionTimeout": "सुरक्षा समय समाप्त (2 मिनट)। छोटी PDF आज़माएँ या पेज रिफ्रेश करें।",
+      "summarizationFailed": "सारांश बनाना विफल रहा।",
+      "downloadFailed": "डाउनलोड विफल रहा।",
+      "pdfPasswordRequired": "यह PDF पासवर्ड से सुरक्षित है। पहले Unlock PDF इस्तेमाल करें, फिर अनलॉक फ़ाइल यहाँ अपलोड करें।"
+    }
   },
 
   "toolWorkspace": {
@@ -263,6 +275,8 @@
     "noPagesLeftExport": "एक्सपोर्ट के लिए कोई पेज नहीं बचा।",
     "pdfOnly": "कृपया केवल PDF फ़ाइलें चुनें।",
     "enterPasswordBeforeExport": "एक्सपोर्ट से पहले सभी PDF फ़ाइलों का पासवर्ड डालें।",
+    "passwordSkippedMerge": "इस PDF को पासवर्ड चाहिए। फ़ाइल कार्ड पर Unlock दबाएँ, फ़ाइल हटाएँ, या दूसरी फ़ाइलों के साथ आगे बढ़ें।",
+    "unlockPdf": "अनलॉक करें",
     "waitForFilesLoading": "कृपया सभी फ़ाइलों के लोड होने का इंतज़ार करें।",
     "addPageToMerge": "मर्ज के लिए कम से कम एक PDF पेज जोड़ें।",
     "blankPage": "खाली पेज",
@@ -283,7 +297,10 @@
     "change": "बदलें",
     "compressionBasic": "बेसिक",
     "compressionStrong": "स्ट्रॉन्ग",
-    "alreadyOptimized": "यह PDF पहले से अच्छी तरह ऑप्टिमाइज़ है। क्वालिटी घटाए बिना और साइज़ कम नहीं हो सका।",
+    "alreadyOptimized": "यह PDF पहले से अच्छी तरह ऑप्टिमाइज़ है। लॉसलेस सफ़ाई से कम से कम 3% बचत नहीं हुई, इसलिए मूल फ़ाइल बिना बदलाव लौटाई गई है।",
+    "basicCompressionHint": "बेसिक लॉसलेस है: खोजने योग्य टेक्स्ट, लिंक, फॉर्म और बुकमार्क सुरक्षित रहते हैं। पहले से ऑप्टिमाइज़ फ़ाइल बिना बदलाव लौटती है।",
+    "strongCompressionWarning": "स्ट्रॉन्ग कम्प्रेशन पेजों को इमेज के रूप में दोबारा बनाता है। साइज़ काफी घट सकता है, लेकिन टेक्स्ट सर्च, लिंक, फॉर्म, बुकमार्क और accessibility tags फ्लैटन हो सकते हैं।",
+    "rasterizedResultWarning": "स्ट्रॉन्ग कम्प्रेशन ने इमेज-आधारित पेज बनाए हैं। शेयर करने से पहले जाँचें; टेक्स्ट सर्च, लिंक, फॉर्म, बुकमार्क और accessibility tags काम न करें।",
     "cannotDeleteOnlyPage": "अंतिम बचा पेज नहीं हटाया जा सकता।",
     "failedPreparePages": "PDF पेज तैयार करने में विफल।",
     "failedExportSignedPdf": "साइन PDF एक्सपोर्ट विफल।",
@@ -342,15 +359,18 @@
     "getStarted": "फ्री में शुरू करें",
     "mostPopular": "सबसे लोकप्रिय",
     "features": "फ़ीचर्स",
+    "currencyLabel": "दिखाई देने वाली करेंसी",
+    "displayCurrencyNote": "{currency} में दिखाया गया। चेकआउट पर ₹{inrAmount} INR में चार्ज होगा।",
+    "displayYearlyNote": "एक बार भुगतान — सालाना {amount}/माह के बराबर",
     "page": {
       "breadcrumbHome": "होम",
       "breadcrumbPricing": "प्राइसिंग",
       "eyebrow": "प्लान और प्राइसिंग",
       "heroDesc": "Free vs Pro की तुलना — मर्ज, कन्वर्ट, कम्प्रेस, साइन और AI PDF टूल्स। 5 फ्री उपयोग/दिन से शुरू — 20× लिमिट, प्राथमिकता स्पीड और बिना विज्ञापन के Pro लें।",
-      "trustUsers": "10,000+ खुश यूज़र्स",
-      "trustSecure": "256-bit SSL एन्क्रिप्शन",
+      "trustUsers": "Razorpay के ज़रिए सुरक्षित भुगतान",
+      "trustSecure": "HTTPS/TLS एन्क्रिप्टेड ट्रांसफर",
       "trustNoHidden": "कोई छिपी फ़ीस नहीं",
-      "stripEncrypt": "एंड-टू-एंड एन्क्रिप्टेड अपलोड",
+      "stripEncrypt": "एन्क्रिप्टेड अपलोड (TLS) + ऑटो-डिलीट",
       "stripAutoDelete": "प्रोसेसिंग के बाद ऑटो-डिलीट",
       "stripPayments": "UPI, कार्ड और नेट बैंकिंग",
       "stripCancel": "कभी भी कैंसल करें",
@@ -360,8 +380,8 @@
       "proName": "Pro",
       "proTagline": "रोज़मर्रा PDF काम के लिए बेस्ट",
       "noCardRequired": "क्रेडिट कार्ड की ज़रूरत नहीं",
-      "freeUpsell": "Sign PDF और AI Summarizer — सिर्फ Pro पर",
-      "proCtaNote": "7-दिन मनी-बैक · कभी भी कैंसल",
+      "freeUpsell": "Sign PDF Pro पर · signed-in Free user को रोज़ 1 AI summary",
+      "proCtaNote": "कभी भी कैंसल करें",
       "billedYearly": "सालाना बिल",
       "gstNote": "कीमतें INR में · GST जहाँ लागू हो वहाँ शामिल",
       "proExtra1": "फ़ाइलें 24 घंटे तक रखी जाती हैं",
@@ -423,8 +443,6 @@
       "benefit3Desc": "ज़रूरत पड़ने पर तेज़ी से मदद — हमारी सपोर्ट टीम से।",
       "benefit4Title": "वार्षिक पर सबसे अच्छा मूल्य",
       "benefit4Desc": "सालाना बिलिंग पर 33% बचत — ₹7/दिन से भी कम।",
-      "guaranteeTitle": "7-दिन की मनी-बैक गारंटी",
-      "guaranteeDesc": "Pro बिना जोखिम के आज़माएँ। संतुष्ट नहीं? 7 दिनों में पूरा रिफंड — बिना सवाल।",
       "contactSupport": "सपोर्ट से संपर्क",
       "faqDesc": "प्लान, बिलिंग और सुरक्षा — सब कुछ जो आपको जानना चाहिए।",
       "faq": {
@@ -437,16 +455,16 @@
         "q4": "आप कौन से पेमेंट मेथड स्वीकार करते हैं?",
         "a4": "Razorpay के ज़रिए UPI, कार्ड, नेट बैंकिंग और वॉलेट — सभी INR में सुरक्षित।",
         "q5": "क्या मेरा डेटा सुरक्षित है?",
-        "a5": "बिल्कुल। फ़ाइलें ट्रांसफर में एन्क्रिप्टेड और प्रोसेसिंग के बाद ऑटो-डिलीट। हम कभी आपके दस्तावेज़ एक्सेस या शेयर नहीं करते।",
+        "a5": "फ़ाइलें HTTPS/TLS से ट्रांसफर होती हैं और Free में 2 घंटे, Pro में 24 घंटे की retention policy follow करती हैं। Optional AI या conversion provider use करने से पहले बताया जाता है।",
         "q6": "क्या रिफंड पॉलिसी है?",
-        "a6": "हाँ — अपने हाल के Pro भुगतान के 7 दिनों के भीतर support@onlymypdf.in पर संपर्क करें। Razorpay payment ID शामिल करें।",
+        "a6": "support@onlymypdf.in पर Razorpay payment ID के साथ संपर्क करें। रिफंड पात्रता हमारी रिफंड पॉलिसी के अनुसार समीक्षा की जाती है।",
         "q7": "क्या कभी भी सब्सक्रिप्शन कैंसल कर सकते हैं?",
         "a7": "बिल्कुल। डैशबोर्ड से कभी भी कैंसल करें। बिलिंग पीरियड खत्म होने तक Pro एक्सेस बनी रहेगी।",
         "q8": "क्या टीम या बिज़नेस प्लान है?",
         "a8": "हाँ — Business प्लान में टीम सीटें, कस्टम लिमिट, API एक्सेस और समर्पित सपोर्ट शामिल है। प्राइसिंग पेज पर Contact Sales पर क्लिक करें या कस्टम कोट के लिए ईमेल करें।"
       },
       "ctaTitle": "PDF के साथ स्मार्ट काम करने के लिए तैयार?",
-      "ctaDesc": "हज़ारों यूज़र्स OnlyMyPDF पर भरोसा करते हैं — तेज़, सुरक्षित प्रोसेसिंग।"
+      "ctaDesc": "Published Free limits से शुरू करें और higher limits या Pro features चाहिए तभी upgrade करें।"
     },
     "faq": {
       "title": "अक्सर पूछे जाने वाले सवाल",
@@ -457,9 +475,9 @@
       "q3": "क्या मैं कभी भी सब्सक्रिप्शन कैंसल कर सकता हूँ?",
       "a3": "हाँ, आप कभी भी Pro सब्सक्रिप्शन कैंसल कर सकते हैं। बिलिंग पीरियड खत्म होने तक आपकी एक्सेस बनी रहेगी।",
       "q4": "क्या मेरा डेटा सुरक्षित है?",
-      "a4": "बिल्कुल। सभी फ़ाइलें ट्रांसफर के दौरान एन्क्रिप्टेड होती हैं और प्रोसेसिंग के 2 घंटे के अंदर ऑटोमैटिक डिलीट हो जाती हैं। हम कभी आपकी फ़ाइलें एक्सेस या शेयर नहीं करते।",
+      "a4": "फ़ाइलें HTTPS/TLS से ट्रांसफर होती हैं और Free में 2 घंटे, Pro में 24 घंटे के अंदर deletion के लिए scheduled रहती हैं। Uploaded files बेची नहीं जातीं।",
       "q5": "क्या आप रिफंड देते हैं?",
-      "a5": "हम परचेज़ के 7 दिनों के अंदर फुल रिफंड देते हैं अगर आप Pro प्लान से संतुष्ट नहीं हैं।"
+      "a5": "रिफंड अनुरोध हमारी रिफंड पॉलिसी के अनुसार समीक्षा किए जाते हैं। support@onlymypdf.in पर Razorpay payment ID और रजिस्टर्ड ईमेल भेजें।"
     }
   },
 
@@ -503,7 +521,7 @@
     "updatePassword": "पासवर्ड अपडेट करें",
     "passwordUpdated": "आपका पासवर्ड सफलतापूर्वक अपडेट हो गया",
     "promo": {
-      "badge": "OnlyMyPDF Pro · 7-दिन मनी-बैक",
+      "badge": "OnlyMyPDF Pro · प्राथमिकता PDF टूल्स",
       "title": "अपना पूरा",
       "titleHighlight": "PDF वर्कफ़्लो अनलॉक करें।",
       "subtitle": "फ़ाइलें ट्रैक करने के लिए साइन इन — AI, ई-साइन और प्राथमिकता के लिए Pro लें।",
@@ -514,7 +532,7 @@
       "benefit3Title": "20× दैनिक क्षमता",
       "benefit3Desc": "100 उपयोग/दिन, बड़ी फ़ाइलें और 24-घंटे डाउनलोड विंडो।",
       "cta": "Free vs Pro तुलना करें",
-      "trust": "256-bit एन्क्रिप्टेड · कभी भी रद्द · कोई छिपा शुल्क नहीं"
+      "trust": "HTTPS/TLS ट्रांसफर · कभी भी रद्द · कोई छिपा शुल्क नहीं"
     }
   },
 
@@ -533,6 +551,8 @@
     "manageBilling": "बिलिंग मैनेज करें",
     "noActivity": "कोई हाल की गतिविधि नहीं",
     "noActivityDescription": "PDF टूल्स इस्तेमाल करें, आपकी गतिविधि यहाँ दिखेगी।",
+    "proActivatedTitle": "Pro सक्रिय हो गया!",
+    "proActivatedDesc": "आपकी सदस्यता अब सक्रिय है। प्रीमियम टूल्स और उच्च सीमाओं का आनंद लें।",
     "history": "प्रोसेसिंग हिस्ट्री",
     "historyEmpty": "अभी तक कोई प्रोसेसिंग हिस्ट्री नहीं",
     "downloadAgain": "फिर से डाउनलोड करें",
@@ -651,13 +671,11 @@
         "supportPriority": "प्राथमिकता ईमेल"
       },
       "trustTitle": "सुरक्षित और पारदर्शी बिलिंग",
-      "trust1": "256-bit SSL एन्क्रिप्टेड अपलोड",
-      "trust2": "प्रोसेसिंग के बाद ऑटो-डिलीट",
+      "trust1": "HTTPS/TLS एन्क्रिप्टेड अपलोड",
+      "trust2": "Free 2 घंटे · Pro 24 घंटे retention",
       "trust3": "डैशबोर्ड से कभी भी कैंसल",
       "trust4": "Razorpay — UPI, कार्ड और नेट बैंकिंग",
-      "guarantee": "7-दिन की मनी-बैक गारंटी",
-      "guaranteeDesc": "Pro बिना जोखिम आज़माएँ। 7 दिनों में पूरा रिफंड।",
-      "social": "10,000+ यूज़र्स OnlyMyPDF पर भरोसा करते हैं",
+      "social": "रोज़मर्रा के PDF workflows के लिए बनाया गया",
       "payments": "UPI · कार्ड · नेट बैंकिंग",
       "faqTitle": "बिलिंग FAQ",
       "faqDesc": "प्लान, पेमेंट और रिफंड — सामान्य सवाल।",
@@ -669,14 +687,14 @@
         "q3": "कौन से पेमेंट मेथड?",
         "a3": "Razorpay — UPI, कार्ड, नेट बैंकिंग, वॉलेट। सभी कीमतें INR में।",
         "q4": "क्या डेटा सुरक्षित है?",
-        "a4": "हाँ। ट्रांसफर में एन्क्रिप्शन, प्रोसेसिंग के बाद ऑटो-डिलीट। हम कभी दस्तावेज़ शेयर नहीं करते।",
+        "a4": "हाँ। ट्रांसफर HTTPS/TLS से होता है और फ़ाइलें Free में 2 घंटे, Pro में 24 घंटे की retention policy follow करती हैं। Optional providers use करने से पहले बताया जाता है।",
         "q5": "रिफंड पॉलिसी?",
-        "a5": "Pro भुगतान के 7 दिनों के भीतर support@onlymypdf.in पर संपर्क करें। Razorpay payment ID शामिल करें।",
+        "a5": "support@onlymypdf.in पर Razorpay payment ID के साथ संपर्क करें। रिफंड पात्रता हमारी रिफंड पॉलिसी के अनुसार समीक्षा की जाती है।",
         "q6": "कभी भी कैंसल?",
         "a6": "बिल्कुल। डैशबोर्ड से कैंसल करें। बिलिंग पीरियड खत्म होने तक Pro एक्सेस।"
       },
       "ctaTitle": "हर PDF टूल अनलॉक करने के लिए तैयार?",
-      "ctaDesc": "AI, साइनिंग और प्राथमिकता प्रोसेसिंग के लिए Pro में अपग्रेड करने वाले हज़ारों प्रोफेशनल्स से जुड़ें।"
+      "ctaDesc": "Published limits देखें और signing, unlimited AI summaries या priority processing चाहिए तभी Pro में upgrade करें।"
     }
   },
 
@@ -752,6 +770,12 @@
   },
 
   "errors": {
+    "pageTitle": "कुछ गलत हो गया",
+    "pageDescription": "अनपेक्षित त्रुटि हुई। कृपया फिर कोशिश करें या होमपेज पर जाएँ।",
+    "goHome": "होम पर जाएँ",
+    "pageTitle": "कुछ गलत हो गया",
+    "pageDescription": "अनपेक्षित त्रुटि हुई। कृपया फिर कोशिश करें या होमपेज पर जाएँ।",
+    "goHome": "होम पर जाएँ",
     "generic": "कुछ गलत हो गया। कृपया फिर कोशिश करें।",
     "networkError": "नेटवर्क एरर। कृपया अपना कनेक्शन चेक करें।",
     "fileTooBig": "फ़ाइल बहुत बड़ी है। अधिकतम साइज़ {size} MB है।",
@@ -796,9 +820,9 @@
 
   "privacy": {
     "badge": "आपकी प्राइवेसी मायने रखती है",
-    "title": "100% सुरक्षित और प्राइवेट",
-    "description": "आपकी फ़ाइलें ट्रांसफर के दौरान एन्क्रिप्टेड रहती हैं और प्रोसेसिंग के बाद ऑटोमैटिक डिलीट हो जाती हैं। हम कभी आपके डॉक्यूमेंट एक्सेस, शेयर या स्टोर नहीं करते।",
-    "encryption": "256-बिट SSL एन्क्रिप्शन",
+    "title": "सुरक्षित फ़ाइल हैंडलिंग",
+    "description": "फ़ाइलें HTTPS/TLS से ट्रांसफर होती हैं और प्रकाशित retention window follow करती हैं। Optional third-party processing use करने से पहले बताया जाता है।",
+    "encryption": "HTTPS/TLS एन्क्रिप्टेड ट्रांसफर",
     "autoDelete": "{hours} घंटे बाद ऑटो-डिलीट",
     "noStorage": "कोई परमानेंट स्टोरेज नहीं",
     "gdprCompliant": "GDPR अनुपालक"
@@ -892,8 +916,8 @@
       "description": "अपनी PDF सेकंडों में प्रोसेस करें, मिनटों में नहीं। हमारा ऑप्टिमाइज़्ड सिस्टम फ़ाइलें तेज़ी से हैंडल करता है।"
     },
     "secure": {
-      "title": "बैंक-लेवल सुरक्षा",
-      "description": "256-बिट SSL एन्क्रिप्शन। फ़ाइलें प्रोसेसिंग के बाद ऑटो-डिलीट होती हैं। आपका डेटा प्राइवेट रहता है।"
+      "title": "एन्क्रिप्टेड ट्रांसफर",
+      "description": "HTTPS/TLS ट्रांसफर के दौरान फ़ाइलों को सुरक्षित रखता है। Uploaded files प्रकाशित retention window follow करती हैं।"
     },
     "easy": {
       "title": "बेहद आसान",
@@ -915,7 +939,7 @@
 
   "testimonials": {
     "title": "हमारे यूज़र्स क्या कहते हैं",
-    "subtitle": "हज़ारों खुश यूज़र्स से जुड़ें"
+    "subtitle": "Unsupported ratings की जगह published product facts देखें"
   },
 
   "meta": {
@@ -957,8 +981,8 @@
     "heroTrust": "शुरू करने के लिए कार्ड नहीं · सुरक्षित · 2 घंटे बाद ऑटो-डिलीट",
     "statTools": "PDF टूल्स",
     "statDelete": "ऑटो फ़ाइल डिलीट",
-    "statLimit": "कोई अपलोड साइज़ लिमिट नहीं",
-    "statBrowser": "ब्राउज़र में",
+    "statLimit": "Free फ़ाइल लिमिट",
+    "statBrowser": "Free दैनिक उपयोग",
     "workflowEyebrow": "आसान वर्कफ़्लो",
     "workflowTitle": "अपलोड करें। प्रोसेस करें। डाउनलोड करें।",
     "workflowDesc": "बिखरे डॉक्यूमेंट से पॉलिश PDF तक — सिर्फ तीन स्टेप, कोई सॉफ़्टवेयर इंस्टॉल नहीं।",
@@ -983,19 +1007,30 @@
     "toolsOpen": "टूल खोलें",
     "toolsViewAll": "सभी टूल्स देखें",
     "whyChooseTitle": "OnlyMyPDF क्यों चुनें?",
-    "whyChooseDesc": "भारत भर के छात्र, प्रोफेशनल और टीमों का भरोसा — गति, प्राइवेसी और सरलता के लिए बना।",
-    "whyChoose_users_title": "लोग हम पर भरोसा करते हैं",
-    "whyChoose_users_desc": "हज़ारों यूज़र्स रोज़ OnlyMyPDF से मर्ज, कन्वर्ट, कम्प्रेस और डॉक्यूमेंट मैनेज करते हैं — बिना सॉफ़्टवेयर इंस्टॉल किए।",
-    "whyChoose_business_title": "टीम और बिज़नेस का भरोसा",
-    "whyChoose_business_desc": "फ्रीलांसर से छोटे बिज़नेस तक — तेज़ प्रोसेसिंग, साफ़ प्राइसिंग और रोज़ के काम के लिए भरोसेमंद नतीजे।",
+    "whyChooseDesc": "साफ़ सीमाएँ, निजी प्रोसेसिंग, उपयोगी PDF वर्कफ़्लो और ईमानदार आउटपुट जानकारी के लिए बनाया गया।",
+    "whyChoose_users_title": "पूरा PDF टूलकिट",
+    "whyChoose_users_desc": "डेस्कटॉप सॉफ़्टवेयर इंस्टॉल किए बिना 20+ टूल्स से PDF मर्ज, कन्वर्ट, कम्प्रेस, एडिट, साइन और मैनेज करें।",
+    "whyChoose_business_title": "साफ़ प्लान और सीमाएँ",
+    "whyChoose_business_desc": "प्लान चुनने या प्रोसेसिंग शुरू करने से पहले फ़ाइल साइज़, दैनिक उपयोग, रिटेंशन और फीचर सीमाएँ दिखाई जाती हैं।",
     "whyChoose_everywhere_title": "जहाँ काम करें, वहाँ चले",
     "whyChoose_everywhere_desc": "डेस्कटॉप, टैबलेट या फोन — किसी भी आधुनिक ब्राउज़र में। डाउनलोड, प्लगइन या सीखने की जरूरत नहीं।",
     "whyChoose_support_title": "जब चाहिए, मदद मिले",
-    "whyChoose_support_desc": "टूल या अकाउंट से जुड़ा सवाल? सपोर्ट टीम से कभी भी संपर्क करें — आपका PDF काम पूरा करवाने के लिए।",
-    "whyChoose_encryption_title": "256-बिट TLS एन्क्रिप्शन",
-    "whyChoose_encryption_desc": "हर अपलोड एन्क्रिप्टेड HTTPS पर जाता है। फ़ाइलें सुरक्षित प्रोसेस होती हैं — तीसरे पक्ष के साथ शेयर नहीं।",
+    "whyChoose_support_desc": "टूल या अकाउंट से जुड़ा सवाल हो तो Contact पेज से टूल और error details के साथ request भेजें।",
+    "whyChoose_encryption_title": "एन्क्रिप्टेड HTTPS ट्रांसफ़र",
+    "whyChoose_encryption_desc": "हर अपलोड एन्क्रिप्टेड HTTPS पर जाता है। वैकल्पिक conversion और AI providers Privacy Policy में बताए गए हैं।",
     "whyChoose_standards_title": "प्राइवेसी और सुरक्षा मानक",
-    "whyChoose_standards_desc": "2 घंटे बाद ऑटो-डिलीट, कोई स्थायी स्टोरेज नहीं, प्राइवेसी-फर्स्ट डिज़ाइन। आपके डॉक्यूमेंट हमेशा आपके।",
+    "whyChoose_standards_desc": "Free फ़ाइलों के लिए 2 घंटे और Pro फ़ाइलों के लिए 24 घंटे की retention configured है। Scheduled deletion को deployment monitoring से verify करना होगा।",
+    "evidenceEyebrow": "जाँचने योग्य प्रोडक्ट तथ्य",
+    "evidenceTitle": "अपलोड से पहले सीमाएँ जानें",
+    "evidenceDesc": "ये मान मौजूदा product configuration से आते हैं। Deployment के बाद retention और capacity को production monitoring से verify करना होगा।",
+    "evidence_tools_title": "PDF tool routes",
+    "evidence_tools_desc": "Organize, convert, optimize, edit, sign, security, scan और AI workflows उपलब्ध हैं।",
+    "evidence_free_title": "Free core-tool उपयोग",
+    "evidence_free_desc": "Free plan में रोज़ पाँच core-tool uses हैं। AI के लिए अलग signed-in allowance है।",
+    "evidence_limits_title": "Free और Pro file limits",
+    "evidence_limits_desc": "Configured per-file limits Free के लिए 25 MB और Pro के लिए 200 MB हैं।",
+    "evidence_retention_title": "Free और Pro retention",
+    "evidence_retention_desc": "Configured download windows Free के लिए 2 घंटे और Pro के लिए 24 घंटे हैं।",
     "aiBadge": "AI से चलित",
     "aiTitle": "AI PDF सारांश",
     "aiDesc": "कोई भी PDF डालें और तुरंत स्मार्ट सारांश पाएँ। हमारा AI हर पेज पढ़ता है — मुख्य बिंदु, एक्शन आइटम और महत्वपूर्ण तारीखें साफ़ रिपोर्ट लेआउट में।",
@@ -1010,15 +1045,15 @@
     "aiCta": "AI सारांश आज़माएँ",
     "securityEyebrow": "प्राइवेसी पहले",
     "securityTitle": "आपकी फ़ाइलें सुरक्षित हैं",
-    "securityDesc": "हम प्राइवेसी को गंभीरता से लेते हैं। हर फ़ाइल सुरक्षित रूप से हैंडल होती है और ज़रूरत से ज़्यादा स्टोर नहीं होती।",
+    "securityDesc": "हम प्राइवेसी को गंभीरता से लेते हैं। Uploaded files प्रकाशित Free और Pro retention windows follow करती हैं।",
     "security1Title": "ऑटो-डिलीट",
     "security1Desc": "2 घंटे बाद डिलीट — Pro के लिए 24 घंटे।",
     "security2Title": "सुरक्षित अपलोड",
     "security2Desc": "TLS एन्क्रिप्शन। ट्रांज़िट में डेटा एक्सपोज़ नहीं।",
     "security3Title": "यूज़र कंट्रोल",
     "security3Desc": "रिटेंशन से पहले कभी भी फ़ाइलें डिलीट करें।",
-    "security4Title": "कोई स्थायी स्टोरेज नहीं",
-    "security4Desc": "रिटेंशन विंडो के बाद फ़ाइलें नहीं रखते।",
+    "security4Title": "सीमित फ़ाइल retention",
+    "security4Desc": "फ़ाइलें प्रकाशित retention window के अंत में deletion के लिए scheduled रहती हैं।",
     "pricingEyebrow": "प्राइसिंग",
     "pricingTitle": "सरल प्राइसिंग",
     "pricingDesc": "फ्री शुरू करें। ज़रूरत पड़ने पर अपग्रेड करें।",
@@ -1031,22 +1066,22 @@
     "pricingSeeAll": "पूरी प्राइसिंग देखें",
     "faqTitle": "अक्सर पूछे जाने वाले सवाल",
     "ctaTitle": "आज ही OnlyMyPDF इस्तेमाल करें",
-    "ctaDesc": "हज़ारों यूज़र्स OnlyMyPDF पर भरोसा करते हैं — साइनअप की जरूरत नहीं।",
+    "ctaDesc": "PDF टूल चुनें, उसकी सीमाएँ देखें और फ़ाइल प्रोसेस करें — basic tools के लिए signup ज़रूरी नहीं।",
     "ctaButton": "शुरू करें — बिल्कुल फ्री",
-    "secureBadge": "256-bit TLS",
+    "secureBadge": "HTTPS/TLS",
     "autoDeleteBadge": "2 घंटे बाद",
     "secureLabel": "सुरक्षित",
     "autoDeleteLabel": "ऑटो-डिलीट",
     "faq1q": "OnlyMyPDF कैसे काम करता है?",
-    "faq1a": "PDF अपलोड करें, ज़रूरी टूल चुनें, बाकी OnlyMyPDF संभाल लेगा। प्रोसेसिंग सुरक्षित सर्वर पर होती है और फ़ाइलें 2 घंटे बाद ऑटो-डिलीट हो जाती हैं।",
+    "faq1a": "PDF अपलोड करें, टूल चुनें, server पर process करें और result download करें। Free-plan files 2 घंटे के अंदर deletion के लिए scheduled रहती हैं।",
     "faq2q": "क्या OnlyMyPDF फ्री है?",
     "faq2a": "हाँ! फ्री में रोज़ 5 टूल उपयोग और प्रति फ़ाइल {freeSize} MB तक। Pro में 100 दैनिक उपयोग, {proSize} MB तक, AI टूल्स और प्राथमिकता प्रोसेसिंग।",
     "faq3q": "क्या मेरी फ़ाइलें सुरक्षित हैं?",
-    "faq3a": "बिल्कुल। एन्क्रिप्टेड कनेक्शन, अलग वातावरण में प्रोसेसिंग, और 2 घंटे (Pro: 24 घंटे) बाद ऑटो-डिलीट। हम डेटा कभी शेयर या बेचते नहीं।",
+    "faq3a": "फ़ाइलें HTTPS/TLS से ट्रांसफर होती हैं और Free में 2 घंटे (Pro में 24 घंटे) के अंदर deletion के लिए scheduled रहती हैं। Optional providers पहले disclose होते हैं और uploaded files बेची नहीं जातीं।",
     "faq4q": "फ़ाइल साइज़ की लिमिट क्या है?",
     "faq4a": "Free: प्रति फ़ाइल {freeSize} MB तक; Pro: {proSize} MB तक — हर टूल पर लागू।",
     "faq5q": "AI PDF सारांश कैसे काम करता है?",
-    "faq5a": "AI आपकी PDF पढ़कर संक्षिप्त सारांश, मुख्य बिंदु, एक्शन आइटम और महत्वपूर्ण तारीखें बनाता है। यह Pro यूज़र्स के लिए उपलब्ध है।",
+    "faq5a": "AI extracted PDF text से सारांश, मुख्य बिंदु, action items और तारीखें बनाता है। Signed-in Free users को रोज़ 1 summary और Pro users को unlimited summaries मिलती हैं, service availability के अधीन।",
     "faq6q": "कौन-से पेमेंट मेथड स्वीकार हैं?",
     "faq6a": "Razorpay के ज़रिए कार्ड, UPI, नेट बैंकिंग और वॉलेट — सब INR में सुरक्षित।",
     "faq7q": "क्या Pro सब्सक्रिप्शन रद्द कर सकता हूँ?",
@@ -1099,6 +1134,10 @@
     "inviteAccepted": "आप {name} में शामिल हो गए।",
     "inviteAcceptFailed": "Invitation accept नहीं हो सका।",
     "apiKeys": "API keys",
+    "deleteOrg": "टीम हटाएँ",
+    "deleteOrgConfirm": "इस संगठन को स्थायी रूप से हटाएँ? सभी सदस्यों की टीम एक्सेस समाप्त हो जाएगी। यह वापस नहीं हो सकता।",
+    "deleteOrgSuccess": "संगठन हटा दिया गया।",
+    "deleteOrgFailed": "संगठन हटाया नहीं जा सका।",
     "newKey": "नई key",
     "proRequired": "Active Pro या team plan ज़रूरी।",
     "noKeys": "अभी कोई API key नहीं।",
@@ -1143,6 +1182,7 @@
     "confirmMfa": "पुष्टि करें और सक्षम करें",
     "cancelEnroll": "रद्द करें",
     "manualSecret": "मैनुअल एंट्री की",
+    "mfaQrAlt": "Authenticator QR कोड",
     "mfaEnabledSuccess": "दो-चरणीय प्रमाणीकरण अब सक्षम है।",
     "ssoTitle": "Single sign-on (SSO)",
     "ssoDescription": "Enterprise टीम Supabase SSO के ज़रिए SAML या OIDC उपयोग कर सकती है। Enterprise डैशबोर्ड में संगठन कॉन्फ़िगर करें।",
@@ -1409,7 +1449,7 @@
       },
       {
         "question": "Conversion के बाद slides edit कर सकता हूँ?",
-        "answer": "हाँ, output .pptx file Microsoft PowerPoint, Google Slides और compatible apps में editable खुलती है।"
+        "answer": "Output .pptx PowerPoint और compatible apps में खुलती है और slides reorder या annotate की जा सकती हैं। मूल पेज full-slide image होता है, इसलिए अलग text, chart, link और form elements editable नहीं होते।"
       },
       {
         "question": "क्या multi-page PDFs supported हैं?",
@@ -1463,7 +1503,7 @@
       },
       {
         "question": "क्या CSS styles PDF में preserve होंगे?",
-        "answer": "हाँ, converter full CSS support के साथ render करता है — Flexbox, Grid, custom fonts, media queries और print stylesheets सहित।"
+        "answer": "Chromium print engine embedded CSS, Flexbox, Grid, media queries और print styles support करता है। JavaScript disabled है और external resources blocked हैं, इसलिए fonts और images embed करें।"
       },
       {
         "question": "क्या PDF page size customize कर सकता हूँ?",
@@ -1543,7 +1583,7 @@
       },
       {
         "question": "क्या यह tool free है?",
-        "answer": "AI PDF Summarizer Pro feature है और login account के साथ Pro subscription require करता है।"
+        "answer": "AI PDF Summarizer के लिए login account चाहिए। Free user को रोज़ 1 summary और Pro user को service availability के अनुसार unlimited summaries मिलती हैं।"
       }
     ]
   },

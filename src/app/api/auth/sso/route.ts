@@ -3,7 +3,12 @@ import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { APP_URL } from "@/config/constants";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { checkAuthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
+import { resolveSafeNextPath } from "@/lib/auth/safe-redirect";
 import { toSafeApiError } from "@/lib/server/safe-error";
+import { guardTurnstileRequest } from "@/lib/security/verify-turnstile-request";
+
+const SSO_GENERIC_ERROR =
+  "If SSO is enabled for your organization, continue with your identity provider.";
 
 function normalizeDomain(raw: string): string | null {
   const trimmed = raw.trim().toLowerCase();
@@ -29,20 +34,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { domain: rawDomain, redirectTo } = (await request.json()) as {
+    const { domain: rawDomain, redirectTo, turnstileToken } = (await request.json()) as {
       domain?: string;
       redirectTo?: string;
+      turnstileToken?: string;
     };
+
+    const turnstileBlocked = await guardTurnstileRequest(request, turnstileToken);
+    if (turnstileBlocked) return turnstileBlocked;
 
     const domain = rawDomain ? normalizeDomain(rawDomain) : null;
     if (!domain) {
-      return NextResponse.json({ error: "Enter a valid company email domain." }, { status: 400 });
+      return NextResponse.json({ error: SSO_GENERIC_ERROR }, { status: 400 });
     }
 
     const appUrl = APP_URL.replace(/\/$/, "");
-    const callbackUrl = `${appUrl}/auth/callback${
-      redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : ""
-    }`;
+    const safeNext = redirectTo ? resolveSafeNextPath(redirectTo) : null;
+    const callbackUrl = safeNext
+      ? `${appUrl}/auth/callback?next=${encodeURIComponent(safeNext)}`
+      : `${appUrl}/auth/callback`;
 
     const supabase = await createClient();
     const { data, error } = await supabase.auth.signInWithSSO({
@@ -53,16 +63,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (error || !data?.url) {
-      return NextResponse.json(
-        { error: error?.message ?? "SSO is not configured for this domain." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: SSO_GENERIC_ERROR }, { status: 400 });
     }
 
     return NextResponse.json({ url: data.url });
   } catch (err) {
     return NextResponse.json(
-      { error: toSafeApiError(err, "Enterprise SSO sign-in failed") },
+      { error: toSafeApiError(err, SSO_GENERIC_ERROR) },
       { status: 500 }
     );
   }

@@ -41,7 +41,7 @@
     "subtitle": "Merge, split, compress, convert, edit, and sign PDFs — all in one place. Free, fast, and secure.",
     "cta": "Explore All Tools",
     "ctaSecondary": "See Pricing",
-    "trustedBy": "Trusted by thousands of users across India",
+    "trustedBy": "20+ PDF tools with clear Free and Pro limits",
     "filesProcessed": "Files Processed",
     "activeUsers": "Active Users",
     "toolsAvailable": "PDF Tools"
@@ -76,7 +76,7 @@
     "compressPdf": {
       "name": "Compress PDF",
       "description": "Reduce PDF file size",
-      "longDescription": "Compress your PDF files without losing quality. Perfect for email attachments and uploads."
+      "longDescription": "Use lossless Basic compression or Strong image compression for a smaller PDF. Strong mode can flatten searchable text and interactive content."
     },
     "pdfToWord": {
       "name": "PDF to Word",
@@ -86,7 +86,7 @@
     "wordToPdf": {
       "name": "Word to PDF",
       "description": "Convert Word documents to PDF",
-      "longDescription": "Convert your Word documents (.doc, .docx) to PDF format with perfect formatting."
+      "longDescription": "Convert Word documents (.doc, .docx) to PDF with layout-aware rendering. Complex fonts or layouts can vary between office engines."
     },
     "jpgToPdf": {
       "name": "JPG to PDF",
@@ -96,7 +96,7 @@
     "htmlToPdf": {
       "name": "HTML to PDF",
       "description": "Convert HTML pages to PDF",
-      "longDescription": "Convert HTML files to pixel-perfect PDF documents. Full CSS support, images, SVG, and complex layouts."
+      "longDescription": "Render HTML files to PDF with Chromium, including embedded CSS, images, SVG, and complex layouts. Scripts and external network requests are blocked for safety."
     },
     "txtToPdf": {
       "name": "TXT to PDF",
@@ -141,7 +141,7 @@
     "pdfToPpt": {
       "name": "PDF to PowerPoint",
       "description": "Convert PDF to PowerPoint slides",
-      "longDescription": "Turn each PDF page into a full-slide image in an editable PowerPoint (.pptx) presentation — layout, charts, and graphics preserved."
+      "longDescription": "Turn each PDF page into a full-slide image in a PowerPoint (.pptx) file. The page appearance is preserved, but text, charts, links, and page elements are flattened into the slide image."
     },
     "excelToPdf": {
       "name": "Excel to PDF",
@@ -198,6 +198,7 @@
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "passwordHint": "Enter the password for this PDF",
+    "pdfPasswordUploadHint": "Password-protected PDFs will ask for your password.",
     "newPassword": "New Password",
     "setPassword": "Set Password",
     "relatedTools": "Related Tools",
@@ -209,7 +210,18 @@
     "sizeOriginal": "Original",
     "sizeOutput": "Output",
     "sizeSaved": "Saved",
-    "processingLabel": "Processing…"
+    "processingLabel": "Processing…",
+    "errors": {
+      "textFilesOnly": "Invalid file type. Only text-based files are accepted.",
+      "htmlFilesOnly": "Invalid file type. Only HTML, HTM, XHTML, MHTML, and SVG files are accepted.",
+      "imagesOnly": "Please select JPG, PNG, or WebP images only.",
+      "wordConversionTimeout": "Conversion timed out. Word or LibreOffice may be busy — please retry.",
+      "htmlConversionTimeout": "Conversion timed out. Large HTML files can take 3–5 minutes — please try again.",
+      "protectionTimeout": "Protection timed out after 2 minutes. Try a smaller PDF or refresh and retry.",
+      "summarizationFailed": "Summarization failed.",
+      "downloadFailed": "Download failed.",
+      "pdfPasswordRequired": "This PDF is password-protected. Use Unlock PDF first, then upload the unlocked file here."
+    }
   },
 
   "toolWorkspace": {
@@ -263,6 +275,8 @@
     "noPagesLeftExport": "No pages left to export.",
     "pdfOnly": "Please select PDF files only.",
     "enterPasswordBeforeExport": "Enter the password for all PDF files before exporting.",
+    "passwordSkippedMerge": "This PDF needs a password. Tap Unlock on the file card, remove it, or continue with your other files.",
+    "unlockPdf": "Unlock",
     "waitForFilesLoading": "Please wait for all files to finish loading.",
     "addPageToMerge": "Add at least one PDF page to merge.",
     "blankPage": "Blank page",
@@ -283,7 +297,10 @@
     "change": "Change",
     "compressionBasic": "Basic",
     "compressionStrong": "Strong",
-    "alreadyOptimized": "This PDF is already well optimized. No further size reduction was possible without lowering quality.",
+    "alreadyOptimized": "This PDF is already well optimized. The original file was returned unchanged because lossless cleanup could not reduce it by at least 3%.",
+    "basicCompressionHint": "Basic is lossless: searchable text, links, forms and bookmarks are preserved. Already optimized files are returned unchanged.",
+    "strongCompressionWarning": "Strong compression re-renders pages as images. It can reduce size substantially, but searchable text, links, forms, bookmarks and accessibility tags may be flattened.",
+    "rasterizedResultWarning": "Strong compression created image-based pages. Review the result before sharing; text search, links, forms, bookmarks and accessibility tags may no longer work.",
     "cannotDeleteOnlyPage": "Cannot delete the only remaining page.",
     "failedPreparePages": "Failed to prepare PDF pages.",
     "failedExportSignedPdf": "Failed to export signed PDF.",
@@ -343,16 +360,19 @@
     "getStarted": "Get Started Free",
     "mostPopular": "Most Popular",
     "features": "Features",
+    "currencyLabel": "Display currency",
+    "displayCurrencyNote": "Shown in {currency}. You will be charged ₹{inrAmount} in INR at checkout.",
+    "displayYearlyNote": "Pay once — works out to {amount}/month billed annually",
     "page": {
       "breadcrumbHome": "Home",
       "breadcrumbPricing": "Pricing",
       "eyebrow": "Plans & pricing",
       "heroDesc": "Compare Free vs Pro for merge, convert, compress, sign & AI PDF tools. Start with 5 free uses daily — upgrade for 20× limits, priority speed & no ads.",
       "trustUsers": "Secure payments via Razorpay",
-      "trustSecure": "256-bit SSL encryption",
+      "trustSecure": "HTTPS/TLS encrypted transfer",
       "trustNoHidden": "No hidden fees",
-      "stripEncrypt": "End-to-end encrypted uploads",
-      "stripAutoDelete": "Auto-delete after processing",
+      "stripEncrypt": "Encrypted uploads (TLS) + auto-delete",
+      "stripAutoDelete": "2h Free · 24h Pro retention",
       "stripPayments": "UPI, cards & net banking",
       "stripCancel": "Cancel anytime",
       "yearlyNote": "Pay once — works out to ₹{amount}/month billed annually",
@@ -361,8 +381,8 @@
       "proName": "Pro",
       "proTagline": "Best for daily PDF work",
       "noCardRequired": "No credit card required",
-      "freeUpsell": "Sign PDF & AI Summarizer — Pro only",
-      "proCtaNote": "7-day money-back · Cancel anytime",
+      "freeUpsell": "Sign PDF is Pro · signed-in Free users get 1 AI summary/day",
+      "proCtaNote": "Cancel anytime",
       "billedYearly": "billed yearly",
       "gstNote": "Prices in INR · GST included where applicable",
       "proExtra1": "Files kept for 24 hours",
@@ -423,9 +443,7 @@
       "benefit3Title": "Priority support",
       "benefit3Desc": "Get help faster when you need it, from our dedicated support team.",
       "benefit4Title": "Best value yearly",
-      "benefit4Desc": "Save 33% with annual billing — less than ₹7 per day for unlimited productivity.",
-      "guaranteeTitle": "7-day money-back guarantee",
-      "guaranteeDesc": "Try Pro risk-free. Not satisfied? Contact us within 7 days for a full refund — no questions asked.",
+      "benefit4Desc": "Save 33% with annual billing — less than ₹7 per day for 100 tool uses each day.",
       "contactSupport": "Contact support",
       "faqDesc": "Everything you need to know about plans, billing, and security.",
       "faq": {
@@ -438,16 +456,16 @@
         "q4": "What payment methods do you accept?",
         "a4": "We accept UPI, credit/debit cards, net banking, and wallets through Razorpay. All transactions are processed securely in INR.",
         "q5": "Is my data safe?",
-        "a5": "Absolutely. Files are encrypted during transfer and automatically deleted after processing. We never access, store permanently, or share your documents.",
+        "a5": "Files are transferred over HTTPS/TLS and follow the published retention window: up to 2 hours on Free and 24 hours on Pro. Optional AI and conversion providers are disclosed before use.",
         "q6": "Is there a refund policy?",
-        "a6": "Yes — contact support@onlymypdf.in within 7 days of your most recent Pro payment for a refund. Include your Razorpay payment ID.",
+        "a6": "Contact support@onlymypdf.in with your Razorpay payment ID. Refund eligibility is reviewed per our refund policy.",
         "q7": "Can I cancel my subscription anytime?",
         "a7": "Absolutely. Cancel from your dashboard anytime. You'll keep Pro access until the end of your current billing period.",
         "q8": "Do you offer a team or business plan?",
         "a8": "Yes — our Business plan includes team seats, custom limits, API access, and dedicated support. Click Contact Sales on the pricing page or email us for a tailored quote."
       },
       "ctaTitle": "Ready to work smarter with PDFs?",
-      "ctaDesc": "Join thousands of users who trust OnlyMyPDF for fast, secure document processing."
+      "ctaDesc": "Start with the published Free limits and upgrade only when you need higher limits or Pro features."
     },
     "faq": {
       "title": "Frequently Asked Questions",
@@ -458,9 +476,9 @@
       "q3": "Can I cancel my subscription anytime?",
       "a3": "Yes, you can cancel your Pro subscription at any time. You'll continue to have access until the end of your billing period.",
       "q4": "Is my data safe?",
-      "a4": "Absolutely. All files are encrypted during transfer and automatically deleted within 2 hours of processing. We never access or share your files.",
+      "a4": "Files are transferred over HTTPS/TLS and scheduled for deletion within 2 hours (Free) or 24 hours (Pro). We do not sell uploaded files.",
       "q5": "Do you offer refunds?",
-      "a5": "We offer a full refund within 7 days of purchase if you're not satisfied with the Pro plan."
+      "a5": "Refund requests are reviewed per our refund policy. Contact support@onlymypdf.in with your Razorpay payment ID and registered email."
     }
   },
 
@@ -504,7 +522,7 @@
     "updatePassword": "Update Password",
     "passwordUpdated": "Your password has been updated successfully",
     "promo": {
-      "badge": "OnlyMyPDF Pro · 7-day money-back",
+      "badge": "OnlyMyPDF Pro · Priority PDF tools",
       "title": "Unlock your full",
       "titleHighlight": "PDF workflow.",
       "subtitle": "Sign in to track files — upgrade to Pro for AI summaries, e-signatures & priority processing.",
@@ -515,7 +533,7 @@
       "benefit3Title": "20× daily capacity",
       "benefit3Desc": "100 uses/day, larger files & 24-hour download window.",
       "cta": "Compare Free vs Pro",
-      "trust": "256-bit encrypted · Cancel anytime · No hidden fees"
+      "trust": "HTTPS/TLS transfer · Cancel anytime · No hidden fees"
     }
   },
 
@@ -534,6 +552,8 @@
     "manageBilling": "Manage Billing",
     "noActivity": "No recent activity",
     "noActivityDescription": "Start using PDF tools to see your activity here.",
+    "proActivatedTitle": "Pro activated!",
+    "proActivatedDesc": "Your subscription is now active. Enjoy premium tools and higher limits.",
     "history": "Processing History",
     "historyEmpty": "No processing history yet",
     "downloadAgain": "Download Again",
@@ -568,7 +588,7 @@
     "helpSupport": "Help & Support",
     "enterprise": "Enterprise",
     "secureProcessing": "Secure processing",
-    "autoDelete": "Files are auto-deleted within 2 hours for your privacy.",
+    "autoDelete": "Files are auto-deleted within 2 hours (Free) or 24 hours (Pro).",
     "uploadPdf": "Upload PDF",
     "uploadHint": "Process, convert, merge, or sign your documents in seconds.",
     "viewAllFiles": "View all",
@@ -654,32 +674,30 @@
         "supportPriority": "Priority email"
       },
       "trustTitle": "Secure & transparent billing",
-      "trust1": "256-bit SSL encrypted uploads",
-      "trust2": "Files auto-deleted after processing",
+      "trust1": "HTTPS/TLS encrypted uploads",
+      "trust2": "2h Free · 24h Pro retention",
       "trust3": "Cancel anytime from dashboard",
       "trust4": "Razorpay — UPI, cards & net banking",
-      "guarantee": "7-day money-back guarantee",
-      "guaranteeDesc": "Try Pro risk-free. Full refund within 7 days if you're not satisfied.",
       "social": "Built for everyday PDF workflows",
       "payments": "UPI · Cards · Net Banking",
       "faqTitle": "Billing FAQ",
       "faqDesc": "Common questions about plans, payments, and refunds.",
       "faq": {
         "q1": "What's included in Free vs Pro?",
-        "a1": "Free gives you 5 daily uses of core PDF tools with 2-hour download windows. Pro unlocks all tools including Sign & AI, 100 daily uses, 24-hour downloads, priority speed, and no ads.",
+        "a1": "Free gives you 5 daily core-tool uses, a 2-hour download window, and 1 AI summary per day for signed-in users. Pro adds Sign PDF, unlimited AI summaries, 100 daily uses, 24-hour downloads, priority processing, and no ads.",
         "q2": "Can I switch between monthly and yearly?",
         "a2": "Choose monthly or yearly at checkout. To change cycle later, cancel auto-renew and purchase the plan you want, or contact support.",
         "q3": "What payment methods are accepted?",
         "a3": "We accept UPI, credit/debit cards, net banking, and wallets via Razorpay. All prices are in INR.",
         "q4": "Is my data safe?",
-        "a4": "Yes. Files are encrypted in transit and auto-deleted after processing. We never store or share your documents.",
+        "a4": "Yes. Files use HTTPS/TLS in transit and follow the published 2-hour Free or 24-hour Pro retention window. Optional sub-processors are disclosed before use.",
         "q5": "What's the refund policy?",
-        "a5": "Contact support@onlymypdf.in within 7 days of your most recent Pro payment. Include your Razorpay payment ID.",
+        "a5": "Contact support@onlymypdf.in with your Razorpay payment ID. Refund eligibility is reviewed per our refund policy.",
         "q6": "Can I cancel anytime?",
         "a6": "Absolutely. Cancel from your dashboard. Pro access continues until your billing period ends."
       },
       "ctaTitle": "Ready to unlock every PDF tool?",
-      "ctaDesc": "Join thousands of professionals who upgraded to Pro for AI, signing, and priority processing."
+      "ctaDesc": "Compare the published limits and upgrade when you need signing, unlimited AI summaries, or priority processing."
     }
   },
 
@@ -755,6 +773,9 @@
   },
 
   "errors": {
+    "pageTitle": "Something went wrong",
+    "pageDescription": "An unexpected error occurred. Please try again or return to the homepage.",
+    "goHome": "Go home",
     "generic": "Something went wrong. Please try again.",
     "networkError": "Network error. Please check your connection.",
     "fileTooBig": "File is too large. Maximum size is {size} MB.",
@@ -799,11 +820,11 @@
 
   "privacy": {
     "badge": "Your Privacy Matters",
-    "title": "100% Secure & Private",
-    "description": "Your files are encrypted during transfer and automatically deleted after processing. We never access, share, or store your documents.",
-    "encryption": "256-bit SSL Encryption",
+    "title": "Secure File Handling",
+    "description": "Files use HTTPS/TLS during transfer and follow the published retention window. Optional third-party processing is disclosed before use.",
+    "encryption": "HTTPS/TLS Encrypted Transfer",
     "autoDelete": "Auto-deleted after {hours} hours",
-    "noStorage": "No permanent storage",
+    "noStorage": "Limited file retention",
     "gdprCompliant": "GDPR Compliant"
   },
 
@@ -895,8 +916,8 @@
       "description": "Process your PDFs in seconds, not minutes. Our optimized pipeline handles files quickly."
     },
     "secure": {
-      "title": "Bank-Level Security",
-      "description": "256-bit SSL encryption. Files are auto-deleted after processing. Your data stays private."
+      "title": "Encrypted Transfer",
+      "description": "HTTPS/TLS protects files in transit. Uploaded files follow the published retention window."
     },
     "easy": {
       "title": "Dead Simple",
@@ -917,8 +938,8 @@
   },
 
   "testimonials": {
-    "title": "What Our Users Say",
-    "subtitle": "Join thousands of happy users"
+    "title": "Product facts you can verify",
+    "subtitle": "Published limits and behavior instead of unsupported ratings"
   },
 
   "meta": {
@@ -960,8 +981,8 @@
     "heroTrust": "No credit card to start · Secure & auto-delete after 2 hours",
     "statTools": "PDF tools",
     "statDelete": "Auto file delete",
-    "statLimit": "No upload size limit",
-    "statBrowser": "Browser-based",
+    "statLimit": "Free file limit",
+    "statBrowser": "Free daily uses",
     "workflowEyebrow": "Simple workflow",
     "workflowTitle": "Upload. Process. Download.",
     "workflowDesc": "Three steps from messy documents to polished PDFs — no software to install.",
@@ -986,19 +1007,30 @@
     "toolsOpen": "Open tool",
     "toolsViewAll": "View all tools",
     "whyChooseTitle": "Why Choose OnlyMyPDF?",
-    "whyChooseDesc": "Trusted by students, professionals, and teams across India — built for speed, privacy, and simplicity.",
-    "whyChoose_users_title": "People Trust Us",
-    "whyChoose_users_desc": "Thousands of users rely on OnlyMyPDF every day to merge, convert, compress, and manage documents without installing software.",
-    "whyChoose_business_title": "Teams & Businesses Trust Us",
-    "whyChoose_business_desc": "From freelancers to small businesses — fast processing, clear pricing, and reliable results for everyday document work.",
+    "whyChooseDesc": "Built for clear limits, private processing, useful PDF workflows, and honest output expectations.",
+    "whyChoose_users_title": "A Complete PDF Toolkit",
+    "whyChoose_users_desc": "Use 20+ tools to merge, convert, compress, edit, sign, and manage documents without installing desktop software.",
+    "whyChoose_business_title": "Clear Plans and Limits",
+    "whyChoose_business_desc": "File-size, daily-use, retention, and feature limits are shown before you choose a plan or start processing.",
     "whyChoose_everywhere_title": "Works Everywhere You Do",
     "whyChoose_everywhere_desc": "Use OnlyMyPDF on desktop, tablet, or phone — any modern browser. No downloads, no plugins, no learning curve.",
     "whyChoose_support_title": "Help When You Need It",
-    "whyChoose_support_desc": "Questions about a tool or your account? Reach our support team anytime — we're here to help you finish your PDF tasks.",
-    "whyChoose_encryption_title": "256-Bit TLS Encryption",
-    "whyChoose_encryption_desc": "Every upload travels over encrypted HTTPS. Your files are processed securely and never shared with third parties.",
+    "whyChoose_support_desc": "Questions about a tool or your account? Send a request through the Contact page and include the tool and error details.",
+    "whyChoose_encryption_title": "Encrypted HTTPS Transfer",
+    "whyChoose_encryption_desc": "Every upload travels over encrypted HTTPS. Files are processed securely; optional conversions and AI use named sub-processors in our Privacy Policy.",
     "whyChoose_standards_title": "Privacy & Security Standards",
-    "whyChoose_standards_desc": "Auto-delete after 2 hours, no permanent storage, and privacy-first design. Your documents stay yours — always.",
+    "whyChoose_standards_desc": "Free files are configured for 2-hour retention and Pro files for 24 hours. Deployment monitoring must verify scheduled deletion.",
+    "evidenceEyebrow": "Verifiable product facts",
+    "evidenceTitle": "Know the Limits Before You Upload",
+    "evidenceDesc": "These values come from the current product configuration. Production monitoring must verify retention and capacity after deployment.",
+    "evidence_tools_title": "PDF tool routes",
+    "evidence_tools_desc": "Organize, convert, optimize, edit, sign, secure, scan, and AI workflows are available.",
+    "evidence_free_title": "Free core-tool uses",
+    "evidence_free_desc": "The Free plan allows five core-tool uses per day. AI has a separate signed-in allowance.",
+    "evidence_limits_title": "Free and Pro file limits",
+    "evidence_limits_desc": "The configured per-file limits are 25 MB for Free and 200 MB for Pro.",
+    "evidence_retention_title": "Free and Pro retention",
+    "evidence_retention_desc": "The configured download windows are 2 hours for Free and 24 hours for Pro.",
     "aiBadge": "AI-Powered",
     "aiTitle": "AI-Powered PDF Summarizer",
     "aiDesc": "Drop any PDF and get an instant, intelligent summary. Our AI reads every page so you don't have to — extracting insights, action items, and key dates in a clean report layout.",
@@ -1013,14 +1045,14 @@
     "aiCta": "Try AI Summarizer",
     "securityEyebrow": "Privacy first",
     "securityTitle": "Your Files Are Safe",
-    "securityDesc": "We take privacy seriously. Every file is handled securely and never stored longer than necessary.",
+    "securityDesc": "We take privacy seriously. Uploaded files follow the published Free and Pro retention windows.",
     "security1Title": "Auto-Delete",
     "security1Desc": "Files deleted after 2 hours — 24 hours for Pro.",
     "security2Title": "Secure Upload",
     "security2Desc": "TLS encryption. Your data never exposed in transit.",
     "security3Title": "User-Controlled",
     "security3Desc": "Delete files anytime before the retention window.",
-    "security4Title": "No Permanent Storage",
+    "security4Title": "Limited File Retention",
     "security4Desc": "We never keep files beyond the retention window.",
     "pricingEyebrow": "Pricing",
     "pricingTitle": "Simple Pricing",
@@ -1034,22 +1066,22 @@
     "pricingSeeAll": "See full pricing",
     "faqTitle": "Frequently Asked Questions",
     "ctaTitle": "Start Using OnlyMyPDF Today",
-    "ctaDesc": "Join thousands of users who trust OnlyMyPDF for all their PDF needs — no signup required.",
+    "ctaDesc": "Choose a PDF tool, check its limits, and process a file — no signup required for basic tools.",
     "ctaButton": "Get Started — It's Free",
-    "secureBadge": "256-bit TLS",
+    "secureBadge": "HTTPS/TLS",
     "autoDeleteBadge": "After 2 hours",
     "secureLabel": "Secure",
     "autoDeleteLabel": "Auto-delete",
     "faq1q": "How does OnlyMyPDF work?",
-    "faq1a": "Upload your PDF file, choose the tool you need, and let OnlyMyPDF handle the rest. All processing happens securely on our servers, and your files are automatically deleted after 2 hours.",
+    "faq1a": "Upload your PDF, choose a tool, process it on our servers, and download the result. Free-plan files are scheduled for deletion within 2 hours.",
     "faq2q": "Is OnlyMyPDF free?",
     "faq2a": "Yes! OnlyMyPDF offers a generous free tier with 5 tool uses per day and up to {freeSize} MB per file. Pro unlocks 100 daily uses, up to {proSize} MB per file, AI tools, and priority processing.",
     "faq3q": "Are my files safe?",
-    "faq3a": "Absolutely. Files are transmitted over encrypted connections, processed in isolated environments, and automatically deleted after 2 hours (24 hours for Pro users). We never share or sell your data.",
+    "faq3a": "Files are transmitted over HTTPS/TLS and scheduled for deletion within 2 hours (24 hours for Pro). Optional sub-processors are disclosed before use, and uploaded files are not sold.",
     "faq4q": "What is the file size limit?",
     "faq4a": "Free users: up to {freeSize} MB per file. Pro users: up to {proSize} MB per file. Limits apply on every tool.",
     "faq5q": "How does AI PDF Summarizer work?",
-    "faq5a": "Our AI Summarizer reads your PDF and generates a concise summary with key points, action items, and important dates. It's powered by advanced language models and is available exclusively to Pro users.",
+    "faq5a": "Our AI Summarizer reads extracted PDF text and generates a concise summary with key points, action items, and important dates. Signed-in Free users get 1 summary per day; Pro users get unlimited summaries, subject to service availability.",
     "faq6q": "What payment methods are accepted?",
     "faq6a": "We accept all major credit/debit cards, UPI, net banking, and wallets through Razorpay. All transactions are processed securely in INR.",
     "faq7q": "Can I cancel my Pro subscription?",
@@ -1099,9 +1131,17 @@
     "removeMemberConfirm": "Remove this member from the organization?",
     "removeMemberFailed": "Could not remove member.",
     "acceptingInvite": "Accepting invitation…",
+    "invitePrompt": "Organization invitation",
+    "invitePromptDesc": "You were invited to join a team. Accept only if you trust this invitation.",
+    "acceptInviteBtn": "Accept invitation",
+    "declineInviteBtn": "Decline",
     "inviteAccepted": "You joined {name}.",
     "inviteAcceptFailed": "Could not accept invitation.",
     "apiKeys": "API keys",
+    "deleteOrg": "Delete team",
+    "deleteOrgConfirm": "Delete this organization permanently? All members will lose team access. This cannot be undone.",
+    "deleteOrgSuccess": "Organization deleted.",
+    "deleteOrgFailed": "Could not delete organization.",
     "newKey": "New key",
     "proRequired": "Active Pro or team plan required.",
     "noKeys": "No API keys yet.",
@@ -1146,6 +1186,7 @@
     "confirmMfa": "Confirm & enable",
     "cancelEnroll": "Cancel",
     "manualSecret": "Manual entry key",
+    "mfaQrAlt": "Authenticator QR code",
     "mfaEnabledSuccess": "Two-factor authentication is now enabled.",
     "ssoTitle": "Single sign-on (SSO)",
     "ssoDescription": "Enterprise teams can use SAML or OIDC through Supabase SSO. Configure your organization in the Enterprise dashboard.",
@@ -1175,10 +1216,11 @@
     "subtitle": "Manage your GDPR rights: export, erasure, and cookie preferences.",
     "back": "Back to overview",
     "exportTitle": "Download your data",
-    "exportDesc": "Export profile, tool job metadata, and billing summary as JSON (GDPR portability). Confirm with your password.",
-    "exportPasswordLabel": "Confirm with your password",
+    "exportDesc": "Export profile, tool job metadata, and billing summary as JSON (GDPR portability). Confirm with your password or linked sign-in provider.",
+    "exportPasswordLabel": "Password (if you use email sign-in)",
     "exportPasswordPlaceholder": "Enter your password",
-    "exportReauthFail": "Incorrect password. Export requires password confirmation.",
+    "exportConfirmRequired": "Enter your password or confirm with your sign-in provider before exporting.",
+    "exportReauthFail": "Identity confirmation failed. Try again.",
     "exportBtn": "Export my data",
     "exporting": "Preparing…",
     "exportDone": "Data export downloaded.",
@@ -1189,8 +1231,9 @@
     "resetBanner": "Reset banner",
     "deleteTitle": "Delete account",
     "deleteDesc": "Permanently erase your account and associated files. This cannot be undone.",
-    "passwordLabel": "Confirm with your password",
+    "passwordLabel": "Password (if you use email sign-in)",
     "passwordPlaceholder": "Enter your password",
+    "deleteConfirmRequired": "Enter your password or confirm with your sign-in provider before deleting your account.",
     "deleteBtn": "Delete my account",
     "deleting": "Deleting…",
     "deleteConfirm": "Delete your OnlyMyPDF account permanently? This removes your profile, files, and job history. Payment records may be retained as required by law.",

@@ -6,9 +6,10 @@ import {
   localDevSignIn,
 } from "@/lib/auth/local-dev-auth";
 import { isUserLoginBlocked, BLOCKED_LOGIN_MESSAGE } from "@/lib/auth/blocked-login";
-import { checkLoginRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
+import { checkLoginRateLimit, checkLoginEmailRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { toSafeApiError } from "@/lib/server/safe-error";
+import { guardTurnstileRequest } from "@/lib/security/verify-turnstile-request";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +19,10 @@ export async function POST(request: NextRequest) {
     const rate = await checkLoginRateLimit(request);
     if (!rate.allowed) return rateLimitResponse(rate.retryAfterSec);
 
-    const { email, password } = await request.json();
+    const { email, password, turnstileToken } = await request.json();
+
+    const turnstileBlocked = await guardTurnstileRequest(request, turnstileToken);
+    if (turnstileBlocked) return turnstileBlocked;
 
     if (!email || !password) {
       return NextResponse.json(
@@ -26,6 +30,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const emailRate = await checkLoginEmailRateLimit(request, email);
+    if (!emailRate.allowed) return rateLimitResponse(emailRate.retryAfterSec);
 
     if (isLocalDevAuthEnabled()) {
       const user = await localDevSignIn({ email, password });
@@ -82,11 +89,13 @@ export async function POST(request: NextRequest) {
         requiresMfa: true,
         factorId: totpFactor.id,
         challengeId: challenge.id,
-        user: data.user,
       });
     }
 
-    return NextResponse.json({ user: data.user, session: data.session });
+    return NextResponse.json({
+      user: data.user ? { id: data.user.id, email: data.user.email } : null,
+      success: true,
+    });
   } catch (err) {
     return NextResponse.json({ error: toSafeApiError(err) }, { status: 401 });
   }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   CheckCircle2,
   Download,
@@ -14,12 +13,15 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ToolResultSizeBadge } from "@/components/tools/tool-ui";
+import { PdfResultWorkspaceViewer } from "@/components/tools/pdf-result-workspace-viewer";
 
 interface PdfResultPreviewProps {
   blobUrl: string;
   filename: string;
   fileSize?: number;
   pageCount?: number;
+  initialSessionId?: string | null;
+  initialTotalPages?: number;
   onReset: () => void;
   resetLabel?: string;
 }
@@ -36,31 +38,22 @@ export function PdfResultPreview({
   filename,
   fileSize,
   pageCount,
+  initialSessionId,
+  initialTotalPages,
   onReset,
   resetLabel = "Start over",
 }: PdfResultPreviewProps) {
-  const [iframeLoaded, setIframeLoaded] = useState(false);
-
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
-      {/* Left: PDF preview via native browser viewer */}
+      {/* Left: page-by-page preview (avoids Chrome blocking blob: URLs in sandboxed iframes) */}
       <div className="flex-1 min-w-0">
-        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-inner">
-          {!iframeLoaded && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-100">
-              <div className="flex flex-col items-center gap-3">
-                <div className="h-8 w-8 animate-spin rounded-full border-3 border-pd-brand border-t-transparent" />
-                <p className="text-sm text-pd-muted">Loading preview…</p>
-              </div>
-            </div>
-          )}
-          <iframe
-            src={`${blobUrl}#toolbar=0&navpanes=0`}
-            title="PDF Preview"
-            className="h-[600px] w-full"
-            onLoad={() => setIframeLoaded(true)}
-          />
-        </div>
+        <PdfResultWorkspaceViewer
+          blobUrl={blobUrl}
+          filename={filename}
+          initialSessionId={initialSessionId}
+          initialTotalPages={initialTotalPages ?? pageCount ?? 0}
+          className="h-[min(70vh,640px)] w-full"
+        />
       </div>
 
       {/* Right: Action panel */}
@@ -78,6 +71,10 @@ export function PdfResultPreview({
             {pageCount && pageCount > 0 ? (
               <p className="mt-0.5 text-xs text-pd-muted">
                 {pageCount} page{pageCount > 1 ? "s" : ""}
+              </p>
+            ) : initialTotalPages && initialTotalPages > 0 ? (
+              <p className="mt-0.5 text-xs text-pd-muted">
+                {initialTotalPages} page{initialTotalPages > 1 ? "s" : ""}
               </p>
             ) : null}
           </div>

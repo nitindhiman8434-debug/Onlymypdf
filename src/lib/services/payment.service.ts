@@ -62,7 +62,11 @@ function verifyHmac(body: string, signature: string, secret: string): boolean {
 }
 
 export function verifyPayment(orderId: string, paymentId: string, signature: string): boolean {
+  if (process.env.NODE_ENV === "production" && isMockBillingMode()) {
+    return false;
+  }
   if (isMockOrderId(orderId) || isMockPaymentId(paymentId)) {
+    if (!isMockBillingMode()) return false;
     return verifyMockPaymentSignature(orderId, paymentId, signature);
   }
 
@@ -71,6 +75,9 @@ export function verifyPayment(orderId: string, paymentId: string, signature: str
 }
 
 export function verifyWebhookSignature(body: string, signature: string): boolean {
+  if (process.env.NODE_ENV === "production") {
+    if (isMockBillingMode()) return false;
+  }
   if (isMockBillingMode()) {
     if (signature === "mock_webhook") return true;
     return false;
@@ -130,6 +137,9 @@ export async function createRazorpaySubscription(params: {
 
 export async function cancelRazorpaySubscription(subscriptionId: string) {
   if (isMockSubscriptionId(subscriptionId)) {
+    if (!isMockBillingMode()) {
+      throw new Error("Invalid subscription");
+    }
     return { id: subscriptionId, status: "cancelled" };
   }
 
@@ -138,6 +148,9 @@ export async function cancelRazorpaySubscription(subscriptionId: string) {
 
 export async function fetchRazorpayPayment(paymentId: string) {
   if (isMockPaymentId(paymentId)) {
+    if (!isMockBillingMode()) {
+      throw new Error("Invalid payment");
+    }
     return { id: paymentId, status: "captured" };
   }
 
@@ -154,6 +167,9 @@ export async function verifyRazorpaySubscriptionPaymentBinding(
   expectedSubscriptionId: string
 ): Promise<RazorpaySubscriptionPaymentProof> {
   if (isMockPaymentId(paymentId) || isMockSubscriptionId(expectedSubscriptionId)) {
+    if (!isMockBillingMode()) {
+      return { ok: false, error: "Payment verification failed", status: 400 };
+    }
     return { ok: true, amountPaise: undefined, paymentMethod: null };
   }
 

@@ -4,14 +4,14 @@
   --pd-background: #f8fafc;
   --pd-foreground: #0f172a;
   --pd-muted: #475569;
-  --pd-brand: #2563eb;
-  --pd-brand-hover: #1d4ed8;
+  --pd-brand: #1d4ed8;
+  --pd-brand-hover: #1e40af;
   --pd-brand-muted: #eff6ff;
   --pd-surface: #ffffff;
   --pd-surface-elevated: #ffffff;
   --pd-border: #e2e8f0;
   --pd-border-strong: #cbd5e1;
-  --pd-success: #059669;
+  --pd-success: #047857;
   --pd-danger: #dc2626;
   --pd-warning: #d97706;
   --pd-radius-sm: 0.375rem;

@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { dismissCookieBanner } from "./helpers";
+import { gotoAndSettle } from "./helpers";
 
 async function expectNoSeriousViolations(page: import("@playwright/test").Page) {
   const results = await new AxeBuilder({ page })
@@ -35,6 +35,8 @@ const AXE_PAGES = [
   { name: "pdf-to-word", path: "/pdf-to-word" },
   { name: "pricing", path: "/pricing" },
   { name: "login", path: "/login" },
+  { name: "signup", path: "/signup" },
+  { name: "forgot-password", path: "/forgot-password" },
   { name: "Hindi homepage", path: "/hi", lang: "hi" },
   { name: "Hindi merge-pdf", path: "/hi/merge-pdf", lang: "hi" },
   { name: "Hindi pricing", path: "/hi/pricing", lang: "hi" },
@@ -61,8 +63,7 @@ test.describe("Accessibility smoke", () => {
 
   for (const entry of AXE_PAGES) {
     test(`${entry.name} has no serious axe violations`, async ({ page }) => {
-      await page.goto(entry.path);
-      await dismissCookieBanner(page);
+      await gotoAndSettle(page, entry.path);
 
       if ("lang" in entry && entry.lang) {
         const lang = await page.locator("html").getAttribute("lang");
@@ -79,8 +80,7 @@ test.describe("Marketing color contrast", () => {
 
   for (const entry of MARKETING_CONTRAST_PAGES) {
     test(`${entry.name} has no moderate+ color-contrast violations`, async ({ page }) => {
-      await page.goto(entry.path);
-      await dismissCookieBanner(page);
+      await gotoAndSettle(page, entry.path);
       await expectNoColorContrastViolations(page);
     });
   }
@@ -91,8 +91,7 @@ test.describe("Tool page color contrast", () => {
 
   for (const entry of TOOL_CONTRAST_PAGES) {
     test(`${entry.name} has no moderate+ color-contrast violations`, async ({ page }) => {
-      await page.goto(entry.path);
-      await dismissCookieBanner(page);
+      await gotoAndSettle(page, entry.path);
       await expectNoColorContrastViolations(page);
     });
   }

@@ -33,6 +33,8 @@ import {
   getExecutiveSummaryText,
   type SummaryDisplayBlock,
 } from "@/lib/ai/sanitize-summary";
+import { useToolErrors } from "@/hooks/use-tool-errors";
+import { isPasswordRequiredCode } from "@/lib/client/pdf-password-errors";
 
 interface SummaryResult {
   documentTitle?: string;
@@ -58,6 +60,7 @@ const RELATED_TOOLS = [
 ];
 
 export default function AIPDFSummarizerPage() {
+  const { resolveApiError, resolveCatchError, messages } = useToolErrors();
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -124,19 +127,17 @@ export default function AIPDFSummarizerPage() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        if (err.code === "PDF_PASSWORD_REQUIRED") {
-          throw new Error(
-            "This PDF is password-protected. Use Unlock PDF first, then upload the unlocked file here."
-          );
+        if (isPasswordRequiredCode(err.code)) {
+          throw new Error(messages.pdfPasswordRequired);
         }
-        throw new Error(err.error || "AI summarization failed");
+        throw new Error(resolveApiError(err, "toolPage.errors.summarizationFailed"));
       }
 
       const data = await res.json();
       setResult(data);
       setProgress(100);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Summarization failed");
+      setError(resolveCatchError(err, { timeoutKey: "toolPage.errors.summarizationFailed" }));
     } finally {
       setProcessing(false);
     }
@@ -169,7 +170,7 @@ export default function AIPDFSummarizerPage() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Download failed");
+        throw new Error(resolveApiError(err, "toolPage.errors.downloadFailed"));
       }
 
       const blob = await res.blob();
@@ -189,7 +190,7 @@ export default function AIPDFSummarizerPage() {
       document.body.removeChild(anchor);
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Download failed");
+      setError(resolveCatchError(err, { timeoutKey: "toolPage.errors.downloadFailed" }));
     } finally {
       setDownloadingFormat(null);
     }

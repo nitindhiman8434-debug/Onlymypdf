@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect, type ReactNode } from "react";
+import { useState, useRef, useCallback, type ReactNode } from "react";
 import { FileText } from "lucide-react";
 import { formatFileSize } from "@/lib/utils/file";
 import { ToolPageShell } from "@/components/layout/tool-page-shell";
@@ -9,9 +9,17 @@ import {
   ToolErrorBanner,
   ToolPrimaryButton,
   ToolSuccessPanel,
+  PdfPasswordInfoBanner,
 } from "@/components/tools/tool-ui";
+import { PdfPasswordModal } from "@/components/tools/pdf-password-modal";
 import { mapRelatedTools } from "@/components/tools/tool-helpers";
 import { useToolErrors } from "@/hooks/use-tool-errors";
+import { useConversionProgress } from "@/hooks/use-conversion-progress";
+import {
+  parseToolApiErrorPayload,
+  passwordPromptFromError,
+  type PasswordPromptState,
+} from "@/lib/client/pdf-password-errors";
 
 interface RelatedTool {
   name: string;
@@ -39,6 +47,14 @@ interface ConvertToolPageProps {
   fetchTimeoutMs?: number;
   /** Cap for fake progress bar while waiting on server (default 92). */
   progressCap?: number;
+  /** Tick interval for simulated progress in ms (default 450). */
+  progressIntervalMs?: number;
+  /** Max creep progress after hitting cap (default 99). */
+  progressStallCap?: number;
+  /** Ms between +1% creep ticks after cap (default 3000). */
+  progressStallIntervalMs?: number;
+  /** Prompt for password when uploading encrypted PDFs. */
+  supportsPdfPassword?: boolean;
 }
 
 export function ConvertToolPage({
@@ -58,37 +74,41 @@ export function ConvertToolPage({
   buildFormData,
   fetchTimeoutMs = 120_000,
   progressCap = 92,
+  progressIntervalMs,
+  progressStallCap,
+  progressStallIntervalMs,
+  supportsPdfPassword = false,
 }: ConvertToolPageProps) {
   const { resolveApiError, resolveCatchError } = useToolErrors();
+  const { progress, start: startProgress, stop: stopProgress, complete: completeProgress, reset: resetProgress, advanceTo } =
+    useConversionProgress({
+      cap: progressCap,
+      intervalMs: progressIntervalMs,
+      stallCap: progressStallCap,
+      stallIntervalMs: progressStallIntervalMs,
+    });
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFilename, setResultFilename] = useState<string | null>(null);
   const [resultSize, setResultSize] = useState<number | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [pdfPassword, setPdfPassword] = useState<string | null>(null);
+  const [passwordPrompt, setPasswordPrompt] = useState<PasswordPromptState | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const stopProgressTimer = useCallback(() => {
-    if (progressTimerRef.current) {
-      clearInterval(progressTimerRef.current);
-      progressTimerRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => () => stopProgressTimer(), [stopProgressTimer]);
 
   const resetResult = useCallback(() => {
     setCompleted(false);
     setResultUrl(null);
     setResultFilename(null);
     setResultSize(null);
-    setProgress(0);
+    resetProgress();
     setError(null);
-  }, []);
+    setPdfPassword(null);
+    setPasswordPrompt(null);
+  }, [resetProgress]);
 
   const handleFiles = useCallback(
     (newFiles: FileList | File[]) => {
@@ -101,19 +121,12 @@ export function ConvertToolPage({
     [resetResult]
   );
 
-  const handleProcess = async () => {
+  const handleProcess = async (password?: string | null) => {
     if (!file) return;
     setProcessing(true);
-    setProgress(0);
+    resetProgress();
     setError(null);
-    stopProgressTimer();
-    progressTimerRef.current = setInterval(() => {
-      setProgress((current) => {
-        if (current >= progressCap) return current;
-        const step = current < 40 ? 4 : current < 75 ? 2 : 1;
-        return Math.min(progressCap, current + step);
-      });
-    }, 450);
+    startProgress();
 
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), fetchTimeoutMs);
@@ -121,6 +134,10 @@ export function ConvertToolPage({
     try {
       let formData = new FormData();
       formData.append("file", file);
+      const pw = password ?? pdfPassword;
+      if (supportsPdfPassword && pw) {
+        formData.append("password", pw);
+      }
       if (buildFormData) {
         formData = buildFormData(file, formData);
       }
@@ -132,6 +149,12 @@ export function ConvertToolPage({
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
+        if (supportsPdfPassword) {
+          const passwordError = parseToolApiErrorPayload(
+            typeof err === "object" && err ? (err as { error?: string; code?: string; fileName?: string }) : {}
+          );
+          if (passwordError) throw passwordError;
+        }
         throw new Error(
           resolveApiError(
             typeof err === "object" && err && "error" in err
@@ -142,18 +165,29 @@ export function ConvertToolPage({
         );
       }
 
+      advanceTo(96);
       const blob = await res.blob();
-      setProgress(100);
+      completeProgress();
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
       setResultFilename(file.name.replace(/\.[^.]+$/, `.${outputExtension}`));
       setResultSize(blob.size);
+      if (pw) setPdfPassword(pw);
+      setPasswordPrompt(null);
       setCompleted(true);
     } catch (err) {
+      if (supportsPdfPassword) {
+        const prompt = passwordPromptFromError(err, file.name);
+        if (prompt) {
+          setPasswordPrompt(prompt);
+          setError(null);
+          return;
+        }
+      }
       setError(resolveCatchError(err));
     } finally {
       window.clearTimeout(timeoutId);
-      stopProgressTimer();
+      stopProgress();
       setProcessing(false);
     }
   };
@@ -179,6 +213,24 @@ export function ConvertToolPage({
         />
       ) : (
         <>
+          {supportsPdfPassword && passwordPrompt && (
+            <PdfPasswordModal
+              fileName={passwordPrompt.fileName}
+              errorMessage={passwordPrompt.errorMsg}
+              loading={passwordPrompt.loading}
+              onSubmit={(pw) => {
+                setPdfPassword(pw);
+                setPasswordPrompt(null);
+                void handleProcess(pw);
+              }}
+              onCancel={() => {
+                setPasswordPrompt(null);
+                setFile(null);
+                setPdfPassword(null);
+              }}
+            />
+          )}
+
           <ToolDropzone
             hint="Drop a file here or click to browse"
             formatNote={uploadHint}
@@ -210,10 +262,11 @@ export function ConvertToolPage({
           )}
 
           {extraFields && <div className="mt-2">{extraFields}</div>}
+          {supportsPdfPassword && <PdfPasswordInfoBanner className="mt-3" />}
           {error && <ToolErrorBanner message={error} />}
 
           <ToolPrimaryButton
-            onClick={handleProcess}
+            onClick={() => void handleProcess()}
             disabled={!file}
             loading={processing}
             loadingLabel={processingLabel}

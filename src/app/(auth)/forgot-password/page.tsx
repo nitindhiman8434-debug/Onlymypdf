@@ -9,6 +9,8 @@ import { AuthShell } from "@/components/layout/auth-shell";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Logo } from "@/components/common/logo";
 
+import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
+
 type Step = "email" | "verify" | "done";
 
 const inputClass =
@@ -29,6 +31,8 @@ export default function ForgotPasswordPage() {
   const [resetToken, setResetToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileSiteKey = getTurnstileSiteKey();
   const router = useRouter();
 
   async function handleSendCode(e: FormEvent) {
@@ -40,7 +44,10 @@ export default function ForgotPasswordPage() {
       const res = await fetch("/api/auth/forgot-password/send-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          ...(turnstileSiteKey ? { turnstileToken } : {}),
+        }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -144,7 +151,20 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full">
+          {turnstileSiteKey ? (
+            <TurnstileWidget
+              siteKey={turnstileSiteKey}
+              onToken={setTurnstileToken}
+              onExpire={() => setTurnstileToken("")}
+              className="flex justify-center"
+            />
+          ) : null}
+
+          <Button
+            type="submit"
+            disabled={loading || (turnstileSiteKey ? !turnstileToken : false)}
+            className="w-full"
+          >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             Send Verification Code
           </Button>
@@ -209,7 +229,7 @@ export default function ForgotPasswordPage() {
               onClick={() =>
                 router.push(
                   resetToken
-                    ? `/reset-password?token=${resetToken}`
+                    ? `/reset-password#token=${encodeURIComponent(resetToken)}`
                     : resetUrl.replace(window.location.origin, "")
                 )
               }

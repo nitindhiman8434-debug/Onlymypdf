@@ -1,4 +1,4 @@
-import { guardToolRateLimit } from "@/lib/server/rate-limiter";
+import { guardToolRateLimit, checkRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { NextRequest, NextResponse } from "next/server";
 import { toolJsonError } from "@/lib/server/tool-api-error";
@@ -30,6 +30,16 @@ export async function POST(request: NextRequest) {
           )
         : auth.response;
     }
+
+    // Per-user cap: export runs Puppeteer/docx generation, so bound it beyond
+    // the IP rate limit to prevent a single account driving compute cost abuse.
+    const exportRate = await checkRateLimit(request, {
+      keyPrefix: "ai-export",
+      keySuffix: auth.user.id,
+      maxRequests: 40,
+      windowMs: 60 * 60 * 1000,
+    });
+    if (!exportRate.allowed) return rateLimitResponse(exportRate.retryAfterSec);
 
     const body = await request.json();
     const format = body.format as SummaryExportFormat;

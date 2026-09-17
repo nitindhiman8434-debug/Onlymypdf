@@ -24,7 +24,7 @@ export const refundLegal: Record<"en" | "hi", LegalDocument> = {
 
           "OnlyMyPDF Pro is sold as a monthly or yearly plan via Razorpay — as an auto-renewing subscription when plan IDs are configured, or as a one-time plan purchase otherwise.",
 
-          "Refunds apply to your most recent Pro payment when requested within 7 days of that payment. Refunds are not available for partial plan periods after 7 days, except where required by applicable law.",
+          "Refund requests for your most recent Pro payment are reviewed per this policy. Approved refunds are processed to the original payment method, except where required otherwise by applicable law.",
 
         ],
 
@@ -52,7 +52,7 @@ export const refundLegal: Record<"en" | "hi", LegalDocument> = {
 
         bullets: [
 
-          "Requests made after 7 days from payment (unless legally required).",
+          "Requests that do not meet eligibility under this policy (unless legally required).",
 
           "Accounts terminated for abuse, fraud, or terms violations.",
 
@@ -94,7 +94,7 @@ export const refundLegal: Record<"en" | "hi", LegalDocument> = {
 
           "OnlyMyPDF Pro Razorpay के ज़रिए मासिक या वार्षिक प्लान के रूप में बिकता है — subscription (auto-renew) या one-time खरीद, कॉन्फ़िगरेशन पर निर्भर।",
 
-          "खरीद के 7 दिनों के भीतर अनुरोध पर हाल का Pro भुगतान रिफंड योग्य है। 7 दिनों के बाद आंशिक अवधि के लिए रिफंड नहीं (जब तक कानून न मांगे)।",
+          "हाल के Pro भुगतान के रिफंड अनुरोध इस नीति के अनुसार समीक्षा किए जाते हैं। स्वीकृत रिफंड मूल भुगतान विधि पर प्रोसेस होते हैं (जब तक कानून अन्यथा न मांगे)।",
 
         ],
 
@@ -122,7 +122,7 @@ export const refundLegal: Record<"en" | "hi", LegalDocument> = {
 
         bullets: [
 
-          "7 दिनों के बाद अनुरोध (कानूनी अपवाद को छोड़कर)।",
+          "इस नीति के अंतर्गत पात्रता पूरी न करने वाले अनुरोध (कानूनी अपवाद को छोड़कर)।",
 
           "दुरुपयोग, धोखाधड़ी या शर्तों के उल्लंघन पर बंद खाते।",
 

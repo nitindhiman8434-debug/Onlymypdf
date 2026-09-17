@@ -1,9 +1,16 @@
 import { ImageResponse } from "next/og";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { APP_NAME } from "@/config/constants";
 
+export const runtime = "nodejs";
 export const alt = `${APP_NAME} — Free Online PDF Tools`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+const logoSrc = `data:image/png;base64,${readFileSync(
+  join(process.cwd(), "public/logos/clean/logo-d-gradient-clean.png")
+).toString("base64")}`;
 
 export default function OpenGraphImage() {
   return new ImageResponse(
@@ -16,29 +23,27 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%)",
-          color: "#ffffff",
+          background: "linear-gradient(135deg, #ffffff 0%, #eef2ff 100%)",
           fontFamily: "system-ui, sans-serif",
           padding: 64,
         }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={logoSrc}
+          alt={APP_NAME}
+          width={470}
+          height={381}
+          style={{ objectFit: "contain" }}
+        />
         <div
           style={{
-            fontSize: 72,
-            fontWeight: 800,
-            letterSpacing: -2,
-            marginBottom: 24,
-          }}
-        >
-          {APP_NAME}
-        </div>
-        <div
-          style={{
-            fontSize: 32,
-            fontWeight: 500,
-            opacity: 0.92,
+            marginTop: 28,
+            fontSize: 34,
+            fontWeight: 600,
+            color: "#334155",
             textAlign: "center",
-            maxWidth: 900,
+            maxWidth: 940,
             lineHeight: 1.35,
           }}
         >

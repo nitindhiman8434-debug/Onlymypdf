@@ -3,7 +3,9 @@ import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { APP_URL } from "@/config/constants";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { checkAuthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
+import { resolveSafeNextPath } from "@/lib/auth/safe-redirect";
 import { toSafeApiError } from "@/lib/server/safe-error";
+import { guardTurnstileRequest } from "@/lib/security/verify-turnstile-request";
 
 const ALLOWED_PROVIDERS = ["google", "github", "azure"] as const;
 type OAuthProvider = (typeof ALLOWED_PROVIDERS)[number];
@@ -27,19 +29,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { provider, redirectTo } = (await request.json()) as {
+    const { provider, redirectTo, turnstileToken } = (await request.json()) as {
       provider?: string;
       redirectTo?: string;
+      turnstileToken?: string;
     };
+
+    const turnstileBlocked = await guardTurnstileRequest(request, turnstileToken);
+    if (turnstileBlocked) return turnstileBlocked;
 
     if (!provider || !isAllowedProvider(provider)) {
       return NextResponse.json({ error: "Invalid OAuth provider" }, { status: 400 });
     }
 
     const appUrl = APP_URL.replace(/\/$/, "");
-    const callbackUrl = `${appUrl}/auth/callback${
-      redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : ""
-    }`;
+    const safeNext = redirectTo ? resolveSafeNextPath(redirectTo) : null;
+    const callbackUrl = safeNext
+      ? `${appUrl}/auth/callback?next=${encodeURIComponent(safeNext)}`
+      : `${appUrl}/auth/callback`;
 
     const supabase = await createClient();
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -52,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     if (error || !data.url) {
       return NextResponse.json(
-        { error: error?.message ?? "Could not start OAuth sign-in" },
+        { error: "Could not start OAuth sign-in. Please try again." },
         { status: 400 }
       );
     }

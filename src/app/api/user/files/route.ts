@@ -109,12 +109,11 @@ async function buildLocalDevFilesResponse(userId: string) {
 
 export async function GET(request: NextRequest) {
   try {
+    const rateLimited = await guardGeneralApiRateLimit(request);
+    if (rateLimited) return rateLimited;
+
     const auth = await tryGetApiUser();
-    if (!auth.ok) {
-      const rateLimited = await guardGeneralApiRateLimit(request);
-      if (rateLimited) return rateLimited;
-      return auth.response;
-    }
+    if (!auth.ok) return auth.response;
     const user = auth.user;
 
     if (isLocalDevActivityEnabled()) {

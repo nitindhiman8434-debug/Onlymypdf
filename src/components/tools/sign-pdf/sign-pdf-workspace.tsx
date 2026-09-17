@@ -34,6 +34,10 @@ import {
   pageThumbFromSession,
 } from "@/lib/pdf/pdf-thumbnails.client";
 import { PdfPasswordModal } from "@/components/tools/pdf-password-modal";
+import {
+  passwordPromptFromError,
+  readToolApiFailure,
+} from "@/lib/client/pdf-password-errors";
 import { clickToNorm } from "@/lib/pdf/pdf-coordinates";
 import { ToolErrorBanner, ToolHiddenFileInput } from "@/components/tools/tool-ui";
 import { useToolWorkspaceMessages } from "@/hooks/use-tool-workspace-messages";
@@ -124,6 +128,7 @@ export function SignPdfWorkspace({ file, onReset, onComplete }: SignPdfWorkspace
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pdfPassword, setPdfPassword] = useState<string | null>(null);
   const [passwordPrompt, setPasswordPrompt] = useState<{
     file: File;
     fileName: string;
@@ -240,6 +245,7 @@ export function SignPdfWorkspace({ file, onReset, onComplete }: SignPdfWorkspace
     const requestId = ++loadRef.current;
     setLoading(true);
     setError(null);
+    setPdfPassword(null);
     setSessionId("");
     setThumbnails([]);
     setTotalPages(0);
@@ -633,10 +639,10 @@ export function SignPdfWorkspace({ file, onReset, onComplete }: SignPdfWorkspace
           const composeForm = new FormData();
           composeForm.append("file", file, file.name);
           composeForm.append("slots", JSON.stringify(workspaceSlotsToCompose(visibleSlots)));
+          if (pdfPassword) composeForm.append("password", pdfPassword);
           const composeRes = await fetch("/api/tools/compose-pdf", { method: "POST", body: composeForm });
           if (!composeRes.ok) {
-            const data = await composeRes.json().catch(() => ({}));
-            throw new Error((data as { error?: string }).error || ws.failedPreparePages);
+            await readToolApiFailure(composeRes, ws.failedPreparePages);
           }
           const composedBlob = await composeRes.blob();
           pdfToExport = new File([composedBlob], file.name, { type: "application/pdf" });
@@ -644,6 +650,12 @@ export function SignPdfWorkspace({ file, onReset, onComplete }: SignPdfWorkspace
         const url = URL.createObjectURL(pdfToExport);
         onComplete({ url, filename: file.name, size: pdfToExport.size });
       } catch (err) {
+        const prompt = passwordPromptFromError(err, file.name);
+        if (prompt) {
+          setPasswordPrompt({ file, ...prompt });
+          setError(null);
+          return;
+        }
         setError(err instanceof Error ? err.message : ws.exportFailed);
       } finally {
         setProcessing(false);
@@ -691,10 +703,10 @@ export function SignPdfWorkspace({ file, onReset, onComplete }: SignPdfWorkspace
         const composeForm = new FormData();
         composeForm.append("file", file, file.name);
         composeForm.append("slots", JSON.stringify(workspaceSlotsToCompose(visibleSlots)));
+        if (pdfPassword) composeForm.append("password", pdfPassword);
         const composeRes = await fetch("/api/tools/compose-pdf", { method: "POST", body: composeForm });
         if (!composeRes.ok) {
-          const data = await composeRes.json().catch(() => ({}));
-          throw new Error((data as { error?: string }).error || ws.failedPreparePages);
+          await readToolApiFailure(composeRes, ws.failedPreparePages);
         }
         const composedBlob = await composeRes.blob();
         pdfToSign = new File([composedBlob], file.name, { type: "application/pdf" });
@@ -710,14 +722,19 @@ export function SignPdfWorkspace({ file, onReset, onComplete }: SignPdfWorkspace
 
       const res = await fetch("/api/tools/sign-pdf", { method: "POST", body: formData });
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || ws.failedExportSignedPdf);
+        await readToolApiFailure(res, ws.failedExportSignedPdf);
       }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const filename = file.name.replace(/\.pdf$/i, "") + "-signed.pdf";
       onComplete({ url, filename, size: blob.size });
     } catch (err) {
+      const prompt = passwordPromptFromError(err, file.name);
+      if (prompt) {
+        setPasswordPrompt({ file, ...prompt });
+        setError(null);
+        return;
+      }
       setError(err instanceof Error ? err.message : ws.exportFailed);
     } finally {
       setProcessing(false);
@@ -739,6 +756,7 @@ export function SignPdfWorkspace({ file, onReset, onComplete }: SignPdfWorkspace
         }
         if (preview.passwordRequired) return;
         setPasswordPrompt(null);
+        setPdfPassword(pw);
         if (!preview.sessionId || preview.totalPages === 0) {
           setError(preview.error ?? ws.couldNotReadPdfShort);
           return;

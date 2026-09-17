@@ -1,11 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { tryGetApiUser } from "@/lib/auth/get-api-user";
 import { getUserProfile, getUserSubscription } from "@/lib/db/queries";
 import { getBillingMode, isSubscriptionBillingAvailable } from "@/lib/billing/billing-config";
 import { isActivePro } from "@/lib/auth/plan-access";
 import { resolveProAccessForUser } from "@/lib/enterprise/org-access.service";
+import { guardGeneralApiRateLimit } from "@/lib/server/rate-limiter";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const rateLimited = await guardGeneralApiRateLimit(request);
+  if (rateLimited) return rateLimited;
+
   const auth = await tryGetApiUser();
   if (!auth.ok) return auth.response;
   const user = auth.user;

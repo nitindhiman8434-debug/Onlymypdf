@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Building2,
   Key,
@@ -59,12 +59,19 @@ type ApiKeyRow = {
   created_at: string;
 };
 
+function readInviteTokenFromHash(): string | null {
+  if (typeof window === "undefined") return null;
+  const raw = window.location.hash.replace(/^#/, "").trim();
+  if (!raw) return null;
+  const params = new URLSearchParams(raw);
+  return params.get("invite");
+}
+
 function EnterprisePageContent() {
   const { t } = useTranslation();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const inviteToken = searchParams.get("invite");
   const { isPro, proSource, organizationName, refreshProfile, user } = useAuthContext();
+  const [inviteToken, setInviteToken] = useState<string | null>(null);
 
   const [orgs, setOrgs] = useState<Org[]>([]);
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
@@ -149,37 +156,42 @@ function EnterprisePageContent() {
   }, [load]);
 
   useEffect(() => {
-    if (selectedOrgId) void loadOrgDetails(selectedOrgId);
-  }, [selectedOrgId, loadOrgDetails]);
+    setInviteToken(readInviteTokenFromHash());
+  }, []);
+
+  async function acceptPendingInvite() {
+    if (!inviteToken || !user) return;
+    setActionLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/enterprise/organizations/invite", {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: inviteToken }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || t("enterprisePage.inviteAcceptFailed"));
+      setMessage(t("enterprisePage.inviteAccepted", { name: data.organizationName ?? "team" }));
+      setInviteToken(null);
+      await refreshProfile();
+      await load();
+      router.replace("/dashboard/enterprise");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("enterprisePage.inviteAcceptFailed"));
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
+  function dismissPendingInvite() {
+    setInviteToken(null);
+    router.replace("/dashboard/enterprise");
+  }
 
   useEffect(() => {
-    if (!inviteToken || !user) return;
-
-    async function acceptInvite() {
-      setActionLoading(true);
-      setError(null);
-      try {
-        const res = await fetch("/api/enterprise/organizations/invite", {
-          method: "PUT",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: inviteToken }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || t("enterprisePage.inviteAcceptFailed"));
-        setMessage(t("enterprisePage.inviteAccepted", { name: data.organizationName ?? "team" }));
-        await refreshProfile();
-        await load();
-        router.replace("/dashboard/enterprise");
-      } catch (err) {
-        setError(err instanceof Error ? err.message : t("enterprisePage.inviteAcceptFailed"));
-      } finally {
-        setActionLoading(false);
-      }
-    }
-
-    void acceptInvite();
-  }, [inviteToken, user, load, refreshProfile, router, t]);
+    if (selectedOrgId) void loadOrgDetails(selectedOrgId);
+  }, [selectedOrgId, loadOrgDetails]);
 
   async function createOrg() {
     if (orgName.trim().length < 2) return;
@@ -350,6 +362,27 @@ function EnterprisePageContent() {
     void load();
   }
 
+  async function deleteOrganization() {
+    if (!selectedOrg || !window.confirm(t("enterprisePage.deleteOrgConfirm"))) return;
+    setActionLoading(true);
+    setError(null);
+    setMessage(null);
+    const res = await fetch("/api/enterprise/organizations/detail", {
+      method: "DELETE",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ organizationId: selectedOrg.id }),
+    });
+    setActionLoading(false);
+    if (!res.ok) {
+      setError((await res.json().catch(() => ({}))).error ?? t("enterprisePage.deleteOrgFailed"));
+      return;
+    }
+    setMessage(t("enterprisePage.deleteOrgSuccess"));
+    setSelectedOrgId(null);
+    void load();
+  }
+
   const usageToday =
     selectedOrg?.daily_usage_date === new Date().toISOString().slice(0, 10)
       ? (selectedOrg.daily_usage_count ?? 0)
@@ -390,11 +423,26 @@ function EnterprisePageContent() {
             {error}
           </p>
         )}
-        {inviteToken && actionLoading && (
-          <p className="mt-4 flex items-center gap-2 text-sm text-pd-muted">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            {t("enterprisePage.acceptingInvite")}
-          </p>
+        {inviteToken && user && (
+          <div className="mt-4 rounded-xl border border-pd-brand/30 bg-pd-brand-muted/40 p-4">
+            <p className="text-sm font-medium text-pd-foreground">{t("enterprisePage.invitePrompt")}</p>
+            <p className="mt-1 text-sm text-pd-muted">{t("enterprisePage.invitePromptDesc")}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button onClick={() => void acceptPendingInvite()} disabled={actionLoading}>
+                {actionLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {t("enterprisePage.acceptingInvite")}
+                  </>
+                ) : (
+                  t("enterprisePage.acceptInviteBtn")
+                )}
+              </Button>
+              <Button variant="outline" onClick={dismissPendingInvite} disabled={actionLoading}>
+                {t("enterprisePage.declineInviteBtn")}
+              </Button>
+            </div>
+          </div>
         )}
 
         {newSecret && (
@@ -503,6 +551,19 @@ function EnterprisePageContent() {
               {isOwner && planActive && selectedOrg.razorpay_subscription_id && (
                 <Button type="button" size="sm" variant="outline" className="mt-4" disabled={actionLoading} onClick={() => void cancelTeamRenew()}>
                   {t("enterprisePage.cancelAutoRenew")}
+                </Button>
+              )}
+
+              {isOwner && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="mt-4 border-red-200 text-red-700 hover:bg-red-50"
+                  disabled={actionLoading}
+                  onClick={() => void deleteOrganization()}
+                >
+                  {t("enterprisePage.deleteOrg")}
                 </Button>
               )}
             </section>

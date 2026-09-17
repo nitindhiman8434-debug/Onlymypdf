@@ -20,6 +20,16 @@ describe("toSafeApiError", () => {
     );
     expect(toSafeApiError("boom", "Custom fallback")).toBe("Custom fallback");
   });
+
+  it("passes through mapped conversion messages", () => {
+    expect(
+      toSafeApiError(
+        new Error(
+          "Conversion did not produce a Word file. Please try again or use a different PDF."
+        )
+      )
+    ).toBe("Conversion did not produce a Word file. Please try again or use a different PDF.");
+  });
 });
 
 describe("captureApiError", () => {

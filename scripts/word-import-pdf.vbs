@@ -50,8 +50,12 @@ On Error GoTo 0
 wordApp.Visible = False
 wordApp.DisplayAlerts = 0
 wordApp.AutomationSecurity = 3
+' Optional Word.Options properties vary by Office version — ignore if unsupported.
+On Error Resume Next
 wordApp.Options.ConfirmConversions = False
 wordApp.Options.PromptUpdateLinks = False
+wordApp.Options.UpdateLinksAtOpen = False
+On Error GoTo 0
 
 Dim doc
 On Error Resume Next

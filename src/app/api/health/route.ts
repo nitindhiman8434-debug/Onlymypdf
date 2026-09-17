@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { isProductionReady } from "@/lib/config/env-security";
+import { isConvertApiAvailable } from "@/lib/services/pdf-to-word-convertapi.service";
+import { isConvertApiOnlyMode } from "@/lib/services/pdf-to-word-engine-plan";
 import { getCleanupStats } from "@/lib/services/cleanup.service";
 import { isHealthDetailAuthorized } from "@/lib/ops/health-auth";
 import {
@@ -17,7 +19,7 @@ function publicStatus(): { status: string; httpStatus: number } {
     return { status: "ok", httpStatus: 200 };
   }
   if (!isSupabaseConfigured() || !isProductionReady() || !isUpstashConfigured()) {
-    return { status: "degraded", httpStatus: 503 };
+    return { status: "degraded", httpStatus: 200 };
   }
   return { status: "ok", httpStatus: 200 };
 }
@@ -48,6 +50,14 @@ export async function GET(request: NextRequest) {
       detail: isLibreOfficeAvailable()
         ? `${resolveLibreOfficeBinary()} — powers ${LIBREOFFICE_TOOLS.join(", ")}`
         : "Install LibreOffice or set LIBREOFFICE_PATH for high-accuracy Office↔PDF",
+    },
+    convertapi: {
+      ok: isConvertApiAvailable(),
+      detail: isConvertApiAvailable()
+        ? isConvertApiOnlyMode()
+          ? "Primary PDF→Word engine (cloud, convertapi-only mode)"
+          : "Primary PDF→Word engine (cloud)"
+        : "Set CONVERTAPI_SECRET for Smallpdf-class PDF→Word at scale",
     },
   };
 

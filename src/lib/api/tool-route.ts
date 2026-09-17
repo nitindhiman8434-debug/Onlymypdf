@@ -10,6 +10,10 @@ import { guardToolRateLimit, guardApiKeyRateLimit } from "@/lib/server/rate-limi
 import { guardToolMutationOrigin } from "@/lib/server/mutation-origin";
 import { toSafeApiError, captureApiError } from "@/lib/server/safe-error";
 import { toolJsonError } from "@/lib/server/tool-api-error";
+import {
+  passwordErrorResponseFromMessage,
+  resolvePdfBufferErrorResponse,
+} from "@/lib/server/pdf-password-http";
 import { heavyJobCapacityResponse } from "@/lib/server/heavy-job-http";
 import { authGuardResponse } from "@/lib/server/auth-guard-http";
 import {
@@ -17,7 +21,9 @@ import {
   MAINTENANCE_MESSAGE,
 } from "@/lib/server/maintenance-mode";
 import { validateBufferMagic } from "@/lib/utils/file-magic";
+import { getGuestSessionLabel } from "@/lib/privacy/guest-session";
 import { clientIpForLogs } from "@/lib/server/request-security";
+import { resolvePdfBuffer } from "@/lib/pdf/pdf-password.server";
 
 interface ToolRouteOptions {
   toolSlug: string;
@@ -26,6 +32,9 @@ interface ToolRouteOptions {
   outputExtension: string;
   maxDuration?: number;
   heavy?: boolean;
+  /** Decrypt password-protected PDFs using optional `password` form field before convert. */
+  unlockPdf?: boolean;
+  passwordRequiredMessage?: string;
   convert: (buffer: Buffer, file: File, formData: FormData) => Promise<Buffer>;
   outputName?: (originalName: string) => string;
 }
@@ -34,6 +43,7 @@ export function createToolRoute(options: ToolRouteOptions) {
   const handler = async (request: NextRequest) => {
     const startTime = Date.now();
     let userId: string | null = null;
+    let uploadFileName: string | undefined;
 
     try {
       const originBlocked = guardToolMutationOrigin(request);
@@ -69,6 +79,7 @@ export function createToolRoute(options: ToolRouteOptions) {
 
       const formData = await request.formData();
       const file = formData.get("file") as File | null;
+      uploadFileName = file?.name;
 
       if (!file) {
         return toolJsonError(request, "File is required", 400);
@@ -87,7 +98,16 @@ export function createToolRoute(options: ToolRouteOptions) {
         return toolJsonError(request, sizeCheck.message ?? "File is too large.", 400);
       }
 
-      const buffer = Buffer.from(await file.arrayBuffer());
+      let buffer: Buffer;
+      try {
+        buffer = Buffer.from(await file.arrayBuffer());
+      } catch {
+        return toolJsonError(request, "Could not read uploaded file.", 400);
+      }
+
+      if (buffer.length === 0) {
+        return toolJsonError(request, "File is empty.", 400);
+      }
 
       const magic = validateBufferMagic(buffer, options.allowedTypes);
       if (!magic.valid) {
@@ -96,6 +116,21 @@ export function createToolRoute(options: ToolRouteOptions) {
           magic.message ?? "Invalid file content.",
           400
         );
+      }
+
+      if (options.unlockPdf) {
+        const password =
+          (formData.get("password") as string | null)?.trim() || undefined;
+        try {
+          buffer = await resolvePdfBuffer(buffer, password);
+        } catch (err) {
+          const passwordError = resolvePdfBufferErrorResponse(request, err, {
+            fileName: uploadFileName,
+            requiredMessage: options.passwordRequiredMessage,
+          });
+          if (passwordError) return passwordError;
+          throw err;
+        }
       }
 
       const runConvert = () => options.convert(buffer, file, formData);
@@ -110,7 +145,7 @@ export function createToolRoute(options: ToolRouteOptions) {
 
       await logToolUsage({
         userId,
-        sessionId: request.headers.get("x-session-id") || "anonymous",
+        sessionId: getGuestSessionLabel(request),
         toolSlug: options.toolSlug,
         ipAddress: clientIpForLogs(request),
         fileSize: buffer.length,
@@ -122,7 +157,15 @@ export function createToolRoute(options: ToolRouteOptions) {
           fileName: outputFileName,
           mimeType: options.contentType,
         },
-      }).catch(() => {});
+      }).catch((logErr) => {
+        void logError({
+          user_id: userId,
+          tool_name: options.toolSlug,
+          error_type: "USAGE_LOG_FAILURE",
+          error_message:
+            logErr instanceof Error ? logErr.message : "Failed to log tool usage",
+        }).catch(() => {});
+      });
 
       return new NextResponse(new Uint8Array(outputBuffer), {
         status: 200,
@@ -138,6 +181,15 @@ export function createToolRoute(options: ToolRouteOptions) {
 
       const capacity = heavyJobCapacityResponse(error);
       if (capacity) return capacity;
+
+      const passwordError =
+        resolvePdfBufferErrorResponse(request, error, { fileName: uploadFileName }) ??
+        passwordErrorResponseFromMessage(
+          request,
+          error instanceof Error ? error.message : "",
+          uploadFileName
+        );
+      if (passwordError) return passwordError;
 
       const message = toSafeApiError(error, "Processing failed");
 

@@ -30,12 +30,12 @@ export async function POST(request: NextRequest) {
     }
 
     const { resetToken } = await localDevVerifyResetCode({ email, code });
-    const resetUrl = `${APP_URL}/reset-password?token=${resetToken}`;
+    const resetUrl = `${APP_URL}/reset-password#token=${encodeURIComponent(resetToken)}`;
 
     return NextResponse.json({
       message: "Code verified. Use the reset link to choose a new password.",
       resetUrl,
-      ...(process.env.NODE_ENV === "development" ? { resetToken } : {}),
+      resetToken,
     });
   } catch (err) {
     return NextResponse.json(

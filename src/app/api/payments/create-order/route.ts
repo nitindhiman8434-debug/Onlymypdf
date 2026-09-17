@@ -5,7 +5,7 @@ import { authGuardResponse } from "@/lib/server/auth-guard-http";
 import { createOrder } from "@/lib/services/payment.service";
 import { isBillingCheckoutAvailable, isMockBillingMode } from "@/lib/billing/billing-config";
 import { createPayment, getCouponCode } from "@/lib/db/queries";
-import { checkAuthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
+import { checkAuthRateLimit, checkCouponAttemptRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { toSafeApiError } from "@/lib/server/safe-error";
 
@@ -59,9 +59,18 @@ export async function POST(request: NextRequest) {
     let normalizedCoupon: string | null = null;
 
     if (couponCode) {
+      const couponRate = await checkCouponAttemptRateLimit(request, user.id);
+      if (!couponRate.allowed) return rateLimitResponse(couponRate.retryAfterSec);
+
       const coupon = await getCouponCode(couponCode);
       if (!coupon) {
-        return NextResponse.json({ error: "Invalid or expired coupon code" }, { status: 400 });
+        return NextResponse.json(
+          {
+            error:
+              "Could not apply the provided code. Check the code and try again.",
+          },
+          { status: 400 }
+        );
       }
 
       normalizedCoupon = coupon.code;

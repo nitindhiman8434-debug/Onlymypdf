@@ -19,7 +19,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Reorder files", text: "Drag files into the order you want pages to appear in the merged document." },
       { name: "Merge and download", text: "Click Merge to combine the files, then download your single merged PDF instantly." },
     ],
-    ["Free: up to 20 PDFs per merge", "No software install required", "256-bit SSL encryption", "Files auto-deleted within 2 hours", "No quality loss when merging"]
+    ["Free: up to 20 PDFs per merge", "No software install required", "HTTPS/TLS transfer", "2-hour Free or 24-hour Pro retention window", "Pages are copied without raster recompression"]
   ),
   "split-pdf": aeo(
     "OnlyMyPDF Split PDF extracts pages or page ranges from a PDF into separate files online for free. Choose all pages or custom ranges like 1-3, 5, 8-10.",
@@ -29,17 +29,17 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Choose pages", text: "Select split-all-pages mode or enter specific page ranges to extract." },
       { name: "Download splits", text: "Click Split and download the resulting PDF files as a ZIP or individual files." },
     ],
-    ["Split by page range or every page", "Original file is never modified", "Browser-based — no install", "Free with daily usage limits", "Secure auto-deletion after processing"]
+    ["Split by page range or every page", "Original upload is not modified", "No software install required", "Free with daily usage limits", "Published file-retention window"]
   ),
   "compress-pdf": aeo(
-    "OnlyMyPDF Compress PDF reduces PDF file size online with low, medium, or high compression levels. Text stays sharp; image-heavy PDFs see the largest size reductions.",
-    "Compress PDF shrinks PDF file size for email, uploads, or storage while letting you balance quality against file size.",
+    "OnlyMyPDF Compress PDF offers a lossless Basic mode and a smaller Strong mode. Strong mode rasterizes pages and can flatten searchable text and interactive content.",
+    "Compress PDF applies lossless structural optimization in Basic mode or page rasterization in Strong mode, then reports the actual result size.",
     [
       { name: "Upload PDF", text: "Upload the PDF you want to make smaller." },
-      { name: "Pick compression level", text: "Choose low (best quality), medium (balanced), or high (smallest file)." },
+      { name: "Pick compression level", text: "Choose Basic for lossless optimization or Strong for larger reductions with page rasterization." },
       { name: "Download compressed PDF", text: "Process the file and download the optimized PDF with the new file size shown." },
     ],
-    ["Typical savings: 30–80% depending on content", "Three compression presets", compressToolAeoSizeFact(), "Runs in the browser", "Encrypted transfer and auto-deletion"]
+    ["Actual savings depend on document content", "Basic and Strong modes", compressToolAeoSizeFact(), "Server-side processing", "HTTPS/TLS transfer and published retention"]
   ),
   "rotate-pdf": aeo(
     "OnlyMyPDF Rotate PDF turns pages 90°, 180°, or 270° in a visual editor. Rotate one page, multiple selected pages, or bulk-rotate from the toolbar.",
@@ -79,7 +79,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Convert", text: "Start conversion; processing runs securely on OnlyMyPDF servers." },
       { name: "Download DOCX", text: "Download the .docx file and open it in Microsoft Word, Google Docs, or LibreOffice." },
     ],
-    ["Outputs .docx format", "Preserves tables and headings when possible", "Scanned PDFs may need OCR first", "No upload size cap", "Free tier available"]
+    ["Outputs .docx format", "Preserves tables and headings when possible", "Scanned PDFs may need OCR first", "Plan file-size limits apply", "Free tier available"]
   ),
   "word-to-pdf": aeo(
     "OnlyMyPDF Word to PDF converts .doc and .docx files to PDF online while preserving fonts, images, tables, and layout.",
@@ -99,7 +99,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Convert", text: "Run PDF to Excel conversion on the server." },
       { name: "Download XLSX", text: "Download the Excel file and edit cells in your spreadsheet app." },
     ],
-    ["Outputs .xlsx", "Best for table-heavy PDFs", "Free online conversion", "Secure file handling", "Auto file deletion"]
+    ["Outputs .xlsx", "Best for table-heavy PDFs", "Free online conversion", "HTTPS/TLS transfer", "Published file-retention window"]
   ),
   "excel-to-pdf": aeo(
     "OnlyMyPDF Excel to PDF converts .xls and .xlsx spreadsheets into PDF documents with layout preserved for sharing and printing.",
@@ -179,7 +179,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Configure watermark", text: "Set text or image, opacity, rotation, and position." },
       { name: "Apply and download", text: "Apply the watermark to all pages and download the result." },
     ],
-    ["Text or image watermarks", "Applies to all pages", "Opacity and angle controls", "Free online tool", "Auto file deletion"]
+    ["Text or image watermarks", "Applies to all pages", "Opacity and angle controls", "Free online tool", "Published file-retention window"]
   ),
   "ai-pdf-summarizer": aeo(
     "OnlyMyPDF AI PDF Summarizer reads a PDF and generates a concise summary with key points, action items, and dates. Available on the Pro plan.",
@@ -189,7 +189,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Upload PDF", text: "Upload the document to summarize." },
       { name: "Get summary", text: "Run AI summarization and read or export the generated summary." },
     ],
-    ["Pro-only feature", "Key points and action items", "AI-powered analysis", "Secure processing", "Summaries for informational use"]
+    ["1 free summary/day with login", "Unlimited on Pro", "Key points and action items", "AI-powered analysis", "Summaries for informational use"]
   ),
   "pdf-scanner": aeo(
     "OnlyMyPDF PDF Scanner uses your device camera to capture documents and save them as a clean PDF with edge detection.",
@@ -209,7 +209,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Enter password", text: "Provide the document password you are authorized to use." },
       { name: "Download unlocked PDF", text: "Download a copy without password restrictions." },
     ],
-    ["Requires correct password", "For documents you own or may access", "Does not crack unknown passwords", "Secure processing", "Auto file deletion"]
+    ["Requires correct password", "For documents you own or may access", "Does not crack unknown passwords", "HTTPS/TLS transfer", "Published file-retention window"]
   ),
   "protect-pdf": aeo(
     "OnlyMyPDF Protect PDF adds password encryption to a PDF so only people with the password can open it.",
@@ -229,7 +229,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Add content", text: "Place text and images on any page using the visual editor." },
       { name: "Export PDF", text: "Download the edited PDF with your additions layered on top." },
     ],
-    ["Add text and images", "Drag-to-position elements", "No quality loss to original pages", "Browser-based editor", "Secure auto-deletion"]
+    ["Add text and images", "Drag-to-position elements", "Original pages are not raster-compressed", "Browser-based editor", "Published file-retention window"]
   ),
 };
 

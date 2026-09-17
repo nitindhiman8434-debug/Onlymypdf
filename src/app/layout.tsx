@@ -103,6 +103,7 @@ export default async function RootLayout({
 }>) {
   const headerList = await headers();
   const locale = headerList.get("x-locale") === "hi" ? "hi" : "en";
+  const nonce = headerList.get("x-nonce") ?? undefined;
 
   return (
     <html
@@ -112,7 +113,7 @@ export default async function RootLayout({
       className={`${inter.variable} ${plusJakarta.variable} ${LAYOUT_BODY_CLASS[DEFAULT_LAYOUT_STYLE]} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <JsonLd data={[organizationJsonLd(), webSiteJsonLd()]} />
+        <JsonLd data={[organizationJsonLd(), webSiteJsonLd()]} nonce={nonce} />
         <a href="#main-content" className="pd-skip-link">
           Skip to main content
         </a>

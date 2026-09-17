@@ -1,15 +1,20 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { isBlockedProfile } from "@/lib/auth/plan-access";
 
-export async function isUserLoginBlocked(userId: string): Promise<boolean> {
-  const supabase = await createServiceClient();
-  const { data } = await supabase
-    .from("user_profiles")
-    .select("is_blocked")
-    .eq("id", userId)
-    .maybeSingle();
-  return isBlockedProfile(data ?? {});
-}
+export { BLOCKED_LOGIN_MESSAGE } from "@/lib/auth/blocked-login-message";
 
-export const BLOCKED_LOGIN_MESSAGE =
-  "Your account has been suspended. Contact support for help.";
+export async function isUserLoginBlocked(userId: string): Promise<boolean> {
+  try {
+    const supabase = await createServiceClient();
+    const { data, error } = await supabase
+      .from("user_profiles")
+      .select("is_blocked")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error) return true;
+    if (!data) return false;
+    return isBlockedProfile(data);
+  } catch {
+    return true;
+  }
+}

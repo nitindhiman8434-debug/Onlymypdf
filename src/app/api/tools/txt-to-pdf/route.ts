@@ -8,7 +8,9 @@ import { resolveMutationToolUser } from "@/lib/auth/tool-mutation-auth";
 import { validateSingleUpload, uploadValidationResponse } from "@/lib/server/upload-validation";
 import { sanitizeFilename } from "@/lib/utils/file";
 import { FILE_LIMITS } from "@/config/constants";
-import { clientIpForLogs } from "@/lib/server/request-security";
+import { clientIpForLogs, ownerHashFromRequest } from "@/lib/server/request-security";
+import { createPdfSession } from "@/lib/pdf/pdf-session-store";
+import { PDFDocument } from "pdf-lib";
 
 export const maxDuration = 60;
 
@@ -65,9 +67,17 @@ export async function POST(request: NextRequest) {
 
     const originalName = file.name.replace(/\.[^.]+$/i, "");
 
+    const ownerHash = ownerHashFromRequest(request, userId);
+    const [previewSessionId, totalPages] = await Promise.all([
+      createPdfSession(pdfBuffer, ownerHash, { localOnly: true }),
+      PDFDocument.load(pdfBuffer, { ignoreEncryption: true })
+        .then((doc) => doc.getPageCount())
+        .catch(() => 0),
+    ]);
+
     const processingTime = Date.now() - startTime;
     const outputFileName = `${sanitizeFilename(originalName)}.pdf`;
-    await logToolUsage({
+    void logToolUsage({
       userId,
       sessionId: request.headers.get("x-session-id") || "anonymous",
       toolSlug: "txt-to-pdf",
@@ -89,6 +99,8 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${outputFileName}"`,
         "Content-Length": String(pdfBuffer.length),
+        "X-Pdf-Session-Id": previewSessionId,
+        "X-Pdf-Total-Pages": String(totalPages),
       },
     });
   } catch (error) {

@@ -9,10 +9,27 @@ import {
   upstashGetJson,
   upstashSetJson,
 } from "@/lib/server/upstash-kv";
+import { getPreviewSessionTtlMs } from "@/lib/config/preview-limits";
 
-export const PDF_SESSION_TTL_MS = 30 * 60 * 1000;
-const TTL_MS = PDF_SESSION_TTL_MS;
-const TTL_SEC = Math.ceil(TTL_MS / 1000);
+/** Preview PDF session lifetime (env: PREVIEW_SESSION_TTL_MINUTES, default 15). */
+export function getPdfSessionTtlMs(): number {
+  return getPreviewSessionTtlMs();
+}
+
+/** @deprecated Use getPdfSessionTtlMs() — kept for cleanup/tests. */
+export const PDF_SESSION_TTL_MS = getPreviewSessionTtlMs();
+
+export type CreatePdfSessionOptions = {
+  /**
+   * Short-lived convert-result preview: keep PDF on local disk only.
+   * Skips Supabase upload and distributed Redis (less I/O).
+   */
+  localOnly?: boolean;
+};
+
+function sessionTtlSec(): number {
+  return Math.ceil(getPreviewSessionTtlMs() / 1000);
+}
 const REDIS_PREFIX = "pdf-session:";
 const STORAGE_BUCKET = "pdf-files";
 
@@ -22,6 +39,7 @@ type PdfSession = {
   ownerHash: string;
   thumbCache: Map<string, string>;
   storagePath?: string;
+  localOnly?: boolean;
 };
 
 type StoredPdfSession = {
@@ -77,7 +95,7 @@ async function readStoredSession(sessionId: string): Promise<StoredPdfSession | 
 
 async function writeStoredSession(sessionId: string, stored: StoredPdfSession): Promise<void> {
   if (!isUpstashConfigured()) return;
-  await upstashSetJson(redisKey(sessionId), stored, TTL_SEC);
+  await upstashSetJson(redisKey(sessionId), stored, sessionTtlSec());
 }
 
 async function uploadSessionPdf(sessionId: string, buffer: Buffer): Promise<string | null> {
@@ -167,14 +185,21 @@ export function buildOwnerHash(userId: string | null, ip: string | null): string
   return createHash("sha256").update(key).digest("hex").slice(0, 16);
 }
 
-export async function createPdfSession(buffer: Buffer, ownerHash?: string): Promise<string> {
+export async function createPdfSession(
+  buffer: Buffer,
+  ownerHash?: string,
+  options: CreatePdfSessionOptions = {}
+): Promise<string> {
+  const localOnly = options.localOnly ?? false;
   pruneExpiredLocal();
   const id = randomUUID();
-  const expiresAt = Date.now() + TTL_MS;
+  const ttlMs = getPreviewSessionTtlMs();
+  const expiresAt = Date.now() + ttlMs;
   const filePath = path.join(os.tmpdir(), `pdf-doctor-session-${id}.pdf`);
   await fs.writeFile(filePath, buffer);
 
-  const storagePath = isDistributedStoreEnabled() ? await uploadSessionPdf(id, buffer) : null;
+  const useDistributed = isDistributedStoreEnabled() && !localOnly;
+  const storagePath = useDistributed ? await uploadSessionPdf(id, buffer) : null;
 
   const session: PdfSession = {
     filePath,
@@ -182,10 +207,11 @@ export async function createPdfSession(buffer: Buffer, ownerHash?: string): Prom
     ownerHash: ownerHash ?? "",
     thumbCache: new Map(),
     storagePath: storagePath ?? undefined,
+    localOnly: localOnly || undefined,
   };
   sessions.set(id, session);
 
-  if (isDistributedStoreEnabled()) {
+  if (useDistributed) {
     await writeStoredSession(id, {
       ownerHash: ownerHash ?? "",
       expiresAt,
@@ -202,7 +228,13 @@ export async function getPdfSessionBuffer(id: string, ownerHash?: string): Promi
   const session = await getSessionRecord(id);
   if (!session) return null;
 
-  if (ownerHash && session.ownerHash && session.ownerHash !== ownerHash) {
+  if (!session.ownerHash) {
+    return null;
+  }
+
+  // Require the caller to prove ownership; never return the buffer when the
+  // owner hash is missing or does not match the session's stored hash.
+  if (!ownerHash || session.ownerHash !== ownerHash) {
     return null;
   }
 
@@ -223,7 +255,7 @@ export async function getPdfSessionBuffer(id: string, ownerHash?: string): Promi
 }
 
 async function persistThumbCache(sessionId: string, session: PdfSession) {
-  if (!isDistributedStoreEnabled()) return;
+  if (!isDistributedStoreEnabled() || session.localOnly) return;
   await writeStoredSession(sessionId, {
     ownerHash: session.ownerHash,
     expiresAt: session.expires,
@@ -247,7 +279,8 @@ export async function getCachedThumb(
 ): Promise<string | undefined> {
   const session = await getSessionRecord(sessionId);
   if (!session) return undefined;
-  if (ownerHash && session.ownerHash && session.ownerHash !== ownerHash) {
+  if (!session.ownerHash) return undefined;
+  if (ownerHash && session.ownerHash !== ownerHash) {
     return undefined;
   }
   return session.thumbCache.get(cacheKey);

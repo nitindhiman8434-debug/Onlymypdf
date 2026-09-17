@@ -11,6 +11,7 @@ import {
   ToolPrimaryButton,
   ToolSuccessPanel,
 } from '@/components/tools/tool-ui';
+import { useToolErrors } from '@/hooks/use-tool-errors';
 
 const RELATED_TOOLS = [
   { name: 'Protect PDF', href: '/protect-pdf' },
@@ -22,11 +23,12 @@ const RELATED_TOOLS = [
 const FAQS = [
   { q: 'Can this tool crack PDF passwords?', a: 'No. This tool only removes password protection from PDFs you own and can already open. You must provide the correct password.' },
   { q: 'What types of PDF protection can be removed?', a: 'We can remove password protection (user password) from PDFs. This does not bypass owner/permission passwords for copy-protected documents.' },
-  { q: 'Is my password secure?', a: 'Yes. Your password is sent over a secure connection and is never stored. The file is processed and immediately deleted from our servers.' },
+  { q: 'Is my password secure?', a: 'The password is sent over HTTPS/TLS, used for this conversion, and is not saved as an account field. The file follows the published retention window.' },
   { q: 'What if I forgot my PDF password?', a: 'Unfortunately, we cannot help recover forgotten passwords. You will need to contact the document creator for the correct password.' },
 ];
 
 export default function UnlockPdfPage() {
+  const { resolveApiError, resolveCatchError } = useToolErrors();
   const [files, setFiles] = useState<File[]>([]);
   const [processing, setProcessing] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -67,11 +69,8 @@ export default function UnlockPdfPage() {
 
       const res = await fetch('/api/tools/unlock-pdf', { method: 'POST', body: formData });
       if (!res.ok) {
-        if (res.status === 400) {
-          throw new Error('Incorrect password. Please try again.');
-        }
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Failed to unlock PDF.');
+        throw new Error(resolveApiError(err, 'errors.processingFailed'));
       }
 
       const blob = await res.blob();
@@ -83,7 +82,7 @@ export default function UnlockPdfPage() {
       const { notifyActivityUpdated } = await import("@/lib/client/activity-events");
       notifyActivityUpdated();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
+      setError(resolveCatchError(err));
     } finally {
       setProcessing(false);
     }

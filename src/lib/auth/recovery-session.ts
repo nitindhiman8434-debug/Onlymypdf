@@ -21,6 +21,13 @@ function parseAccessTokenAmr(accessToken: string): AmrEntry[] | null {
 export async function isPasswordRecoverySession(
   supabase: SupabaseClient
 ): Promise<boolean> {
+  // Verify the token with the auth server before trusting any of its claims.
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) return false;
+
   const {
     data: { session },
   } = await supabase.auth.getSession();

@@ -1,5 +1,6 @@
 import { PDFDocument, StandardFonts, rgb, PageSizes } from "pdf-lib";
 import { logError } from "@/lib/db/queries";
+import { sanitizeTextForStandardFont } from "@/lib/pdf/pdf-standard-font-text";
 
 interface TxtToPdfOptions {
   pageSize?: "a4" | "letter";
@@ -9,6 +10,10 @@ interface TxtToPdfOptions {
   fontFamily?: "courier" | "helvetica" | "times";
   lineSpacing?: number;
 }
+
+type FontMetrics = {
+  widthOfTextAtSize: (text: string, size: number) => number;
+};
 
 const PAGE_SIZES = {
   a4: { portrait: PageSizes.A4, landscape: [PageSizes.A4[1], PageSizes.A4[0]] as [number, number] },
@@ -26,6 +31,17 @@ const FONT_MAP: Record<string, string> = {
   helvetica: StandardFonts.Helvetica,
   times: StandardFonts.TimesRoman,
 };
+
+/** Normalize line endings before sanitizing glyphs so blank lines survive. */
+export function splitSanitizedTextLines(
+  textContent: string,
+  font: Parameters<typeof sanitizeTextForStandardFont>[1]
+): string[] {
+  const normalized = textContent.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  return normalized
+    .split("\n")
+    .map((line) => sanitizeTextForStandardFont(line, font));
+}
 
 /**
  * Convert plain text content to a well-formatted PDF.
@@ -54,7 +70,7 @@ export async function txtToPdf(
     const usableWidth = pageWidth - margins.left - margins.right;
     const lineHeight = fontSize * lineSpacing;
 
-    const lines = textContent.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+    const lines = splitSanitizedTextLines(textContent, font);
 
     const wrappedLines: string[] = [];
     for (const line of lines) {
@@ -111,7 +127,7 @@ export async function txtToPdf(
  */
 function wrapLine(
   line: string,
-  font: { widthOfTextAtSize: (text: string, size: number) => number },
+  font: FontMetrics,
   fontSize: number,
   maxWidth: number
 ): string[] {

@@ -59,6 +59,9 @@ export async function DELETE(request: NextRequest) {
     const originBlocked = guardMutationOrigin(request);
     if (originBlocked) return originBlocked;
 
+    const rate = await guardGeneralApiRateLimit(request);
+    if (rate) return rate;
+
     const auth = await tryGetApiUser();
     if (!auth.ok) return auth.response;
     const user = auth.user;

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 vi.mock("@/lib/supabase/server", () => ({
-  createClient: vi.fn(),
+  createEphemeralClient: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/local-dev-auth", () => ({
@@ -9,7 +9,7 @@ vi.mock("@/lib/auth/local-dev-auth", () => ({
   localDevSignIn: vi.fn(),
 }));
 
-import { createClient } from "@/lib/supabase/server";
+import { createEphemeralClient } from "@/lib/supabase/server";
 import { isLocalDevAuthEnabled, localDevSignIn } from "@/lib/auth/local-dev-auth";
 import { verifyUserReauth } from "@/lib/auth/verify-reauth";
 
@@ -25,7 +25,7 @@ describe("verifyUserReauth", () => {
   });
 
   it("returns true when Supabase password sign-in succeeds", async () => {
-    vi.mocked(createClient).mockResolvedValue({
+    vi.mocked(createEphemeralClient).mockReturnValue({
       auth: {
         signInWithPassword: vi.fn(async () => ({ error: null })),
       },
@@ -37,7 +37,7 @@ describe("verifyUserReauth", () => {
   });
 
   it("returns false when Supabase password sign-in fails", async () => {
-    vi.mocked(createClient).mockResolvedValue({
+    vi.mocked(createEphemeralClient).mockReturnValue({
       auth: {
         signInWithPassword: vi.fn(async () => ({
           error: new Error("Invalid login credentials"),

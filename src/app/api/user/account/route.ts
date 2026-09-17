@@ -30,7 +30,7 @@ import {
 
 import { deleteFile } from "@/lib/services/upload.service";
 
-import { guardGeneralApiRateLimit } from "@/lib/server/rate-limiter";
+import { guardGeneralApiRateLimit, checkReauthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 
@@ -38,7 +38,16 @@ import { toSafeApiError, captureApiError } from "@/lib/server/safe-error";
 
 import { buildGdprExportPayload } from "@/lib/privacy/gdpr-export";
 
-import { verifyUserReauth } from "@/lib/auth/verify-reauth";
+import { sanitizeOrganizationForRole } from "@/lib/enterprise/org-member-view";
+
+import { verifyUserStepUp } from "@/lib/auth/verify-reauth";
+import { clearStepUpCookie } from "@/lib/auth/step-up-auth";
+import {
+  anonymizeBillingInvoicesForUser,
+  assertAccountDeletionAllowed,
+  cancelUserBillingBeforeDelete,
+  scrubUserFileMetadata,
+} from "@/lib/privacy/account-deletion.service";
 
 
 
@@ -48,7 +57,7 @@ async function buildUserDataExportResponse(user: ApiUser): Promise<NextResponse>
 
   const profile = await getUserProfile(user.id);
 
-  const jobs = await getUserJobs(user.id, 100);
+  const jobs = await getUserJobs(user.id, 1000);
 
 
 
@@ -84,7 +93,7 @@ async function buildUserDataExportResponse(user: ApiUser): Promise<NextResponse>
 
       .order("created_at", { ascending: false })
 
-      .limit(50),
+      .limit(500),
 
     supabase
 
@@ -96,7 +105,7 @@ async function buildUserDataExportResponse(user: ApiUser): Promise<NextResponse>
 
       .order("created_at", { ascending: false })
 
-      .limit(10),
+      .limit(50),
 
     getUserConsentRecords(user.id),
 
@@ -146,30 +155,35 @@ async function buildUserDataExportResponse(user: ApiUser): Promise<NextResponse>
 
       .order("created_at", { ascending: false })
 
-      .limit(50),
+      .limit(500),
 
   ]);
 
 
 
-  const organizationMemberships = (orgMemberships ?? []).map((row) => ({
+  const organizationMemberships = (orgMemberships ?? []).map((row) => {
+    const rawOrg = (
+      row as { organizations: Record<string, unknown> | Record<string, unknown>[] | null }
+    ).organizations;
+    const record = Array.isArray(rawOrg) ? rawOrg[0] : rawOrg;
+    const sanitizedOrg = record
+      ? sanitizeOrganizationForRole(
+          record as Parameters<typeof sanitizeOrganizationForRole>[0],
+          String(row.role)
+        )
+      : null;
 
-    role: row.role,
+    return {
+      role: row.role,
+      joined_at: row.joined_at,
+      organization: sanitizedOrg,
+    };
+  });
 
-    joined_at: row.joined_at,
-
-    organization: (row as { organizations: Record<string, unknown> | Record<string, unknown>[] | null })
-
-      .organizations,
-
-  }));
-
-  const organizations = organizationMemberships
-    .map((row) => {
-      const org = row.organization;
-      return Array.isArray(org) ? org[0] : org;
-    })
-    .filter((org): org is Record<string, unknown> => Boolean(org));
+  const organizations: Record<string, unknown>[] = organizationMemberships
+    .map((row) => row.organization)
+    .filter((org) => org != null)
+    .map((org) => org as Record<string, unknown>);
 
   const exportPayload = buildGdprExportPayload({
 
@@ -299,31 +313,30 @@ export async function POST(request: NextRequest) {
 
     const password = typeof body.password === "string" ? body.password : "";
 
-    if (!password) {
+    const reauthRate = await checkReauthRateLimit(request, user.id);
+    if (!reauthRate.allowed) return rateLimitResponse(reauthRate.retryAfterSec);
 
-      return NextResponse.json(
-
-        { error: "Enter your password to confirm data export." },
-
-        { status: 400 }
-
-      );
-
-    }
-
-
-
-    const reauthOk = await verifyUserReauth(user.email, password);
+    const reauthOk = await verifyUserStepUp({
+      request,
+      userId: user.id,
+      email: user.email,
+      purpose: "export",
+      password,
+    });
 
     if (!reauthOk) {
-
-      return NextResponse.json({ error: "Incorrect password." }, { status: 403 });
-
+      return NextResponse.json(
+        {
+          error: password
+            ? "Incorrect password."
+            : "Confirm your identity before exporting data.",
+        },
+        { status: 403 }
+      );
     }
 
-
-
-    return buildUserDataExportResponse(user);
+    const response = await buildUserDataExportResponse(user);
+    return clearStepUpCookie(response);
 
   } catch (error) {
 
@@ -367,29 +380,39 @@ export async function DELETE(request: NextRequest) {
 
     const password = typeof body.password === "string" ? body.password : "";
 
-    if (!password) {
+    const reauthRate = await checkReauthRateLimit(request, user.id);
+    if (!reauthRate.allowed) return rateLimitResponse(reauthRate.retryAfterSec);
 
-      return NextResponse.json(
-
-        { error: "Enter your password to confirm account deletion." },
-
-        { status: 400 }
-
-      );
-
-    }
-
-
-
-    const reauthOk = await verifyUserReauth(user.email, password);
+    const reauthOk = await verifyUserStepUp({
+      request,
+      userId: user.id,
+      email: user.email,
+      purpose: "delete",
+      password,
+    });
 
     if (!reauthOk) {
-
-      return NextResponse.json({ error: "Incorrect password." }, { status: 403 });
-
+      return NextResponse.json(
+        {
+          error: password
+            ? "Incorrect password."
+            : "Confirm your identity before deleting your account.",
+        },
+        { status: 403 }
+      );
     }
 
+    const deletionAllowed = await assertAccountDeletionAllowed(user.id);
+    if (!deletionAllowed.ok) {
+      return NextResponse.json(
+        { error: deletionAllowed.error },
+        { status: deletionAllowed.status }
+      );
+    }
 
+    await cancelUserBillingBeforeDelete(user.id);
+    await anonymizeBillingInvoicesForUser(user.id);
+    await scrubUserFileMetadata(user.id);
 
     const supabase = await createServiceClient();
 
@@ -414,6 +437,10 @@ export async function DELETE(request: NextRequest) {
     }
 
 
+
+    await supabase.from("api_keys").delete().eq("user_id", user.id);
+
+    await supabase.from("uploaded_files").delete().eq("user_id", user.id);
 
     await supabase.from("tool_jobs").delete().eq("user_id", user.id);
 
@@ -445,15 +472,16 @@ export async function DELETE(request: NextRequest) {
 
 
 
-    return NextResponse.json({
+    const response = NextResponse.json({
 
       success: true,
 
       message:
 
-        "Your account and personal data have been deleted. Anonymized billing records may be retained as required by law.",
+        "Your account and personal data have been deleted. Anonymized billing and tax records may be retained as required by law.",
 
     });
+    return clearStepUpCookie(response);
 
   } catch (error) {
 

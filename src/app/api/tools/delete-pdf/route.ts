@@ -13,21 +13,7 @@ export const POST = async (request: NextRequest) => {
     outputExtension: "pdf",
     convert: async (buffer, _file, formData) => {
       const password = (formData.get("password") as string | null) || null;
-      let unlocked: Buffer;
-      try {
-        unlocked = await resolvePdfBuffer(buffer, password);
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to open PDF";
-        if (msg === "PASSWORD_REQUIRED") {
-          throw new Error(
-            "This PDF is password-protected. Enter the password to continue."
-          );
-        }
-        if (msg === "WRONG_PASSWORD") {
-          throw new Error("Incorrect password. Please try again.");
-        }
-        throw err;
-      }
+      const unlocked = await resolvePdfBuffer(buffer, password);
       const keepRaw = formData.get("pagesToKeep") as string | null;
       const pagesToKeep: number[] = keepRaw ? JSON.parse(keepRaw) : [];
       return deletePdfPages(unlocked, pagesToKeep);

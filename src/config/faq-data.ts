@@ -57,7 +57,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "What does the AI PDF Summarizer do?",
         answer:
-          "The AI PDF Summarizer reads your entire PDF document and generates a concise summary including key points, action items, and important dates. It's available exclusively to Pro users.",
+          "The AI PDF Summarizer reads extracted PDF text and generates a concise summary with key points, action items, and important dates. Signed-in Free users get 1 summary per day; Pro users get unlimited summaries, subject to service availability.",
       },
       {
         question: "How does the PDF Scanner work?",
@@ -72,12 +72,12 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "Are my files safe?",
         answer:
-          "Absolutely. All files are transmitted over encrypted connections (TLS/SSL), processed in isolated environments, and stored with encryption at rest.",
+          "Files are transmitted over HTTPS/TLS. Temporary storage follows the published retention window, and optional third-party processing is disclosed before use.",
       },
       {
         question: "How long are files stored?",
         answer:
-          "Files are automatically deleted after 2 hours for free users, and after 24 hours for Pro users. You can also manually delete files before the retention period expires.",
+          "Files are scheduled for deletion within 2 hours for Free users and 24 hours for Pro users. You can also manually delete files before the retention period expires.",
       },
       {
         question: "Is my data encrypted?",
@@ -87,7 +87,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "Do you share my files with anyone?",
         answer:
-          "No. We never share, sell, or provide access to your uploaded files to any third party.",
+          "We never sell your files. Optional conversions and AI summarization use named sub-processors listed in our Privacy Policy. We do not use your documents to train AI models.",
       },
     ],
   },

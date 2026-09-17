@@ -4,7 +4,7 @@ export function getExternalStatusPageUrl(): string | null {
   if (!url) return null;
   try {
     const parsed = new URL(url);
-    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return null;
+    if (parsed.protocol !== "https:") return null;
     return parsed.toString().replace(/\/$/, "");
   } catch {
     return null;

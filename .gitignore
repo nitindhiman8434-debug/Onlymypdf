@@ -69,6 +69,10 @@ next-env.d.ts
 /test-pdf2docx*.docx
 /test-swot-*.docx
 /pages-*.json
+/test-5pages.b64
+/public/test-5pages.pdf
+/verify-infographic-poster.docx
+/verify-technical-manual.docx
 
 # Python cache
 scripts/__pycache__/

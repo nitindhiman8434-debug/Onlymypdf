@@ -1,4 +1,4 @@
-import { guardToolRateLimit } from "@/lib/server/rate-limiter";
+import { guardPollRateLimit } from "@/lib/server/rate-limiter";
 
 import { NextRequest, NextResponse } from "next/server";
 import { toolJsonError } from "@/lib/server/tool-api-error";
@@ -6,12 +6,16 @@ import { toolJsonError } from "@/lib/server/tool-api-error";
 import { getPdfToWordJob } from "@/lib/services/pdf-to-word-jobs.service";
 
 import { assertJobOwner, resolveToolJobOwnerKey } from "@/lib/server/job-owner";
+import { guardSensitiveReadOrigin } from "@/lib/server/mutation-origin";
 
 
 
 export async function GET(request: NextRequest) {
 
-  const rateLimited = await guardToolRateLimit(request, "pdf-to-word");
+  const originBlocked = guardSensitiveReadOrigin(request);
+  if (originBlocked) return originBlocked;
+
+  const rateLimited = await guardPollRateLimit(request, "pdf-to-word");
 
   if (rateLimited) return rateLimited;
 

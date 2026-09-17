@@ -3,8 +3,8 @@
 import { useState, useRef, useCallback } from 'react';
 import { ToolPageShell } from '@/components/layout/tool-page-shell';
 import { mapFaqs, mapRelatedTools } from '@/components/tools/tool-helpers';
-import { SplitPdfWorkspace } from '@/components/tools/lazy-workspaces';
-import { ToolDropzone, ToolErrorBanner, ToolHiddenFileInput } from '@/components/tools/tool-ui';
+import { SplitPdfWorkspace } from '@/components/tools/split-pdf/split-pdf-workspace';
+import { ToolDropzone, ToolErrorBanner, ToolHiddenFileInput, PdfPasswordInfoBanner } from '@/components/tools/tool-ui';
 
 const RELATED_TOOLS = [
   { name: 'Merge PDF', href: '/merge-pdf' },
@@ -17,11 +17,12 @@ const FAQS = [
   { q: 'Can I extract specific pages from a PDF?', a: 'Yes! Switch to Extract, select pages in the grid, then click Finish.' },
   { q: 'What happens when I split all pages?', a: 'Each page becomes a separate PDF, bundled in a ZIP download.' },
   { q: 'Is the original PDF quality preserved?', a: 'Absolutely. Splitting does not alter the content or quality of your pages.' },
-  { q: 'Can I split a password-protected PDF?', a: 'Remove password protection first using Unlock PDF, then split here.' },
+  { q: 'Can I split a password-protected PDF?', a: 'Yes. When you export, we will ask for the PDF password if the file is locked.' },
 ];
 
 export default function SplitPdfPage() {
   const [file, setFile] = useState<File | null>(null);
+  const [uploadId, setUploadId] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,6 +33,7 @@ export default function SplitPdfPage() {
     );
     if (pdfFiles.length > 0) {
       setFile(pdfFiles[0]);
+      setUploadId((id) => id + 1);
       setUploadError(null);
     }
   }, []);
@@ -68,7 +70,7 @@ export default function SplitPdfPage() {
             fileInputAccept=".pdf"
             onFileInputChange={(e) => e.target.files && handleFiles(e.target.files)}
           />
-          
+          <PdfPasswordInfoBanner className="mt-3" />
           {uploadError && <ToolErrorBanner message={uploadError} />}
           <p className="mt-4 text-center text-xs text-pd-muted">
             After upload you&apos;ll see a page grid with split points — inspired by modern PDF editors.
@@ -77,6 +79,7 @@ export default function SplitPdfPage() {
       ) : (
         <div className="w-full">
           <SplitPdfWorkspace
+            key={`${file.name}:${file.size}:${file.lastModified}:${uploadId}`}
             file={file}
             onChangeFile={() => fileInputRef.current?.click()}
             onReset={() => setFile(null)}

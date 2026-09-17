@@ -5,24 +5,35 @@ import {
   localDevCreateResetCode,
 } from "@/lib/auth/local-dev-auth";
 import { sendPasswordResetCode } from "@/lib/auth/password-reset-mailer";
-import { checkAuthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
+import {
+  checkPasswordResetEmailRateLimit,
+  checkPasswordResetRateLimit,
+  rateLimitResponse,
+} from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { toSafeApiError } from "@/lib/server/safe-error";
 import { APP_URL } from "@/config/constants";
+import { guardTurnstileRequest } from "@/lib/security/verify-turnstile-request";
 
 export async function POST(request: NextRequest) {
   try {
     const originBlocked = guardMutationOrigin(request);
     if (originBlocked) return originBlocked;
 
-    const rate = await checkAuthRateLimit(request);
+    const rate = await checkPasswordResetRateLimit(request);
     if (!rate.allowed) return rateLimitResponse(rate.retryAfterSec);
 
-    const { email } = await request.json();
+    const { email, turnstileToken } = await request.json();
 
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
+
+    const emailRate = await checkPasswordResetEmailRateLimit(request, email);
+    if (!emailRate.allowed) return rateLimitResponse(emailRate.retryAfterSec);
+
+    const turnstileBlocked = await guardTurnstileRequest(request, turnstileToken);
+    if (turnstileBlocked) return turnstileBlocked;
 
     if (isLocalDevAuthEnabled()) {
       const code = await localDevCreateResetCode(email);
@@ -33,7 +44,7 @@ export async function POST(request: NextRequest) {
         step: "verify-code",
         mode: "local-dev",
       };
-      if (process.env.NODE_ENV === "development" && delivery.devCode) {
+      if (delivery.devCode) {
         body.devCode = delivery.devCode;
       }
 
@@ -52,11 +63,11 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${APP_URL}/reset-password`,
+      redirectTo: `${APP_URL}/auth/callback?next=/reset-password`,
     });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      console.error("[forgot-password] reset email request failed:", error.message);
     }
 
     return NextResponse.json({

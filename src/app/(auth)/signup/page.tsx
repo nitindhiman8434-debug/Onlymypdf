@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/common/logo";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { useTranslation } from "@/i18n";
+import { resolveSafeNextPath } from "@/lib/auth/safe-redirect";
+import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
 
 const inputClass =
   "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
@@ -40,9 +42,11 @@ function SignupForm() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileSiteKey = getTurnstileSiteKey();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const redirectTo = resolveSafeNextPath(searchParams.get("redirect"), "/dashboard");
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -70,7 +74,13 @@ function SignupForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ fullName, email, password, termsAccepted: true }),
+        body: JSON.stringify({
+          fullName,
+          email,
+          password,
+          termsAccepted: true,
+          ...(turnstileSiteKey ? { turnstileToken } : {}),
+        }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -80,7 +90,7 @@ function SignupForm() {
       }
 
       if (data.needsEmailConfirmation) {
-        router.push("/login?message=Check your email to confirm your account");
+        router.push("/login?message=signup_confirm");
         return;
       }
 
@@ -161,8 +171,9 @@ function SignupForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-pd-muted hover:text-pd-foreground"
-              tabIndex={-1}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
+              className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-pd-muted hover:bg-pd-background hover:text-pd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -191,8 +202,9 @@ function SignupForm() {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-pd-muted hover:text-pd-foreground"
-              tabIndex={-1}
+              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              aria-pressed={showConfirmPassword}
+              className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-pd-muted hover:bg-pd-background hover:text-pd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pd-brand"
             >
               {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -218,11 +230,24 @@ function SignupForm() {
           </span>
         </label>
 
-        <Button type="submit" disabled={loading} className="w-full">
+        <Button
+          type="submit"
+          disabled={loading || (turnstileSiteKey ? !turnstileToken : false)}
+          className="w-full"
+        >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           {t("auth.signupButton")}
         </Button>
       </form>
+
+      {turnstileSiteKey ? (
+        <TurnstileWidget
+          siteKey={turnstileSiteKey}
+          onToken={setTurnstileToken}
+          onExpire={() => setTurnstileToken("")}
+          className="mt-4 flex justify-center"
+        />
+      ) : null}
 
       <OAuthButtons redirectTo={redirectTo} className="mt-6" />
 

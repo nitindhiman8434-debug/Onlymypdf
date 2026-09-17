@@ -19,13 +19,13 @@ const VARIANT_COPY: Record<
   },
   faq: {
     shortAnswer:
-      "OnlyMyPDF FAQ covers pricing, security, file limits, supported formats, and how each PDF tool works. Files are encrypted, auto-deleted, and free users get 5 uses per day.",
+      "OnlyMyPDF FAQ covers pricing, security, file limits, supported formats, and how each PDF tool works. Uploads use HTTPS/TLS, files follow the published retention window, and Free users get 5 uses per day.",
     extra:
       "Browse categories: General, Tools, Privacy & Security, Account & Billing, and Technical support.",
   },
   about: {
     shortAnswer:
-      "OnlyMyPDF is a free, secure online PDF toolkit built to make professional PDF tools accessible without desktop software. Thousands of users merge, convert, compress, and edit PDFs in the browser daily.",
+      "OnlyMyPDF is an online PDF toolkit for merging, converting, compressing, editing, signing, and securing documents without desktop software. Free and Pro limits are published on the Pricing page.",
   },
   convert: {
     shortAnswer:

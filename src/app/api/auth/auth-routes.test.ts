@@ -22,6 +22,7 @@ vi.mock("@/lib/auth/blocked-login", () => ({
 vi.mock("@/lib/server/rate-limiter", () => ({
   checkAuthRateLimit: vi.fn(),
   checkLoginRateLimit: vi.fn(),
+  checkLoginEmailRateLimit: vi.fn(),
   checkRateLimit: vi.fn(),
   rateLimitResponse: vi.fn((retryAfterSec: number) =>
     NextResponse.json({ error: "rate limited", retryAfterSec }, { status: 429 })
@@ -38,7 +39,6 @@ vi.mock("@/lib/server/safe-error", () => ({
 
 vi.mock("@/lib/auth/mfa-assurance", () => ({
   resolveMfaAssurance: vi.fn(),
-  createMfaLoginChallenge: vi.fn(),
   MfaAssuranceUnavailableError: class MfaAssuranceUnavailableError extends Error {},
 }));
 
@@ -49,12 +49,9 @@ vi.mock("@/lib/auth/session-payload", () => ({
 import { createClient, createServiceClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { isLocalDevAuthEnabled } from "@/lib/auth/local-dev-auth";
 import { isUserLoginBlocked } from "@/lib/auth/blocked-login";
-import { checkAuthRateLimit, checkLoginRateLimit, checkRateLimit } from "@/lib/server/rate-limiter";
+import { checkAuthRateLimit, checkLoginRateLimit, checkLoginEmailRateLimit, checkRateLimit } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
-import {
-  createMfaLoginChallenge,
-  resolveMfaAssurance,
-} from "@/lib/auth/mfa-assurance";
+import { resolveMfaAssurance } from "@/lib/auth/mfa-assurance";
 import { buildSessionPayloadForUser } from "@/lib/auth/session-payload";
 import { POST as loginPOST } from "@/app/api/auth/login/route";
 import { POST as logoutPOST } from "@/app/api/auth/logout/route";
@@ -73,6 +70,11 @@ describe("auth route handlers", () => {
     vi.clearAllMocks();
     vi.mocked(guardMutationOrigin).mockReturnValue(null);
     vi.mocked(checkAuthRateLimit).mockResolvedValue({
+      allowed: true,
+      remaining: 99,
+      retryAfterSec: 0,
+    });
+    vi.mocked(checkLoginEmailRateLimit).mockResolvedValue({
       allowed: true,
       remaining: 99,
       retryAfterSec: 0,
@@ -173,10 +175,6 @@ describe("auth route handlers", () => {
       currentLevel: "aal1",
       nextLevel: "aal2",
     } as never);
-    vi.mocked(createMfaLoginChallenge).mockResolvedValue({
-      factorId: "factor-1",
-      challengeId: "challenge-1",
-    });
     vi.mocked(buildSessionPayloadForUser).mockResolvedValue({
       user: { id: "user-1" },
       profile: { plan: "pro" },
@@ -188,5 +186,6 @@ describe("auth route handlers", () => {
     expect(response.status).toBe(200);
     expect(body.requiresMfa).toBe(true);
     expect(body.profile).toBeNull();
+    expect(body.mfaChallenge).toBeUndefined();
   });
 });

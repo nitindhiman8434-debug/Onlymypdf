@@ -1,8 +1,14 @@
 import { ImageResponse } from "next/og";
-import { APP_NAME } from "@/config/constants";
+import { readFileSync } from "fs";
+import { join } from "path";
 
+export const runtime = "nodejs";
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
+
+const iconSrc = `data:image/png;base64,${readFileSync(
+  join(process.cwd(), "public/logos/clean/logo-om-icon.png")
+).toString("base64")}`;
 
 export default function AppleIcon() {
   return new ImageResponse(
@@ -14,14 +20,18 @@ export default function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#2563eb",
-          color: "#fff",
-          fontSize: 96,
-          fontWeight: 800,
+          background: "#ffffff",
           borderRadius: 32,
         }}
       >
-        {APP_NAME.charAt(0)}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={iconSrc}
+          alt=""
+          width={148}
+          height={148}
+          style={{ objectFit: "contain" }}
+        />
       </div>
     ),
     { ...size }

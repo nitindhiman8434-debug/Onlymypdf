@@ -20,6 +20,8 @@ vi.mock("@/lib/server/safe-error", () => ({
 
 vi.mock("@/lib/enterprise/organizations.service", () => ({
   acceptOrganizationInvite: vi.fn(),
+  countUserOrganizations: vi.fn(),
+  MAX_ORGANIZATIONS_PER_USER: 3,
   createOrganization: vi.fn(),
   createOrganizationInvite: vi.fn(),
   getOrganizationById: vi.fn(),
@@ -52,6 +54,10 @@ vi.mock("@/lib/enterprise/org-billing.service", () => ({
   cancelOrganizationAutoRenew: vi.fn(),
 }));
 
+vi.mock("@/lib/enterprise/org-access.service", () => ({
+  resolveProAccessForUser: vi.fn(),
+}));
+
 vi.mock("@/lib/enterprise/enterprise-sales", async () => {
   const actual = await vi.importActual<typeof import("@/lib/enterprise/enterprise-sales")>(
     "@/lib/enterprise/enterprise-sales"
@@ -67,6 +73,7 @@ import { guardGeneralApiRateLimit } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import {
   acceptOrganizationInvite,
+  countUserOrganizations,
   createOrganization,
   createOrganizationInvite,
   getOrganizationById,
@@ -85,6 +92,7 @@ import {
   revokeUserApiKey,
 } from "@/lib/enterprise/api-keys.service";
 import { activateOrganizationBilling } from "@/lib/enterprise/org-billing.service";
+import { resolveProAccessForUser } from "@/lib/enterprise/org-access.service";
 import {
   EnterpriseSalesRequiredError,
   sendTeamPlanSalesRequest,
@@ -140,10 +148,15 @@ describe("enterprise route handlers", () => {
       ok: true,
       user: { id: "user-1", email: "owner@example.com", plan: "pro" },
     } as never);
+    vi.mocked(resolveProAccessForUser).mockResolvedValue({
+      isPro: true,
+      source: "individual",
+    });
   });
 
   it("lists and creates organizations for the authenticated user", async () => {
     vi.mocked(listUserOrganizations).mockResolvedValue([{ id: "org-1", name: "Acme" }] as never);
+    vi.mocked(countUserOrganizations).mockResolvedValue(0);
     vi.mocked(createOrganization).mockResolvedValue({
       id: "org-2",
       name: "Beta",
@@ -179,6 +192,7 @@ describe("enterprise route handlers", () => {
       requestJson({ name: "Team key", organizationId: "org-1" })
     );
     expect(createResponse.status).toBe(201);
+    expect(resolveProAccessForUser).toHaveBeenCalledWith("user-1");
     expect(createUserApiKey).toHaveBeenCalledWith("user-1", "Team key", "org-1");
 
     vi.mocked(createUserApiKey).mockRejectedValueOnce(

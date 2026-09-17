@@ -2,7 +2,22 @@ import type { NextConfig } from "next";
 import path from "path";
 import { withSentryConfig } from "@sentry/nextjs";
 
-const maxBodyMb = Number(process.env.MAX_UPLOAD_BODY_MB) || 110;
+const maxBodyMb = Number(process.env.MAX_UPLOAD_BODY_MB) || 210;
+
+/** Pin the image optimizer to this project's Supabase host — never `**.supabase.co`. */
+function supabaseImageHosts(): { protocol: "https"; hostname: string }[] {
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!raw) return [];
+  try {
+    const hostname = new URL(raw).hostname;
+    if (!hostname.endsWith(".supabase.co") && !hostname.endsWith(".supabase.in")) {
+      return [];
+    }
+    return [{ protocol: "https", hostname }];
+  } catch {
+    return [];
+  }
+}
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -51,13 +66,18 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react", "date-fns"],
   },
   async headers() {
+    const staticCache =
+      process.env.NODE_ENV === "production"
+        ? "public, max-age=31536000, immutable"
+        : "no-store";
+
     return [
       {
         source: "/_next/static/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value: staticCache,
           },
         ],
       },
@@ -75,14 +95,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**.supabase.co",
-      },
-      {
-        protocol: "https",
-        hostname: "**.supabase.in",
-      },
+      ...supabaseImageHosts(),
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
@@ -97,7 +110,6 @@ const nextConfig: NextConfig = {
     "sharp",
     "pdf-parse",
     "archiver",
-    "muhammara",
     "puppeteer",
     "docx",
     "exceljs",

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { toolJsonError } from "@/lib/server/tool-api-error";
 import { compressPDF } from "@/lib/services/pdf-compress.service";
 import { resolvePdfBuffer } from "@/lib/pdf/pdf-password.server";
+import { resolvePdfBufferErrorResponse } from "@/lib/server/pdf-password-http";
 import { checkUsageLimit, checkFileSizeLimit } from "@/lib/services/usage-limit.service";
 import { logToolUsage } from "@/lib/db/queries";
 import { resolveMutationToolUser } from "@/lib/auth/tool-mutation-auth";
@@ -10,7 +11,7 @@ import { validateSingleUpload, uploadValidationResponse } from "@/lib/server/upl
 import { FILE_LIMITS } from "@/config/constants";
 import { clientIpForLogs } from "@/lib/server/request-security";
 
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 export async function POST(request: NextRequest) {
   const early = await beginToolRoute(request, "compress-pdf");
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    const level = (formData.get("level") as string) || "medium";
+    const level = (formData.get("level") as string) || "basic";
 
     if (!file) {
       return toolJsonError(request, "PDF file is required", 400);
@@ -60,13 +61,13 @@ export async function POST(request: NextRequest) {
     try {
       buffer = await resolvePdfBuffer(validated.buffer, password);
     } catch (err) {
+      const passwordError = resolvePdfBufferErrorResponse(request, err, {
+        requiredMessage:
+          "This PDF is password-protected. Enter the password to compress.",
+        fileName: file.name,
+      });
+      if (passwordError) return passwordError;
       const msg = err instanceof Error ? err.message : "Failed to open PDF";
-      if (msg === "PASSWORD_REQUIRED") {
-        return toolJsonError(request, "This PDF is password-protected. Enter the password to compress.", 400);
-      }
-      if (msg === "WRONG_PASSWORD") {
-        return toolJsonError(request, "Incorrect password. Please try again.", 400);
-      }
       return toolJsonError(request, msg, 400);
     }
 
@@ -101,6 +102,8 @@ export async function POST(request: NextRequest) {
         "X-Original-Size": String(originalSize),
         "X-Compressed-Size": String(compressedSize),
         "X-Saved-Percent": String(savedPercent),
+        "X-Compression-Status": result.status,
+        "X-Compression-Method": result.method,
       },
     });
   } catch (error) {

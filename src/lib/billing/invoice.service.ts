@@ -10,15 +10,25 @@ function splitGstInclusive(totalPaise: number): { taxablePaise: number; taxPaise
   return { taxablePaise: totalPaise - taxPaise, taxPaise };
 }
 
-async function nextInvoiceNumber(): Promise<string> {
-  const supabase = await createServiceClient();
+async function nextInvoiceNumber(
+  supabase: Awaited<ReturnType<typeof createServiceClient>>
+): Promise<string> {
+  const { data, error } = await supabase.rpc("next_invoice_number");
+  if (!error && typeof data === "string" && data.trim()) {
+    return data.trim();
+  }
+
   const year = new Date().getFullYear();
   const prefix = `OMP-${year}-`;
-  const { count } = await supabase
+  const { data: last } = await supabase
     .from("billing_invoices")
-    .select("id", { count: "exact", head: true })
-    .like("invoice_number", `${prefix}%`);
-  const seq = String((count ?? 0) + 1).padStart(5, "0");
+    .select("invoice_number")
+    .like("invoice_number", `${prefix}%`)
+    .order("invoice_number", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const lastSeq = Number(String(last?.invoice_number ?? "").split("-").at(-1));
+  const seq = String((Number.isFinite(lastSeq) ? lastSeq : 0) + 1).padStart(5, "0");
   return `${prefix}${seq}`;
 }
 
@@ -36,7 +46,6 @@ export async function issueGstInvoiceForPayment(input: {
 
   const profile = await getUserProfile(input.userId);
   const { taxablePaise, taxPaise } = splitGstInclusive(input.amountPaise);
-  const invoiceNumber = await nextInvoiceNumber();
   const sellerGstin = process.env.BILLING_GSTIN?.trim() || null;
 
   const lineItems = [
@@ -49,28 +58,35 @@ export async function issueGstInvoiceForPayment(input: {
   ];
 
   const supabase = await createServiceClient();
-  const { data, error } = await supabase
-    .from("billing_invoices")
-    .insert({
-      user_id: input.userId,
-      payment_id: input.paymentId,
-      organization_id: input.organizationId ?? null,
-      invoice_number: invoiceNumber,
-      razorpay_payment_id: input.razorpayPaymentId ?? null,
-      amount_paise: input.amountPaise,
-      tax_paise: taxPaise,
-      gstin_seller: sellerGstin,
-      billing_name: profile?.full_name ?? null,
-      billing_email: profile?.email ?? null,
-      line_items: lineItems,
-      status: "paid",
-    })
-    .select("id, invoice_number")
-    .single();
 
-  if (error) throw error;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const invoiceNumber = await nextInvoiceNumber(supabase);
+    const { data, error } = await supabase
+      .from("billing_invoices")
+      .insert({
+        user_id: input.userId,
+        payment_id: input.paymentId,
+        organization_id: input.organizationId ?? null,
+        invoice_number: invoiceNumber,
+        razorpay_payment_id: input.razorpayPaymentId ?? null,
+        amount_paise: input.amountPaise,
+        tax_paise: taxPaise,
+        gstin_seller: sellerGstin,
+        billing_name: profile?.full_name ?? null,
+        billing_email: profile?.email ?? null,
+        line_items: lineItems,
+        status: "paid",
+      })
+      .select("id, invoice_number")
+      .single();
 
-  return { invoiceId: data.id, invoiceNumber: data.invoice_number };
+    if (!error && data) {
+      return { invoiceId: data.id, invoiceNumber: data.invoice_number };
+    }
+    if (error?.code !== "23505") throw error;
+  }
+
+  throw new Error("Could not allocate a unique invoice number");
 }
 
 export async function listUserInvoices(userId: string) {

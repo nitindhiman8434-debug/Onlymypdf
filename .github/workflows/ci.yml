@@ -31,6 +31,9 @@ jobs:
       - name: Unit tests
         run: npm run test:coverage
 
+      - name: PDF→Word quality regression
+        run: npm run test:pdf-to-word-quality
+
       - name: Security audit
         run: npm run audit:ci
 

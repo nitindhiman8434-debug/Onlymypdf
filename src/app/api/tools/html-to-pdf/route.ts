@@ -10,8 +10,8 @@ import { sanitizeFilename } from "@/lib/utils/file";
 import { FILE_LIMITS } from "@/config/constants";
 import { createPdfSession } from "@/lib/pdf/pdf-session-store";
 import { clientIpForLogs, ownerHashFromRequest } from "@/lib/server/request-security";
-import { probePdfAccess } from "@/lib/pdf/pdf-password.server";
 import { withHeavyJobGuard } from "@/lib/server/conversion-semaphore";
+import { PDFDocument } from "pdf-lib";
 
 export const maxDuration = 300;
 
@@ -67,13 +67,16 @@ export async function POST(request: NextRequest) {
     const originalName = file.name.replace(/\.(html?|xhtml|mhtml|svg)$/i, "");
 
     const ownerHash = ownerHashFromRequest(request, userId);
-    const probe = await probePdfAccess(pdfBuffer);
-    const totalPages = probe.status === "ok" ? probe.pages : 0;
-    const previewSessionId = await createPdfSession(pdfBuffer, ownerHash);
+    const [previewSessionId, totalPages] = await Promise.all([
+      createPdfSession(pdfBuffer, ownerHash, { localOnly: true }),
+      PDFDocument.load(pdfBuffer, { ignoreEncryption: true })
+        .then((doc) => doc.getPageCount())
+        .catch(() => 0),
+    ]);
 
     const processingTime = Date.now() - startTime;
     const outputFileName = `${sanitizeFilename(originalName)}.pdf`;
-    await logToolUsage({
+    void logToolUsage({
       userId,
       sessionId: request.headers.get("x-session-id") || "anonymous",
       toolSlug: "html-to-pdf",

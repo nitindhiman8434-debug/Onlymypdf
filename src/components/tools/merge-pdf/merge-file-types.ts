@@ -7,6 +7,8 @@ export interface MergeFileItem {
   loadingThumb: boolean;
   /** Password used to unlock this file for preview/export. */
   password?: string;
+  /** User closed the password dialog — show unlock affordance instead of auto-prompting. */
+  passwordSkipped?: boolean;
 }
 
 export type MergePageSlot =
@@ -21,9 +23,11 @@ export type MergePageSlot =
     }
   | { id: string; kind: "blank" };
 
+import { mergeItemIdForFile } from "@/components/tools/merge-pdf/merge-pdf-preview";
+
 export function createMergeFileItem(file: File): MergeFileItem {
   return {
-    id: `merge-${crypto.randomUUID()}`,
+    id: mergeItemIdForFile(file),
     file,
     pageCount: 0,
     loadingThumb: true,
@@ -39,6 +43,7 @@ export function duplicateMergeFileItem(item: MergeFileItem): MergeFileItem {
     pageCount: item.pageCount,
     loadingThumb: false,
     password: item.password,
+    passwordSkipped: item.passwordSkipped,
   };
 }
 

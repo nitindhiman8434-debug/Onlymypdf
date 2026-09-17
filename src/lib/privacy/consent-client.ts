@@ -5,7 +5,9 @@ import {
 
 export function persistConsentLocal(state: CookieConsentState) {
   localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(state));
-  document.cookie = `pd_consent=${encodeURIComponent(JSON.stringify(state))};path=/;max-age=31536000;SameSite=Lax`;
+  const secure =
+    typeof window !== "undefined" && window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `pd_consent=${encodeURIComponent(JSON.stringify(state))};path=/;max-age=31536000;SameSite=Lax${secure}`;
 }
 
 export async function syncConsentToServer(state: CookieConsentState) {

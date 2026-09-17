@@ -22,10 +22,20 @@ import {
 import { ToolErrorBanner, ToolHiddenFileInput, ToolWorkspaceReadyPanel } from "@/components/tools/tool-ui";
 import { useToolWorkspaceMessages } from "@/hooks/use-tool-workspace-messages";
 import { PdfPasswordModal } from "@/components/tools/pdf-password-modal";
-import { ExtractToolbar } from "@/components/tools/split-pdf/extract-toolbar";
-import { PageInsertDivider } from "@/components/tools/split-pdf/page-insert-divider";
+import {
+  passwordPromptFromError,
+  readToolApiFailure,
+} from "@/lib/client/pdf-password-errors";
 import { SplitDivider } from "@/components/tools/split-pdf/split-divider";
 import { SplitPageCard } from "@/components/tools/split-pdf/split-page-card";
+import {
+  SplitExtractSurface,
+  SplitExtractToolbarRow,
+} from "@/components/tools/split-pdf/split-extract-surface";
+import {
+  SplitExtractTab,
+  type SplitExtractSelectionApi,
+} from "@/components/tools/split-pdf/split-extract-tab";
 import { PageZoomModal } from "@/components/tools/split-pdf/page-zoom-modal";
 import {
   createOriginalSlots,
@@ -46,13 +56,13 @@ interface SplitPdfWorkspaceProps {
 export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorkspaceProps) {
   const ws = useToolWorkspaceMessages();
   const [tab, setTab] = useState<WorkspaceTab>("split");
+  const [extractEpoch, setExtractEpoch] = useState(0);
   const [separatePdfs, setSeparatePdfs] = useState(false);
   const [autoEvery, setAutoEvery] = useState(false);
   const [everyN, setEveryN] = useState(1);
   const [splitAfter, setSplitAfter] = useState<Set<number>>(() => new Set());
   const [manualSplits, setManualSplits] = useState(false);
   const [pageSlots, setPageSlots] = useState<WorkspacePageSlot[]>([]);
-  const [selectedSlotIds, setSelectedSlotIds] = useState<Set<string>>(() => new Set());
   const [hiddenSlotIds, setHiddenSlotIds] = useState<Set<string>>(() => new Set());
   const [rotations, setRotations] = useState<Record<string, number>>({});
   const [zoomSlotId, setZoomSlotId] = useState<string | null>(null);
@@ -76,12 +86,18 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
   const loadRequestRef = useRef(0);
   const insertFileRef = useRef<HTMLInputElement>(null);
   const insertAfterIndexRef = useRef(0);
+  const extractApiRef = useRef<SplitExtractSelectionApi | null>(null);
 
   const fileKey = `${file.name}:${file.size}:${file.lastModified}`;
 
   const visibleSlots = useMemo(
     () => pageSlots.filter((s) => !hiddenSlotIds.has(s.id)),
     [pageSlots, hiddenSlotIds]
+  );
+
+  const visibleSlotIds = useMemo(
+    () => visibleSlots.map((s) => s.id),
+    [visibleSlots]
   );
 
   const splitVisibleSlots = useMemo(
@@ -122,6 +138,12 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
   );
 
   useEffect(() => {
+    setTab("split");
+    setExtractEpoch((epoch) => epoch + 1);
+    extractApiRef.current = null;
+  }, [fileKey]);
+
+  useEffect(() => {
     const requestId = ++loadRequestRef.current;
     setLoadingThumbs(true);
     setError(null);
@@ -138,9 +160,8 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
         setTotalPages(total);
         setTruncated(trunc);
         if (total > 0) {
-          const slots = createOriginalSlots(total);
+          const slots = createOriginalSlots(total, fileKey);
           setPageSlots(slots);
-          setSelectedSlotIds(new Set(slots.map((s) => s.id)));
           setSplitAfter(new Set());
           setManualSplits(false);
           setError(null);
@@ -175,7 +196,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
       .finally(() => {
         if (requestId === loadRequestRef.current) setLoadingThumbs(false);
       });
-  }, [fileKey, file, ws]);
+  }, [fileKey, file]);
 
   const retryWithPassword = useCallback((pw: string) => {
     if (!passwordPrompt) return;
@@ -187,9 +208,8 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
       setTotalPages(total);
       setTruncated(trunc);
       if (total > 0) {
-        const slots = createOriginalSlots(total);
+        const slots = createOriginalSlots(total, fileKey);
         setPageSlots(slots);
-        setSelectedSlotIds(new Set(slots.map((s) => s.id)));
         setSplitAfter(new Set());
         setManualSplits(false);
         setError(null);
@@ -203,7 +223,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
       setPasswordPrompt(null);
       if (result.error) setError(ws.resolveApiError(result.error));
     });
-  }, [passwordPrompt, ws]);
+  }, [passwordPrompt, ws, fileKey]);
 
   useEffect(() => {
     if (manualSplits || tab !== "split" || splitVisibleSlots.length === 0) return;
@@ -214,23 +234,9 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
     }
   }, [autoEvery, everyN, splitVisibleSlots.length, manualSplits, tab, applyAutoSplits]);
 
-  const selectedVisibleCount = useMemo(
-    () => visibleSlots.filter((s) => selectedSlotIds.has(s.id)).length,
-    [visibleSlots, selectedSlotIds]
-  );
-
-  const allPagesSelected =
-    visibleSlots.length > 0 && visibleSlots.every((s) => selectedSlotIds.has(s.id));
-  const somePagesSelected = selectedVisibleCount > 0 && !allPagesSelected;
-
   const outputPdfCount = useMemo(() => {
-    if (tab === "extract") {
-      if (totalPages === 0) return 0;
-      if (selectedVisibleCount === 0) return 1;
-      return separatePdfs ? selectedVisibleCount : 1;
-    }
     return rangesFromSplitAfter(splitVisibleSlots.length, splitCutPositions).length;
-  }, [tab, totalPages, selectedVisibleCount, separatePdfs, splitVisibleSlots.length, splitCutPositions]);
+  }, [splitVisibleSlots.length, splitCutPositions]);
 
   const toggleSplitAfter = (afterSlotIndex: number) => {
     setManualSplits(true);
@@ -254,11 +260,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
     const removedIndex = visible.findIndex((s) => s.id === slotId);
 
     setHiddenSlotIds((prev) => new Set(prev).add(slotId));
-    setSelectedSlotIds((prev) => {
-      const next = new Set(prev);
-      next.delete(slotId);
-      return next;
-    });
+    extractApiRef.current?.removeSlot(slotId);
 
     if (removedIndex >= 0) {
       setSplitAfter((prev) => {
@@ -272,20 +274,13 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
     }
   };
 
-  const toggleSlot = (slotId: string) => {
-    setSelectedSlotIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(slotId)) next.delete(slotId);
-      else next.add(slotId);
-      return next;
-    });
-  };
-
   const rotateSelected = (delta: number) => {
+    const actions = extractApiRef.current;
+    if (!actions) return;
     setRotations((prev) => {
       const next = { ...prev };
       for (const slot of visibleSlots) {
-        if (selectedSlotIds.has(slot.id)) {
+        if (actions.isSelected(slot.id)) {
           next[slot.id] = ((next[slot.id] ?? 0) + delta + 360) % 360;
         }
       }
@@ -294,7 +289,9 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
   };
 
   const removeSelectedPages = () => {
-    const toRemove = visibleSlots.filter((s) => selectedSlotIds.has(s.id));
+    const actions = extractApiRef.current;
+    if (!actions) return;
+    const toRemove = visibleSlots.filter((s) => actions.isSelected(s.id));
     for (const slot of toRemove) removeSlot(slot.id);
   };
 
@@ -315,13 +312,15 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
       return [...nextVisible, ...hidden];
     });
     setRotations((prev) => ({ ...prev, [copy.id]: prev[slotId] ?? 0 }));
-    setSelectedSlotIds((prev) => new Set(prev).add(copy.id));
+    extractApiRef.current?.addSlot(copy.id);
   };
 
   const duplicateSelected = () => {
+    const actions = extractApiRef.current;
+    if (!actions) return;
     const pairs: { index: number; sourceId: string; copy: WorkspacePageSlot }[] = [];
     visibleSlots.forEach((s, i) => {
-      if (selectedSlotIds.has(s.id)) {
+      if (actions.isSelected(s.id)) {
         pairs.push({ index: i, sourceId: s.id, copy: duplicateSlot(s) });
       }
     });
@@ -344,11 +343,9 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
       }
       return next;
     });
-    setSelectedSlotIds((prev) => {
-      const next = new Set(prev);
-      pairs.forEach((p) => next.add(p.copy.id));
-      return next;
-    });
+    for (const { copy } of pairs) {
+      actions.addSlot(copy.id);
+    }
   };
 
   const insertBlankAfter = (visibleIndex: number) => {
@@ -363,7 +360,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
       nextVisible.splice(visibleIndex + 1, 0, newSlot);
       return [...nextVisible, ...hidden];
     });
-    setSelectedSlotIds((prev) => new Set(prev).add(newSlot.id));
+    extractApiRef.current?.addSlot(newSlot.id);
   };
 
   const openInsertDocuments = (visibleIndex: number) => {
@@ -406,11 +403,9 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
         nextVisible.splice(insertAfterIndexRef.current + 1, 0, ...newSlots);
         return [...nextVisible, ...hidden];
       });
-      setSelectedSlotIds((prev) => {
-        const next = new Set(prev);
-        newSlots.forEach((s) => next.add(s.id));
-        return next;
-      });
+      for (const slot of newSlots) {
+        extractApiRef.current?.addSlot(slot.id);
+      }
     } catch {
       setError(ws.couldNotAddDocument);
     }
@@ -428,7 +423,8 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
       }
 
       if (tab === "extract") {
-        const selected = visibleSlots.filter((s) => selectedSlotIds.has(s.id));
+        const actions = extractApiRef.current;
+        const selected = visibleSlots.filter((s) => actions?.isSelected(s.id));
         if (selected.length === 0) {
           setResultUrl(URL.createObjectURL(file));
           setResultFilename(file.name || "document.pdf");
@@ -452,8 +448,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
 
         const res = await fetch("/api/tools/compose-pdf", { method: "POST", body: formData });
         if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || ws.failedExtractPdf);
+          await readToolApiFailure(res, ws.failedExtractPdf);
         }
 
         const contentType = res.headers.get("content-type") || "";
@@ -480,8 +475,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
 
         const res = await fetch("/api/tools/compose-pdf", { method: "POST", body: formData });
         if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || ws.failedSplitPdf);
+          await readToolApiFailure(res, ws.failedSplitPdf);
         }
         const contentType = res.headers.get("content-type") || "";
         const isZip = contentType.includes("application/zip");
@@ -515,8 +509,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
 
       const res = await fetch("/api/tools/split-pdf", { method: "POST", body: formData });
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || ws.failedSplitPdf);
+        await readToolApiFailure(res, ws.failedSplitPdf);
       }
 
       const contentType = res.headers.get("content-type") || "";
@@ -527,6 +520,12 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
       setResultSize(blob.size);
       setCompleted(true);
     } catch (err) {
+      const prompt = passwordPromptFromError(err, file.name);
+      if (prompt) {
+        setPasswordPrompt({ file, ...prompt });
+        setError(null);
+        return;
+      }
       setError(err instanceof Error ? err.message : ws.unexpectedError);
     } finally {
       setProcessing(false);
@@ -534,13 +533,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
   };
 
   const finishLabel =
-    tab === "extract"
-      ? separatePdfs
-        ? `Finish (${selectedVisibleCount} PDFs)`
-        : ws.finish
-      : outputPdfCount > 1
-        ? `Split (${outputPdfCount} PDFs)`
-        : ws.splitPdf;
+    outputPdfCount > 1 ? `Split (${outputPdfCount} PDFs)` : ws.splitPdf;
 
   if (completed && resultUrl) {
     return (
@@ -618,35 +611,38 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
         );
       })()}
 
-      <div className="overflow-hidden rounded-xl border border-pd-border bg-pd-surface shadow-sm">
-        <div className="flex flex-wrap items-center gap-3 border-b border-pd-border bg-pd-background px-3 py-2.5 sm:px-4">
-          <div className="flex rounded-lg border border-pd-border bg-pd-surface p-0.5">
-            <button
-              type="button"
-              onClick={() => setTab("split")}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm",
-                tab === "split" ? "bg-pd-brand text-white" : "text-pd-muted hover:text-pd-foreground"
-              )}
-            >
-              <Scissors className="h-3.5 w-3.5" />
-              Split
-            </button>
-            <button
-              type="button"
-              onClick={() => setTab("extract")}
-              className={cn(
-                "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm",
-                tab === "extract" ? "bg-pd-brand text-white" : "text-pd-muted hover:text-pd-foreground"
-              )}
-            >
-              Extract
-            </button>
-          </div>
+      {tab === "split" ? (
+        <div className="overflow-hidden rounded-xl border border-pd-border bg-pd-surface shadow-sm">
+          <div className="flex flex-wrap items-center gap-3 border-b border-pd-border bg-pd-background px-3 py-2.5 sm:px-4">
+            <div className="flex rounded-lg border border-pd-border bg-pd-surface p-0.5">
+              <button
+                type="button"
+                onClick={() => setTab("split")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm",
+                  "bg-pd-brand text-white"
+                )}
+              >
+                <Scissors className="h-3.5 w-3.5" />
+                Split
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setExtractEpoch((epoch) => epoch + 1);
+                  setTab("extract");
+                }}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm",
+                  "text-pd-muted hover:text-pd-foreground"
+                )}
+              >
+                Extract
+              </button>
+            </div>
 
-          <div className="hidden h-6 w-px bg-pd-border sm:block" />
+            <div className="hidden h-6 w-px bg-pd-border sm:block" />
 
-          {tab === "split" ? (
             <label className="flex cursor-pointer items-center gap-2 text-xs sm:text-sm">
               <input
                 type="checkbox"
@@ -685,29 +681,7 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
               </div>
               <span className="text-pd-muted">pages</span>
             </label>
-          ) : (
-            <ExtractToolbar
-              selectedCount={selectedVisibleCount}
-              totalCount={visibleSlots.length}
-              allSelected={allPagesSelected}
-              someSelected={somePagesSelected}
-              separatePdfs={separatePdfs}
-              processing={processing}
-              disabled={loadingThumbs}
-              onSelectAll={(checked) =>
-                setSelectedSlotIds(
-                  checked ? new Set(visibleSlots.map((s) => s.id)) : new Set()
-                )
-              }
-              onRotateLeft={() => rotateSelected(-90)}
-              onDuplicateSelected={duplicateSelected}
-              onDeleteSelected={removeSelectedPages}
-              onSeparatePdfsChange={setSeparatePdfs}
-              onFinish={handleFinish}
-            />
-          )}
 
-          {tab === "split" && (
             <div className="ml-auto flex items-center gap-2">
               <button
                 type="button"
@@ -735,100 +709,51 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
                 )}
               </Button>
             </div>
-          )}
+          </div>
 
-          {tab === "extract" && (
+          <div className="flex items-center justify-between gap-2 border-b border-pd-border bg-pd-brand-muted/40 px-3 py-2 sm:px-4">
+            <div className="flex min-w-0 items-center gap-2">
+              <Scissors className="h-4 w-4 shrink-0 text-pd-brand" />
+              <p className="truncate text-sm font-medium text-pd-foreground">{file.name}</p>
+              <span className="shrink-0 text-xs text-pd-muted">
+                {totalPages} pages · {formatFileSize(file.size)}
+              </span>
+            </div>
             <button
               type="button"
               onClick={onChangeFile}
-              className="ml-auto hidden text-xs text-pd-muted hover:text-pd-brand sm:ml-0 lg:inline"
+              className="shrink-0 text-pd-muted hover:text-pd-foreground sm:hidden"
+              aria-label={ws.changeFile}
             >
-              Change file
+              <X className="h-4 w-4" />
             </button>
-          )}
-        </div>
-
-        <div className="flex items-center justify-between gap-2 border-b border-pd-border bg-pd-brand-muted/40 px-3 py-2 sm:px-4">
-          <div className="flex min-w-0 items-center gap-2">
-            <Scissors className="h-4 w-4 shrink-0 text-pd-brand" />
-            <p className="truncate text-sm font-medium text-pd-foreground">{file.name}</p>
-            <span className="shrink-0 text-xs text-pd-muted">
-              {totalPages} pages · {formatFileSize(file.size)}
-            </span>
           </div>
-          <button
-            type="button"
-            onClick={onChangeFile}
-            className="shrink-0 text-pd-muted hover:text-pd-foreground sm:hidden"
-            aria-label={ws.changeFile}
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
 
-        {error && (
-          <div className="px-3 pt-3 sm:px-4">
-            <ToolErrorBanner message={error} />
-          </div>
-        )}
-
-        <div className="bg-[#e8eef5] px-3 py-4 sm:px-4 sm:py-5">
-          {loadingThumbs && !thumbnails.some(Boolean) && (
-            <div className="mb-3 flex items-center justify-center gap-2 text-sm text-pd-muted">
-              <Loader2 className="h-4 w-4 animate-spin text-pd-brand" />
-              Generating page previews…
+          {error && (
+            <div className="px-3 pt-3 sm:px-4">
+              <ToolErrorBanner message={error} />
             </div>
           )}
-          {totalPages > 0 && (
-            <>
-              {truncated && (
-                <p className="mb-3 text-center text-xs text-pd-muted">
-                  Showing first {thumbnails.length} of {totalPages} page previews.
-                </p>
-              )}
-              {tab === "split" && (
+
+          <div className="bg-[#e8eef5] px-3 py-4 sm:px-4 sm:py-5">
+            {loadingThumbs && !thumbnails.some(Boolean) && (
+              <div className="mb-3 flex items-center justify-center gap-2 text-sm text-pd-muted">
+                <Loader2 className="h-4 w-4 animate-spin text-pd-brand" />
+                Generating page previews…
+              </div>
+            )}
+            {totalPages > 0 && (
+              <>
+                {truncated && (
+                  <p className="mb-3 text-center text-xs text-pd-muted">
+                    Showing first {thumbnails.length} of {totalPages} page previews.
+                  </p>
+                )}
                 <p className="mb-3 text-center text-xs text-pd-muted">
                   Click scissors between pages — <strong>Split here</strong> / <strong>Remove split</strong>
                 </p>
-              )}
-              {tab === "extract" && (
-                <p className="mb-3 text-center text-xs text-pd-muted">
-                  Click pages to select · Use checkboxes · <strong>Finish</strong> to download
-                </p>
-              )}
-              <div
-                className={cn(
-                  "flex flex-wrap items-start justify-center gap-y-3",
-                  tab === "extract" && "gap-x-0 sm:gap-x-0"
-                )}
-              >
-                {tab === "extract" &&
-                  visibleSlots.map((slot, index) => (
-                    <div key={slot.id} className="flex items-center">
-                      <SplitPageCard
-                        pageNum={index + 1}
-                        fileName={slotLabel(slot, file.name)}
-                        thumb={slotThumbUrl(slot, thumbnails)}
-                        loadingThumb={loadingThumbs && !slotThumbUrl(slot, thumbnails)}
-                        isBlank={slot.kind === "blank"}
-                        rotation={rotations[slot.id] ?? 0}
-                        mode="extract"
-                        selected={selectedSlotIds.has(slot.id)}
-                        onSelect={() => toggleSlot(slot.id)}
-                        onZoom={() => setZoomSlotId(slot.id)}
-                        onRotateLeft={() => rotateSlot(slot.id, -90)}
-                        onDuplicate={() => duplicateSlotAfter(slot.id)}
-                        onRemove={() => removeSlot(slot.id)}
-                      />
-                      <PageInsertDivider
-                        onAddBlank={() => insertBlankAfter(index)}
-                        onAddDocuments={() => openInsertDocuments(index)}
-                      />
-                    </div>
-                  ))}
-
-                {tab === "split" &&
-                  splitVisibleSlots.map((slot, index) => {
+                <div className="flex flex-wrap items-start justify-center gap-y-3">
+                  {splitVisibleSlots.map((slot, index) => {
                     const thumb = thumbnails[slot.page - 1];
                     const splitBetween = index < splitVisibleSlots.length - 1;
                     const splitActive = splitAfter.has(index);
@@ -856,15 +781,140 @@ export function SplitPdfWorkspace({ file, onChangeFile, onReset }: SplitPdfWorks
                       </div>
                     );
                   })}
-              </div>
-            </>
-          )}
-        </div>
+                </div>
+              </>
+            )}
+          </div>
 
-        <div className="border-t border-pd-border px-3 py-2 text-center text-[11px] text-pd-muted sm:px-4">
-          Rotate is preview-only · Files auto-delete after 2 hours
+          <div className="border-t border-pd-border px-3 py-2 text-center text-[11px] text-pd-muted sm:px-4">
+            Rotate is preview-only · Files auto-delete after 2 hours
+          </div>
         </div>
-      </div>
+      ) : (
+        <SplitExtractTab
+          key={`${fileKey}:${extractEpoch}`}
+          visibleSlotIds={visibleSlotIds}
+        >
+          {(api) => {
+            extractApiRef.current = api;
+            return (
+              <div className="overflow-hidden rounded-xl border border-pd-border bg-pd-surface shadow-sm">
+                <div className="flex flex-wrap items-center gap-3 border-b border-pd-border bg-pd-background px-3 py-2.5 sm:px-4">
+                  <div className="flex rounded-lg border border-pd-border bg-pd-surface p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setTab("split")}
+                      className={cn(
+                        "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm",
+                        "text-pd-muted hover:text-pd-foreground"
+                      )}
+                    >
+                      <Scissors className="h-3.5 w-3.5" />
+                      Split
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setExtractEpoch((epoch) => epoch + 1);
+                        setTab("extract");
+                      }}
+                      className={cn(
+                        "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm",
+                        "bg-pd-brand text-white"
+                      )}
+                    >
+                      Extract
+                    </button>
+                  </div>
+
+                  <div className="hidden h-6 w-px bg-pd-border sm:block" />
+
+                  <SplitExtractToolbarRow
+                    api={api}
+                    totalCount={visibleSlots.length}
+                    separatePdfs={separatePdfs}
+                    processing={processing}
+                    loadingThumbs={loadingThumbs}
+                    onSeparatePdfsChange={setSeparatePdfs}
+                    onFinish={handleFinish}
+                    onRotateLeft={() => rotateSelected(-90)}
+                    onDuplicateSelected={duplicateSelected}
+                    onDeleteSelected={removeSelectedPages}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={onChangeFile}
+                    className="ml-auto hidden text-xs text-pd-muted hover:text-pd-brand sm:ml-0 lg:inline"
+                  >
+                    Change file
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between gap-2 border-b border-pd-border bg-pd-brand-muted/40 px-3 py-2 sm:px-4">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Scissors className="h-4 w-4 shrink-0 text-pd-brand" />
+                    <p className="truncate text-sm font-medium text-pd-foreground">{file.name}</p>
+                    <span className="shrink-0 text-xs text-pd-muted">
+                      {totalPages} pages · {formatFileSize(file.size)}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onChangeFile}
+                    className="shrink-0 text-pd-muted hover:text-pd-foreground sm:hidden"
+                    aria-label={ws.changeFile}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {error && (
+                  <div className="px-3 pt-3 sm:px-4">
+                    <ToolErrorBanner message={error} />
+                  </div>
+                )}
+
+                <div className="bg-[#e8eef5] px-3 py-4 sm:px-4 sm:py-5">
+                  {loadingThumbs && !thumbnails.some(Boolean) && (
+                    <div className="mb-3 flex items-center justify-center gap-2 text-sm text-pd-muted">
+                      <Loader2 className="h-4 w-4 animate-spin text-pd-brand" />
+                      Generating page previews…
+                    </div>
+                  )}
+                  {totalPages > 0 && (
+                    <>
+                      {truncated && (
+                        <p className="mb-3 text-center text-xs text-pd-muted">
+                          Showing first {thumbnails.length} of {totalPages} page previews.
+                        </p>
+                      )}
+                      <SplitExtractSurface
+                        api={api}
+                        fileName={file.name}
+                        visibleSlots={visibleSlots}
+                        thumbnails={thumbnails}
+                        loadingThumbs={loadingThumbs}
+                        rotations={rotations}
+                        onZoom={setZoomSlotId}
+                        onRotateLeft={(slotId) => rotateSlot(slotId, -90)}
+                        onDuplicateAfter={duplicateSlotAfter}
+                        onRemove={removeSlot}
+                        onInsertBlankAfter={insertBlankAfter}
+                        onInsertDocumentsAfter={openInsertDocuments}
+                      />
+                    </>
+                  )}
+                </div>
+
+                <div className="border-t border-pd-border px-3 py-2 text-center text-[11px] text-pd-muted sm:px-4">
+                  Rotate is preview-only · Files auto-delete after 2 hours
+                </div>
+              </div>
+            );
+          }}
+        </SplitExtractTab>
+      )}
     </>
   );
 }

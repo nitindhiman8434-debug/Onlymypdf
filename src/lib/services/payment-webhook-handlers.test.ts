@@ -18,6 +18,10 @@ vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: vi.fn(),
 }));
 
+vi.mock("@/lib/enterprise/org-access.service", () => ({
+  getPrimaryOrganizationForUser: vi.fn(async () => null),
+}));
+
 import {
   getPaymentByRazorpayOrderId,
   getPaymentByRazorpayPaymentId,
@@ -26,6 +30,21 @@ import {
   updateUserProfile,
 } from "@/lib/db/queries";
 import { createServiceClient } from "@/lib/supabase/server";
+
+function supabaseChain(result: { data: unknown; error: unknown }) {
+  const query: Record<string, unknown> = {};
+  const next = () => query;
+  for (const method of ["select", "eq", "in", "order", "limit", "not", "is", "gt", "lt", "update"]) {
+    query[method] = vi.fn(next);
+  }
+  query.maybeSingle = vi.fn(async () => result);
+  query.single = vi.fn(async () => result);
+  query.then = (
+    resolve: (value: { data: unknown; error: unknown }) => unknown,
+    reject?: (reason: unknown) => unknown
+  ) => Promise.resolve(result).then(resolve, reject);
+  return query;
+}
 
 describe("payment webhook handlers", () => {
   beforeEach(() => {
@@ -61,12 +80,14 @@ describe("payment webhook handlers", () => {
     } as never);
 
     vi.mocked(createServiceClient).mockResolvedValue({
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-          }),
-        }),
+      from: vi.fn((table: string) => {
+        if (table === "billing_invoices") {
+          return supabaseChain({ data: { organization_id: null }, error: null });
+        }
+        if (table === "subscriptions") {
+          return supabaseChain({ data: [], error: null });
+        }
+        return supabaseChain({ data: null, error: null });
       }),
     } as never);
 

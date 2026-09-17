@@ -13,10 +13,8 @@ const WORD_IMPORT_SCRIPT = path.join(
 );
 const WORD_PROBE_SCRIPT = path.join(process.cwd(), "scripts", "word-probe.vbs");
 
-let wordComDisabled = false;
-
 export async function isWordComPdfImportAvailable(): Promise<boolean> {
-  if (process.platform !== "win32" || wordComDisabled) return false;
+  if (process.platform !== "win32") return false;
   try {
     const { stdout } = await execFileAsync(
       "cscript",
@@ -85,7 +83,6 @@ export async function pdfToWordWordCom(
       err instanceof Error &&
       ("killed" in err || /timed out|ETIMEDOUT|SIGTERM/i.test(err.message));
     if (timedOut) {
-      wordComDisabled = true;
       killWordProcesses();
     }
     console.warn(

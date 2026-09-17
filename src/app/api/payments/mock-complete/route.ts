@@ -19,7 +19,7 @@ import { storedPaymentAmountToPaise } from "@/lib/payment/payment-amount";
 
 export async function POST(request: NextRequest) {
   try {
-    if (!isMockBillingMode()) {
+    if (process.env.NODE_ENV === "production" || !isMockBillingMode()) {
       return NextResponse.json({ error: "Mock billing is not enabled" }, { status: 403 });
     }
 

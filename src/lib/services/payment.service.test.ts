@@ -51,3 +51,26 @@ describe("payment.service plan helpers", () => {
     expect(isRazorpaySubscriptionEnabled()).toBe(false);
   });
 });
+
+describe("payment.service verifyPayment mock guard", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("rejects mock payment ids when not in mock billing mode", async () => {
+    vi.mocked(isMockBillingMode).mockReturnValue(false);
+    const { verifyPayment } = await import("@/lib/services/payment.service");
+    const sig = "mock_abc";
+    expect(verifyPayment("order_real123", "pay_mock_abc", sig)).toBe(false);
+  });
+
+  it("accepts mock payment ids only in mock billing mode", async () => {
+    vi.mocked(isMockBillingMode).mockReturnValue(true);
+    const { verifyPayment } = await import("@/lib/services/payment.service");
+    const { createMockPaymentSignature } = await import("@/lib/billing/mock-billing.service");
+    const orderId = "order_mock_test123456";
+    const paymentId = "pay_mock_test123456";
+    const sig = createMockPaymentSignature(orderId, paymentId);
+    expect(verifyPayment(orderId, paymentId, sig)).toBe(true);
+  });
+});

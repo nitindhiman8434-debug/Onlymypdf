@@ -4,6 +4,9 @@ import { toolJsonError } from "@/lib/server/tool-api-error";
 import { getPdfPageCountFromBuffer } from "@/lib/pdf/pdf-read.server";
 import { validateSingleUpload, uploadValidationResponse } from "@/lib/server/upload-validation";
 import { FILE_LIMITS } from "@/config/constants";
+import { createClient } from "@/lib/supabase/server";
+import { assertMfaAal2Satisfied } from "@/lib/auth/mfa-assurance";
+import { assertAccountActive } from "@/lib/auth/account-status";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -13,6 +16,15 @@ export async function POST(request: NextRequest) {
   if (early) return early;
 
   try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      await assertMfaAal2Satisfied(supabase);
+      await assertAccountActive(user.id);
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 

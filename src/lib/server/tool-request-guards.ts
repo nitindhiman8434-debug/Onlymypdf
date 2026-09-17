@@ -10,6 +10,8 @@ import { authGuardResponse } from "@/lib/server/auth-guard-http";
 import { toSafeApiError, captureApiError } from "@/lib/server/safe-error";
 import { logError } from "@/lib/db/queries";
 import { toolJsonError } from "@/lib/server/tool-api-error";
+import { passwordErrorResponseFromMessage } from "@/lib/server/pdf-password-http";
+import { checkUsageLimit } from "@/lib/services/usage-limit.service";
 
 export async function guardMaintenanceMode(request: NextRequest): Promise<NextResponse | null> {
   if (await isMaintenanceModeEnabled()) {
@@ -38,6 +40,22 @@ export async function beginToolRoute(
   return rate;
 }
 
+export async function guardToolUsageLimit(
+  request: NextRequest,
+  toolSlug: string,
+  userId: string | null
+): Promise<NextResponse | null> {
+  const usage = await checkUsageLimit(userId, request, toolSlug);
+  if (!usage.allowed) {
+    return toolJsonError(
+      request,
+      usage.message ?? "Daily usage limit reached.",
+      429
+    );
+  }
+  return null;
+}
+
 export type ToolRouteErrorContext = {
   request: NextRequest;
   toolSlug: string;
@@ -61,6 +79,9 @@ export async function handleToolRouteFailure(
   if (rawMessage.includes("usage limit") || rawMessage.includes("limit reached")) {
     return toolJsonError(ctx.request, rawMessage, 429);
   }
+
+  const passwordError = passwordErrorResponseFromMessage(ctx.request, rawMessage);
+  if (passwordError) return passwordError;
 
   const message = toSafeApiError(error, ctx.fallbackMessage ?? "Processing failed");
 

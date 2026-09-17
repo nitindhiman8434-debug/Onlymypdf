@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pricingProProductJsonLd, webSiteJsonLd } from "@/lib/seo/json-ld";
+import { pricingProProductJsonLd, serializeJsonLd, webSiteJsonLd } from "@/lib/seo/json-ld";
 
 describe("webSiteJsonLd", () => {
   it("does not include broken SearchAction", () => {
@@ -18,5 +18,14 @@ describe("pricingProProductJsonLd", () => {
     expect(data.offers[0].priceCurrency).toBe("INR");
     expect(data.offers.some((o) => o.price === "299")).toBe(true);
     expect(data.offers.some((o) => o.price === "2399")).toBe(true);
+  });
+});
+
+describe("serializeJsonLd", () => {
+  it("escapes HTML-breaking characters", () => {
+    const encoded = serializeJsonLd({ name: "</script><img src=x onerror=alert(1)>" });
+    expect(encoded).not.toContain("</script>");
+    expect(encoded).toContain("\\u003c");
+    expect(encoded).toContain("\\u003e");
   });
 });

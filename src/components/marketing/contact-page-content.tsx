@@ -13,6 +13,7 @@ import {
   getContactFieldErrors,
   type ContactFieldErrors,
 } from "@/lib/validation/contact-validation";
+import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
 
 const inputClass =
   "mt-1.5 w-full rounded-xl border border-pd-border bg-pd-surface px-4 py-2.5 text-sm text-pd-foreground placeholder:text-pd-muted focus:border-pd-brand focus:outline-none focus:ring-2 focus:ring-pd-brand/20";
@@ -30,6 +31,8 @@ export function ContactPageContent() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileSiteKey = getTurnstileSiteKey();
 
   useEffect(() => {
     const subjectParam = searchParams.get("subject")?.toLowerCase();
@@ -68,7 +71,10 @@ export function ContactPageContent() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          ...(turnstileSiteKey ? { turnstileToken } : {}),
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -200,7 +206,18 @@ export function ContactPageContent() {
                     {submitError}
                   </p>
                 ) : null}
-                <Button type="submit" disabled={submitting}>
+                {turnstileSiteKey ? (
+                  <TurnstileWidget
+                    siteKey={turnstileSiteKey}
+                    onToken={setTurnstileToken}
+                    onExpire={() => setTurnstileToken("")}
+                    className="flex justify-center"
+                  />
+                ) : null}
+                <Button
+                  type="submit"
+                  disabled={submitting || (turnstileSiteKey ? !turnstileToken : false)}
+                >
                   <Send className="h-4 w-4" />
                   {submitting ? "Sending…" : "Send Message"}
                 </Button>

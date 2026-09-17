@@ -1,5 +1,7 @@
 import fs from "fs/promises";
 import type { PdfToWordEngine } from "@/lib/services/pdf-to-word.service";
+import { mapPdfToWordError } from "@/lib/services/pdf-to-word.service";
+import { toSafeApiError } from "@/lib/server/safe-error";
 import { createServiceClient } from "@/lib/supabase/server";
 import {
   isUpstashConfigured,
@@ -132,8 +134,21 @@ export async function completePdfToWordJob(
   const job = await readJob(jobId);
   if (!job) return;
 
+  // Guard: never mark a job "done" pointing at a missing/empty file. This turns
+  // a silent engine miss into a clean error instead of an ENOENT at download.
+  try {
+    const stat = await fs.stat(payload.outputPath);
+    if (!stat.isFile() || stat.size === 0) {
+      throw new Error("Conversion produced no output file.");
+    }
+  } catch {
+    throw new Error(
+      "Conversion did not produce a Word file. Please try again or use a different PDF."
+    );
+  }
+
   job.status = "done";
-  job.progress = 100;
+  job.progress = 99;
   job.outputPath = payload.outputPath;
   job.workDir = payload.workDir;
   job.engine = payload.engine;
@@ -144,14 +159,17 @@ export async function completePdfToWordJob(
     console.warn("[pdf-to-word-jobs] Storage upload failed, local path only:", err);
   }
 
+  job.progress = 100;
   await writeJob(jobId, job);
 }
 
-export async function failPdfToWordJob(jobId: string, error: string, workDir?: string) {
+export async function failPdfToWordJob(jobId: string, error: unknown, workDir?: string) {
   const job = await readJob(jobId);
   if (!job) return;
+  const raw = error instanceof Error ? error.message : String(error);
+  const mapped = mapPdfToWordError(raw);
   job.status = "error";
-  job.error = error;
+  job.error = toSafeApiError(new Error(mapped), "Conversion failed. Please try again.");
   if (workDir) {
     job.workDir = workDir;
     await cleanupJobFiles(job);

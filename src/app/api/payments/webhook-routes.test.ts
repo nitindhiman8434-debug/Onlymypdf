@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/services/payment.service", () => ({
   verifyWebhookSignature: vi.fn(),
+  fetchRazorpayPayment: vi.fn(),
+  verifyRazorpaySubscriptionPaymentBinding: vi.fn(),
 }));
 
 vi.mock("@/lib/services/payment-fulfillment.service", () => ({
@@ -33,7 +35,13 @@ vi.mock("@/lib/server/safe-error", () => ({
   captureApiError: vi.fn(),
 }));
 
-import { verifyWebhookSignature } from "@/lib/services/payment.service";
+vi.mock("@/lib/services/payment-reconciliation.service", () => ({
+  claimWebhookEvent: vi.fn(),
+  recordPaymentReconciliation: vi.fn(),
+  releaseWebhookEvent: vi.fn(),
+}));
+
+import { verifyWebhookSignature, fetchRazorpayPayment, verifyRazorpaySubscriptionPaymentBinding } from "@/lib/services/payment.service";
 import { fulfillPendingPayment } from "@/lib/services/payment-fulfillment.service";
 import {
   handlePaymentFailedWebhook,
@@ -49,12 +57,20 @@ import {
   renewOrganizationPlanFromWebhook,
 } from "@/lib/enterprise/org-billing.service";
 import { guardWebhookRateLimit } from "@/lib/server/rate-limiter";
+import { claimWebhookEvent, releaseWebhookEvent } from "@/lib/services/payment-reconciliation.service";
 import { POST as webhookPOST } from "@/app/api/payments/webhook/route";
 
-function webhookRequest(body: string, signature?: string): NextRequest {
+function webhookRequest(
+  body: string,
+  signature?: string,
+  extraHeaders?: Record<string, string>
+): NextRequest {
   return {
     text: vi.fn().mockResolvedValue(body),
-    headers: new Headers(signature ? { "x-razorpay-signature": signature } : {}),
+    headers: new Headers({
+      ...(signature ? { "x-razorpay-signature": signature } : {}),
+      ...extraHeaders,
+    }),
   } as unknown as NextRequest;
 }
 
@@ -67,6 +83,15 @@ describe("payments webhook route", () => {
     vi.mocked(fulfillSubscriptionCharge).mockResolvedValue({ ok: true, already_verified: false });
     vi.mocked(renewOrganizationPlanFromWebhook).mockResolvedValue(false);
     vi.mocked(clearOrganizationAutoRenewByRazorpaySub).mockResolvedValue(false);
+    vi.mocked(claimWebhookEvent).mockResolvedValue("new");
+    vi.mocked(releaseWebhookEvent).mockResolvedValue(undefined);
+    vi.mocked(fetchRazorpayPayment).mockImplementation(async (id: string) => ({
+      id,
+      status: "captured",
+    }));
+    vi.mocked(verifyRazorpaySubscriptionPaymentBinding).mockResolvedValue({
+      ok: true,
+    });
   });
 
   it("rejects missing webhook signature", async () => {
@@ -190,5 +215,34 @@ describe("payments webhook route", () => {
     const response = await webhookPOST(webhookRequest(payload, "sig"));
     expect(response.status).toBe(200);
     expect(cancelLocalSubscription).toHaveBeenCalledWith("sub_rzp_3");
+  });
+
+  it("releases the event claim when captured payment fulfillment fails", async () => {
+    vi.mocked(fulfillPendingPayment).mockResolvedValue({
+      ok: false,
+      status: 500,
+      error: "db down",
+    });
+    const payload = JSON.stringify({
+      event: "payment.captured",
+      id: "evt_1",
+      payload: {
+        payment: {
+          entity: {
+            id: "pay_rzp_1",
+            order_id: "order_rzp_1",
+            amount: 29900,
+            method: "card",
+          },
+        },
+      },
+    });
+
+    const response = await webhookPOST(
+      webhookRequest(payload, "sig", { "x-razorpay-event-id": "evt_1" })
+    );
+
+    expect(response.status).toBe(500);
+    expect(releaseWebhookEvent).toHaveBeenCalledWith("evt_1");
   });
 });

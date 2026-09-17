@@ -13,11 +13,13 @@ import {
   ToolPrimaryButton,
   ToolSuccessPanel,
 } from "@/components/tools/tool-ui";
+import { useToolErrors } from "@/hooks/use-tool-errors";
 
 const DEFAULT_WATERMARK_COLOR = "#64748b";
 const BLACK_WATERMARK_COLOR = "#000000";
 
 export default function AddWatermarkPage() {
+  const { resolveApiError, resolveCatchError } = useToolErrors();
   const [file, setFile] = useState<File | null>(null);
   const [watermarkType, setWatermarkType] = useState<"text" | "image">("text");
   const [text, setText] = useState("CONFIDENTIAL");
@@ -119,7 +121,7 @@ export default function AddWatermarkPage() {
         const rotateRes = await fetch("/api/tools/rotate-pdf", { method: "POST", body: rotateForm });
         if (!rotateRes.ok) {
           const data = await rotateRes.json().catch(() => ({}));
-          throw new Error((data as { error?: string }).error || "Failed to rotate pages.");
+          throw new Error(resolveApiError(data, "errors.processingFailed"));
         }
         const rotatedBlob = await rotateRes.blob();
         pdfToWatermark = new File([rotatedBlob], file.name, { type: "application/pdf" });
@@ -135,7 +137,7 @@ export default function AddWatermarkPage() {
         const composeRes = await fetch("/api/tools/compose-pdf", { method: "POST", body: composeForm });
         if (!composeRes.ok) {
           const data = await composeRes.json().catch(() => ({}));
-          throw new Error((data as { error?: string }).error || "Failed to prepare PDF pages.");
+          throw new Error(resolveApiError(data, "errors.processingFailed"));
         }
         const composedBlob = await composeRes.blob();
         pdfToWatermark = new File([composedBlob], file.name, { type: "application/pdf" });
@@ -164,7 +166,7 @@ export default function AddWatermarkPage() {
       const res = await fetch("/api/tools/add-watermark", { method: "POST", body: formData });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to add watermark.");
+        throw new Error(resolveApiError(err, "errors.processingFailed"));
       }
 
       const blob = await res.blob();
@@ -175,7 +177,7 @@ export default function AddWatermarkPage() {
       const { notifyActivityUpdated } = await import("@/lib/client/activity-events");
       notifyActivityUpdated();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Processing failed.");
+      setError(resolveCatchError(err));
     } finally {
       setProcessing(false);
     }

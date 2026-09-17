@@ -6,6 +6,8 @@ export type ToolApiErrorBody = {
   correlationId: string;
   code?: string;
   retryAfterSec?: number;
+  /** Echoed back so the password prompt can name the file it is asking about. */
+  fileName?: string;
 };
 
 /** JSON error for tool / AI routes with correlation ID for support. */

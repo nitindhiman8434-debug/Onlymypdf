@@ -243,7 +243,7 @@ export default function DashboardPage() {
 
       {showUpgradeSuccess ? (
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-          <strong>Pro activated!</strong> Your subscription is now active. Enjoy premium tools and higher limits.
+          <strong>{t("dashboard.proActivatedTitle")}</strong> {t("dashboard.proActivatedDesc")}
         </div>
       ) : null}
 

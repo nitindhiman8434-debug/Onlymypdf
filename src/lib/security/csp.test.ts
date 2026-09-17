@@ -12,5 +12,17 @@ describe("buildContentSecurityPolicy", () => {
   it("allows unsafe-eval in development scripts", () => {
     const csp = buildContentSecurityPolicy("devnonce", false);
     expect(csp).toContain("'unsafe-eval'");
+    expect(csp).toContain("style-src 'self' 'unsafe-inline'");
+  });
+
+  it("tightens style-src in production", () => {
+    const csp = buildContentSecurityPolicy("prodnonce", true);
+    expect(csp).toContain("style-src-attr 'unsafe-inline'");
+    const styleSrc = csp.split("; ").find((d) => d.startsWith("style-src "));
+    expect(styleSrc).toBe("style-src 'self' https://fonts.googleapis.com");
+    expect(csp).toContain("connect-src 'self' blob:");
+    expect(csp).toContain("https://challenges.cloudflare.com");
+    expect(csp).toContain("report-uri /api/csp-report");
+    expect(csp).toContain("upgrade-insecure-requests");
   });
 });

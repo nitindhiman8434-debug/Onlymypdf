@@ -3,19 +3,40 @@ import { PDFParse } from "pdf-parse";
 import sharp from "sharp";
 import { logError } from "@/lib/db/queries";
 
-type RasterOptions = { scale: number; quality: number };
-
-const RASTER_PRESETS: Record<"basic" | "strong", RasterOptions[]> = {
-  basic: [
-    { scale: 1.0, quality: 70 },
-    { scale: 0.92, quality: 62 },
-  ],
-  strong: [
-    { scale: 0.88, quality: 48 },
-    { scale: 0.75, quality: 38 },
-    { scale: 0.65, quality: 30 },
-  ],
+type RasterPlan = {
+  desiredWidth: number;
+  quality: number;
+  batchSize: number;
 };
+
+export type CompressionResult = {
+  buffer: Buffer;
+  originalSize: number;
+  compressedSize: number;
+  status: "compressed" | "already-optimized";
+  method: "structural" | "rasterized" | "original";
+};
+
+/**
+ * Adaptive raster plan: large books use narrower width so they finish in time,
+ * instead of skipping compression entirely (which left size unchanged).
+ */
+export function resolveCompressRasterPlan(
+  level: "basic" | "strong",
+  pageCount: number
+): RasterPlan {
+  const pages = Math.max(1, pageCount);
+
+  if (level === "basic") {
+    if (pages <= 40) return { desiredWidth: 1400, quality: 74, batchSize: 8 };
+    if (pages <= 120) return { desiredWidth: 1100, quality: 70, batchSize: 10 };
+    return { desiredWidth: 900, quality: 68, batchSize: 12 };
+  }
+
+  if (pages <= 40) return { desiredWidth: 1100, quality: 48, batchSize: 8 };
+  if (pages <= 120) return { desiredWidth: 850, quality: 40, batchSize: 10 };
+  return { desiredWidth: 720, quality: 34, batchSize: 12 };
+}
 
 function pickSmallestBuffer(
   originalSize: number,
@@ -28,23 +49,50 @@ function pickSmallestBuffer(
   return valid.reduce((best, current) => (current.length < best.length ? current : best));
 }
 
+function savedEnough(originalSize: number, candidateSize: number, minRatio = 0.97): boolean {
+  return candidateSize > 0 && candidateSize < originalSize * minRatio;
+}
+
 export async function compressPDF(
   fileBuffer: Buffer,
   level: "basic" | "strong" = "basic",
   password?: string
-): Promise<{ buffer: Buffer; originalSize: number; compressedSize: number }> {
+): Promise<CompressionResult> {
   const originalSize = fileBuffer.length;
 
   try {
     const structural = await compressStructurally(fileBuffer, level);
-    const rasterAttempts: Buffer[] = [];
 
-    for (const preset of RASTER_PRESETS[level]) {
+    // Basic is deliberately lossless. If structural cleanup cannot save at
+    // least 3%, return the byte-identical source and report it as optimized.
+    // Rasterizing here would destroy searchable text, links, forms and tags.
+    if (level === "basic") {
+      if (savedEnough(originalSize, structural.length, 0.97)) {
+        return {
+          buffer: structural,
+          originalSize,
+          compressedSize: structural.length,
+          status: "compressed",
+          method: "structural",
+        };
+      }
+
+      return {
+        buffer: fileBuffer,
+        originalSize,
+        compressedSize: originalSize,
+        status: "already-optimized",
+        method: "original",
+      };
+    }
+
+    const pageCount = await countPdfPages(fileBuffer, password);
+
+    let rasterized: Buffer | null = null;
+    if (pageCount > 0) {
       try {
-        const rasterized = await compressByRasterizing(fileBuffer, preset, password);
-        if (rasterized.length < originalSize) {
-          rasterAttempts.push(rasterized);
-        }
+        const plan = resolveCompressRasterPlan(level, pageCount);
+        rasterized = await compressByRasterizing(fileBuffer, plan, password);
       } catch (rasterErr) {
         await logError({
           tool_name: "compress-pdf",
@@ -54,16 +102,24 @@ export async function compressPDF(
       }
     }
 
-    const best = pickSmallestBuffer(originalSize, [structural, ...rasterAttempts]);
+    const best = pickSmallestBuffer(originalSize, [structural, rasterized]);
 
-    if (best) {
-      return { buffer: best, originalSize, compressedSize: best.length };
+    if (best && savedEnough(originalSize, best.length, 0.97)) {
+      return {
+        buffer: best,
+        originalSize,
+        compressedSize: best.length,
+        status: "compressed",
+        method: rasterized && best === rasterized ? "rasterized" : "structural",
+      };
     }
 
     return {
       buffer: fileBuffer,
       originalSize,
       compressedSize: originalSize,
+      status: "already-optimized",
+      method: "original",
     };
   } catch (err) {
     await logError({
@@ -75,6 +131,18 @@ export async function compressPDF(
     throw new Error(
       `Failed to compress PDF: ${err instanceof Error ? err.message : "Unknown error"}`
     );
+  }
+}
+
+async function countPdfPages(fileBuffer: Buffer, password?: string): Promise<number> {
+  const parser = new PDFParse({ data: fileBuffer, password });
+  try {
+    const info = await parser.getInfo();
+    return info.total ?? 0;
+  } catch {
+    return 0;
+  } finally {
+    await parser.destroy().catch(() => {});
   }
 }
 
@@ -112,7 +180,7 @@ async function compressStructurally(
 
 async function compressByRasterizing(
   fileBuffer: Buffer,
-  options: RasterOptions,
+  plan: RasterPlan,
   password?: string
 ): Promise<Buffer> {
   const parser = new PDFParse({ data: fileBuffer, password });
@@ -125,29 +193,39 @@ async function compressByRasterizing(
     }
 
     const pdfDoc = await PDFDocument.create();
+    const pageNums = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+    for (let i = 0; i < pageNums.length; i += plan.batchSize) {
+      const batch = pageNums.slice(i, i + plan.batchSize);
       const shot = await parser.getScreenshot({
-        partial: [pageNum],
-        scale: options.scale,
+        partial: batch,
+        desiredWidth: plan.desiredWidth,
         imageBuffer: true,
+        imageDataUrl: false,
       });
 
-      const page = shot.pages.find((p) => p.pageNumber === pageNum) ?? shot.pages[0];
-      if (!page?.data || !page.width || !page.height) continue;
+      const byPage = new Map(shot.pages.map((p) => [p.pageNumber, p]));
 
-      const jpeg = await sharp(Buffer.from(page.data))
-        .jpeg({ quality: options.quality, mozjpeg: true })
-        .toBuffer();
+      for (const pageNum of batch) {
+        const page = byPage.get(pageNum);
+        if (!page?.data || !page.width || !page.height) continue;
 
-      const image = await pdfDoc.embedJpg(jpeg);
-      const pdfPage = pdfDoc.addPage([page.width, page.height]);
-      pdfPage.drawImage(image, {
-        x: 0,
-        y: 0,
-        width: page.width,
-        height: page.height,
-      });
+        const jpeg = await sharp(Buffer.from(page.data))
+          .jpeg({ quality: plan.quality, mozjpeg: true })
+          .toBuffer();
+
+        const image = await pdfDoc.embedJpg(jpeg);
+        // Keep letter-ish page width so raster output stays compact.
+        const widthPt = 612;
+        const heightPt = (page.height / page.width) * widthPt;
+        const pdfPage = pdfDoc.addPage([widthPt, heightPt]);
+        pdfPage.drawImage(image, {
+          x: 0,
+          y: 0,
+          width: widthPt,
+          height: heightPt,
+        });
+      }
     }
 
     if (pdfDoc.getPageCount() === 0) {

@@ -96,7 +96,7 @@ Skip when using mock billing (`BILLING_MODE=mock` for dev/staging).
 
 | `NEXT_PUBLIC_DROPBOX_APP_KEY` | Dropbox picker |
 
-| `CONVERTAPI_SECRET` | Best PDF→Word quality (Smallpdf-class cloud API) |
+| `CONVERTAPI_SECRET` | Best PDF→Word quality (Smallpdf-class cloud API) — see `docs/PDF_TO_WORD_PRODUCTION.md` |
 
 | `PDF2DOCX_PYTHON` | Path to Python for pdf2docx fallback |
 
@@ -153,6 +153,20 @@ Execute in order in Supabase SQL Editor:
 12. `supabase/migrations/012_enterprise_orgs_api_keys.sql`
 
 13. `supabase/migrations/013_enterprise_billing.sql`
+
+14. `supabase/migrations/014_atomic_daily_usage.sql`
+
+15. `supabase/migrations/015_billing_invoice_retention.sql`
+
+16. `supabase/migrations/016_payment_reconciliation.sql`
+
+17. `supabase/migrations/017_coupon_active_expiry_and_rollback.sql`
+
+18. `supabase/migrations/018_payment_fulfilled_marker.sql`
+
+19. `supabase/migrations/019_security_rls_mfa_webhooks.sql`
+
+20. `supabase/migrations/020_security_medium.sql`
 
 
 
@@ -245,4 +259,3 @@ Set `NEXT_PUBLIC_APP_NAME=OnlyMyPDF` to match SEO/canonical branding.
 
 
 See `docs/TESTING.md`, `docs/PRODUCTION_CHECKLIST.md`, and `.env.example`.
-

@@ -24,6 +24,7 @@ describe("invoice.service", () => {
       email: "jane@example.com",
     } as never);
     vi.mocked(createServiceClient).mockResolvedValue({
+      rpc: vi.fn().mockResolvedValue({ data: "OMP-2026-00003", error: null }),
       from: vi.fn().mockReturnValue({
         select: vi.fn().mockReturnValue({
           like: vi.fn().mockResolvedValue({ count: 2, error: null }),

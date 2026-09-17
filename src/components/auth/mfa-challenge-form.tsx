@@ -4,6 +4,8 @@ import { useState, type FormEvent } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useTranslation } from "@/i18n";
+import { resolveSafeNextPath } from "@/lib/auth/safe-redirect";
+import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
 
 const inputClass =
   "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-center text-lg tracking-[0.35em] text-pd-foreground outline-none transition focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
@@ -23,6 +25,8 @@ export function MfaChallengeForm({
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileSiteKey = getTurnstileSiteKey();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -39,6 +43,7 @@ export function MfaChallengeForm({
           challengeId,
           code: code.replace(/\s/g, ""),
           mode: "login",
+          ...(turnstileSiteKey ? { turnstileToken } : {}),
         }),
       });
 
@@ -47,7 +52,7 @@ export function MfaChallengeForm({
         throw new Error(data.error || t("auth.mfaInvalidCode"));
       }
 
-      window.location.assign(redirectTo);
+      window.location.assign(resolveSafeNextPath(redirectTo, "/dashboard"));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("auth.mfaInvalidCode"));
     } finally {
@@ -90,9 +95,18 @@ export function MfaChallengeForm({
           />
         </div>
 
+        {turnstileSiteKey ? (
+          <TurnstileWidget
+            siteKey={turnstileSiteKey}
+            onToken={setTurnstileToken}
+            onExpire={() => setTurnstileToken("")}
+            className="flex justify-center"
+          />
+        ) : null}
+
         <button
           type="submit"
-          disabled={loading || code.length < 6}
+          disabled={loading || code.length < 6 || (turnstileSiteKey ? !turnstileToken : false)}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-pd-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-pd-brand-hover disabled:opacity-60"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}

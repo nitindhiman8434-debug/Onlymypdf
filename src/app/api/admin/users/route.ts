@@ -103,6 +103,13 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: "Invalid plan. Use free or pro." }, { status: 400 });
       }
       updateData.plan = plan;
+      if (plan === "pro") {
+        updateData.plan_expires_at = new Date(
+          Date.now() + 365 * 24 * 60 * 60 * 1000
+        ).toISOString();
+      } else {
+        updateData.plan_expires_at = null;
+      }
     }
 
     if (blocked !== undefined) {

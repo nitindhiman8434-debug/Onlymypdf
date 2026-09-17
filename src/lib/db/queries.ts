@@ -195,7 +195,11 @@ export async function markFileDeleted(fileId: string) {
   const supabase = await createServiceClient();
   const { error } = await supabase
     .from("uploaded_files")
-    .update({ is_deleted: true })
+    .update({
+      is_deleted: true,
+      original_name: "deleted",
+      stored_name: "deleted",
+    })
     .eq("id", fileId);
 
   if (error) throw error;
@@ -542,23 +546,31 @@ export async function incrementCouponUsage(code: string): Promise<boolean> {
   });
 
   if (error) {
+    // Fail closed: the racy read-then-update fallback could exceed max_uses.
+    return false;
+  }
+
+  return Boolean(data);
+}
+
+/** Roll back a coupon increment when fulfillment fails after redemption. */
+export async function decrementCouponUsage(code: string): Promise<boolean> {
+  const supabase = await createServiceClient();
+  const { data, error } = await supabase.rpc("decrement_coupon_usage", {
+    p_code: code,
+  });
+
+  if (error) {
     const { data: coupon } = await supabase
       .from("coupon_codes")
-      .select("times_used, max_uses")
+      .select("times_used")
       .eq("code", code.toUpperCase())
       .single();
-
     if (!coupon) return false;
-    if (coupon.max_uses !== -1 && (coupon.times_used ?? 0) >= coupon.max_uses) {
-      return false;
-    }
-
     const { error: updateError } = await supabase
       .from("coupon_codes")
-      .update({ times_used: (coupon.times_used ?? 0) + 1 })
-      .eq("code", code.toUpperCase())
-      .lt("times_used", coupon.max_uses === -1 ? 1_000_000_000 : coupon.max_uses);
-
+      .update({ times_used: Math.max((coupon.times_used ?? 0) - 1, 0) })
+      .eq("code", code.toUpperCase());
     return !updateError;
   }
 
@@ -637,6 +649,16 @@ export async function releasePaymentClaim(paymentId: string) {
     .eq("status", "processing");
 }
 
+/** Mark a payment's coupon as redeemed (bounds the double-increment window). */
+export async function markCouponRedeemed(paymentId: string) {
+  const supabase = await createServiceClient();
+  await supabase
+    .from("payments")
+    .update({ coupon_redeemed_at: new Date().toISOString() })
+    .eq("id", paymentId)
+    .is("coupon_redeemed_at", null);
+}
+
 // ---------------------------------------------------------------------------
 // Subscriptions
 // ---------------------------------------------------------------------------
@@ -663,6 +685,7 @@ export async function createSubscription(data: {
   razorpay_subscription_id?: string | null;
   current_period_start?: string | null;
   current_period_end?: string | null;
+  last_fulfilled_payment_id?: string | null;
 }) {
   const supabase = await createServiceClient();
   const { data: sub, error } = await supabase
@@ -674,6 +697,9 @@ export async function createSubscription(data: {
       razorpay_subscription_id: data.razorpay_subscription_id ?? null,
       current_period_start: data.current_period_start ?? new Date().toISOString(),
       current_period_end: data.current_period_end ?? null,
+      ...(data.last_fulfilled_payment_id
+        ? { last_fulfilled_payment_id: data.last_fulfilled_payment_id }
+        : {}),
     })
     .select()
     .single();

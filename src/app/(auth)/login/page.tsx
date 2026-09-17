@@ -11,6 +11,9 @@ import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { MfaChallengeForm } from "@/components/auth/mfa-challenge-form";
 import { EnterpriseSsoForm } from "@/components/auth/enterprise-sso-form";
 import { useTranslation } from "@/i18n";
+import { resolveSafeNextPath } from "@/lib/auth/safe-redirect";
+import { resolveLoginFlashError, resolveLoginFlashMessage } from "@/lib/auth/login-flash";
+import { TurnstileWidget, getTurnstileSiteKey } from "@/components/security/turnstile-widget";
 
 const inputClass =
   "w-full rounded-xl border border-pd-border bg-pd-surface py-2.5 text-sm text-pd-foreground outline-none transition focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20";
@@ -28,10 +31,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [mfa, setMfa] = useState<MfaState | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileSiteKey = getTurnstileSiteKey();
   const searchParams = useSearchParams();
-  const successMessage = searchParams.get("message");
-  const oauthError = searchParams.get("error");
-  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const successMessage = resolveLoginFlashMessage(searchParams.get("message"));
+  const oauthError = resolveLoginFlashError(searchParams.get("error"));
+  const redirectTo = resolveSafeNextPath(searchParams.get("redirect"), "/dashboard");
   const mfaResumeStep = searchParams.get("step") === "mfa";
 
   useEffect(() => {
@@ -71,7 +76,11 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password,
+          ...(turnstileSiteKey ? { turnstileToken } : {}),
+        }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -184,11 +193,24 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full">
+        <Button
+          type="submit"
+          disabled={loading || (turnstileSiteKey ? !turnstileToken : false)}
+          className="w-full"
+        >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           {t("auth.loginButton")}
         </Button>
       </form>
+
+      {turnstileSiteKey ? (
+        <TurnstileWidget
+          siteKey={turnstileSiteKey}
+          onToken={setTurnstileToken}
+          onExpire={() => setTurnstileToken("")}
+          className="mt-4 flex justify-center"
+        />
+      ) : null}
 
       <OAuthButtons redirectTo={redirectTo} className="mt-6" />
       <EnterpriseSsoForm redirectTo={redirectTo} />

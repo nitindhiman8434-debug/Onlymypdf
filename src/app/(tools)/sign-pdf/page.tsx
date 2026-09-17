@@ -6,7 +6,7 @@ import { ToolPageShell } from '@/components/layout/tool-page-shell';
 import { SignPdfWorkspace } from '@/components/tools/lazy-workspaces';
 import { PdfResultPreview } from '@/components/tools/pdf-result-preview';
 import { mapFaqs, mapRelatedTools } from '@/components/tools/tool-helpers';
-import { ToolDropzone, ToolErrorBanner } from '@/components/tools/tool-ui';
+import { ToolDropzone, ToolErrorBanner, PdfPasswordInfoBanner } from '@/components/tools/tool-ui';
 
 const RELATED_TOOLS = [
   { name: 'Protect PDF', href: '/protect-pdf' },
@@ -18,7 +18,7 @@ const RELATED_TOOLS = [
 const FAQS = [
   {
     q: 'Is my signature secure?',
-    a: 'Your signature is processed in your browser and on our secure servers. We never store your signature data after processing.',
+    a: 'Your signature is composited into the result on our server. The uploaded and processed files follow the published retention window.',
   },
   {
     q: 'What types of signatures can I add?',
@@ -119,7 +119,7 @@ export default function SignPdfPage() {
             fileInputAccept=".pdf,application/pdf"
             onFileInputChange={(e) => e.target.files && handleFiles(e.target.files)}
           />
-          
+          <PdfPasswordInfoBanner className="mt-3" />
           {uploadError && (
             <div className="mt-4">
               <ToolErrorBanner message={uploadError} />

@@ -3,7 +3,7 @@
  * Run: node scripts/create-placeholder-assets.mjs
  */
 import { createCanvas } from "@napi-rs/canvas";
-import { mkdirSync, writeFileSync } from "fs";
+import { mkdirSync, writeFileSync, existsSync, statSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
@@ -131,8 +131,13 @@ drawHero(heroMain, "Merge, split & convert PDFs", "Fast, secure, browser-based t
 saveWebp(heroMain, join(publicDir, "images", "hero-product-main.webp"));
 
 const heroAi = createCanvas(1200, 750);
-drawHero(heroAi, "AI PDF Summarizer", "Key points from long documents in seconds");
-saveWebp(heroAi, join(publicDir, "images", "hero-product-ai.webp"));
+const heroAiOut = join(publicDir, "images", "hero-product-ai.webp");
+if (!existsSync(heroAiOut) || statSync(heroAiOut).size < 20_000) {
+  drawHero(heroAi, "AI PDF Summarizer", "Key points from long documents in seconds");
+  saveWebp(heroAi, heroAiOut);
+} else {
+  console.log("skip", heroAiOut, "(real asset already present)");
+}
 
 const logos = [
   ["logo-a-horizontal-clean.png", 420, 120, "horizontal"],

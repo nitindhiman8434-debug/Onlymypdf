@@ -76,7 +76,10 @@ export function HeroVisualV2D1() {
   }, [scene]);
 
   return (
-    <div className="pd-hero-visual relative mx-auto w-full max-w-lg lg:max-w-none">
+    <div
+      aria-hidden="true"
+      className="pd-hero-visual relative mx-auto w-full max-w-lg lg:max-w-none"
+    >
       <div
         aria-hidden
         className="absolute -inset-4 rounded-[2rem] bg-pd-brand/15 blur-2xl"
@@ -182,7 +185,7 @@ export function HeroVisualV2D1() {
         <p className="text-xs font-bold text-pd-foreground">{t("landing.secureBadge")}</p>
       </div>
       <div className="absolute -left-2 top-1/2 z-20 hidden -translate-y-1/2 whitespace-nowrap rounded-xl border border-amber-200/80 bg-pd-surface px-3 py-2 shadow-lg sm:block">
-        <p className="text-[10px] font-semibold uppercase tracking-wide text-amber-600">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-amber-800">
           {FILE_SIZE_MARKETING.freeLabel}
         </p>
         <p className="text-xs font-bold text-pd-foreground">{FILE_SIZE_MARKETING.proLabel} on Pro</p>

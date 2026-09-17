@@ -5,14 +5,31 @@ import type { HowToStep } from "@/types";
 
 type JsonLdProps = {
   data: Record<string, unknown> | Record<string, unknown>[];
+  nonce?: string;
 };
 
-export function JsonLd({ data }: JsonLdProps) {
+export function serializeJsonLd(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
+export function JsonLd({ data, nonce }: JsonLdProps) {
   const payload = Array.isArray(data) ? data : [data];
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(payload.length === 1 ? payload[0] : payload) }}
+      {...(nonce ? { nonce } : {})}
+      // Browsers strip the nonce attribute from the DOM after applying CSP, so
+      // the hydrated client value ("") differs from the server value — this is
+      // expected and must not trigger a hydration warning.
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{
+        __html: serializeJsonLd(payload.length === 1 ? payload[0] : payload),
+      }}
     />
   );
 }

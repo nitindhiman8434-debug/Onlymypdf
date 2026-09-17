@@ -41,6 +41,7 @@ vi.mock("@/lib/db/queries", () => ({
 
 vi.mock("@/lib/server/rate-limiter", () => ({
   checkAuthRateLimit: vi.fn(),
+  checkCouponAttemptRateLimit: vi.fn(),
   rateLimitResponse: vi.fn((retryAfterSec: number) =>
     NextResponse.json({ error: "rate limited", retryAfterSec }, { status: 429 })
   ),
@@ -84,7 +85,7 @@ import {
   isMockOrderId,
 } from "@/lib/billing/mock-billing.service";
 import { createPayment, getCouponCode, getPaymentByRazorpayOrderId } from "@/lib/db/queries";
-import { checkAuthRateLimit } from "@/lib/server/rate-limiter";
+import { checkAuthRateLimit, checkCouponAttemptRateLimit } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { fulfillPendingPayment } from "@/lib/services/payment-fulfillment.service";
 import { fulfillSubscriptionCharge } from "@/lib/services/subscription-fulfillment.service";
@@ -110,6 +111,11 @@ describe("payment route handlers", () => {
     vi.clearAllMocks();
     vi.mocked(guardMutationOrigin).mockReturnValue(null);
     vi.mocked(checkAuthRateLimit).mockResolvedValue({
+      allowed: true,
+      remaining: 99,
+      retryAfterSec: 0,
+    });
+    vi.mocked(checkCouponAttemptRateLimit).mockResolvedValue({
       allowed: true,
       remaining: 99,
       retryAfterSec: 0,

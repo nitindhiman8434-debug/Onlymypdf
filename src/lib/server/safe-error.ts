@@ -23,7 +23,7 @@ export function toSafeApiError(
     if (SAFE_MESSAGES.has(msg)) return msg;
     if (msg.length < 120 && !msg.includes("\\") && !msg.includes("/tmp")) {
       if (
-        /^(Invalid|Missing|Failed to|Password|Daily|Maximum|At least|File|PDF|Upload)/i.test(
+        /^(Invalid|Missing|Failed to|Conversion|Password|Daily|Maximum|At least|File|PDF|Upload)/i.test(
           msg
         )
       ) {

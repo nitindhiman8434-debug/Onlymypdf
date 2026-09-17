@@ -42,6 +42,34 @@ import {
 } from "@/lib/db/queries";
 import { createServiceClient } from "@/lib/supabase/server";
 
+function supabaseChain(result: { data: unknown; error: unknown }) {
+  const query: Record<string, unknown> = {};
+  const next = () => query;
+  for (const method of [
+    "select",
+    "eq",
+    "in",
+    "order",
+    "limit",
+    "not",
+    "is",
+    "gt",
+    "lt",
+    "update",
+    "insert",
+    "delete",
+  ]) {
+    query[method] = vi.fn(next);
+  }
+  query.maybeSingle = vi.fn(async () => result);
+  query.single = vi.fn(async () => result);
+  query.then = (
+    resolve: (value: { data: unknown; error: unknown }) => unknown,
+    reject?: (reason: unknown) => unknown
+  ) => Promise.resolve(result).then(resolve, reject);
+  return query;
+}
+
 describe("fulfillSubscriptionCharge", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -54,28 +82,21 @@ describe("fulfillSubscriptionCharge", () => {
     vi.mocked(releasePaymentClaim).mockResolvedValue(undefined as never);
 
     vi.mocked(createServiceClient).mockResolvedValue({
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            in: vi.fn().mockReturnValue({
-              order: vi.fn().mockReturnValue({
-                limit: vi.fn().mockReturnValue({
-                  maybeSingle: vi.fn().mockResolvedValue({
-                    data: {
-                      id: "pay-row-1",
-                      user_id: "user-1",
-                      status: "pending",
-                      amount: 299,
-                      plan_name: "pro",
-                      plan_duration: "monthly",
-                    },
-                    error: null,
-                  }),
-                }),
-              }),
-            }),
-          }),
-        }),
+      from: vi.fn((table: string) => {
+        if (table === "subscriptions") {
+          return supabaseChain({ data: null, error: null });
+        }
+        return supabaseChain({
+          data: {
+            id: "pay-row-1",
+            user_id: "user-1",
+            status: "pending",
+            amount: 299,
+            plan_name: "pro",
+            plan_duration: "monthly",
+          },
+          error: null,
+        });
       }),
     } as never);
 

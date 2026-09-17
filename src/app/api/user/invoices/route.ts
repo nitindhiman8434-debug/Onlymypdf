@@ -1,8 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { tryGetApiUser } from "@/lib/auth/get-api-user";
 import { listUserInvoices } from "@/lib/billing/invoice.service";
+import { guardGeneralApiRateLimit } from "@/lib/server/rate-limiter";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const rateLimited = await guardGeneralApiRateLimit(request);
+  if (rateLimited) return rateLimited;
+
   const auth = await tryGetApiUser();
   if (!auth.ok) return auth.response;
   const user = auth.user;

@@ -4,18 +4,21 @@ import fs from "fs/promises";
 import { tryGetApiUser } from "@/lib/auth/get-api-user";
 import { getLocalDevJobForDownload } from "@/lib/auth/local-dev-activity";
 import { sanitizeFilename } from "@/lib/utils/file";
+import { guardSensitiveReadOrigin } from "@/lib/server/mutation-origin";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const rateLimited = await guardGeneralApiRateLimit(request);
+    if (rateLimited) return rateLimited;
+
+    const originBlocked = guardSensitiveReadOrigin(request);
+    if (originBlocked) return originBlocked;
+
     const auth = await tryGetApiUser();
-    if (!auth.ok) {
-      const rateLimited = await guardGeneralApiRateLimit(request);
-      if (rateLimited) return rateLimited;
-      return auth.response;
-    }
+    if (!auth.ok) return auth.response;
     const user = auth.user;
 
     const { id } = await params;

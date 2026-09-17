@@ -5,12 +5,13 @@ import {
   isLocalDevAuthEnabled,
   localDevSignUp,
 } from "@/lib/auth/local-dev-auth";
-import { checkAuthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
+import { checkAuthRateLimit, checkSignupEmailRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { toSafeApiError, captureApiError } from "@/lib/server/safe-error";
 import { TERMS_CONSENT_VERSION } from "@/lib/privacy/consent";
 import { logConsentRecord } from "@/lib/db/queries";
 import { getGuestUsageKey } from "@/lib/server/client-ip";
+import { guardTurnstileRequest } from "@/lib/security/verify-turnstile-request";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +21,10 @@ export async function POST(request: NextRequest) {
     const rate = await checkAuthRateLimit(request);
     if (!rate.allowed) return rateLimitResponse(rate.retryAfterSec);
 
-    const { email, password, fullName, termsAccepted } = await request.json();
+    const { email, password, fullName, termsAccepted, turnstileToken } = await request.json();
+
+    const turnstileBlocked = await guardTurnstileRequest(request, turnstileToken);
+    if (turnstileBlocked) return turnstileBlocked;
 
     if (!email || !password) {
       return NextResponse.json(
@@ -28,6 +32,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const emailRate = await checkSignupEmailRateLimit(request, email);
+    if (!emailRate.allowed) return rateLimitResponse(emailRate.retryAfterSec);
 
     if (!termsAccepted) {
       return NextResponse.json(
@@ -83,7 +90,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      console.error("[signup] Supabase signUp failed:", error.message);
+      return NextResponse.json({
+        message:
+          "If this email is not already registered, please check your inbox to confirm your account.",
+        needsEmailConfirmation: true,
+      });
     }
 
     if (data.user?.id) {
@@ -99,8 +111,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      user: data.user,
-      session: data.session,
+      user: data.user ? { id: data.user.id, email: data.user.email } : null,
       needsEmailConfirmation: !data.session,
       message: data.session
         ? "Account created successfully"

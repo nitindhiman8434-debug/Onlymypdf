@@ -65,6 +65,24 @@ export async function createClient() {
   });
 }
 
+/**
+ * Client that never reads or writes the request's auth cookies. Use for
+ * password verification (step-up) so `signInWithPassword` does not replace the
+ * caller's existing (AAL2) session with a fresh AAL1 session.
+ */
+export function createEphemeralClient() {
+  return createServerClient(getUrl(), getAnonKey(), {
+    cookies: {
+      getAll() {
+        return [];
+      },
+      setAll() {
+        // Intentionally no-op: this session must never be persisted.
+      },
+    },
+  });
+}
+
 export async function createServiceClient() {
   const { createClient: createSupabaseClient } = await import(
     "@supabase/supabase-js"

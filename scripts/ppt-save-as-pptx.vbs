@@ -29,6 +29,8 @@ If Err.Number <> 0 Then
   WScript.Quit 3
 End If
 ppt.DisplayAlerts = 1
+' Uploaded presentations are untrusted: block macro auto-execution.
+ppt.AutomationSecurity = 3
 Err.Clear
 
 Set pres = ppt.Presentations.Open(inputPath, 0, 0, -1)

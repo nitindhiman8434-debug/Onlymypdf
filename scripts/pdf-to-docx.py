@@ -185,6 +185,27 @@ def validate_docx(docx_path: str, *, image_ok: bool = False) -> bool:
         return False
 
 
+def should_rasterize_pdf(pdf_path: str) -> bool:
+    """Use full-page PNG export only for true scans, not design/infographic PDFs."""
+    import fitz
+
+    doc = fitz.open(pdf_path)
+    try:
+        sample = min(3, len(doc))
+        if sample == 0:
+            return False
+        raster_like = 0
+        for i in range(sample):
+            page = doc[i]
+            images = len(page.get_images())
+            words = len(page.get_text("words"))
+            if images <= 2 and words < 8:
+                raster_like += 1
+        return raster_like >= max(1, sample - 1)
+    finally:
+        doc.close()
+
+
 def pdf_open_stats(pdf_path: str) -> tuple[int, int, bool, bool, bool]:
     """One pass: page_count, text_pages_sample, needs_transform, image_heavy, drawing_heavy."""
     import fitz
@@ -500,7 +521,11 @@ def _convert_pdf_inner(pdf_path: str, docx_path: str) -> bool:
     if page_count == 0:
         return False
 
-    use_image_path = (image_heavy or drawing_heavy) and page_count <= MAX_IMAGE_PATH_PAGES
+    # Raster fallback is for scanned/image-only PDFs. Design-heavy PDFs with text
+    # should use vector conversion (Word COM upstream, or pdf2docx below).
+    use_image_path = (
+        image_heavy and page_count <= MAX_IMAGE_PATH_PAGES and should_rasterize_pdf(pdf_path)
+    )
     if use_image_path:
         emit_progress(12)
         ok = convert_image_pdf_to_docx(pdf_path, docx_path)

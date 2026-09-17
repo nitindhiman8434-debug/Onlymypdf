@@ -2,7 +2,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { getPrimaryOrganizationForUser } from "@/lib/enterprise/org-access.service";
 import { resolveProDailyToolLimit } from "@/lib/admin/effective-limits";
 import { getCachedAdminSettings } from "@/lib/db/admin-settings-cache";
-import { getUserDailyUsage } from "@/lib/db/queries";
+import { reserveOrganizationDailyUsage } from "@/lib/db/daily-usage-reserve";
 import type { UsageLimitResult } from "@/lib/services/usage-limit.service";
 
 function todayUtcDate(): string {
@@ -84,20 +84,19 @@ export async function checkUsageLimitWithOrg(
   void tool;
   const org = await getPrimaryOrganizationForUser(userId);
   if (org) {
-    return { ...(await checkOrganizationSharedUsageLimit(userId, org.id)), organizationId: org.id };
+    const limit = org.daily_tool_limit ?? 500;
+    const limitMessage =
+      `Your team's daily limit of ${limit} tool uses has been reached. Resets tomorrow.`;
+    const reserved = await reserveOrganizationDailyUsage(org.id, limit, limitMessage);
+    return { ...reserved, organizationId: org.id };
   }
 
   const settings = await getCachedAdminSettings();
   const dailyLimit = resolveProDailyToolLimit(settings);
-  const used = await getUserDailyUsage(userId);
+  const limitMessage =
+    `Daily Pro limit of ${dailyLimit} tool uses reached. Resets tomorrow.`;
+  const { reserveDailyUsageSlot } = await import("@/lib/db/daily-usage-reserve");
+  const reserved = await reserveDailyUsageSlot(`user:${userId}`, dailyLimit, limitMessage);
 
-  return {
-    allowed: used < dailyLimit,
-    remaining: Math.max(0, dailyLimit - used),
-    limit: dailyLimit,
-    message:
-      used >= dailyLimit
-        ? `Daily Pro limit of ${dailyLimit} tool uses reached. Resets tomorrow.`
-        : undefined,
-  };
+  return reserved;
 }

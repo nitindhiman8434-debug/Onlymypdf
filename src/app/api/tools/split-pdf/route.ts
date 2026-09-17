@@ -5,6 +5,7 @@ import { splitPDF, splitAllPages, extractPages } from "@/lib/services/pdf-split.
 import { buildPdfBuffersDownloadResponse } from "@/lib/pdf/pdf-buffers-response";
 import { buildZip } from "@/lib/services/zip-builder";
 import { resolvePdfBuffer } from "@/lib/pdf/pdf-password.server";
+import { resolvePdfBufferErrorResponse } from "@/lib/server/pdf-password-http";
 import { checkUsageLimit, checkFileSizeLimit } from "@/lib/services/usage-limit.service";
 import { logToolUsage } from "@/lib/db/queries";
 import { resolveMutationToolUser } from "@/lib/auth/tool-mutation-auth";
@@ -60,13 +61,11 @@ export async function POST(request: NextRequest) {
     try {
       buffer = await resolvePdfBuffer(validated.buffer, password);
     } catch (err) {
+      const passwordError = resolvePdfBufferErrorResponse(request, err, {
+        fileName: file.name,
+      });
+      if (passwordError) return passwordError;
       const msg = err instanceof Error ? err.message : "Failed to open PDF";
-      if (msg === "PASSWORD_REQUIRED") {
-        return toolJsonError(request, "This PDF is password-protected. Enter the password to continue.", 400);
-      }
-      if (msg === "WRONG_PASSWORD") {
-        return toolJsonError(request, "Incorrect password. Please try again.", 400);
-      }
       return toolJsonError(request, msg, 400);
     }
 

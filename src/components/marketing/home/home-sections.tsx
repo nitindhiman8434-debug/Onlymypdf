@@ -3,7 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { FILE_SIZE_MARKETING, FILE_LIMITS } from "@/config/constants";
+import { FILE_SIZE_MARKETING, FILE_LIMITS, PRO_PRICING } from "@/config/constants";
 import {
   ArrowRight,
   Sparkles,
@@ -37,6 +37,8 @@ import {
   TOOL_KEYS,
 } from "@/components/marketing/home/home-shared";
 import { ToolIconTile } from "@/components/tools/tool-icon-tile";
+import { useDisplayCurrency } from "@/hooks/use-display-currency";
+import { CurrencyToggle } from "@/components/pricing/currency-toggle";
 
 const WorkflowVisual = dynamic(
   () =>
@@ -343,15 +345,15 @@ const PRICING_LEFT_BENEFITS = [
   {
     icon: Shield,
     title: "Secure by default",
-    desc: "256-bit TLS · Auto-delete in 2h",
+    desc: "HTTPS transfer · 2h Free retention setting",
     accent: "text-pd-success",
     bg: "bg-emerald-50",
   },
   {
     icon: Star,
-    title: "4.9★ · 10,000+ users",
-    desc: "Trusted across 50+ countries",
-    accent: "text-amber-600",
+    title: "Published plan limits",
+    desc: "5 Free uses/day · 100 Pro uses/day",
+    accent: "text-amber-800",
     bg: "bg-amber-50",
   },
 ] as const;
@@ -443,6 +445,7 @@ function PricingAsideColumn({
 
 export function PricingSection({ centered = true }: { centered?: boolean }) {
   const { t } = useTranslation();
+  const { currency, setCurrency, formatInr, isInr } = useDisplayCurrency();
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-pd-background via-slate-50/50 to-pd-background py-14 sm:py-18">
@@ -453,6 +456,14 @@ export function PricingSection({ centered = true }: { centered?: boolean }) {
           title={t("landing.pricingTitle")}
           description={t("landing.pricingDesc")}
         />
+
+        <div className="mt-6 flex justify-center">
+          <CurrencyToggle
+            value={currency}
+            onChange={setCurrency}
+            label={t("pricing.currencyLabel")}
+          />
+        </div>
 
         <div className="mt-10 grid items-center gap-6 lg:grid-cols-[1fr_auto_1fr] lg:gap-8 xl:gap-10">
           <PricingAsideColumn benefits={PRICING_LEFT_BENEFITS} align="left" />
@@ -479,7 +490,9 @@ export function PricingSection({ centered = true }: { centered?: boolean }) {
               </div>
 
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold tracking-tight text-gray-900">₹0</span>
+                <span className="text-4xl font-extrabold tracking-tight text-gray-900">
+                  {formatInr(0)}
+                </span>
                 <span className="text-sm text-gray-400">{t("landing.pricingPerMonth")}</span>
               </div>
 
@@ -535,10 +548,20 @@ export function PricingSection({ centered = true }: { centered?: boolean }) {
                 </span>
               </div>
 
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold tracking-tight text-gray-900">₹299</span>
+              <div className="mt-4 flex flex-wrap items-baseline gap-x-1 gap-y-0.5">
+                <span className="text-4xl font-extrabold tracking-tight text-gray-900">
+                  {formatInr(PRO_PRICING.monthlyInr)}
+                </span>
                 <span className="text-sm text-gray-400">{t("landing.pricingPerMonth")}</span>
               </div>
+              {!isInr ? (
+                <p className="mt-1 text-[11px] font-medium text-pd-brand">
+                  {t("pricing.displayCurrencyNote", {
+                    currency,
+                    inrAmount: PRO_PRICING.monthlyInr.toLocaleString("en-IN"),
+                  })}
+                </p>
+              ) : null}
 
               <div className="my-4 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent" />
 
@@ -650,7 +673,7 @@ export function FAQSection() {
 
       <div className="pd-container relative max-w-3xl">
         <div className="mb-3 text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-pd-brand-muted px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-pd-brand">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-pd-brand-muted px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-pd-brand-hover">
             <HelpCircle className="h-3.5 w-3.5" />
             FAQ
           </span>
@@ -783,7 +806,7 @@ export function CTASection() {
         <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
           {t("landing.ctaTitle")}
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-white/85">{t("landing.ctaDesc")}</p>
+        <p className="mx-auto mt-4 max-w-xl text-white">{t("landing.ctaDesc")}</p>
         <Link href="#tools" className="mt-8 inline-block">
           <Button size="lg" variant="secondary" className="bg-white text-pd-brand hover:bg-white/90">
             {t("landing.ctaButton")}

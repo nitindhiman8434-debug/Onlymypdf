@@ -24,7 +24,7 @@ describe("billing-copy", () => {
   });
 
   it("includes refund and Razorpay references", () => {
-    expect(BILLING_COPY.refundSummary).toMatch(/7 days/i);
+    expect(BILLING_COPY.refundSummary).toMatch(/refund policy/i);
     expect(BILLING_COPY.paymentMethods).toMatch(/Razorpay/i);
     expect(BILLING_COPY.checkoutModel).toMatch(/subscription/i);
   });

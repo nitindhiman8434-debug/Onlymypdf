@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Loader2, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useToolWorkspaceMessages } from "@/hooks/use-tool-workspace-messages";
@@ -8,6 +8,7 @@ import {
   loadPdfDocumentPreview,
   pageThumbFromSession,
 } from "@/lib/pdf/pdf-thumbnails.client";
+import { getClientPreviewThumbMaxWidth } from "@/lib/config/preview-limits";
 
 const THUMB_PANEL_WIDTH = 188;
 const THUMB_IMAGE_WIDTH = 176;
@@ -15,12 +16,47 @@ const THUMB_ROW_HEIGHT = 228;
 const THUMB_OVERSCAN = 8;
 const MAIN_PAGE_GAP = 12;
 const MAIN_OVERSCAN = 4;
+const PREVIEW_THUMB_MAX_WIDTH = getClientPreviewThumbMaxWidth();
 /** A4 portrait aspect */
 const PAGE_ASPECT = 297 / 210;
 const DEFAULT_ZOOM = 100;
 const FIT_WIDTH_ZOOM = 100;
 
 const VIEWER_HEIGHT_CLASS = "h-full min-h-0";
+
+function pageRowHeight(
+  pageNum: number,
+  frameWidthPx: number,
+  pageAspects: Record<number, number>
+): number {
+  const aspect = pageAspects[pageNum] ?? PAGE_ASPECT;
+  return Math.max(80, Math.round(frameWidthPx * aspect)) + MAIN_PAGE_GAP;
+}
+
+function buildPageOffsets(
+  totalPages: number,
+  frameWidthPx: number,
+  pageAspects: Record<number, number>
+): number[] {
+  const offsets = new Array<number>(totalPages + 1).fill(0);
+  for (let page = 1; page <= totalPages; page++) {
+    offsets[page] = offsets[page - 1] + pageRowHeight(page, frameWidthPx, pageAspects);
+  }
+  return offsets;
+}
+
+function pageIndexAtScroll(
+  scrollTop: number,
+  offsets: number[],
+  totalPages: number
+): number {
+  if (totalPages <= 0) return 1;
+  let page = 1;
+  for (let p = 1; p <= totalPages; p++) {
+    if (offsets[p - 1] <= scrollTop + 1) page = p;
+  }
+  return page;
+}
 
 interface PdfResultWorkspaceViewerProps {
   blobUrl: string;
@@ -55,6 +91,11 @@ export function PdfResultWorkspaceViewer({
   const [mainScrollTop, setMainScrollTop] = useState(0);
   const [mainViewportHeight, setMainViewportHeight] = useState(480);
   const [mainPaneWidth, setMainPaneWidth] = useState(800);
+  const [pageAspects, setPageAspects] = useState<Record<number, number>>({});
+
+  useEffect(() => {
+    setPageAspects({});
+  }, [blobUrl, sessionId]);
 
   useEffect(() => {
     if (initialSessionId) {
@@ -97,14 +138,26 @@ export function PdfResultWorkspaceViewer({
   }, [blobUrl, filename, initialSessionId, initialTotalPages, ws.couldNotLoadPreview]);
 
   const renderWidth = Math.min(
-    1200,
+    PREVIEW_THUMB_MAX_WIDTH,
     Math.max(THUMB_IMAGE_WIDTH, Math.round(mainPaneWidth * (zoom / FIT_WIDTH_ZOOM)))
   );
 
   const frameWidth = `${zoom}%`;
   const frameWidthPx = Math.round(mainPaneWidth * (zoom / FIT_WIDTH_ZOOM));
-  const mainPageRowHeight = Math.max(120, Math.round(frameWidthPx * PAGE_ASPECT) + MAIN_PAGE_GAP);
-  const mainTotalHeight = totalPages * mainPageRowHeight;
+
+  const pageOffsets = useMemo(
+    () => buildPageOffsets(totalPages, frameWidthPx, pageAspects),
+    [totalPages, frameWidthPx, pageAspects]
+  );
+  const mainTotalHeight = pageOffsets[totalPages] ?? 0;
+
+  const recordPageAspect = useCallback((pageNum: number, aspect: number) => {
+    setPageAspects((prev) => {
+      const rounded = Math.round(aspect * 1000) / 1000;
+      if (prev[pageNum] === rounded) return prev;
+      return { ...prev, [pageNum]: rounded };
+    });
+  }, []);
 
   const pageUrlForPage = useCallback(
     (pageNum: number) =>
@@ -135,12 +188,12 @@ export function PdfResultWorkspaceViewer({
     const el = mainPaneRef.current;
     if (!el) return;
     scrollToPageRef.current = false;
-    el.scrollTop = (currentPage - 1) * mainPageRowHeight;
-  }, [currentPage, mainPageRowHeight]);
+    el.scrollTop = pageOffsets[currentPage - 1] ?? 0;
+  }, [currentPage, pageOffsets]);
 
   useEffect(() => {
     scrollToPageRef.current = true;
-  }, [zoom]);
+  }, [zoom, pageOffsets]);
 
   useEffect(() => {
     const el = mainPaneRef.current;
@@ -182,12 +235,24 @@ export function PdfResultWorkspaceViewer({
   const handleMainScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     setMainScrollTop(el.scrollTop);
-    const page = Math.min(
-      totalPages,
-      Math.max(1, Math.floor(el.scrollTop / mainPageRowHeight) + 1)
-    );
+    const page = pageIndexAtScroll(el.scrollTop, pageOffsets, totalPages);
     setCurrentPage((prev) => (prev === page ? prev : page));
   };
+
+  const avgRowHeight =
+    totalPages > 0 ? mainTotalHeight / totalPages : frameWidthPx * PAGE_ASPECT + MAIN_PAGE_GAP;
+
+  const mainStart = Math.max(
+    0,
+    pageIndexAtScroll(
+      Math.max(0, mainScrollTop - MAIN_OVERSCAN * avgRowHeight),
+      pageOffsets,
+      totalPages
+    ) - 1
+  );
+  const mainVisibleCount =
+    Math.ceil(Math.max(mainViewportHeight, avgRowHeight) / avgRowHeight) + MAIN_OVERSCAN * 2;
+  const mainEnd = Math.min(totalPages, mainStart + mainVisibleCount);
 
   const thumbStart = Math.max(
     0,
@@ -198,15 +263,6 @@ export function PdfResultWorkspaceViewer({
     THUMB_OVERSCAN * 2;
   const thumbEnd = Math.min(totalPages, thumbStart + thumbVisibleCount);
   const thumbTotalHeight = totalPages * THUMB_ROW_HEIGHT;
-
-  const mainStart = Math.max(
-    0,
-    Math.floor(mainScrollTop / mainPageRowHeight) - MAIN_OVERSCAN
-  );
-  const mainVisibleCount =
-    Math.ceil(Math.max(mainViewportHeight, mainPageRowHeight) / mainPageRowHeight) +
-    MAIN_OVERSCAN * 2;
-  const mainEnd = Math.min(totalPages, mainStart + mainVisibleCount);
 
   return (
     <div
@@ -362,34 +418,46 @@ export function PdfResultWorkspaceViewer({
                 const pageNum = mainStart + i + 1;
                 const src = pageUrlForPage(pageNum);
                 const active = pageNum === currentPage;
+                const rowHeight = pageRowHeight(pageNum, frameWidthPx, pageAspects);
 
                 return (
                   <div
                     key={pageNum}
                     className="absolute left-0 right-0 flex justify-center px-0"
                     style={{
-                      top: (pageNum - 1) * mainPageRowHeight,
-                      height: mainPageRowHeight,
+                      top: pageOffsets[pageNum - 1] ?? 0,
+                      height: rowHeight,
                     }}
                   >
                     <div
                       className={cn(
-                        "relative h-[calc(100%-12px)] w-full",
+                        "flex w-full justify-center",
                         active && "ring-2 ring-[#8ab4f8]/60 ring-offset-2 ring-offset-[#525659]"
                       )}
                       style={{ width: frameWidth, maxWidth: "100%" }}
                     >
                       {src ? (
-                         
                         <img
                           src={src}
                           alt={`Page ${pageNum}`}
                           loading="lazy"
                           decoding="async"
-                          className="block w-full h-auto max-h-full bg-white shadow-md"
+                          className="block h-auto w-full bg-white shadow-md"
+                          onLoad={(e) => {
+                            const img = e.currentTarget;
+                            if (img.naturalWidth > 0) {
+                              recordPageAspect(
+                                pageNum,
+                                img.naturalHeight / img.naturalWidth
+                              );
+                            }
+                          }}
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-white text-sm text-pd-muted">
+                        <div
+                          className="flex w-full items-center justify-center bg-white text-sm text-pd-muted"
+                          style={{ minHeight: rowHeight - MAIN_PAGE_GAP }}
+                        >
                           …
                         </div>
                       )}

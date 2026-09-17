@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, type FormEvent, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
@@ -25,8 +25,20 @@ function ResetPasswordForm() {
   const [error, setError] = useState("");
   const router = useRouter();
   const { language } = useTranslation();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const [hashToken, setHashToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash.replace(/^#/, "");
+    if (!hash) return;
+    const tokenFromHash = new URLSearchParams(hash).get("token");
+    if (tokenFromHash) {
+      setHashToken(tokenFromHash);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
+  const token = hashToken;
 
   useEffect(() => {
     if (token) {
@@ -80,7 +92,7 @@ function ResetPasswordForm() {
         );
       }
 
-      router.push("/login?message=Password updated. Please log in with your new password.");
+      router.push("/login?message=password_updated");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {

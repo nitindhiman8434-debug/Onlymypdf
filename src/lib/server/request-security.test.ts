@@ -11,6 +11,10 @@ vi.mock("@/lib/server/client-ip", () => ({
   getGuestUsageKey: vi.fn(() => "hashed-ip-abc"),
 }));
 
+vi.mock("@/lib/privacy/guest-session", () => ({
+  getGuestSessionIdFromRequest: vi.fn(() => "guest-session-xyz"),
+}));
+
 import { clientIpForLogs, ownerHashFromRequest } from "@/lib/server/request-security";
 
 describe("request-security", () => {
@@ -19,9 +23,11 @@ describe("request-security", () => {
     expect(ownerHashFromRequest(request, "user-123")).toBe("user:user-123");
   });
 
-  it("builds guest owner hash from trusted IP key", () => {
+  it("builds guest owner hash from IP key and session cookie", () => {
     const request = new NextRequest("https://onlymypdf.com/");
-    expect(ownerHashFromRequest(request, null)).toBe("guest:hashed-ip-abc");
+    expect(ownerHashFromRequest(request, null)).toBe(
+      "guest:hashed-ip-abc:guest-session-xyz"
+    );
   });
 
   it("returns hashed IP for usage logs", () => {
