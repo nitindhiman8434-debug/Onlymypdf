@@ -19,6 +19,10 @@ import {
 } from "@/lib/client/pdf-password-errors";
 import { notifyActivityUpdated } from "@/lib/client/activity-events";
 import { useToolErrors } from "@/hooks/use-tool-errors";
+import {
+  createClient as createSupabaseBrowserClient,
+  isSupabaseConfigured as isSupabaseBrowserConfigured,
+} from "@/lib/supabase/client";
 
 interface RelatedTool {
   name: string;
@@ -103,19 +107,68 @@ export function PdfToWordToolPage({
       });
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append(
-        "options",
-        JSON.stringify(password ? { password } : {})
-      );
+      let startRes: Response;
+      if (isSupabaseBrowserConfigured()) {
+        setProgress(1);
+        const signRes = await fetch("/api/uploads/pdf-to-word", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fileName: file.name,
+            fileSize: file.size,
+            mimeType: file.type || "application/pdf",
+          }),
+          signal: controller.signal,
+        });
+        if (!signRes.ok) {
+          const err = (await signRes.json().catch(() => ({}))) as { error?: string };
+          throw new Error(err.error || "Could not prepare the secure upload.");
+        }
+        const signed = (await signRes.json()) as {
+          path?: string;
+          token?: string;
+          uploadGrant?: string;
+        };
+        if (!signed.path || !signed.token || !signed.uploadGrant) {
+          throw new Error("Server returned an incomplete secure upload response.");
+        }
 
-      const startRes = await fetch("/api/tools/pdf-to-word", {
-        method: "POST",
-        body: formData,
-        headers: { "X-Pdf-To-Word-Job": "1" },
-        signal: controller.signal,
-      });
+        const supabase = createSupabaseBrowserClient();
+        const { error: uploadError } = await supabase.storage
+          .from("pdf-files")
+          .uploadToSignedUrl(signed.path, signed.token, file, {
+            contentType: "application/pdf",
+          });
+        if (uploadError) throw new Error("Secure PDF upload failed. Please try again.");
+        setProgress(4);
+
+        startRes = await fetch("/api/tools/pdf-to-word", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Pdf-To-Word-Job": "1",
+          },
+          body: JSON.stringify({
+            uploadGrant: signed.uploadGrant,
+            options: password ? { password } : {},
+          }),
+          signal: controller.signal,
+        });
+      } else {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append(
+          "options",
+          JSON.stringify(password ? { password } : {})
+        );
+
+        startRes = await fetch("/api/tools/pdf-to-word", {
+          method: "POST",
+          body: formData,
+          headers: { "X-Pdf-To-Word-Job": "1" },
+          signal: controller.signal,
+        });
+      }
 
       if (!startRes.ok) {
         const err = (await startRes.json().catch(() => ({}))) as {

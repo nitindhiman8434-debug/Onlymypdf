@@ -6,6 +6,7 @@ import {
   enqueuePdfToWordJob,
   failPdfToWordJob,
   stagePdfToWordJobInput,
+  stagePdfToWordJobInputFromStorage,
 } from "@/lib/services/pdf-to-word-jobs.service";
 import { processNextPdfToWordJob } from "@/lib/services/pdf-to-word-worker.service";
 import { checkUsageLimit } from "@/lib/services/usage-limit.service";
@@ -34,11 +35,19 @@ import {
   validateAndRecordConversion,
 } from "@/lib/services/conversion-completion.service";
 import type { PdfToWordEngine } from "@/lib/services/pdf-to-word.service";
+import { verifyPdfToWordUploadGrant } from "@/lib/server/direct-upload-grant";
+import { claimOneTimeKey } from "@/lib/server/upstash-kv";
+import { encryptJobPayloadSecret } from "@/lib/server/job-payload-secret";
+import { isUnlimitedFileSizeMB } from "@/config/constants";
 
 export const maxDuration = 600;
 
 function wantsJobMode(request: NextRequest): boolean {
   return request.headers.get("x-pdf-to-word-job") === "1";
+}
+
+function shouldRunInlineWorker(): boolean {
+  return process.env.NODE_ENV !== "production" || process.env.INLINE_CONVERSION_WORKER === "1";
 }
 
 function parsePassword(formData: FormData): string | undefined {
@@ -83,6 +92,18 @@ async function preparePdfInput(
   return await resolvePdfBuffer(buffer, password);
 }
 
+type DirectJobRequest = {
+  uploadGrant?: unknown;
+  options?: { password?: unknown };
+};
+
+function directPassword(body: DirectJobRequest): string | undefined {
+  const value = body.options?.password;
+  if (typeof value !== "string" || value.length === 0) return undefined;
+  if (value.length > 1024) throw new Error("PDF password is too long.");
+  return value;
+}
+
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   let userId: string | null = null;
@@ -114,6 +135,65 @@ export async function POST(request: NextRequest) {
     const usage = await checkUsageLimit(userId, getGuestUsageKey(request));
     if (!usage.allowed) {
       return toolJsonError(request, usage.message || "Daily usage limit reached.", 429);
+    }
+
+    const requestContentType = request.headers.get("content-type") || "";
+    if (requestContentType.toLowerCase().includes("application/json")) {
+      if (!wantsJobMode(request)) {
+        return toolJsonError(request, "Direct uploads require job mode.", 400);
+      }
+      let body: DirectJobRequest;
+      try {
+        body = (await request.json()) as DirectJobRequest;
+      } catch {
+        return toolJsonError(request, "Invalid direct upload request.", 400);
+      }
+      if (typeof body.uploadGrant !== "string") {
+        return toolJsonError(request, "Secure upload grant is required.", 400);
+      }
+
+      const ownerKey = await resolveToolJobOwnerKey(request);
+      const grant = verifyPdfToWordUploadGrant(body.uploadGrant, ownerKey);
+      const maxBytes = maxSizeMB * 1024 * 1024;
+      if (!isUnlimitedFileSizeMB(maxSizeMB) && grant.fileSize > maxBytes) {
+        return toolJsonError(request, `File size exceeds the ${maxSizeMB} MB plan limit.`, 400);
+      }
+      const claimed = await claimOneTimeKey(
+        `pdf-to-word:upload-grant:${grant.id}`,
+        2 * 60 * 60
+      );
+      if (!claimed) {
+        return toolJsonError(request, "This secure upload was already used or expired.", 409);
+      }
+
+      const pdfPassword = directPassword(body);
+      const originalName = grant.fileName.replace(/\.pdf$/i, "");
+      const outputFilename = `${sanitizeFilename(originalName)}.docx`;
+      const jobId = await createPdfToWordJob(outputFilename, ownerKey, {
+        sourceFileName: grant.fileName,
+        userId,
+        sessionId: request.headers.get("x-session-id") || "anonymous",
+        ipAddress: getGuestUsageKey(request),
+        inputBytes: grant.fileSize,
+        inputPrepared: false,
+        encryptedPdfPassword: pdfPassword
+          ? encryptJobPayloadSecret(pdfPassword)
+          : undefined,
+      });
+      try {
+        await stagePdfToWordJobInputFromStorage(jobId, grant.path, grant.fileSize);
+        await enqueuePdfToWordJob(jobId);
+      } catch (error) {
+        await failPdfToWordJob(jobId, error);
+        throw error;
+      }
+
+      if (shouldRunInlineWorker()) {
+        after(async () => {
+          await processNextPdfToWordJob();
+        });
+      }
+      return NextResponse.json({ jobId, status: "queued" }, { status: 202 });
     }
 
     const formData = await request.formData();
@@ -154,6 +234,7 @@ export async function POST(request: NextRequest) {
         sessionId: request.headers.get("x-session-id") || "anonymous",
         ipAddress: getGuestUsageKey(request),
         inputBytes: prepared.length,
+        inputPrepared: true,
       });
       try {
         await stagePdfToWordJobInput(jobId, prepared);
@@ -163,9 +244,11 @@ export async function POST(request: NextRequest) {
         throw error;
       }
 
-      after(async () => {
-        await processNextPdfToWordJob();
-      });
+      if (shouldRunInlineWorker()) {
+        after(async () => {
+          await processNextPdfToWordJob();
+        });
+      }
       return NextResponse.json({ jobId, status: "queued" }, { status: 202 });
     }
 

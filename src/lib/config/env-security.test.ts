@@ -6,6 +6,7 @@ const CORE_SECRETS = {
   NEXT_PUBLIC_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.anon",
   SUPABASE_SERVICE_ROLE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.service",
   CRON_SECRET: "cron-secret-value",
+  HEALTH_CHECK_SECRET: "health-check-secret-value",
   IP_HASH_SALT: "ip-hash-salt-value",
   UPSTASH_REDIS_REST_URL: "https://upstash.example.com",
   UPSTASH_REDIS_REST_TOKEN: "upstash-token-value",

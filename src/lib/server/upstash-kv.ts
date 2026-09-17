@@ -55,3 +55,32 @@ export async function upstashDel(key: string): Promise<void> {
   if (!redis) return;
   await redis.del(key);
 }
+
+type LocalClaimStore = Map<string, number>;
+
+function localClaimStore(): LocalClaimStore {
+  const root = globalThis as typeof globalThis & {
+    __upstashFallbackClaims?: LocalClaimStore;
+  };
+  if (!root.__upstashFallbackClaims) root.__upstashFallbackClaims = new Map();
+  return root.__upstashFallbackClaims;
+}
+
+/** Claim a short-lived token exactly once. Production uses Redis NX; local dev uses memory. */
+export async function claimOneTimeKey(key: string, ttlSec: number): Promise<boolean> {
+  const redis = await getUpstashRedis();
+  if (redis) {
+    const result = await redis.set(key, "1", { nx: true, ex: ttlSec });
+    return result === "OK";
+  }
+
+  if (process.env.NODE_ENV === "production") return false;
+  const claims = localClaimStore();
+  const now = Date.now();
+  for (const [claimKey, expiresAt] of claims.entries()) {
+    if (expiresAt <= now) claims.delete(claimKey);
+  }
+  if (claims.has(key)) return false;
+  claims.set(key, now + Math.max(1, ttlSec) * 1000);
+  return true;
+}

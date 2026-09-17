@@ -330,8 +330,8 @@ def build_document() -> Document:
     meta_rows = [
         ("Report date", "17 September 2026"),
         ("Branch", "phase1-dependable-beta"),
-        ("Current product readiness", "78 out of 100"),
-        ("Phase 1 completion", "83 percent"),
+        ("Current product readiness", "80 out of 100"),
+        ("Phase 1 completion", "88 percent"),
     ]
     for index, (label, value) in enumerate(meta_rows):
         meta.rows[index].cells[0].width = Inches(1.9)
@@ -365,7 +365,7 @@ def build_document() -> Document:
     add_heading(doc, "Decision and current status", 1)
     add_body(
         doc,
-        "Phase 1 is locally implemented and verified at 83 percent. It cannot be described as 100 percent complete because the target Supabase project, Upstash queue, isolated worker host, scheduled cleanup, external monitoring, and real CDN upload path are not configured in the current environment.",
+        "Phase 1 is locally implemented and verified at 88 percent. It cannot be described as 100 percent complete because the target Supabase project, Upstash queue, isolated worker host, scheduled cleanup, external monitoring, and real CDN upload path are not configured in the current environment.",
     )
     add_body(
         doc,
@@ -375,8 +375,8 @@ def build_document() -> Document:
         doc,
         ["Measure", "Starting point", "Current", "After live gate"],
         [
-            ["Product readiness", "70 out of 100", "78 out of 100", "82 out of 100"],
-            ["Phase 1 completion", "0 percent", "83 percent", "100 percent"],
+            ["Product readiness", "70 out of 100", "80 out of 100", "82 out of 100"],
+            ["Phase 1 completion", "0 percent", "88 percent", "100 percent"],
             ["Phase 2 status", "Not started", "Not started", "Eligible to start"],
         ],
         [2.1, 1.65, 1.65, 1.65],
@@ -409,7 +409,7 @@ def build_document() -> Document:
     add_heading(doc, "Issues found and resolved", 1)
     add_body(
         doc,
-        "Nine reliability gaps were identified during Phase 1. Each item below is implemented and verified locally. The production qualification column states where a live environment is still required.",
+        "Fourteen reliability gaps were identified during Phase 1. Each item below is implemented and verified locally. The production qualification column states where a live environment is still required.",
     )
     resolved_rows = [
         ["1", "API restart could lose background work", "Persistent FIFO queue, private staged input, and queued running done error lifecycle", "Live Redis and storage check pending"],
@@ -421,13 +421,18 @@ def build_document() -> Document:
         ["7", "Signed URL could outlive file retention", "URL lifetime is capped by two hours and the database expiry deadline; bucket migration forces private access", "Apply migration and inspect live object policy"],
         ["8", "Declared upload size could differ from returned bytes", "Server rejects size mismatch and enforces exact plan boundaries", "Application validator resolved; real CDN path pending"],
         ["9", "No declared conversion quality corpus", "Deterministic 200 document corpus covers text, tables, scans, Hindi images, orientation, forms, fonts, and larger files", "Resolved for the tested operations"],
+        ["10", "Large files crossed the app request body", "Owner bound signed upload sends configured clients directly to private Supabase storage", "Run real 25 and 200 MB production uploads"],
+        ["11", "Queued PDF passwords needed safe worker transport", "AES 256 GCM encrypted job payload; secret removed after completion or failure", "Resolved in code and tests"],
+        ["12", "A deployed worker could be silently dead", "Upstash heartbeat every 15 seconds; health fails after 60 seconds without a healthy worker", "Deploy worker and alert on failure"],
+        ["13", "Nested abandoned direct uploads escaped cleanup", "Bounded paginated directory traversal removes expired uploads UUID input PDF objects", "Observe scheduled cleanup live"],
+        ["14", "Output storage failure could still mark a distributed job done", "Production and Redis jobs fail closed until validated DOCX is in private storage", "Resolved in code; live failure drill pending"],
     ]
     add_table(
         doc,
         ["ID", "Problem", "Implemented resolution", "Qualification"],
         resolved_rows,
         [0.45, 2.0, 3.1, 1.5],
-        font_size=8.5,
+        font_size=7.7,
         center_columns={0},
     )
 
@@ -448,14 +453,15 @@ def build_document() -> Document:
         ["PDF to PowerPoint text", "Pass", "3.617 s; two slides; 1,330 characters; two editable slides reported"],
         ["PDF to PowerPoint scan", "Pass with limit", "3.353 s; valid two slide image presentation; no text expected"],
         ["Office to PDF", "Pass", "Word 3.313 s; Excel 3.678 s; PowerPoint 5.989 s"],
-        ["Durable localhost job", "Pass", "29 ms queue; 4.562 s processing; pdf2docx; output valid"],
-        ["Protected download", "Pass", "First 36,970 byte DOCX returned 200; second consume returned 404"],
+        ["Final localhost API job", "Pass", "1,096,734 byte PDF to 66,511 byte DOCX; 48 ms queue; 6.301 s processing"],
+        ["Artifact validation", "Pass", "DOCX signature and openability valid; 19 entries; one page; 1,052 text characters"],
+        ["Protected download", "Pass", "First valid DOCX returned; repeated consume returned 404"],
         ["Upload limits", "Pass locally", "Exact 25 and 200 MB accepted; one byte over each limit rejected"],
-        ["Targeted tests", "Pass", "40 of 40"],
-        ["Regression suite", "Pass", "594 of 594 across 119 files"],
+        ["New upload security cleanup tests", "Pass", "11 of 11"],
+        ["Regression suite", "Pass", "605 of 605 across 124 files"],
         ["Type checking", "Pass", "TypeScript completed with no errors"],
         ["Lint", "Pass", "Zero errors and 18 existing warnings"],
-        ["Production build", "Pass", "153 of 153 static pages and worker route generated"],
+        ["Production build", "Pass", "154 of 154 static pages; upload and worker routes generated"],
         ["Production dependencies", "Pass", "Zero moderate high or critical production vulnerabilities"],
     ]
     add_table(
@@ -467,7 +473,6 @@ def build_document() -> Document:
         center_columns={1},
     )
 
-    add_page_break(doc)
     add_heading(doc, "Phase 1 workstream status", 1)
     add_body(
         doc,
@@ -477,11 +482,11 @@ def build_document() -> Document:
         ["200 document quality corpus", "20 percent", "20 percent", "Local gate passed"],
         ["Output validation and fidelity evidence", "15 percent", "15 percent", "Local gate passed"],
         ["Engine routing and fallback evidence", "10 percent", "10 percent", "Local gate passed"],
-        ["Queue worker retry and crash recovery", "20 percent", "16 percent", "Production worker pending"],
-        ["Private storage and deletion evidence", "15 percent", "10 percent", "Live retention observation pending"],
-        ["25 and 200 MB upload path", "10 percent", "5 percent", "CDN storage worker proof pending"],
+        ["Queue worker retry and crash recovery", "20 percent", "17 percent", "Production worker pending"],
+        ["Private storage and deletion evidence", "15 percent", "12 percent", "Live retention observation pending"],
+        ["25 and 200 MB upload path", "10 percent", "7 percent", "Direct storage ready; live proof pending"],
         ["Monitoring and alerting", "10 percent", "7 percent", "External monitor and live history pending"],
-        ["Total", "100 percent", "83 percent", "Do not start Phase 2"],
+        ["Total", "100 percent", "88 percent", "Do not start Phase 2"],
     ]
     add_table(
         doc,
@@ -494,13 +499,14 @@ def build_document() -> Document:
     add_heading(doc, "Implemented processing path", 2)
     add_body(
         doc,
-        "The PDF to Word path now follows a durable job lifecycle. A request is validated and staged, a queue entry is created, an isolated worker claims the job, conversion attempts and fallback are recorded, the output is structurally validated, and the protected download is consumed once. Cleanup removes expired staged input and operational health exposes queue and deletion failures.",
+        "The PDF to Word path now follows a durable job lifecycle. Configured browsers upload large files directly to private storage with an owner bound grant. A queue entry is created, an isolated worker heartbeat proves the worker is alive, the worker claims and validates the input, conversion attempts and fallback are recorded, the output must persist to private storage, and the protected download is consumed once. Cleanup recursively removes expired staged input.",
     )
     add_table(
         doc,
         ["Stage", "Responsibility", "Recorded evidence"],
         [
-            ["Request", "Validate plan limit owner and input bytes", "Owner and input size"],
+            ["Request", "Validate plan limit owner and declared input bytes", "Owner and input size"],
+            ["Direct upload", "Issue an expiring owner bound private storage grant", "Path size owner and one time claim"],
             ["Queue", "Persist FIFO job and staged private input", "Queued time and depth"],
             ["Worker", "Claim recover retry and route engines", "Attempts engines fallback and duration"],
             ["Validation", "Open and inspect final artifact", "Validity type counts and text"],
@@ -520,7 +526,7 @@ def build_document() -> Document:
     live_items = [
         "Configure the target Supabase and Upstash credentials, apply database migrations 001 through 021, and confirm that the pdf files bucket is private.",
         "Deploy the dedicated worker from Dockerfile.worker or run npm run worker:conversions on an isolated host with restart policy and resource limits.",
-        "Call the authenticated health endpoint and confirm queue depth, output validity, conversion latency, fallback rate, and cleanup status are healthy.",
+        "Call the authenticated health endpoint with HEALTH CHECK SECRET and confirm private storage, fresh worker heartbeat, dedicated worker mode, queue depth, output validity, conversion latency, fallback rate, and cleanup status are healthy.",
         "Observe one successful scheduled cleanup cycle and one controlled failed object retry. Confirm that no staged input survives beyond the two hour limit.",
         "Send real 25 MB Free and 200 MB Pro files through CDN or proxy, application, queue, worker, private storage, and final download. Record total time, peak resource use, output validity, and downloaded file size.",
         "Connect an external monitor to detailed health degradation and a worker or container restart alert. Trigger each alert once and record delivery evidence.",
@@ -557,6 +563,7 @@ def build_document() -> Document:
             ["Corpus result", "quality/phase1-corpus/latest-report.json"],
             ["Office engine result", "quality/phase1-corpus/engine-report.json"],
             ["Upload boundary result", "quality/phase1-corpus/upload-boundary-report.json"],
+            ["Final local API smoke", "quality/phase1-corpus/local-api-smoke-report.json"],
             ["Operational migration", "supabase/migrations/021_phase1_conversion_operations.sql"],
             ["Queue worker", "workers/conversion-worker.ts"],
             ["Worker container", "Dockerfile.worker"],
@@ -571,7 +578,7 @@ def build_document() -> Document:
     add_heading(doc, "Final phase decision", 2)
     add_body(
         doc,
-        "Phase 1 local implementation is complete. The current checkpoint is 83 percent because production infrastructure proof is still absent. Do not begin Phase 2 until all six live activation checks pass and the resulting evidence is added to the repository.",
+        "Phase 1 local implementation is complete. The current checkpoint is 88 percent because production infrastructure proof is still absent. Do not begin Phase 2 until all six live activation checks pass and the resulting evidence is added to the repository.",
     )
     add_body(
         doc,

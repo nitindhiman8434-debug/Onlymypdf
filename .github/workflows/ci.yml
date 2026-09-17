@@ -45,6 +45,7 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
           IP_HASH_SALT: ci-test-salt
           CRON_SECRET: ci-cron-secret
+          HEALTH_CHECK_SECRET: ci-health-check-secret
           RAZORPAY_KEY_ID: rzp_test_ci
           RAZORPAY_KEY_SECRET: ci_secret
           RAZORPAY_WEBHOOK_SECRET: ci_webhook
@@ -65,6 +66,7 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ci_supabase_service_role_not_a_real_secret_0123456789
           IP_HASH_SALT: ci-test-salt
           CRON_SECRET: ci-cron-secret
+          HEALTH_CHECK_SECRET: ci-health-check-secret
           RAZORPAY_KEY_ID: rzp_test_ci
           RAZORPAY_KEY_SECRET: ci_secret
           RAZORPAY_WEBHOOK_SECRET: ci_webhook

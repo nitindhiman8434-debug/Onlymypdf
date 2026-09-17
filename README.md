@@ -2,7 +2,7 @@
 
 **Every PDF tool you need, in one simple place.**
 
-OnlyMyPDF is a production-ready SaaS PDF toolkit. Merge, split, compress, convert, scan, sign, edit, protect, unlock, and summarize PDFs — all from your browser.
+OnlyMyPDF is a dependable-beta SaaS PDF toolkit. Merge, split, compress, convert, scan, sign, edit, protect, unlock, and summarize PDFs — all from your browser. Public production launch still requires the live activation gates in `docs/PRODUCTION_CHECKLIST.md`.
 
 ## Features
 
@@ -72,18 +72,19 @@ npm run dev
 
 ### Database migrations
 
-Run all files in `supabase/migrations/` in order (001 through **007**) in the Supabase SQL Editor.
+Run all files in `supabase/migrations/` in order (001 through **021**) in the Supabase SQL Editor.
 
 ### Production readiness
 
 Before deploying:
 
-1. Set `PRODUCTION_URL`, `CRON_SECRET`, Upstash, and Supabase secrets
-2. Run migration **007** for payment atomicity
-3. Verify authenticated `/api/health` returns `healthy` (not `degraded`)
+1. Set `PRODUCTION_URL`, `CRON_SECRET`, `HEALTH_CHECK_SECRET`, Upstash, and Supabase secrets
+2. Run migrations through **021** and keep the `pdf-files` bucket private
+3. Deploy the isolated `Dockerfile.worker` image and verify its heartbeat
+4. Verify authenticated `/api/health` returns `healthy` (not `degraded`)
 4. See `docs/OPERATIONS.md` and `PRODUCTION_CHECKLIST.md`
 
-**Note:** Vercel serverless cannot run LibreOffice/Python locally — use **ConvertAPI** for PDF→Word in production.
+**Note:** The Vercel app sends large PDF→Word uploads directly to private Supabase storage. Run `Dockerfile.worker` on a container host for LibreOffice/pdf2docx conversion, or configure ConvertAPI.
 
 ## Scripts
 

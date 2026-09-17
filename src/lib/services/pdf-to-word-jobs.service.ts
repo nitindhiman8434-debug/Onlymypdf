@@ -17,6 +17,7 @@ import {
   validateConversionOutput,
   type ConversionOutputValidation,
 } from "@/lib/services/conversion-output-validation";
+import { isPdfToWordDirectUploadPath } from "@/lib/server/direct-upload-grant";
 
 export type PdfToWordJobStatus = "queued" | "running" | "done" | "error";
 
@@ -26,6 +27,10 @@ export type PdfToWordJobContext = {
   sessionId: string;
   ipAddress: string | null;
   inputBytes: number;
+  /** True when the API already opened/decrypted the PDF before staging it. */
+  inputPrepared?: boolean;
+  /** AES-GCM encrypted; decrypted only inside the isolated worker. */
+  encryptedPdfPassword?: string;
 };
 
 export type PdfToWordJob = {
@@ -190,6 +195,37 @@ export async function stagePdfToWordJobInput(jobId: string, input: Buffer): Prom
     job.inputStoragePath = storagePath;
   }
   await writeJob(jobId, job);
+}
+
+/** Attach a browser-direct private storage upload without proxying its bytes through the app. */
+export async function stagePdfToWordJobInputFromStorage(
+  jobId: string,
+  storagePath: string,
+  expectedBytes: number
+): Promise<void> {
+  const job = await readJob(jobId);
+  if (!job || job.status !== "queued") throw new Error("Queued job was not found.");
+  if (!isPdfToWordDirectUploadPath(storagePath)) {
+    throw new Error("Direct upload path is invalid.");
+  }
+
+  const supabase = await createServiceClient();
+  const bucket = supabase.storage.from(STORAGE_BUCKET);
+  try {
+    const { data, error } = await bucket.info(storagePath);
+    if (error || !data) throw error ?? new Error("Uploaded PDF was not found.");
+    if (!Number.isSafeInteger(data.size) || data.size !== expectedBytes) {
+      throw new Error("Uploaded file size does not match the signed request.");
+    }
+    if (data.contentType && data.contentType !== "application/pdf") {
+      throw new Error("Uploaded file content type is not PDF.");
+    }
+    job.inputStoragePath = storagePath;
+    await writeJob(jobId, job);
+  } catch (error) {
+    await bucket.remove([storagePath]).catch(() => undefined);
+    throw error;
+  }
 }
 
 export async function enqueuePdfToWordJob(jobId: string): Promise<void> {
@@ -373,11 +409,17 @@ export async function completePdfToWordJob(
   job.outputValidation = validation;
   job.completedAt = Date.now();
   job.processingTimeMs = job.startedAt ? Math.max(0, job.completedAt - job.startedAt) : undefined;
+  if (job.context) delete job.context.encryptedPdfPassword;
 
   if (isSupabaseConfigured()) {
     try {
       job.storagePath = await uploadOutputToStorage(jobId, payload.outputPath);
     } catch (err) {
+      if (process.env.NODE_ENV === "production" || isUpstashConfigured()) {
+        throw new Error("Conversion output could not be persisted to private storage.", {
+          cause: err,
+        });
+      }
       console.warn("[pdf-to-word-jobs] Storage upload failed, local path only:", err);
     }
   }
@@ -394,6 +436,7 @@ export async function failPdfToWordJob(jobId: string, error: unknown, workDir?: 
   const mapped = mapPdfToWordError(raw);
   job.status = "error";
   job.error = toSafeApiError(new Error(mapped), "Conversion failed. Please try again.");
+  if (job.context) delete job.context.encryptedPdfPassword;
   if (workDir) job.workDir = workDir;
   await cleanupJobFiles(job);
   job.completedAt = Date.now();

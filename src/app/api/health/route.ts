@@ -16,6 +16,9 @@ import {
   getConversionOperationalMetrics,
 } from "@/lib/ops/conversion-telemetry";
 import { getPdfToWordQueueDepth } from "@/lib/services/pdf-to-word-jobs.service";
+import { getConversionWorkerHealth } from "@/lib/ops/conversion-worker-health";
+import { isDirectUploadGrantSigningConfigured } from "@/lib/server/direct-upload-grant";
+import { isJobPayloadEncryptionConfigured } from "@/lib/server/job-payload-secret";
 
 export const dynamic = "force-dynamic";
 
@@ -64,17 +67,49 @@ export async function GET(request: NextRequest) {
           : "Primary PDF→Word engine (cloud)"
         : "Set CONVERTAPI_SECRET for Smallpdf-class PDF→Word at scale",
     },
+    direct_upload_security: {
+      ok:
+        process.env.NODE_ENV !== "production" ||
+        (isDirectUploadGrantSigningConfigured() && isJobPayloadEncryptionConfigured()),
+      detail: "Owner-bound upload grants and encrypted queued PDF passwords",
+    },
+    dedicated_worker_mode: {
+      ok: process.env.NODE_ENV !== "production" || process.env.INLINE_CONVERSION_WORKER !== "1",
+      detail:
+        process.env.INLINE_CONVERSION_WORKER === "1"
+          ? "Inline conversion worker is enabled"
+          : "Application instances enqueue only; dedicated worker claims jobs",
+    },
   };
 
   if (isSupabaseConfigured()) {
+    let supabase: Awaited<ReturnType<typeof createServiceClient>> | null = null;
     try {
-      const supabase = await createServiceClient();
+      supabase = await createServiceClient();
       const { error } = await supabase.from("user_profiles").select("id").limit(1);
       checks.database = { ok: !error, detail: error?.message };
     } catch (err) {
       checks.database = {
         ok: false,
         detail: err instanceof Error ? err.message : "Database unreachable",
+      };
+    }
+
+    try {
+      supabase ??= await createServiceClient();
+      const { data: bucket, error: bucketError } = await supabase.storage.getBucket("pdf-files");
+      checks.storage_private = {
+        ok: !bucketError && bucket?.public === false,
+        detail: bucketError
+          ? bucketError.message
+          : bucket
+            ? `bucket=pdf-files public=${String(bucket.public)}`
+            : "pdf-files bucket not found",
+      };
+    } catch (err) {
+      checks.storage_private = {
+        ok: false,
+        detail: err instanceof Error ? err.message : "Storage bucket check failed",
       };
     }
 
@@ -92,16 +127,19 @@ export async function GET(request: NextRequest) {
     }
   } else {
     checks.database = { ok: false, detail: "Supabase not configured" };
+    checks.storage_private = { ok: false, detail: "Supabase not configured" };
   }
 
   let conversionMetrics = null;
   let cleanupOperational = null;
   let conversionQueue = null;
+  let workerHealth = null;
   try {
-    [conversionMetrics, cleanupOperational, conversionQueue] = await Promise.all([
+    [conversionMetrics, cleanupOperational, conversionQueue, workerHealth] = await Promise.all([
       getConversionOperationalMetrics(24),
       getCleanupOperationalStatus(),
       getPdfToWordQueueDepth(),
+      getConversionWorkerHealth(),
     ]);
     const cleanupAgeMs = cleanupOperational?.completedAt
       ? Date.now() - new Date(cleanupOperational.completedAt).getTime()
@@ -124,6 +162,10 @@ export async function GET(request: NextRequest) {
         ? `status=${cleanupOperational.status} completed=${cleanupOperational.completedAt ?? "running"} failed=${cleanupOperational.filesFailed + cleanupOperational.tempSessionsFailed + cleanupOperational.conversionJobsFailed}`
         : "No cleanup run recorded",
     };
+    checks.conversion_worker = {
+      ok: workerHealth.ok,
+      detail: workerHealth.detail,
+    };
   } catch (err) {
     checks.operations = {
       ok: false,
@@ -136,7 +178,11 @@ export async function GET(request: NextRequest) {
     checks.app.ok &&
     checks.secrets.ok &&
     (checks.database?.ok ?? false) &&
-    (!isProd || checks.upstash.ok);
+    (!isProd || checks.upstash.ok) &&
+    (!isProd || (checks.storage_private?.ok ?? false)) &&
+    (!isProd || checks.direct_upload_security.ok) &&
+    (!isProd || checks.dedicated_worker_mode.ok) &&
+    (!isProd || (checks.conversion_worker?.ok ?? false));
 
   const status = allCriticalOk ? 200 : 503;
 
@@ -149,6 +195,7 @@ export async function GET(request: NextRequest) {
         conversions24h: conversionMetrics,
         cleanup: cleanupOperational,
         queue: conversionQueue,
+        worker: workerHealth,
       },
     },
     { status }

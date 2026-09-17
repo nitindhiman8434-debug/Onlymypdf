@@ -13,6 +13,9 @@ import {
   updatePdfToWordJobProgress,
 } from "./pdf-to-word-jobs.service";
 import { mapPdfToWordError, pdfToWord, type PdfToWordEngine } from "./pdf-to-word.service";
+import { resolvePdfBuffer } from "@/lib/pdf/pdf-password.server";
+import { validateBufferMagic } from "@/lib/utils/file-magic";
+import { decryptJobPayloadSecret } from "@/lib/server/job-payload-secret";
 
 export type PdfToWordWorkerResult = {
   processed: boolean;
@@ -33,11 +36,25 @@ export async function processNextPdfToWordJob(): Promise<PdfToWordWorkerResult> 
     const context = files.job.context;
     if (!context) throw new Error("Conversion job context is missing.");
 
+    const pdfPassword = context.encryptedPdfPassword
+      ? decryptJobPayloadSecret(context.encryptedPdfPassword)
+      : undefined;
+    if (!context.inputPrepared) {
+      const uploaded = await fs.readFile(files.inputPath);
+      const magic = validateBufferMagic(uploaded, ["pdf"]);
+      if (!magic.valid) {
+        throw new Error(magic.message || "Uploaded file content is not a PDF.");
+      }
+      const prepared = await resolvePdfBuffer(uploaded, pdfPassword);
+      await fs.writeFile(files.inputPath, prepared);
+    }
+
     const result = await withHeavyJobGuard(() =>
       pdfToWord({
         fileName: context.sourceFileName,
         inputPath: files.inputPath,
         outputPath: files.outputPath,
+        pdfPassword,
         onProgress: (percent) => void updatePdfToWordJobProgress(jobId, percent),
         onEngineAttempt: (engine) => attempts.push(engine),
       })

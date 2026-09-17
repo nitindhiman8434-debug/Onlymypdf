@@ -80,6 +80,26 @@ vi.mock("@/lib/server/upstash-kv", () => ({
   isUpstashConfigured: vi.fn(),
 }));
 
+vi.mock("@/lib/ops/conversion-worker-health", () => ({
+  getConversionWorkerHealth: vi.fn(async () => ({
+    ok: true,
+    detail: "state=idle age_ms=1000",
+    heartbeat: { recordedAt: new Date().toISOString(), state: "idle" },
+  })),
+}));
+
+vi.mock("@/lib/server/direct-upload-grant", () => ({
+  isDirectUploadGrantSigningConfigured: vi.fn(() => true),
+}));
+
+vi.mock("@/lib/server/job-payload-secret", () => ({
+  isJobPayloadEncryptionConfigured: vi.fn(() => true),
+}));
+
+vi.mock("@/lib/services/pdf-to-word-jobs.service", () => ({
+  getPdfToWordQueueDepth: vi.fn(async () => ({ pending: 0, processing: 0 })),
+}));
+
 import {
   checkContactEmailRateLimit,
   checkContactRateLimit,
@@ -219,6 +239,12 @@ describe("misc API route handlers", () => {
           limit: vi.fn().mockResolvedValue({ error: null }),
         }),
       }),
+      storage: {
+        getBucket: vi.fn().mockResolvedValue({
+          data: { id: "pdf-files", public: false },
+          error: null,
+        }),
+      },
     } as never);
     vi.mocked(getCleanupStats).mockResolvedValue({
       pendingCleanup: 12,
@@ -232,6 +258,8 @@ describe("misc API route handlers", () => {
 
     expect(response.status).toBe(200);
     expect(body.checks.database.ok).toBe(true);
+    expect(body.checks.storage_private.ok).toBe(true);
+    expect(body.checks.conversion_worker.ok).toBe(true);
     expect(body.checks.storage_cleanup.detail).toContain("pending=12");
   });
 });

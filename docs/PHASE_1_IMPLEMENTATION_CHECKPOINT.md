@@ -6,12 +6,12 @@
 
 **Starting product readiness:** 70/100
 
-**Current evidence-based readiness:** 78/100
+**Current evidence-based readiness:** 80/100
 **Phase 1 target after live activation:** 82/100
 
 ## Decision
 
-The Phase 1 application code and local verification package are complete. Phase 2 must not start yet. Phase 1 remains at **83%** until migration 021, Supabase private storage, Upstash, the dedicated worker, scheduled cleanup, detailed health monitoring, and the 25/200 MB path are verified in the target production environment.
+The Phase 1 application code and local verification package are complete. Phase 2 must not start yet. Phase 1 is **88% complete**. The remaining 12% requires migration 021, Supabase private storage, Upstash, the deployed dedicated worker, scheduled cleanup, detailed health monitoring, and real 25/200 MB production-path evidence.
 
 The remaining work needs production account configuration that is not present in `.env.local`. Local values currently exist for `CRON_SECRET`, `PDF2DOCX_PYTHON`, and `LIBREOFFICE_PATH`; Supabase, Upstash, `HEALTH_CHECK_SECRET`, and ConvertAPI are not configured.
 
@@ -26,6 +26,11 @@ The remaining work needs production account configuration that is not present in
 7. **Signed URLs could outlive a file's remaining retention window.** Signed download lifetime is now capped by both two hours and the database `expires_at` deadline. The `pdf-files` bucket is forced private by migration 021.
 8. **An upload could declare one size and return a different body length.** Upload validation now rejects the mismatch. Exact 25 MB and 200 MB boundaries and a concurrent 25/50/100/200 MB validation batch pass.
 9. **Core output fidelity had no declared corpus.** A deterministic 200-document corpus now covers text, tables, image-only scans, Hindi image text, mixed orientation, forms, fonts, and larger multi-page documents.
+10. **Large PDF-to-Word files crossed the application request body.** Configured environments now use an owner-bound, expiring Supabase signed upload so 25/200 MB bytes travel browser → private storage instead of through the serverless app body.
+11. **Queued PDF passwords could not safely cross app and worker instances.** Passwords now use AES-256-GCM encryption at rest in the job payload and are removed when the job completes or fails.
+12. **Worker deployment could be configured but silently dead.** The isolated worker now writes an Upstash heartbeat every 15 seconds. Detailed health fails when the heartbeat is older than 60 seconds, storage is public, or inline production claiming is enabled.
+13. **Abandoned direct uploads used a deeper folder than cleanup scanned.** Cleanup now traverses bounded, paginated staging directories and removes expired `uploads/{uuid}/input.pdf` objects.
+14. **A distributed worker could mark a job done after output storage failed.** Production and Redis-backed jobs now fail closed unless the validated DOCX is persisted to private storage.
 
 ## Verification evidence
 
@@ -41,14 +46,15 @@ The remaining work needs production account configuration that is not present in
 | PDF→PowerPoint text | Pass | 3.617 s, two slides, 1,330 extractable characters, two editable slides reported by engine |
 | PDF→PowerPoint scan | Pass with declared limit | 3.353 s, valid two-slide image presentation; no extractable text expected for image-only source |
 | Office→PDF | Pass | Word 3.313 s, Excel 3.678 s, PowerPoint 5.989 s; all valid PDFs |
-| Durable localhost job | Pass | queued → done; 29 ms queue, 4.562 s processing, `pdf2docx`, output valid |
-| Protected download | Pass | First download 200 with 36,970-byte DOCX; repeated consume returned 404 |
+| Final localhost API job | Pass | 1,096,734-byte PDF → 66,511-byte DOCX; 48 ms queue; 6.301 s processing; `pdf2docx` |
+| Artifact validation | Pass | DOCX signature/openability valid; 19 ZIP entries; 1 page; 1,052 text characters |
+| Protected download | Pass | First download returned the valid DOCX; repeated consume returned 404 |
 | Upload boundaries | Pass | Exact 25 MB and 200 MB accepted; one-byte-over rejected; concurrent 25/50/100/200 MB accepted by application validator |
-| Targeted Phase 1 tests | Pass | 40/40 |
-| Full regression | Pass | 594/594 across 119 files |
+| New upload/security/cleanup tests | Pass | 11/11 |
+| Full regression | Pass | 605/605 across 124 files |
 | TypeScript | Pass | `tsc --noEmit` |
 | ESLint | Pass | Zero errors; 18 existing warnings |
-| Production build | Pass | 153/153 static pages and `/api/cron/conversion-worker` generated |
+| Production build | Pass | 154/154 static pages; direct-upload and worker routes generated |
 | Production dependency audit | Pass | Zero moderate, high, or critical production vulnerabilities |
 
 Evidence files:
@@ -57,6 +63,7 @@ Evidence files:
 - `quality/phase1-corpus/latest-report.json`
 - `quality/phase1-corpus/engine-report.json`
 - `quality/phase1-corpus/upload-boundary-report.json`
+- `quality/phase1-corpus/local-api-smoke-report.json`
 - `supabase/migrations/021_phase1_conversion_operations.sql`
 
 ## Phase 1 workstream status
@@ -66,19 +73,19 @@ Evidence files:
 | 200-document quality corpus | 20% | 20% | Local gate passed |
 | Output validation and fidelity evidence | 15% | 15% | Local gate passed |
 | Engine routing and fallback evidence | 10% | 10% | Local gate passed |
-| Queue, worker, retry, and crash recovery | 20% | 16% | Code/local passed; production worker deployment pending |
-| Private storage and deletion evidence | 15% | 10% | Code passed; live 2h/24h observation pending |
-| 25/200 MB load path | 10% | 5% | Application boundary passed; CDN/storage/worker proof pending |
+| Queue, worker, retry, and crash recovery | 20% | 17% | Heartbeat and fail-closed output added; production worker deployment pending |
+| Private storage and deletion evidence | 15% | 12% | Direct upload and nested cleanup passed; live 2h/24h observation pending |
+| 25/200 MB load path | 10% | 7% | Direct-to-storage path implemented; production CDN/storage/worker proof pending |
 | Monitoring and alerting | 10% | 7% | Health signals implemented; external monitor and live history pending |
-| **Total** | **100%** | **83%** | **Do not start Phase 2** |
+| **Total** | **100%** | **88%** | **Do not start Phase 2** |
 
 ## Required live activation gate
 
 1. Configure Supabase and Upstash secrets and apply migrations 001–021.
 2. Deploy `Dockerfile.worker` or run `npm run worker:conversions` on an isolated worker host.
-3. Run authenticated `/api/health` and confirm queue, validity, latency, and cleanup checks are healthy.
+3. Run authenticated `/api/health` with `HEALTH_CHECK_SECRET` and confirm private storage, fresh worker heartbeat, dedicated-worker mode, queue, validity, latency, and cleanup checks are healthy.
 4. Observe at least one successful cleanup cycle and one controlled failed-object retry; verify no staged object survives beyond its retention window.
 5. Send real 25 MB Free and 200 MB Pro files through CDN/proxy → app → queue → worker → private storage → download.
 6. Attach an external alert to detailed health degradation and a worker/container restart alert.
 
-After these six checks pass, Phase 1 can be marked 100% and readiness can move from 78 to 82. Only then should Phase 2 begin.
+After these six checks pass, Phase 1 can be marked 100% and readiness can move from 80 to 82. Only then should Phase 2 begin.

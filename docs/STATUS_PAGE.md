@@ -23,7 +23,7 @@ NEXT_PUBLIC_STATUS_PAGE_URL=https://status.onlymypdf.com
 4. Optional: add monitors for `/`, `/robots.txt`, and authenticated detailed health:
 
 ```bash
-curl -fsS -H "Authorization: Bearer $CRON_SECRET" https://yourdomain.com/api/health
+curl -fsS -H "Authorization: Bearer $HEALTH_CHECK_SECRET" https://yourdomain.com/api/health
 ```
 
 ### Instatus

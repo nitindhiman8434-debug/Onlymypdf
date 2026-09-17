@@ -89,10 +89,10 @@ Large PDFs (>40 MB) skip visual/node emergency engines to avoid OOM/timeouts.
 curl -fsS https://onlymypdf.com/api/health
 ```
 
-### Detailed health (requires `CRON_SECRET`)
+### Detailed health (requires `HEALTH_CHECK_SECRET`)
 
 ```bash
-curl -fsS -H "Authorization: Bearer $CRON_SECRET" https://onlymypdf.com/api/health
+curl -fsS -H "Authorization: Bearer $HEALTH_CHECK_SECRET" https://onlymypdf.com/api/health
 ```
 
 Look for:

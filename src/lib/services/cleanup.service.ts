@@ -9,6 +9,9 @@ const TEMP_SESSION_PREFIX = "temp-sessions/pdf";
 const CONVERSION_JOB_PREFIX = "temp-jobs/pdf-to-word";
 const TEMP_SESSION_LIST_LIMIT = 100;
 const CONVERSION_JOB_TTL_MS = 2 * 60 * 60 * 1000;
+const CONVERSION_LIST_LIMIT = 1_000;
+const CONVERSION_MAX_DIRECTORY_DEPTH = 3;
+const CONVERSION_MAX_DIRECTORIES = 10_000;
 
 export async function cleanupExpiredFiles(): Promise<{
   deleted: number;
@@ -164,46 +167,65 @@ export async function cleanupExpiredConversionJobs(): Promise<{
   let scanned = 0;
   try {
     const supabase = await createServiceClient();
+    const bucket = supabase.storage.from(STORAGE_BUCKET);
     const cutoff = Date.now() - CONVERSION_JOB_TTL_MS;
-    const { data: entries, error } = await supabase.storage
-      .from(STORAGE_BUCKET)
-      .list(CONVERSION_JOB_PREFIX, {
-        limit: 1_000,
-        sortBy: { column: "created_at", order: "asc" },
-      });
-    if (error) throw error;
-
     const stalePaths: string[] = [];
-    for (const entry of entries ?? []) {
-      if (!entry.name) continue;
-      if (entry.id !== null) {
-        scanned += 1;
-        const stamp = storageObjectAgeMs(entry);
-        if (stamp > 0 && stamp < cutoff) {
-          stalePaths.push(`${CONVERSION_JOB_PREFIX}/${entry.name}`);
-        }
-        continue;
-      }
+    const directories: Array<{ path: string; depth: number }> = [
+      { path: CONVERSION_JOB_PREFIX, depth: 0 },
+    ];
+    let directoryIndex = 0;
 
-      const folder = `${CONVERSION_JOB_PREFIX}/${entry.name}`;
-      const { data: children, error: childError } = await supabase.storage
-        .from(STORAGE_BUCKET)
-        .list(folder, { limit: 20 });
-      if (childError) {
+    while (directoryIndex < directories.length) {
+      if (directoryIndex >= CONVERSION_MAX_DIRECTORIES) {
         failed += 1;
-        continue;
+        break;
       }
-      for (const child of children ?? []) {
-        if (!child.name || child.id === null) continue;
-        scanned += 1;
-        const stamp = storageObjectAgeMs(child);
-        if (stamp > 0 && stamp < cutoff) stalePaths.push(`${folder}/${child.name}`);
+      const directory = directories[directoryIndex++];
+      let offset = 0;
+      while (true) {
+        const { data: entries, error } = await bucket.list(directory.path, {
+          limit: CONVERSION_LIST_LIMIT,
+          offset,
+          sortBy: { column: "created_at", order: "asc" },
+        });
+        if (error) {
+          failed += 1;
+          break;
+        }
+
+        for (const entry of entries ?? []) {
+          if (
+            !entry.name ||
+            entry.name === "." ||
+            entry.name === ".." ||
+            entry.name.includes("/") ||
+            entry.name.includes("\\")
+          ) {
+            continue;
+          }
+          const objectPath = `${directory.path}/${entry.name}`;
+          if (entry.id === null) {
+            if (directory.depth < CONVERSION_MAX_DIRECTORY_DEPTH) {
+              directories.push({ path: objectPath, depth: directory.depth + 1 });
+            } else {
+              failed += 1;
+            }
+            continue;
+          }
+
+          scanned += 1;
+          const stamp = storageObjectAgeMs(entry);
+          if (stamp > 0 && stamp < cutoff) stalePaths.push(objectPath);
+        }
+
+        if ((entries?.length ?? 0) < CONVERSION_LIST_LIMIT) break;
+        offset += entries?.length ?? 0;
       }
     }
 
     for (let index = 0; index < stalePaths.length; index += STORAGE_DELETE_CHUNK) {
       const chunk = stalePaths.slice(index, index + STORAGE_DELETE_CHUNK);
-      const { error: removeError } = await supabase.storage.from(STORAGE_BUCKET).remove(chunk);
+      const { error: removeError } = await bucket.remove(chunk);
       if (removeError) failed += chunk.length;
       else deleted += chunk.length;
     }

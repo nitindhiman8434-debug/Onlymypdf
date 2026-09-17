@@ -77,6 +77,18 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build conversion worker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.worker
+          push: ${{ github.event_name == 'workflow_dispatch' && inputs.push_image == true }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:worker
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:worker-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   smoke:
     needs: docker
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
@@ -104,7 +116,7 @@ jobs:
       - name: Production smoke
         if: steps.url.outputs.base != ''
         env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          HEALTH_CHECK_SECRET: ${{ secrets.HEALTH_CHECK_SECRET }}
         run: |
           BASE="${{ steps.url.outputs.base }}"
           echo "CD smoke testing $BASE"
@@ -115,10 +127,11 @@ jobs:
             if (h.status === 'degraded') throw new Error('Health is degraded');
           "
           curl -fsS -o /dev/null -w "%{http_code}" "$BASE/status" | grep -E '^200$'
-          if [ -n "$CRON_SECRET" ]; then
-            curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$BASE/api/health" | tee health-detail.json
+          if [ -n "$HEALTH_CHECK_SECRET" ]; then
+            curl -fsS -H "Authorization: Bearer $HEALTH_CHECK_SECRET" "$BASE/api/health" | tee health-detail.json
             node -e "
               const h = require('./health-detail.json');
               if (!h.checks) throw new Error('Missing detailed health checks');
+              if (h.status === 'degraded') throw new Error('Detailed health is degraded');
             "
           fi

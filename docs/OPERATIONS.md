@@ -7,7 +7,7 @@ Production operations guide for monitoring, deployments, backups, conversion wor
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /api/health` | Public liveness (`200` JSON with `status`) |
-| `GET /api/health` + `Authorization: Bearer $CRON_SECRET` or `x-health-key` | Detailed checks (Upstash, DB, secrets) |
+| `GET /api/health` + `Authorization: Bearer $HEALTH_CHECK_SECRET` or `x-health-key` | Detailed checks (Upstash, DB, private storage, worker heartbeat, secrets) |
 | `GET /status` | Public status page (polls `/api/health`; links external page when configured) |
 | Vercel/host dashboard | Process uptime, memory, cold starts |
 
@@ -21,10 +21,10 @@ curl -fsS https://yourdomain.com/status
 **Detailed diagnostics (requires secret)**
 
 ```bash
-curl -fsS -H "Authorization: Bearer $CRON_SECRET" https://yourdomain.com/api/health
+curl -fsS -H "Authorization: Bearer $HEALTH_CHECK_SECRET" https://yourdomain.com/api/health
 ```
 
-Public response: `{ "status": "ok", "timestamp": "..." }`. Authenticated response includes queue depth, 24-hour conversion success/validity/fallback/latency metrics, database checks, and the latest cleanup run.
+Public response: `{ "status": "ok", "timestamp": "..." }`. Authenticated response includes queue depth, worker heartbeat, private-bucket status, direct-upload security, 24-hour conversion success/validity/fallback/latency metrics, database checks, and the latest cleanup run.
 
 ## Status page
 
@@ -138,6 +138,9 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 CRON_SECRET=
+HEALTH_CHECK_SECRET=
+UPLOAD_GRANT_SECRET=       # optional dedicated key; otherwise CRON_SECRET fallback
+JOB_PAYLOAD_SECRET=        # optional dedicated key; otherwise CRON_SECRET fallback
 IP_HASH_SALT=
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
@@ -178,6 +181,8 @@ LIBREOFFICE_PATH=        # local Office conversions (Dockerfile.full sets this)
 When **Upstash** and **Supabase storage** are both configured:
 
 - **Heavy conversions** share a distributed semaphore. PDF-to-Word additionally uses durable Redis pending/processing queues and private staged storage. Without Upstash in production, heavy routes fail closed.
+- **Large PDF-to-Word uploads** go browser → signed private Supabase upload → durable queue, so 25/200 MB files do not cross the app server request body.
+- **Dedicated worker health** is written to Upstash every 15 seconds and becomes unhealthy after 60 seconds without a fresh heartbeat.
 - **PDF preview sessions** persist metadata in Redis and PDF bytes in bucket `pdf-files` under `temp-sessions/pdf/{sessionId}.pdf` (30 min TTL).
 
 See `docs/PRODUCTION_CHECKLIST.md` and `.env.example` for the full list.

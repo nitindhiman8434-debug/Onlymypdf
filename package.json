@@ -16,6 +16,7 @@
     "phase1:corpus": "npx tsx scripts/phase1-corpus.ts",
     "phase1:upload-boundaries": "npx tsx scripts/phase1-upload-boundaries.ts",
     "phase1:engine-evidence": "npx tsx scripts/phase1-engine-evidence.ts",
+    "phase1:local-api-smoke": "npx tsx scripts/phase1-local-api-smoke.ts",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install --with-deps chromium",

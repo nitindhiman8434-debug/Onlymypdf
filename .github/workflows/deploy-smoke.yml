@@ -57,14 +57,14 @@ jobs:
       - name: Detailed health check (authenticated)
         if: steps.url.outputs.base != ''
         env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          HEALTH_CHECK_SECRET: ${{ secrets.HEALTH_CHECK_SECRET }}
         run: |
-          if [ -z "$CRON_SECRET" ]; then
-            echo "CRON_SECRET secret not configured — skipping detailed health."
+          if [ -z "$HEALTH_CHECK_SECRET" ]; then
+            echo "HEALTH_CHECK_SECRET secret not configured — skipping detailed health."
             exit 0
           fi
           BASE="${{ steps.url.outputs.base }}"
-          curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$BASE/api/health" | tee health-detail.json
+          curl -fsS -H "Authorization: Bearer $HEALTH_CHECK_SECRET" "$BASE/api/health" | tee health-detail.json
           node -e "
             const h = require('./health-detail.json');
             if (!h.checks) throw new Error('Missing detailed health checks');

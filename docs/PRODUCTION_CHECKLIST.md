@@ -24,6 +24,8 @@ Copy this checklist when deploying to Vercel, Docker, or any host. Phase 1 requi
 
 | `CRON_SECRET` | Authorizes `/api/cron/cleanup` and `/api/cron/conversion-worker` |
 | `HEALTH_CHECK_SECRET` | Authorizes detailed `/api/health`; do not reuse `CRON_SECRET` |
+| `UPLOAD_GRANT_SECRET` | Recommended dedicated HMAC key for owner-bound direct-upload grants; falls back to `CRON_SECRET` |
+| `JOB_PAYLOAD_SECRET` | Recommended dedicated AES-GCM key for queued PDF passwords; falls back to `CRON_SECRET` |
 
 | `IP_HASH_SALT` | Hashes guest IPs for rate limits / logs |
 
@@ -117,7 +119,7 @@ Skip when using mock billing (`BILLING_MODE=mock` for dev/staging).
 
 | `PRODUCTION_URL` | Post-deploy smoke in `cd.yml` / `deploy-smoke.yml` (e.g. `https://onlymypdf.com`) |
 
-| `CRON_SECRET` | Authenticated detailed health check in deploy smoke |
+| `HEALTH_CHECK_SECRET` | Authenticated detailed health check in deploy smoke |
 
 
 
@@ -207,7 +209,7 @@ curl -fsS https://yourdomain.com/robots.txt
 
 curl -fsS https://yourdomain.com/sitemap.xml
 
-curl -fsS -H "Authorization: Bearer $CRON_SECRET" https://yourdomain.com/api/health
+curl -fsS -H "Authorization: Bearer $HEALTH_CHECK_SECRET" https://yourdomain.com/api/health
 
 ```
 
@@ -223,7 +225,7 @@ Manual checks:
 
 - [ ] Cron cleanup runs hourly (Vercel cron + `CRON_SECRET`, or external scheduler with Bearer auth)
 - [ ] `npm run worker:conversions` or the `conversion-worker` Compose service is continuously running
-- [ ] Detailed health shows queue, output validity, latency and latest cleanup as healthy
+- [ ] Detailed health shows private `pdf-files` storage, direct-upload security, fresh worker heartbeat, queue, output validity, latency and latest cleanup as healthy
 - [ ] Real 25 MB and 200 MB files complete through ingress, worker, storage and download
 
 - [ ] Upload → convert → download on one tool (smoke test)
