@@ -599,7 +599,7 @@ export async function updatePayment(
   const supabase = await createServiceClient();
   const { data: updated, error } = await supabase
     .from("payments")
-    .update(data)
+    .update({ ...data, updated_at: new Date().toISOString() })
     .eq("id", paymentId)
     .select()
     .single();
@@ -613,7 +613,7 @@ export async function claimPaymentForFulfillment(paymentId: string) {
   const supabase = await createServiceClient();
   const { data, error } = await supabase
     .from("payments")
-    .update({ status: "processing" })
+    .update({ status: "processing", updated_at: new Date().toISOString() })
     .eq("id", paymentId)
     .eq("status", "pending")
     .select()
@@ -630,7 +630,11 @@ export async function finalizeClaimedPayment(
   const supabase = await createServiceClient();
   const { data: updated, error } = await supabase
     .from("payments")
-    .update({ ...data, status: "completed" })
+    .update({
+      ...data,
+      status: "completed",
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", paymentId)
     .eq("status", "processing")
     .select()
@@ -644,7 +648,7 @@ export async function releasePaymentClaim(paymentId: string) {
   const supabase = await createServiceClient();
   await supabase
     .from("payments")
-    .update({ status: "pending" })
+    .update({ status: "pending", updated_at: new Date().toISOString() })
     .eq("id", paymentId)
     .eq("status", "processing");
 }
@@ -654,7 +658,10 @@ export async function markCouponRedeemed(paymentId: string) {
   const supabase = await createServiceClient();
   await supabase
     .from("payments")
-    .update({ coupon_redeemed_at: new Date().toISOString() })
+    .update({
+      coupon_redeemed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", paymentId)
     .is("coupon_redeemed_at", null);
 }

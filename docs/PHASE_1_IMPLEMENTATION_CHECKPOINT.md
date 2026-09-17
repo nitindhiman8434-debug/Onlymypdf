@@ -1,19 +1,19 @@
 # Phase 1 Dependable Beta — Implementation Checkpoint
 
-**Date:** 17 September 2026
+**Date:** 18 September 2026
 
 **Branch:** `phase1-dependable-beta`
 
 **Starting product readiness:** 70/100
 
-**Current evidence-based readiness:** 80/100
+**Current evidence-based readiness:** 81/100
 **Phase 1 target after live activation:** 82/100
 
 ## Decision
 
-The Phase 1 application code and local verification package are complete. Phase 2 must not start yet. Phase 1 is **88% complete**. The remaining 12% requires migration 021, Supabase private storage, Upstash, the deployed dedicated worker, scheduled cleanup, detailed health monitoring, and real 25/200 MB production-path evidence.
+Phase 2 must not start yet. Phase 1 is **95% complete**. Supabase, Upstash, migrations 001–022, private storage, the queue, a dedicated local worker, authenticated health, an authenticated cleanup run, browser signed upload, and the exact 25 MB worker path are live verified.
 
-The remaining work needs production account configuration that is not present in `.env.local`. Local values currently exist for `CRON_SECRET`, `PDF2DOCX_PYTHON`, and `LIBREOFFICE_PATH`; Supabase, Upstash, `HEALTH_CHECK_SECRET`, and ConvertAPI are not configured.
+The remaining 5% requires a persistent worker host with restart policy, a scheduled two-hour retention and failed-deletion drill, a storage plan or provider that accepts 200 MB, and external health and worker alerts. Supabase Free is fixed at 50 MB, so the 200 MB Pro path cannot pass on the current plan. ConvertAPI also remains unconfigured.
 
 ## Issues found and resolved
 
@@ -31,6 +31,8 @@ The remaining work needs production account configuration that is not present in
 12. **Worker deployment could be configured but silently dead.** The isolated worker now writes an Upstash heartbeat every 15 seconds. Detailed health fails when the heartbeat is older than 60 seconds, storage is public, or inline production claiming is enabled.
 13. **Abandoned direct uploads used a deeper folder than cleanup scanned.** Cleanup now traverses bounded, paginated staging directories and removes expired `uploads/{uuid}/input.pdf` objects.
 14. **A distributed worker could mark a job done after output storage failed.** Production and Redis-backed jobs now fail closed unless the validated DOCX is persisted to private storage.
+15. **Cleanup cron referenced a missing `payments.updated_at` column.** Migration 022 adds the column and index, and each payment claim transition now refreshes the timestamp. The authenticated cleanup route then completed with zero failures.
+16. **The PDF-only bucket MIME rule blocked DOCX output.** The private bucket allowlist now accepts PDF input and DOCX output. API, dedicated-worker, and browser conversions pass.
 
 ## Verification evidence
 
@@ -46,10 +48,16 @@ The remaining work needs production account configuration that is not present in
 | PDF→PowerPoint text | Pass | 3.617 s, two slides, 1,330 extractable characters, two editable slides reported by engine |
 | PDF→PowerPoint scan | Pass with declared limit | 3.353 s, valid two-slide image presentation; no extractable text expected for image-only source |
 | Office→PDF | Pass | Word 3.313 s, Excel 3.678 s, PowerPoint 5.989 s; all valid PDFs |
-| Final localhost API job | Pass | 1,096,734-byte PDF → 66,511-byte DOCX; 48 ms queue; 6.301 s processing; `pdf2docx` |
+| Live localhost API job | Pass | 1,096,734-byte PDF → 66,511-byte DOCX; 1.423 s queue; 4.851 s processing; `pdf2docx` |
 | Artifact validation | Pass | DOCX signature/openability valid; 19 ZIP entries; 1 page; 1,052 text characters |
 | Protected download | Pass | First download returned the valid DOCX; repeated consume returned 404 |
-| Upload boundaries | Pass | Exact 25 MB and 200 MB accepted; one-byte-over rejected; concurrent 25/50/100/200 MB accepted by application validator |
+| Live Supabase and Upstash | Pass | 25 RLS tables; 35 public policies; private bucket; queue depth zero; fresh worker heartbeat |
+| Dedicated worker | Pass locally | Live Upstash and Supabase job produced a valid 66,511-byte DOCX; heartbeat recorded `processed/completed` |
+| Exact 25 MB worker path | Pass | 26,214,400-byte PDF; 4.688 s queue; 2.573 s processing; valid 66,511-byte DOCX |
+| Browser signed upload | Pass | `/api/uploads/pdf-to-word` 201; direct private upload; job 202; DOCX download 200 |
+| Authenticated cleanup | Pass | Completed run with zero file, session, or conversion-job failures |
+| Authenticated health | Pass | All critical checks healthy; queue pending 0 and processing 0 |
+| Upload boundaries | Partial live | Exact 25 MB passed end to end; 200 MB application validator passed but Supabase Free is fixed at 50 MB |
 | New upload/security/cleanup tests | Pass | 11/11 |
 | Full regression | Pass | 605/605 across 124 files |
 | TypeScript | Pass | `tsc --noEmit` |
@@ -65,6 +73,8 @@ Evidence files:
 - `quality/phase1-corpus/upload-boundary-report.json`
 - `quality/phase1-corpus/local-api-smoke-report.json`
 - `supabase/migrations/021_phase1_conversion_operations.sql`
+- `supabase/migrations/022_payment_processing_updated_at.sql`
+- `scripts/phase1-dedicated-worker-smoke.ts`
 
 ## Phase 1 workstream status
 
@@ -73,19 +83,19 @@ Evidence files:
 | 200-document quality corpus | 20% | 20% | Local gate passed |
 | Output validation and fidelity evidence | 15% | 15% | Local gate passed |
 | Engine routing and fallback evidence | 10% | 10% | Local gate passed |
-| Queue, worker, retry, and crash recovery | 20% | 17% | Heartbeat and fail-closed output added; production worker deployment pending |
-| Private storage and deletion evidence | 15% | 12% | Direct upload and nested cleanup passed; live 2h/24h observation pending |
-| 25/200 MB load path | 10% | 7% | Direct-to-storage path implemented; production CDN/storage/worker proof pending |
-| Monitoring and alerting | 10% | 7% | Health signals implemented; external monitor and live history pending |
-| **Total** | **100%** | **88%** | **Do not start Phase 2** |
+| Queue, worker, retry, and crash recovery | 20% | 19% | Live local worker passed; persistent worker host pending |
+| Private storage and deletion evidence | 15% | 14% | Private bucket and cleanup pass; timed retention drill pending |
+| 25/200 MB load path | 10% | 9% | Exact 25 MB passed; Free storage blocks 200 MB |
+| Monitoring and alerting | 10% | 8% | Detailed health is live; external alert delivery pending |
+| **Total** | **100%** | **95%** | **Do not start Phase 2** |
 
 ## Required live activation gate
 
-1. Configure Supabase and Upstash secrets and apply migrations 001–021.
-2. Deploy `Dockerfile.worker` or run `npm run worker:conversions` on an isolated worker host.
-3. Run authenticated `/api/health` with `HEALTH_CHECK_SECRET` and confirm private storage, fresh worker heartbeat, dedicated-worker mode, queue, validity, latency, and cleanup checks are healthy.
-4. Observe at least one successful cleanup cycle and one controlled failed-object retry; verify no staged object survives beyond its retention window.
-5. Send real 25 MB Free and 200 MB Pro files through CDN/proxy → app → queue → worker → private storage → download.
-6. Attach an external alert to detailed health degradation and a worker/container restart alert.
+1. **Completed:** Supabase and Upstash are configured, migrations 001–022 are applied, and the bucket is private.
+2. **Partial:** The dedicated worker passed locally against live services. Deploy it on a persistent host with restart policy and resource limits.
+3. **Completed:** Authenticated `/api/health` reports healthy private storage, queue, worker, conversion, and cleanup checks.
+4. **Partial:** A manual authenticated cleanup passed. Schedule it, observe the two-hour retention boundary, and run one controlled failed-object retry.
+5. **Partial:** The exact 25 MB path passed. Upgrade storage or choose another provider, then pass the 200 MB Pro path.
+6. **Pending:** Attach and trigger external health-degradation and worker-restart alerts.
 
-After these six checks pass, Phase 1 can be marked 100% and readiness can move from 80 to 82. Only then should Phase 2 begin.
+After the remaining checks pass, Phase 1 can be marked 100% and readiness can move from 81 to 82. Only then should Phase 2 begin.

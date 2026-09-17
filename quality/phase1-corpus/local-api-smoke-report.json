@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-09-17T16:07:46.221Z",
+  "generatedAt": "2026-09-17T19:11:04.531Z",
   "baseUrl": "http://localhost:3000",
   "fixture": "test-lo-verify/input.pdf",
   "inputBytes": 1096734,
   "outputBytes": 66511,
-  "outputSha256": "b4b874e5a5f42cad91068c7c523cea3924eb53b0d3ae4884d8a9f0e255fe7f7e",
+  "outputSha256": "d97ef5bdc8b9c71ad6af478142a4fb9f69c0a9da345ca6eb8b8ee271337f471a",
   "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "contentDisposition": "attachment; filename=\"input.docx\"",
   "engine": "pdf2docx",
-  "queueTimeMs": 48,
-  "processingTimeMs": 6301,
+  "queueTimeMs": 1423,
+  "processingTimeMs": 4851,
   "outputValid": true,
   "validation": {
     "valid": true,
@@ -19,7 +19,7 @@
     "openable": true,
     "errors": [],
     "warnings": [],
-    "checkedAt": "2026-09-17T16:07:46.198Z",
+    "checkedAt": "2026-09-17T19:11:04.313Z",
     "pageCount": 1,
     "entryCount": 19,
     "textCharacters": 1052

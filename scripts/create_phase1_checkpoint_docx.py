@@ -328,10 +328,10 @@ def build_document() -> Document:
     meta.autofit = False
     set_table_borders(meta, color="FFFFFF", size="0")
     meta_rows = [
-        ("Report date", "17 September 2026"),
+        ("Report date", "18 September 2026"),
         ("Branch", "phase1-dependable-beta"),
-        ("Current product readiness", "80 out of 100"),
-        ("Phase 1 completion", "88 percent"),
+        ("Current product readiness", "81 out of 100"),
+        ("Phase 1 completion", "95 percent"),
     ]
     for index, (label, value) in enumerate(meta_rows):
         meta.rows[index].cells[0].width = Inches(1.9)
@@ -353,7 +353,7 @@ def build_document() -> Document:
     cover_note.paragraph_format.space_before = Pt(34)
     cover_note.add_run("Main conclusion  ").bold = True
     cover_note.add_run(
-        "Phase 1 application code and local verification are complete. Live infrastructure activation and production evidence remain required before Phase 1 can be marked complete and before Phase 2 begins."
+        "Phase 1 is live-connected to Supabase and Upstash and is verified at 95 percent. The remaining production-host, 200 MB, scheduled-retention, and external-alert evidence is required before Phase 1 can be marked complete and before Phase 2 begins."
     )
     cover_scope = doc.add_paragraph(style="Body Text")
     cover_scope.add_run("Scope  ").bold = True
@@ -365,18 +365,18 @@ def build_document() -> Document:
     add_heading(doc, "Decision and current status", 1)
     add_body(
         doc,
-        "Phase 1 is locally implemented and verified at 88 percent. It cannot be described as 100 percent complete because the target Supabase project, Upstash queue, isolated worker host, scheduled cleanup, external monitoring, and real CDN upload path are not configured in the current environment.",
+        "Phase 1 is implemented and verified at 95 percent. The live Supabase database, private storage, Upstash queue, dedicated local worker, authenticated health endpoint, cleanup route, browser signed upload, and exact 25 MB worker path now pass. It cannot be described as 100 percent complete because the worker is not deployed on a persistent production host, the Supabase Free plan blocks 200 MB uploads at 50 MB, scheduled two hour retention and a failed deletion retry have not been observed, and external alerts are not connected.",
     )
     add_body(
         doc,
-        "The correct release decision is to hold Phase 2. Complete the six production activation checks in this report, collect the resulting evidence, and then update the Phase 1 status to 100 percent.",
+        "The correct release decision remains to hold Phase 2. Complete the four remaining or partial production activation checks in this report, collect the evidence, and then update Phase 1 to 100 percent.",
     )
     add_table(
         doc,
         ["Measure", "Starting point", "Current", "After live gate"],
         [
-            ["Product readiness", "70 out of 100", "80 out of 100", "82 out of 100"],
-            ["Phase 1 completion", "0 percent", "88 percent", "100 percent"],
+            ["Product readiness", "70 out of 100", "81 out of 100", "82 out of 100"],
+            ["Phase 1 completion", "0 percent", "95 percent", "100 percent"],
             ["Phase 2 status", "Not started", "Not started", "Eligible to start"],
         ],
         [2.1, 1.65, 1.65, 1.65],
@@ -386,7 +386,7 @@ def build_document() -> Document:
     add_heading(doc, "Environment status", 2)
     add_body(
         doc,
-        "Local engine paths and the cron authentication secret are available. Production data services are absent, so local success cannot prove storage privacy, durable queue operation, scheduled deletion, or alert delivery in production.",
+        "Supabase and Upstash are connected to the local application with secrets stored only in the ignored environment file. Migrations 001 through 022 are live, the bucket is private, the queue and worker heartbeat are healthy, and one authenticated cleanup run completed. Persistent production hosting, scheduled retention observation, and alert delivery remain pending.",
     )
     add_table(
         doc,
@@ -395,9 +395,9 @@ def build_document() -> Document:
             ["CRON SECRET", "Available", "Local authenticated worker and cleanup routes can run"],
             ["PDF2DOCX PYTHON", "Available", "Local PDF to Word engine can run"],
             ["LIBREOFFICE PATH", "Available", "Local Office conversion engine can run"],
-            ["Supabase URL and service role", "Missing", "Migration and private storage are not live verified"],
-            ["Upstash Redis URL and token", "Missing", "Persistent production queue is not live verified"],
-            ["HEALTH CHECK SECRET", "Missing", "Detailed production health endpoint is not activated"],
+            ["Supabase URL and service role", "Live connected", "25 tables use RLS; 35 public policies; private 50 MB bucket verified"],
+            ["Upstash Redis URL and token", "Live connected", "Pending and processing queues plus worker heartbeat verified"],
+            ["HEALTH CHECK SECRET", "Available", "Authenticated detailed health returned healthy"],
             ["ConvertAPI secret", "Missing", "Paid fallback is not configured or tested"],
         ],
         [2.35, 1.25, 3.45],
@@ -409,23 +409,25 @@ def build_document() -> Document:
     add_heading(doc, "Issues found and resolved", 1)
     add_body(
         doc,
-        "Fourteen reliability gaps were identified during Phase 1. Each item below is implemented and verified locally. The production qualification column states where a live environment is still required.",
+        "Sixteen reliability gaps were identified during Phase 1. The two live activation failures found in this update were fixed without changing the conversion engine pipeline. The qualification column states where more production evidence remains required.",
     )
     resolved_rows = [
-        ["1", "API restart could lose background work", "Persistent FIFO queue, private staged input, and queued running done error lifecycle", "Live Redis and storage check pending"],
+        ["1", "API restart could lose background work", "Persistent FIFO queue, private staged input, and queued running done error lifecycle", "Live Redis and storage passed; restart drill pending"],
         ["2", "Worker crash had no recovery path", "Processing list, 15 minute lease recovery, isolated worker command, and constrained worker container", "Deploy and force one recovery scenario"],
         ["3", "A corrupt nonempty output could be marked complete", "Format aware openability, signature, page, slide, sheet, and package checks", "Resolved in code and tests"],
         ["4", "First guest job could fail polling with Access denied", "New guest cookie is forwarded into the same request and response", "Resolved by direct localhost job"],
-        ["5", "Conversion outcome and latency were not measurable", "Event telemetry records engine, fallback, queue time, duration, validity, attempts, and failures", "Apply migration and collect live history"],
+        ["5", "Conversion outcome and latency were not measurable", "Event telemetry records engine, fallback, queue time, duration, validity, attempts, and failures", "Live events recorded; longer history pending"],
         ["6", "Crashed staged input could survive Redis expiry", "Hourly storage scan removes PDF to Word inputs older than two hours and records failures", "Observe scheduled cleanup live"],
-        ["7", "Signed URL could outlive file retention", "URL lifetime is capped by two hours and the database expiry deadline; bucket migration forces private access", "Apply migration and inspect live object policy"],
-        ["8", "Declared upload size could differ from returned bytes", "Server rejects size mismatch and enforces exact plan boundaries", "Application validator resolved; real CDN path pending"],
+        ["7", "Signed URL could outlive file retention", "URL lifetime is capped by two hours and the database expiry deadline; bucket migration forces private access", "Migration and private policy verified live"],
+        ["8", "Declared upload size could differ from returned bytes", "Server rejects size mismatch and enforces exact plan boundaries", "Validator and signed upload passed"],
         ["9", "No declared conversion quality corpus", "Deterministic 200 document corpus covers text, tables, scans, Hindi images, orientation, forms, fonts, and larger files", "Resolved for the tested operations"],
-        ["10", "Large files crossed the app request body", "Owner bound signed upload sends configured clients directly to private Supabase storage", "Run real 25 and 200 MB production uploads"],
+        ["10", "Large files crossed the app request body", "Owner bound signed upload sends configured clients directly to private Supabase storage", "25 MB passed; Free plan blocks 200 MB"],
         ["11", "Queued PDF passwords needed safe worker transport", "AES 256 GCM encrypted job payload; secret removed after completion or failure", "Resolved in code and tests"],
         ["12", "A deployed worker could be silently dead", "Upstash heartbeat every 15 seconds; health fails after 60 seconds without a healthy worker", "Deploy worker and alert on failure"],
         ["13", "Nested abandoned direct uploads escaped cleanup", "Bounded paginated directory traversal removes expired uploads UUID input PDF objects", "Observe scheduled cleanup live"],
-        ["14", "Output storage failure could still mark a distributed job done", "Production and Redis jobs fail closed until validated DOCX is in private storage", "Resolved in code; live failure drill pending"],
+        ["14", "Output storage failure could still mark a distributed job done", "Production and Redis jobs fail closed until validated DOCX is in private storage", "Fail closed observed; success path reverified"],
+        ["15", "Cleanup cron referenced a missing payments timestamp", "Migration 022 adds payments updated at and every claim transition refreshes it", "Live cleanup completed with zero failures"],
+        ["16", "PDF only bucket MIME policy blocked DOCX output", "Private bucket allowlist now includes PDF input and DOCX output", "Browser API and dedicated worker output passed"],
     ]
     add_table(
         doc,
@@ -436,7 +438,6 @@ def build_document() -> Document:
         center_columns={0},
     )
 
-    add_page_break(doc)
     add_heading(doc, "Verification evidence", 1)
     add_body(
         doc,
@@ -453,10 +454,16 @@ def build_document() -> Document:
         ["PDF to PowerPoint text", "Pass", "3.617 s; two slides; 1,330 characters; two editable slides reported"],
         ["PDF to PowerPoint scan", "Pass with limit", "3.353 s; valid two slide image presentation; no text expected"],
         ["Office to PDF", "Pass", "Word 3.313 s; Excel 3.678 s; PowerPoint 5.989 s"],
-        ["Final localhost API job", "Pass", "1,096,734 byte PDF to 66,511 byte DOCX; 48 ms queue; 6.301 s processing"],
+        ["Live localhost API job", "Pass", "1,096,734 byte PDF to 66,511 byte DOCX; 1.423 s queue; 4.851 s processing"],
         ["Artifact validation", "Pass", "DOCX signature and openability valid; 19 entries; one page; 1,052 text characters"],
         ["Protected download", "Pass", "First valid DOCX returned; repeated consume returned 404"],
-        ["Upload limits", "Pass locally", "Exact 25 and 200 MB accepted; one byte over each limit rejected"],
+        ["Live Supabase and Upstash", "Pass", "Migrations 001 to 022; private bucket; queue depth zero; worker heartbeat healthy"],
+        ["Dedicated worker", "Pass locally", "1,096,734 byte job completed only by worker; valid 66,511 byte DOCX"],
+        ["Exact 25 MB worker path", "Pass", "26,214,400 byte PDF; 4.688 s queue; 2.573 s processing; valid DOCX"],
+        ["Browser signed upload", "Pass", "Upload grant 201; direct private upload; job 202; DOCX download 200"],
+        ["Authenticated cleanup", "Pass", "Completed run; zero file session and job deletion failures"],
+        ["Authenticated health", "Pass", "All critical checks healthy; queue pending zero and processing zero"],
+        ["Upload limits", "Partial live", "25 MB passed end to end; 200 MB application boundary passed but Free storage is fixed at 50 MB"],
         ["New upload security cleanup tests", "Pass", "11 of 11"],
         ["Regression suite", "Pass", "605 of 605 across 124 files"],
         ["Type checking", "Pass", "TypeScript completed with no errors"],
@@ -482,11 +489,11 @@ def build_document() -> Document:
         ["200 document quality corpus", "20 percent", "20 percent", "Local gate passed"],
         ["Output validation and fidelity evidence", "15 percent", "15 percent", "Local gate passed"],
         ["Engine routing and fallback evidence", "10 percent", "10 percent", "Local gate passed"],
-        ["Queue worker retry and crash recovery", "20 percent", "17 percent", "Production worker pending"],
-        ["Private storage and deletion evidence", "15 percent", "12 percent", "Live retention observation pending"],
-        ["25 and 200 MB upload path", "10 percent", "7 percent", "Direct storage ready; live proof pending"],
-        ["Monitoring and alerting", "10 percent", "7 percent", "External monitor and live history pending"],
-        ["Total", "100 percent", "88 percent", "Do not start Phase 2"],
+        ["Queue worker retry and crash recovery", "20 percent", "19 percent", "Live local worker passed; persistent host pending"],
+        ["Private storage and deletion evidence", "15 percent", "14 percent", "Private bucket and cleanup pass; timed retention drill pending"],
+        ["25 and 200 MB upload path", "10 percent", "9 percent", "25 MB passed; Free plan blocks 200 MB"],
+        ["Monitoring and alerting", "10 percent", "8 percent", "Health is live; external alert delivery pending"],
+        ["Total", "100 percent", "95 percent", "Do not start Phase 2"],
     ]
     add_table(
         doc,
@@ -517,19 +524,18 @@ def build_document() -> Document:
         font_size=9.0,
     )
 
-    add_page_break(doc)
     add_heading(doc, "Required live activation gate", 1)
     add_body(
         doc,
-        "Complete all six actions in the target environment. Each action must leave reviewable evidence. Configuration alone is not sufficient.",
+        "Two activation actions are complete, three are partial, and one is pending. Every remaining action must leave reviewable evidence. Configuration alone is not sufficient.",
     )
     live_items = [
-        "Configure the target Supabase and Upstash credentials, apply database migrations 001 through 021, and confirm that the pdf files bucket is private.",
-        "Deploy the dedicated worker from Dockerfile.worker or run npm run worker:conversions on an isolated host with restart policy and resource limits.",
-        "Call the authenticated health endpoint with HEALTH CHECK SECRET and confirm private storage, fresh worker heartbeat, dedicated worker mode, queue depth, output validity, conversion latency, fallback rate, and cleanup status are healthy.",
-        "Observe one successful scheduled cleanup cycle and one controlled failed object retry. Confirm that no staged input survives beyond the two hour limit.",
-        "Send real 25 MB Free and 200 MB Pro files through CDN or proxy, application, queue, worker, private storage, and final download. Record total time, peak resource use, output validity, and downloaded file size.",
-        "Connect an external monitor to detailed health degradation and a worker or container restart alert. Trigger each alert once and record delivery evidence.",
+        "Completed: configure Supabase and Upstash, apply migrations 001 through 022, and verify the pdf files bucket is private.",
+        "Partial: deploy the dedicated worker from Dockerfile.worker on a persistent host with restart policy and resource limits. The same worker passed locally against live Upstash and Supabase.",
+        "Completed: call authenticated health and confirm private storage, fresh worker heartbeat, dedicated mode, queue depth, output validity, conversion latency, fallback rate, and cleanup status are healthy.",
+        "Partial: schedule cleanup, observe the two hour retention boundary, and run one controlled failed object retry. A manual authenticated cleanup completed with zero failures.",
+        "Partial: the exact 25 MB Free path passed end to end. Upgrade storage or select another provider, then run the 200 MB Pro path because Supabase Free is fixed at 50 MB.",
+        "Pending: connect an external monitor to health degradation and worker restart alerts, trigger both, and record delivery evidence.",
     ]
     add_numbered(doc, live_items)
     add_heading(doc, "Acceptance evidence", 2)
@@ -548,7 +554,6 @@ def build_document() -> Document:
         font_size=9.0,
     )
 
-    add_page_break(doc)
     add_heading(doc, "Files and reproducible evidence", 1)
     add_body(
         doc,
@@ -559,39 +564,43 @@ def build_document() -> Document:
         ["Purpose", "Repository path"],
         [
             ["Phase 1 checkpoint", "docs/PHASE_1_IMPLEMENTATION_CHECKPOINT.md"],
-            ["Corpus manifest", "quality/phase1-corpus/manifest.json"],
-            ["Corpus result", "quality/phase1-corpus/latest-report.json"],
-            ["Office engine result", "quality/phase1-corpus/engine-report.json"],
-            ["Upload boundary result", "quality/phase1-corpus/upload-boundary-report.json"],
-            ["Final local API smoke", "quality/phase1-corpus/local-api-smoke-report.json"],
-            ["Operational migration", "supabase/migrations/021_phase1_conversion_operations.sql"],
-            ["Queue worker", "workers/conversion-worker.ts"],
-            ["Worker container", "Dockerfile.worker"],
-            ["Output validator", "src/lib/services/conversion-output-validation.ts"],
-            ["Telemetry", "src/lib/ops/conversion-telemetry.ts"],
-            ["Health endpoint", "src/app/api/health/route.ts"],
-            ["Operations guide", "docs/OPERATIONS.md"],
+            [
+                "Corpus and API evidence",
+                "quality/phase1-corpus/manifest.json; latest-report.json; engine-report.json; "
+                "upload-boundary-report.json; local-api-smoke-report.json",
+            ],
+            ["Operational migrations", "supabase/migrations/021 and 022"],
+            [
+                "Worker stack",
+                "scripts/phase1-dedicated-worker-smoke.ts; workers/conversion-worker.ts; Dockerfile.worker",
+            ],
+            [
+                "Validation and telemetry",
+                "src/lib/services/conversion-output-validation.ts; src/lib/ops/conversion-telemetry.ts",
+            ],
+            ["Health and operations", "src/app/api/health/route.ts; docs/OPERATIONS.md"],
         ],
         [2.35, 4.9],
-        font_size=9.2,
+        font_size=8.8,
     )
     add_heading(doc, "Final phase decision", 2)
     add_body(
         doc,
-        "Phase 1 local implementation is complete. The current checkpoint is 88 percent because production infrastructure proof is still absent. Do not begin Phase 2 until all six live activation checks pass and the resulting evidence is added to the repository.",
+        "Phase 1 is 95 percent complete. Live data services, a private bucket, queue, dedicated local worker, health, cleanup, browser signed upload, and the exact 25 MB path are verified. Do not begin Phase 2 until the persistent worker host, 200 MB storage path, timed cleanup drill, and external alerts pass.",
     )
     add_body(
         doc,
-        "When the live gate passes, update the Phase 1 score to 100 percent, product readiness to 82 out of 100, and record the production date, environment, file sizes, processing times, output validity, cleanup results, and alert delivery proof.",
+        "When the remaining gate passes, update Phase 1 to 100 percent and product readiness to 82 out of 100. Record the production host, 200 MB timing and resource use, retention results, failed deletion retry, and alert delivery proof.",
     )
     add_heading(doc, "Known limits", 2)
     add_bullets(
         doc,
         [
             "The corpus proves the tested operations and fixtures. It does not prove that every real world PDF can be converted with identical layout.",
-            "The 200 MB result currently proves the application validation boundary. It does not yet prove the complete production network and worker path.",
+            "Supabase Free has a fixed 50 MB upload limit. The 200 MB result currently proves only the application validation boundary, so the website's 200 MB Pro claim must not be treated as production-ready on this plan.",
             "The image only scan presentation is valid by design and contains no extractable text. OCR quality is a separate product capability.",
             "Paid ConvertAPI fallback remains unconfigured and unverified.",
+            "The dedicated worker passed locally but has no persistent production host, restart policy, or external restart alert yet.",
         ],
     )
 
