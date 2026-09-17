@@ -20,6 +20,16 @@ const fixturePath = path.resolve(
 );
 const timeoutMs = 3 * 60 * 1000;
 
+async function waitForJobHeartbeat(jobId: string) {
+  const deadline = Date.now() + 15_000;
+  let worker = await getConversionWorkerHealth();
+  while (worker.heartbeat?.jobId !== jobId && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    worker = await getConversionWorkerHealth();
+  }
+  return worker;
+}
+
 async function main() {
   const source = await fs.readFile(fixturePath);
   const jobId = await createPdfToWordJob(
@@ -58,7 +68,9 @@ async function main() {
     if (!validation.valid) {
       throw new Error(`DOCX validation failed: ${validation.errors.join(" ")}`);
     }
-    const worker = await getConversionWorkerHealth();
+    // Job completion is persisted before the worker records its processed
+    // heartbeat, so allow that final observability update to arrive.
+    const worker = await waitForJobHeartbeat(jobId);
     if (!worker.ok || worker.heartbeat?.jobId !== jobId) {
       throw new Error(`Dedicated worker heartbeat did not confirm job ${jobId}.`);
     }
