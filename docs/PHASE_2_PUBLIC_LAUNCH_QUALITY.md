@@ -4,13 +4,15 @@
 
 **Branch:** `phase1-dependable-beta`
 
-**Phase 2 overall completion:** 40%
+**Phase 2 overall completion:** 46%
 
 **Current work package:** Phase 2.3 — semantic Office output and OCR
 
 **Phase 2.2 status:** Complete. The confirmed publishable operator is `OnlyMyPDF`, India.
 
 **Phase 2.3A status:** Complete. Local Linux and Railway production worker gates passed on deployment `6d1712d8-2569-4611-8975-ad35d71d5d9c`.
+
+**Phase 2.3B status:** Complete. The Hindi, mixed-language and difficult-scan corpus passed 8/8 Ubuntu cases with source and Word visual verification. Handwriting remains outside the supported accuracy claim.
 
 ## Scope and safety boundary
 
@@ -118,9 +120,11 @@ The confirmed values match the code defaults. No production code change is requi
 |---|---:|---:|---|
 | Accessibility and inclusive UX | 20% | 12% | Automated keyboard and primary-flow gate complete; real screen-reader review pending |
 | Legal, privacy and public trust evidence | 20% | 20% | Engineering gate and operator identity complete |
-| Semantic Office output and OCR | 35% | 8% | Phase 2.3A PDF-to-Word OCR foundation passed; broader OCR and Excel/PowerPoint semantics pending |
+| Semantic Office output and OCR | 35% | 14% | Phase 2.3A foundation and Phase 2.3B Hindi/difficult-scan corpus passed; Excel/PowerPoint semantics and measured production limits pending |
 | Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 0% | Pending demand order and implementation |
 | Verified customer feedback | 5% | 0% | Pending real consented customer evidence |
-| **Total** | **100%** | **40%** | **Phase 2.2 and Phase 2.3A complete** |
+| **Total** | **100%** | **46%** | **Phase 2.2, Phase 2.3A and Phase 2.3B complete** |
 
 Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.
+
+The next gated work package is Phase 2.3C: PDF-to-Excel semantic accuracy. It has not started.

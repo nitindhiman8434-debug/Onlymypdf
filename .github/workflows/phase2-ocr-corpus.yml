@@ -46,6 +46,11 @@ jobs:
           quality/phase2-pdf-to-word/latest-corpus-report.json
           tmp/pdfs/phase2.3b
 
+      - name: Re-run Phase 2.3A clean-scan baseline
+        run: >-
+          python3 scripts/phase2-ocr-benchmark.py
+          quality/phase2-pdf-to-word/latest-report.json
+
       - name: Upload report and visual artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -53,6 +58,7 @@ jobs:
           name: phase2.3b-ocr-corpus-${{ github.sha }}
           path: |
             quality/phase2-pdf-to-word/latest-corpus-report.json
+            quality/phase2-pdf-to-word/latest-report.json
             tmp/pdfs/phase2.3b
           if-no-files-found: warn
           retention-days: 14

@@ -6,6 +6,8 @@
 
 **Phase 2.3A status:** 100% complete. Implementation, local Linux container gate and Railway production worker deployment are verified.
 
+**Phase 2.3B status:** 100% complete. The Hindi, mixed-language and difficult-scan corpus passed 8/8 cases on the Ubuntu production-equivalent gate, with rendered source and Word previews.
+
 ## Recorded decision gate
 
 | Decision | Phase 2.3A value |
@@ -37,6 +39,42 @@
 
 No OCR engine can honestly guarantee 100% recognition for every scan. Handwriting, blur, skew, damaged pages, unusual fonts, equations, complex tables and unsupported languages still need a broader corpus and manual review. The clean printed English gate is the first controlled release slice, not a global accuracy claim.
 
+Phase 2.3B expands that controlled boundary to printed Hindi and English/Hindi scans, skew, low resolution, columns, tables/forms and damaged input. Handwriting remains outside the supported accuracy claim. Completely unreadable input is rejected instead of being returned as an editable success.
+
+## Phase 2.3B implementation
+
+- Production OCR now defaults to `eng+hin`; startup checks confirm that every requested Tesseract language pack is installed before conversion begins.
+- The deterministic corpus creates real image-only PDFs and validates the downloaded DOCX package, editable text, embedded visual reference, expected-token recall and a LibreOffice-rendered Word preview.
+- Hindi recall scoring handles Tesseract's known removal of spaces between Devanagari words without weakening the required word content.
+- Mixed-language fixtures draw each script with a compatible font so the test scans contain real English and Devanagari glyphs.
+- A Word result must preserve at least 60% of the recognized OCR text. If `pdf2docx` drops too much text, the pipeline switches to the visual-reference plus editable-transcript output instead of accepting a partial document.
+- Table-like scans are detected from long horizontal/vertical grid lines. OCR uses the normal page analysis plus line-removed PSM 6 and PSM 11 analysis; transcripts are deduplicated while the original grid remains visible in Word.
+- Production fail-closed cleanup removes a partial DOCX when required OCR cannot meet the editable-text gate.
+
+## Phase 2.3B issues found and resolved
+
+1. **The corpus runner missed its image dependency.** Pillow is now explicitly installed in both the Ubuntu gate and isolated OCR test image.
+2. **Mixed-language fixtures contained square placeholder glyphs.** English and Hindi segments now use script-compatible fonts; visual inspection confirms that the source scans contain the intended text.
+3. **Correct Hindi text was scored as missing when Tesseract joined adjacent words.** Unicode-aware compact matching now measures the actual Devanagari content.
+4. **A damaged scan could pass with only 27 editable Word characters from 132 recognized characters.** The output-to-recognized-text ratio gate forces the fuller transcript fallback.
+5. **Table headers were recognized while body rows were lost behind grid lines.** Table-line removal and multi-segmentation transcript merging raised the controlled table/form case to full expected-token recall.
+6. **An unreadable scan could have been mistaken for success by an image-only fallback.** Production OCR remains required and returns no valid DOCX for the unreadable case.
+
+## Phase 2.3B verification evidence
+
+| Case | Result | Expected-token recall | Editable characters |
+|---|---:|---:|---:|
+| Clean printed Hindi | Pass | 100% | 106 |
+| Mixed English/Hindi | Pass | 100% | 112 |
+| 2.4-degree skewed mixed scan | Pass | 100% | 103 |
+| Low-resolution scan | Pass | 100% | 94 |
+| Two-column bilingual scan | Pass | 100% | 153 |
+| Bilingual table/form | Pass | 100% | 196 |
+| Damaged/noisy scan | Pass | 81.82% (60% gate) | 132 |
+| Unreadable input | Pass, failed closed | No success expected | 0 |
+
+All seven successful cases produced a valid DOCX, one embedded visual source reference and a rendered Word preview. The unreadable case returned exit code 3 with no valid DOCX. GitHub Actions run `35377888504` passed the 8/8 Ubuntu gate in 59 seconds. The committed machine-readable result is `quality/phase2-pdf-to-word/latest-corpus-report.json`.
+
 ## Verification evidence
 
 | Gate | Result | Evidence |
@@ -58,14 +96,13 @@ The committed machine-readable result is `quality/phase2-pdf-to-word/latest-repo
 | Work package | Phase 2 weight | Status |
 |---|---:|---|
 | 2.3A PDF-to-Word OCR foundation | 8% | Complete: local and Railway production gates passed |
-| 2.3B Hindi, mixed-language and difficult-scan corpus | 6% | Pending |
+| 2.3B Hindi, mixed-language and difficult-scan corpus | 6% | Complete: 8/8 Ubuntu gate and rendered preview review passed |
 | 2.3C PDF-to-Excel semantic accuracy | 8% | Pending |
 | 2.3D PDF-to-PowerPoint semantic accuracy | 8% | Pending |
 | 2.3E measured limits, cost and production quality gate | 5% | Pending |
 
 ## Remaining Phase 2.3 work
 
-- Add Hindi and mixed-language corpus cases before enabling `eng+hin` by default.
-- Add skew, low-resolution, multi-column, tables, forms, handwriting and damaged-scan cases.
+- Handwriting remains unsupported and must not be marketed as accurate without a separate measured corpus.
 - Set measured job limits from Railway CPU/memory and cost data rather than advertising unlimited files.
 - Extend the same semantic gates to PDF to Excel and PDF to PowerPoint.
