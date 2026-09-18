@@ -1,0 +1,58 @@
+name: Phase 2.3B OCR corpus
+
+on:
+  push:
+    branches: [phase1-dependable-beta]
+    paths:
+      - ".github/workflows/phase2-ocr-corpus.yml"
+      - "Dockerfile.worker"
+      - "package.json"
+      - "scripts/Dockerfile.phase2-ocr-test"
+      - "scripts/pdf-to-docx.py"
+      - "scripts/phase2-ocr-corpus.py"
+      - "scripts/run-phase2-ocr-corpus.cjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  corpus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OCR runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            tesseract-ocr tesseract-ocr-eng tesseract-ocr-hin \
+            fonts-dejavu-core fonts-noto-core libreoffice-writer
+
+      - name: Install Python converter dependencies
+        run: python3 -m pip install --disable-pip-version-check pdf2docx
+
+      - name: Verify OCR language packs
+        run: |
+          tesseract --list-langs | tee /tmp/tesseract-languages.txt
+          grep -Fxq eng /tmp/tesseract-languages.txt
+          grep -Fxq hin /tmp/tesseract-languages.txt
+
+      - name: Run Hindi and difficult-scan corpus
+        run: >-
+          python3 scripts/phase2-ocr-corpus.py
+          quality/phase2-pdf-to-word/latest-corpus-report.json
+          tmp/pdfs/phase2.3b
+
+      - name: Upload report and visual artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase2.3b-ocr-corpus-${{ github.sha }}
+          path: |
+            quality/phase2-pdf-to-word/latest-corpus-report.json
+            tmp/pdfs/phase2.3b
+          if-no-files-found: warn
+          retention-days: 14

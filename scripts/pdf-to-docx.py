@@ -7,6 +7,7 @@ import logging
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import threading
@@ -282,15 +283,40 @@ def _bounded_int(name: str, default: int, minimum: int, maximum: int) -> int:
     return max(minimum, min(maximum, value))
 
 
-def _tesseract_ready() -> bool:
-    if shutil.which(os.environ.get("TESSERACT_PATH", "tesseract")) is None:
+def _requested_ocr_languages() -> str:
+    raw = os.environ.get("PDF_OCR_LANGUAGES", "eng+hin").strip() or "eng+hin"
+    languages = [part.strip().lower() for part in raw.split("+") if part.strip()]
+    if not languages or len(languages) > 8:
+        return ""
+    if any(re.fullmatch(r"[a-z0-9_]{2,32}", language) is None for language in languages):
+        return ""
+    return "+".join(dict.fromkeys(languages))
+
+
+def _tesseract_ready(language: str) -> bool:
+    executable = shutil.which(os.environ.get("TESSERACT_PATH", "tesseract"))
+    if executable is None or not language:
         return False
     try:
         import pymupdf as fitz
 
         fitz.get_tessdata()
-        return True
-    except Exception:
+        result = subprocess.run(
+            [executable, "--list-langs"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        if result.returncode != 0:
+            return False
+        available = {
+            line.strip()
+            for line in result.stdout.splitlines()
+            if re.fullmatch(r"[a-z0-9_]{2,32}", line.strip().lower())
+        }
+        return all(part in available for part in language.split("+"))
+    except (OSError, subprocess.SubprocessError, Exception):
         return False
 
 
@@ -382,11 +408,19 @@ def _build_ocr_reference_transcript_docx(searchable_pdf: str, docx_path: str) ->
     return validate_docx(docx_path)
 
 
-def convert_scanned_pdf_with_ocr(pdf_path: str, docx_path: str) -> bool:
+def convert_scanned_pdf_with_ocr(
+    pdf_path: str,
+    docx_path: str,
+    *,
+    language: str | None = None,
+) -> bool:
     """Create a layout-preserving searchable PDF, then convert it to editable DOCX."""
     from pdf2docx import Converter
 
-    language = os.environ.get("PDF_OCR_LANGUAGES", "eng").strip() or "eng"
+    language = language or _requested_ocr_languages()
+    if not language:
+        print("WARN OCR language configuration is invalid", file=sys.stderr, flush=True)
+        return False
     dpi = _bounded_int("PDF_OCR_DPI", 220, 150, 300)
     work_dir = tempfile.mkdtemp(prefix="pdf2docx-ocr-")
     searchable_pdf = os.path.join(work_dir, "searchable.pdf")
@@ -465,14 +499,20 @@ def convert_image_pdf_to_docx(pdf_path: str, docx_path: str) -> bool:
     ocr_enabled = _env_flag("PDF_OCR_ENABLED", True)
     ocr_required = _env_flag("PDF_OCR_REQUIRED", False)
     ocr_max_pages = _bounded_int("PDF_OCR_MAX_PAGES", 50, 1, MAX_IMAGE_PATH_PAGES)
-    if ocr_enabled and page_count <= ocr_max_pages and _tesseract_ready():
-        if convert_scanned_pdf_with_ocr(pdf_path, docx_path):
+    ocr_languages = _requested_ocr_languages()
+    if ocr_enabled and page_count <= ocr_max_pages and _tesseract_ready(ocr_languages):
+        if convert_scanned_pdf_with_ocr(pdf_path, docx_path, language=ocr_languages):
             return True
         if ocr_required:
             print("ERROR OCR_REQUIRED OCR could not produce editable text", file=sys.stderr)
             return False
     elif ocr_required:
-        reason = "page limit exceeded" if page_count > ocr_max_pages else "Tesseract unavailable"
+        if page_count > ocr_max_pages:
+            reason = "page limit exceeded"
+        elif not ocr_languages:
+            reason = "OCR language configuration invalid"
+        else:
+            reason = f"Tesseract or requested language data unavailable ({ocr_languages})"
         print(f"ERROR OCR_REQUIRED {reason}", file=sys.stderr)
         return False
 

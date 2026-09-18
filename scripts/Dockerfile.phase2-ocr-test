@@ -17,9 +17,9 @@ COPY scripts ./scripts
 
 ENV PDF_OCR_ENABLED=true
 ENV PDF_OCR_REQUIRED=true
-ENV PDF_OCR_LANGUAGES=eng
+ENV PDF_OCR_LANGUAGES=eng+hin
 ENV PDF_OCR_DPI=220
 ENV PDF_OCR_MAX_PAGES=10
 ENV OMP_THREAD_LIMIT=1
 
-CMD ["python3", "scripts/phase2-ocr-benchmark.py", "/tmp/latest-report.json"]
+CMD ["python3", "scripts/phase2-ocr-corpus.py", "/tmp/latest-corpus-report.json", "/tmp/phase2.3b-artifacts"]
