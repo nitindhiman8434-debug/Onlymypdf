@@ -326,16 +326,28 @@ def _build_searchable_ocr_pdf(
     *,
     language: str,
     dpi: int,
-) -> tuple[int, int]:
+) -> tuple[int, int, list[str]]:
     """Render a scan and add a hidden OCR text layer using PyMuPDF/Tesseract."""
     import pymupdf as fitz
 
     def page_text(pdf_bytes: bytes) -> str:
         candidate = fitz.open("pdf", pdf_bytes)
         try:
-            return candidate[0].get_text("text", sort=True).strip()
+            return candidate[0].get_text("text").strip()
         finally:
             candidate.close()
+
+    def merge_transcripts(primary: str, secondary: str) -> str:
+        lines: list[str] = []
+        seen: set[str] = set()
+        for line in [*primary.splitlines(), *secondary.splitlines()]:
+            cleaned = re.sub(r"[ \t]+", " ", line).strip()
+            key = re.sub(r"\W+", "", cleaned.lower(), flags=re.UNICODE)
+            if not key or key in seen:
+                continue
+            seen.add(key)
+            lines.append(cleaned)
+        return "\n".join(lines)
 
     def text_score(text: str) -> int:
         tokens = re.findall(r"[a-z0-9]+|[\u0900-\u097f]+", text.lower())
@@ -384,10 +396,10 @@ def _build_searchable_ocr_pdf(
                         count += 1
                 return count
 
-            return (
-                long_components(horizontal, horizontal_axis=True) >= 3
-                and long_components(vertical, horizontal_axis=False) >= 2
-            )
+            horizontal_count = long_components(horizontal, horizontal_axis=True)
+            vertical_count = long_components(vertical, horizontal_axis=False)
+            intersections = cv2.countNonZero(cv2.bitwise_and(horizontal, vertical))
+            return horizontal_count >= 4 and vertical_count >= 3 and intersections >= 12
         except Exception as exc:
             print(f"WARN OCR table detection skipped: {exc}", file=sys.stderr, flush=True)
             return False
@@ -426,6 +438,7 @@ def _build_searchable_ocr_pdf(
     source = fitz.open(pdf_path)
     searchable = fitz.open()
     recognized_chars = 0
+    transcripts: list[str] = []
     try:
         total = len(source)
         for page_index, page in enumerate(source):
@@ -440,33 +453,42 @@ def _build_searchable_ocr_pdf(
                 table_bytes = tesseract_pdf(pix, page_number=page_index + 1, psm=6)
                 if table_bytes is not None:
                     table_text = page_text(table_bytes)
-                    if text_score(table_text) > text_score(selected_text):
+                    default_score = text_score(selected_text)
+                    table_score = text_score(table_text)
+                    merged_text = merge_transcripts(selected_text, table_text)
+                    if table_score >= max(20, int(default_score * 0.5)):
+                        selected_text = merged_text
+                    if table_score > default_score:
                         one_page_bytes = table_bytes
-                        selected_text = table_text
-                        print(
-                            "OCR_PAGE "
-                            f"page={page_index + 1} layout=table psm=6 "
-                            f"chars={len(selected_text)}",
-                            file=sys.stderr,
-                            flush=True,
-                        )
+                    print(
+                        "OCR_PAGE "
+                        f"page={page_index + 1} layout=table psm=3+6 "
+                        f"chars={len(selected_text)}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
             one_page = fitz.open("pdf", one_page_bytes)
             try:
                 recognized_chars += len(selected_text)
+                transcripts.append(selected_text)
                 searchable.insert_pdf(one_page)
             finally:
                 one_page.close()
 
         if len(searchable) == 0:
-            return 0, 0
+            return 0, 0, []
         searchable.save(output_path, garbage=4, deflate=True)
-        return len(searchable), recognized_chars
+        return len(searchable), recognized_chars, transcripts
     finally:
         searchable.close()
         source.close()
 
 
-def _build_ocr_reference_transcript_docx(searchable_pdf: str, docx_path: str) -> bool:
+def _build_ocr_reference_transcript_docx(
+    searchable_pdf: str,
+    docx_path: str,
+    transcripts: list[str] | None = None,
+) -> bool:
     """Keep a visual page reference beside visible, editable OCR text."""
     import pymupdf as fitz
     from docx import Document
@@ -496,7 +518,11 @@ def _build_ocr_reference_transcript_docx(searchable_pdf: str, docx_path: str) ->
                 width=Inches(3.2),
             )
 
-            extracted = page.get_text("text", sort=True).strip()
+            extracted = (
+                transcripts[page_index]
+                if transcripts is not None and page_index < len(transcripts)
+                else page.get_text("text", sort=True).strip()
+            )
             text_cell.paragraphs[0]._element.getparent().remove(
                 text_cell.paragraphs[0]._element
             )
@@ -533,7 +559,7 @@ def convert_scanned_pdf_with_ocr(
     work_dir = tempfile.mkdtemp(prefix="pdf2docx-ocr-")
     searchable_pdf = os.path.join(work_dir, "searchable.pdf")
     try:
-        pages, recognized_chars = _build_searchable_ocr_pdf(
+        pages, recognized_chars, transcripts = _build_searchable_ocr_pdf(
             pdf_path,
             searchable_pdf,
             language=language,
@@ -570,7 +596,11 @@ def convert_scanned_pdf_with_ocr(
                 os.remove(docx_path)
             except OSError:
                 pass
-            ok = _build_ocr_reference_transcript_docx(searchable_pdf, docx_path)
+            ok = _build_ocr_reference_transcript_docx(
+                searchable_pdf,
+                docx_path,
+                transcripts,
+            )
             metrics = docx_metrics(docx_path) if ok else {"chars": 0}
             output_chars = metrics.get("chars", 0)
             ok = ok and output_chars >= minimum_output_chars
@@ -613,6 +643,10 @@ def convert_image_pdf_to_docx(pdf_path: str, docx_path: str) -> bool:
         if convert_scanned_pdf_with_ocr(pdf_path, docx_path, language=ocr_languages):
             return True
         if ocr_required:
+            try:
+                os.remove(docx_path)
+            except OSError:
+                pass
             print("ERROR OCR_REQUIRED OCR could not produce editable text", file=sys.stderr)
             return False
     elif ocr_required:
