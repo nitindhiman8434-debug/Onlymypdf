@@ -558,7 +558,7 @@
     "downloadAgain": "फिर से डाउनलोड करें",
     "expired": "डिलीट हो गई",
     "deleteAccount": "अकाउंट डिलीट करें",
-    "deleteAccountWarning": "यह एक्शन वापस नहीं हो सकता। आपका सारा डेटा हमेशा के लिए डिलीट हो जाएगा।",
+    "deleteAccountWarning": "यह एक्शन वापस नहीं हो सकता। Account-linked data मिटता है; legally required billing records और short-lived staging published Privacy policy के अनुसार रहते हैं।",
     "accountSettings": "अकाउंट सेटिंग्स",
     "changeLanguage": "भाषा",
     "changePassword": "पासवर्ड बदलें",
@@ -1579,7 +1579,7 @@
       },
       {
         "question": "क्या document content private रहता है?",
-        "answer": "हाँ, content securely process होता है और summarization के बाद store नहीं होता। Documents AI training में use नहीं होते।"
+        "answer": "Summary मांगने पर PDF memory में process होती है और निकाला गया text configured AI provider को भेजा जाता है। OnlyMyPDF AI usage logs में extracted text नहीं, केवल usage metadata रखता है। Confidential data से पहले Privacy policy देखें।"
       },
       {
         "question": "क्या यह tool free है?",
@@ -1624,12 +1624,12 @@
     "rejectNonEssential": "गैर-ज़रूरी अस्वीकार करें",
     "resetBanner": "बैनर रीसेट करें",
     "deleteTitle": "अकाउंट हटाएँ",
-    "deleteDesc": "अपना अकाउंट और फ़ाइलें स्थायी रूप से मिटाएँ। यह वापस नहीं हो सकता।",
+    "deleteDesc": "Account, account-linked files और product history मिटाएँ। Short-lived staging और required billing records Privacy policy के अनुसार रहते हैं।",
     "passwordLabel": "पासवर्ड से पुष्टि करें",
     "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
     "deleteBtn": "मेरा अकाउंट हटाएँ",
     "deleting": "हटाया जा रहा है…",
-    "deleteConfirm": "OnlyMyPDF अकाउंट स्थायी रूप से हटाएँ? प्रोफ़ाइल, फ़ाइलें और जॉब हिस्ट्री मिट जाएगी। कानून के अनुसार भुगतान रिकॉर्ड रखे जा सकते हैं।",
+    "deleteConfirm": "OnlyMyPDF account स्थायी रूप से हटाएँ? Profile, account-linked files और job history मिटेगी। Short-lived staging normal cleanup से expire होगी और कानून के अनुसार billing records रखे जा सकते हैं।",
     "privacyEmail": "सवाल?"
   }
 }

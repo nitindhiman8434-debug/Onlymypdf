@@ -14,6 +14,7 @@ import {
 import { applyConsent, hydrateConsentFromServerIfMissing } from "@/lib/privacy/consent-client";
 import { useTranslation } from "@/i18n";
 import { StepUpAuthControls } from "@/components/auth/step-up-auth-controls";
+import { LEGAL_CONTACT } from "@/config/legal";
 
 export default function DashboardSettingsPage() {
   const { t } = useTranslation();
@@ -243,8 +244,8 @@ export default function DashboardSettingsPage() {
           <Shield className="h-4 w-4 shrink-0 text-emerald-600" />
           <p className="text-emerald-900">
             {t("settingsPage.privacyEmail")}{" "}
-            <a href="mailto:privacy@onlymypdf.com" className="font-medium underline">
-              privacy@onlymypdf.com
+            <a href={`mailto:${LEGAL_CONTACT.privacyEmail}`} className="font-medium underline">
+              {LEGAL_CONTACT.privacyEmail}
             </a>
           </p>
         </div>

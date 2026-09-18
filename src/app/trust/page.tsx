@@ -5,7 +5,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 export const metadata: Metadata = buildPageMetadata({
   title: "Trust Center",
   description:
-    "OnlyMyPDF security, privacy, and compliance overview for teams evaluating our platform.",
+    "Verified OnlyMyPDF security controls, retention limits, provider disclosures, and compliance status.",
   path: "/trust",
 });
 

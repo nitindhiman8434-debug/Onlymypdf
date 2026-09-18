@@ -6,7 +6,7 @@ import { StatusPageContent } from "@/components/marketing/status-page-content";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "System Status",
-  description: "OnlyMyPDF service status, uptime, and incident history.",
+  description: "Current OnlyMyPDF service health and availability information.",
   path: "/status",
 });
 
@@ -43,12 +43,6 @@ export default function StatusPage() {
 
         <StatusPageContent externalStatusUrl={externalUrl} />
 
-        <p className="mt-8 text-xs text-pd-muted">
-          Operators: configure <code className="rounded bg-slate-100 px-1">NEXT_PUBLIC_STATUS_PAGE_URL</code>{" "}
-          (Better Stack, Instatus, etc.) and point your monitor at{" "}
-          <code className="rounded bg-slate-100 px-1">/api/health</code>. See{" "}
-          <code className="rounded bg-slate-100 px-1">docs/STATUS_PAGE.md</code>.
-        </p>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import {
   anonymizeBillingInvoicesForUser,
   assertAccountDeletionAllowed,
   cancelUserBillingBeforeDelete,
+  deleteAccountLinkedFilesBeforeRemoval,
   scrubUserFileMetadata,
 } from "@/lib/privacy/account-deletion.service";
 
@@ -77,6 +78,52 @@ describe("account-deletion.service", () => {
   it("allows delete when user owns no organizations", async () => {
     vi.mocked(countUserOrganizations).mockResolvedValue(0);
     await expect(assertAccountDeletionAllowed("user-1")).resolves.toEqual({ ok: true });
+  });
+
+  it("deletes storage objects before marking their rows deleted", async () => {
+    const deleteStoredFile = vi.fn().mockResolvedValue(undefined);
+    const markDeleted = vi.fn().mockResolvedValue(undefined);
+
+    await expect(
+      deleteAccountLinkedFilesBeforeRemoval("user-1", {
+        listFiles: vi.fn().mockResolvedValue([
+          { id: "file-1", storage_path: "users/user-1/input.pdf" },
+        ]),
+        deleteStoredFile,
+        markDeleted,
+        recordError: vi.fn().mockResolvedValue(undefined),
+      })
+    ).resolves.toBe(1);
+
+    expect(deleteStoredFile).toHaveBeenCalledWith("users/user-1/input.pdf");
+    expect(markDeleted).toHaveBeenCalledWith("file-1");
+    expect(deleteStoredFile.mock.invocationCallOrder[0]).toBeLessThan(
+      markDeleted.mock.invocationCallOrder[0]
+    );
+  });
+
+  it("keeps a failed storage row discoverable for account-deletion retry", async () => {
+    const markDeleted = vi.fn().mockResolvedValue(undefined);
+    const recordError = vi.fn().mockResolvedValue(undefined);
+
+    await expect(
+      deleteAccountLinkedFilesBeforeRemoval("user-1", {
+        listFiles: vi.fn().mockResolvedValue([
+          { id: "file-1", storage_path: "users/user-1/input.pdf" },
+        ]),
+        deleteStoredFile: vi.fn().mockRejectedValue(new Error("storage unavailable")),
+        markDeleted,
+        recordError,
+      })
+    ).rejects.toThrow("account was kept so deletion can be retried");
+
+    expect(markDeleted).not.toHaveBeenCalled();
+    expect(recordError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error_type: "ACCOUNT_FILE_DELETE_FAILED",
+        metadata: { file_id: "file-1" },
+      })
+    );
   });
 
   it("cancels Razorpay subscriptions before delete", async () => {

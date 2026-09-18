@@ -2,10 +2,35 @@ import { countUserOrganizations } from "@/lib/enterprise/organizations.service";
 import { cancelLocalSubscription } from "@/lib/services/subscription-fulfillment.service";
 import { cancelRazorpaySubscription } from "@/lib/services/payment.service";
 import { createServiceClient } from "@/lib/supabase/server";
+import { getUserUploadedFilePaths, logError, markFileDeleted } from "@/lib/db/queries";
+import { deleteFile } from "@/lib/services/upload.service";
 
 export type AccountDeletionBlock =
   | { ok: true }
   | { ok: false; status: number; error: string };
+
+export class AccountFileDeletionError extends Error {
+  constructor(failureCount: number) {
+    super(
+      `Could not delete ${failureCount} stored file(s). The account was kept so deletion can be retried.`
+    );
+    this.name = "AccountFileDeletionError";
+  }
+}
+
+type AccountFileDeletionDependencies = {
+  listFiles: typeof getUserUploadedFilePaths;
+  deleteStoredFile: typeof deleteFile;
+  markDeleted: typeof markFileDeleted;
+  recordError: typeof logError;
+};
+
+const accountFileDeletionDefaults: AccountFileDeletionDependencies = {
+  listFiles: getUserUploadedFilePaths,
+  deleteStoredFile: deleteFile,
+  markDeleted: markFileDeleted,
+  recordError: logError,
+};
 
 /** Block delete while the user still owns one or more organizations. */
 export async function assertAccountDeletionAllowed(userId: string): Promise<AccountDeletionBlock> {
@@ -19,6 +44,42 @@ export async function assertAccountDeletionAllowed(userId: string): Promise<Acco
     };
   }
   return { ok: true };
+}
+
+/**
+ * Delete account-linked storage objects before removing their database rows.
+ * A failed object remains discoverable for a later retry instead of becoming orphaned.
+ */
+export async function deleteAccountLinkedFilesBeforeRemoval(
+  userId: string,
+  dependencies: AccountFileDeletionDependencies = accountFileDeletionDefaults
+): Promise<number> {
+  const files = await dependencies.listFiles(userId);
+  const failures: string[] = [];
+  let deleted = 0;
+
+  for (const file of files) {
+    try {
+      await dependencies.deleteStoredFile(file.storage_path);
+      await dependencies.markDeleted(file.id);
+      deleted += 1;
+    } catch (error) {
+      failures.push(file.id);
+      await dependencies.recordError({
+        user_id: userId,
+        tool_name: "account-deletion",
+        error_type: "ACCOUNT_FILE_DELETE_FAILED",
+        error_message: error instanceof Error ? error.message : String(error),
+        metadata: { file_id: file.id },
+      });
+    }
+  }
+
+  if (failures.length > 0) {
+    throw new AccountFileDeletionError(failures.length);
+  }
+
+  return deleted;
 }
 
 /** Cancel auto-renew subscriptions at Razorpay and locally before account removal. */

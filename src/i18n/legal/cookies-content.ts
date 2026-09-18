@@ -1,66 +1,89 @@
+import { LEGAL_POLICY_DATE } from "@/config/legal";
 import type { LegalDocument } from "./index";
 
 export const cookiesLegal: Record<"en" | "hi", LegalDocument> = {
   en: {
-    pageTitle: "Cookie Policy",
-    lastUpdated: "June 5, 2026",
+    pageTitle: "Cookie policy",
+    lastUpdated: LEGAL_POLICY_DATE.en,
     sections: [
       {
-        title: "What are cookies?",
+        title: "How OnlyMyPDF uses browser storage",
         paragraphs: [
-          "Cookies are small text files on your device. OnlyMyPDF uses them for security, preferences, and — with consent — analytics or marketing.",
+          "OnlyMyPDF uses cookies and local browser storage to keep the service secure, remember your language and privacy choices, identify a guest session, and maintain sign-in state.",
+          "Essential storage is required for requested features. Optional analytics and marketing storage remains off unless you choose it.",
         ],
       },
       {
-        title: "Cookie categories",
+        title: "Essential cookies",
         bullets: [
-          "Essential (always on): authentication, security, guest session, load balancing.",
-          "Analytics (optional): anonymous usage statistics — disabled until you accept.",
-          "Marketing (optional): ad personalization if ads are enabled — disabled until you accept.",
+          "pd_guest_session: identifies a guest for authorization and daily limits. It is HTTP-only and lasts up to one year.",
+          "pd_locale: remembers the selected language for up to one year.",
+          "pd_consent: remembers cookie choices for up to one year. The same choice is also stored in local browser storage.",
+          "Supabase authentication cookies: maintain a signed-in session and refresh it securely. Their lifetime follows the authentication session.",
+          "pd_step_up: confirms recent identity verification for sensitive account actions. It is HTTP-only and expires after five minutes.",
         ],
       },
       {
-        title: "Managing preferences",
-        paragraphs: [
-          "Use the cookie banner or Dashboard → Privacy & data to accept, reject, or reset preferences.",
+        title: "Optional categories",
+        bullets: [
+          "Analytics: allowed only after consent. The current application does not load an analytics tag.",
+          "Marketing: allowed only after consent. The current application does not load advertising or marketing tags.",
+          "Saving an optional preference does not activate a provider that is not configured. If OnlyMyPDF enables one later, this policy and the consent version must be updated.",
         ],
       },
       {
-        title: "Third-party cookies",
+        title: "Third-party features",
         paragraphs: [
-          "Payment (Razorpay) or analytics providers may set cookies when you use those features. See their policies for details.",
+          "A third party may set its own storage when you deliberately open a feature it provides, such as live Razorpay checkout or an external status page. Its policy governs that storage.",
+        ],
+      },
+      {
+        title: "Change or withdraw consent",
+        paragraphs: [
+          "Use the cookie banner or Dashboard settings to accept, reject, or reset optional preferences. Rejecting optional categories does not disable essential account, security, or tool functions.",
         ],
       },
     ],
   },
   hi: {
     pageTitle: "कुकी नीति",
-    lastUpdated: "5 जून, 2026",
+    lastUpdated: LEGAL_POLICY_DATE.hi,
     sections: [
       {
-        title: "कुकीज़ क्या हैं?",
+        title: "OnlyMyPDF browser storage कैसे उपयोग करता है",
         paragraphs: [
-          "कुकीज़ छोटी टेक्स्ट फ़ाइलें हैं। OnlyMyPDF सुरक्षा, प्राथमिकताओं और — सहमति पर — analytics/marketing के लिए उनका उपयोग करता है।",
+          "OnlyMyPDF सेवा सुरक्षित रखने, भाषा और privacy पसंद याद रखने, guest session पहचानने और sign-in बनाए रखने के लिए cookies और local browser storage उपयोग करता है।",
+          "अनुरोधित features के लिए essential storage जरूरी है। Analytics और marketing storage आपकी अनुमति के बिना बंद रहता है।",
         ],
       },
       {
-        title: "कुकी श्रेणियाँ",
+        title: "Essential cookies",
         bullets: [
-          "आवश्यक (हमेशा): प्रमाणीकरण, सुरक्षा, गेस्ट सेशन, लोड बैलेंसिंग।",
-          "Analytics (वैकल्पिक): अनाम उपयोग आँकड़े — स्वीकृति तक बंद।",
-          "Marketing (वैकल्पिक): विज्ञापन — स्वीकृति तक बंद।",
+          "pd_guest_session: authorization और daily limit के लिए guest पहचानता है। यह HTTP-only है और अधिकतम एक वर्ष रहता है।",
+          "pd_locale: चुनी हुई भाषा अधिकतम एक वर्ष याद रखता है।",
+          "pd_consent: cookie पसंद अधिकतम एक वर्ष याद रखता है। यही पसंद local browser storage में भी रहती है।",
+          "Supabase authentication cookies: signed-in session बनाए रखते और सुरक्षित रूप से refresh करते हैं। इनका समय authentication session पर निर्भर है।",
+          "pd_step_up: sensitive account action के लिए हाल की identity verification confirm करता है। यह HTTP-only है और पांच मिनट में expire होता है।",
         ],
       },
       {
-        title: "प्राथमिकताएँ प्रबंधित करें",
-        paragraphs: [
-          "कुकी बैनर या डैशबोर्ड → Privacy & data से स्वीकार/अस्वीकार/रीसेट करें।",
+        title: "वैकल्पिक categories",
+        bullets: [
+          "Analytics: consent के बाद ही allowed। Current application कोई analytics tag load नहीं करता।",
+          "Marketing: consent के बाद ही allowed। Current application advertising या marketing tag load नहीं करता।",
+          "Preference save करने से unconfigured provider active नहीं होता। भविष्य में provider enable होने पर policy और consent version update करना जरूरी है।",
         ],
       },
       {
-        title: "तृतीय-पक्ष कुकीज़",
+        title: "Third-party features",
         paragraphs: [
-          "Razorpay या analytics प्रदाता संबंधित फीचर्स पर कुकी सेट कर सकते हैं। विवरण के लिए उनकी नीतियाँ देखें।",
+          "Live Razorpay checkout या external status page जैसा feature खोलने पर third party अपना storage रख सकता है। उस storage पर उसकी policy लागू होती है।",
+        ],
+      },
+      {
+        title: "Consent बदलें या वापस लें",
+        paragraphs: [
+          "Cookie banner या Dashboard settings से optional preference accept, reject या reset करें। Optional categories reject करने से essential account, security या tool functions बंद नहीं होते।",
         ],
       },
     ],

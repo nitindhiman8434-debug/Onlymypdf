@@ -43,7 +43,7 @@ export const BILLING_COPY = {
   paymentMethods:
     "UPI, credit/debit cards, net banking, and wallets through Razorpay. Prices are in INR; GST tax invoices download from Dashboard → Billing after payment.",
   checkoutModel:
-    "Pro checkout uses Razorpay. When subscription plan IDs are configured, checkout is auto-renewing; otherwise a one-time plan purchase is used.",
+    "Before payment, checkout states whether the purchase renews automatically or is a one-time purchase. Live payments are processed by Razorpay when checkout is available.",
   mockCheckoutNote:
     "Mock billing mode: checkout completes without real charges — for staging and development only.",
   billingCycleChange:

@@ -4,11 +4,11 @@
 
 **Branch:** `phase1-dependable-beta`
 
-**Phase 2 overall completion:** 12%
+**Phase 2 overall completion:** 31%
 
-**Current work package:** Phase 2.1 — keyboard-accessibility foundation
+**Current work package:** Phase 2.2 — legal, privacy, and public trust evidence
 
-**Phase 2.1 status:** Complete against the defined automated gate
+**Phase 2.2 status:** Engineering gate complete; production legal-operator identity must be confirmed before public launch
 
 ## Scope and safety boundary
 
@@ -67,3 +67,58 @@ Automated evidence is not a substitute for a manual test with NVDA, JAWS, VoiceO
 Phase 2.2 should review legal/privacy consistency and publish verifiable public trust evidence: subprocessors, retention wording, security controls, incident/status communication and customer-facing claims. This is the next low-risk work package because it does not alter conversion output.
 
 Semantic conversion and OCR work should begin only after its target formats, accuracy benchmark, cost ceiling and output-change approval are recorded.
+
+## Phase 2.2 scope and safety boundary
+
+Phase 2.2 aligns public policies and trust claims with implemented behavior. It covers legal copy, privacy disclosures, cookies, refunds, service status, public trust evidence, account deletion safety, and regression tests. It does not change a conversion engine, output file, layout, queue priority, quality score, or conversion timing.
+
+## Issues found and resolved in Phase 2.2
+
+1. **The privacy contact pointed to an unverified domain.** Policies and Dashboard settings now use one configurable public privacy email with the working support address as the fallback.
+2. **Legal pages used different effective dates and repeated conflicting content.** English and Hindi Terms, Privacy, Cookie, Refund, Trust, and Service Level pages now use one dated legal configuration.
+3. **Provider copy treated optional services as always active.** The Privacy policy now separates core infrastructure from processors that receive data only when their feature is enabled and used.
+4. **Cloudflare R2 and Railway were missing from public disclosures.** The live conversion storage and worker architecture is now named beside Supabase and Upstash.
+5. **AI copy made an unsupported training claim and hid the text transfer.** The policy and tool FAQ now state that up to 100,000 extracted characters go to Google Gemini when AI summarization is requested, while OnlyMyPDF logs usage metadata rather than extracted text.
+6. **The Cookie policy did not inventory actual storage.** It now documents `pd_guest_session`, `pd_locale`, `pd_consent`, Supabase authentication cookies, and the five-minute `pd_step_up` cookie. It also states that the current application loads no analytics or advertising tag.
+7. **The Trust Center could be read as a certification claim.** It now lists verified code controls, accuracy limits, signature limits, and the absence of SOC 2, ISO 27001, HIPAA, PCI DSS, or another independent product certification.
+8. **Refund and support copy promised operational timing without measured evidence.** Refund review factors, payment-provider timing, cancellation effects, and non-contractual support targets are now explicit.
+9. **The public Status page exposed deployment instructions.** It now shows customer-facing health, accurately labels the absence of public incident history, and directs blocked users to support.
+10. **AI and signature marketing copy overstated privacy and legal acceptance.** Public copy now describes actual processing and distinguishes a visual signature from certificate-based signing.
+11. **Account deletion could orphan a stored object after a storage failure.** Deletion is now fail-closed: account-linked files are removed before database rows and the account remain available for retry if any object deletion fails.
+12. **Terms acceptance did not identify the new policy revision.** New acceptance records now use `tos-2026-09-18`.
+
+## Phase 2.2 verification evidence
+
+| Gate | Result | Evidence |
+|---|---:|---|
+| Legal/privacy unit suite | Pass | 18/18 tests across legal content, retention, consent routes, and account deletion |
+| Public legal browser flows | Pass | 8/8 Playwright tests |
+| Legal-page accessibility | Pass | 4/4 serious/critical axe checks, including Hindi Privacy |
+| Legal-page color contrast | Pass | 3/3 Privacy, Cookie, and Trust checks |
+| TypeScript | Pass | `tsc --noEmit` |
+| Touched-file ESLint | Pass | Zero errors |
+| Production build | Pass | Next.js 16.3.5 webpack build; 154/154 static pages generated |
+| Visual browser review | Pass | Privacy, Trust Center, and live Status reviewed; zero browser warnings or errors |
+
+## Phase 2.2 production configuration still required
+
+Set these public values to the real legal owner before the public launch build:
+
+- `NEXT_PUBLIC_LEGAL_OPERATOR_NAME`: the person or registered entity responsible for OnlyMyPDF
+- `NEXT_PUBLIC_LEGAL_OPERATOR_COUNTRY`: the operator's legal country
+- `NEXT_PUBLIC_PRIVACY_EMAIL`: the monitored address for privacy requests
+
+The code currently falls back to `OnlyMyPDF`, `India`, and the configured support email. These fallbacks keep local and staging builds usable, but the operator name must be confirmed rather than inferred. Independent legal review remains an external launch decision and is not a software test.
+
+## Updated Phase 2 workstream status
+
+| Workstream | Phase 2 weight | Complete | Status |
+|---|---:|---:|---|
+| Accessibility and inclusive UX | 20% | 12% | Automated keyboard and primary-flow gate complete; real screen-reader review pending |
+| Legal, privacy and public trust evidence | 20% | 19% | Engineering gate complete; production operator identity confirmation pending |
+| Semantic Office output and OCR | 35% | 0% | Requires separate output-change approval |
+| Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 0% | Pending demand order and implementation |
+| Verified customer feedback | 5% | 0% | Pending real consented customer evidence |
+| **Total** | **100%** | **31%** | **Phase 2.2 engineering complete** |
+
+Phase 2.3 must not start until the Phase 2.2 result is reported and the next output-changing scope is approved.

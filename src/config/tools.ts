@@ -10,7 +10,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       "Merge multiple PDF files into a single document online for free. Drag and drop to reorder pages. No signup required. Fast, secure, and easy to use.",
     h1: "Merge PDF Files Online — Free & Fast",
     seoContent:
-      "Combine two or more PDF files into a single document in seconds. OnlyMyPDF's Merge PDF tool lets you drag and drop multiple files, reorder pages as needed, and download a perfectly combined PDF — all from your browser. No software to install, no registration required.",
+      "Combine two or more PDF files into one document. OnlyMyPDF lets you reorder files before processing and download the merged result. No desktop software or registration is required for the basic tool.",
     faqs: [
       {
         question: "How do I merge PDF files?",
@@ -241,10 +241,10 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "sign-pdf": {
     title: "Sign PDF — Add Digital Signature to PDF Online | OnlyMyPDF",
     metaDescription:
-      "Add your signature to PDF documents online. Draw, type, or upload your signature. Secure and legally acceptable digital signatures.",
+      "Add a visual signature to a PDF by drawing, typing, or uploading an image. Certificate-based signing is not included.",
     h1: "Sign PDF Documents Online — Quick & Secure",
     seoContent:
-      "Sign your PDF documents digitally with OnlyMyPDF. Create your signature by drawing with your mouse or touchscreen, typing your name in a signature font, or uploading an image of your handwritten signature. Place your signature anywhere on the document, resize it as needed, and download the signed PDF. Perfect for contracts, agreements, forms, and official documents. Our digital signatures are secure and widely accepted.",
+      "Add a visual signature to a PDF by drawing with a mouse or touchscreen, typing a name, or uploading a signature image. Place and resize it before downloading the result. Confirm that the recipient accepts this type of electronic signature; OnlyMyPDF does not issue a signing certificate.",
     faqs: [
       {
         question: "How can I create my signature?",
@@ -254,7 +254,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Are digital signatures legally valid?",
         answer:
-          "Digital signatures created with OnlyMyPDF are widely accepted for most business documents. For legally binding documents requiring certified digital signatures, you may need a certificate-based signature solution.",
+          "OnlyMyPDF adds a visual electronic signature. Whether it is legally sufficient depends on the document, parties, and local law. Use a certificate-based signing service when identity validation or a digital certificate is required.",
       },
       {
         question: "Is the Sign PDF tool free?",
@@ -290,7 +290,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Is my document content kept private?",
         answer:
-          "Yes, your document content is processed securely and is not stored after summarization. We do not use your documents to train AI models.",
+          "The PDF is processed in memory and extracted text is sent to the configured AI provider when you request a summary. OnlyMyPDF records usage metadata, not the extracted text, in its AI usage logs. See the Privacy policy before submitting confidential data.",
       },
       {
         question: "Is this tool free to use?",

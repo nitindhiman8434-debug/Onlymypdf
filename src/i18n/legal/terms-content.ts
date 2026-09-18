@@ -1,166 +1,201 @@
-import { FILE_LIMITS, SUPPORT_EMAIL, formatFileSizeMarketingLabel } from "@/config/constants";
+import { FILE_LIMITS, formatFileSizeMarketingLabel } from "@/config/constants";
+import { LEGAL_CONTACT, LEGAL_POLICY_DATE, PUBLIC_RETENTION } from "@/config/legal";
 import { BILLING_COPY } from "@/lib/billing/billing-copy";
 import type { LegalDocument } from "./index";
 
-const freeMb = FILE_LIMITS.maxFreeFileSizeMB;
-const proMb = FILE_LIMITS.maxProFileSizeMB;
-const freeSizeLabel = formatFileSizeMarketingLabel(freeMb);
-const proSizeLabel = formatFileSizeMarketingLabel(proMb);
+const freeSizeLabel = formatFileSizeMarketingLabel(FILE_LIMITS.maxFreeFileSizeMB);
+const proSizeLabel = formatFileSizeMarketingLabel(FILE_LIMITS.maxProFileSizeMB);
 
 export const termsLegal: Record<"en" | "hi", LegalDocument> = {
   en: {
-    pageTitle: "Terms of Service",
-    lastUpdated: "July 1, 2026",
+    pageTitle: "Terms of service",
+    lastUpdated: LEGAL_POLICY_DATE.en,
     sections: [
       {
-        title: "1. Acceptance of Terms",
+        title: "1. Agreement and eligibility",
         paragraphs: [
-          "By accessing or using OnlyMyPDF (\"the Service\"), you agree to these Terms of Service. If you do not agree, do not use the Service.",
-          "We may update these terms at any time. Continued use after changes constitutes acceptance.",
+          "By using OnlyMyPDF, you agree to these terms. Do not use the service if you do not agree.",
+          "You must be able to enter a binding contract in your country. A parent or guardian must supervise use by a minor who cannot consent independently.",
         ],
       },
       {
-        title: "2. Description of Service",
+        title: "2. What the service does",
         paragraphs: [
-          "OnlyMyPDF provides online PDF tools including merge, split, compress, convert, edit, sign, protect, and AI summarization.",
-          "The Service is available in a free tier (daily usage limits) and a paid Pro tier (enhanced limits and features).",
+          "OnlyMyPDF provides browser and server-based tools to organize, convert, compress, edit, sign, protect, scan, and summarize documents.",
+          "Available tools, providers, limits, and output quality can vary by file, plan, device, and deployment configuration.",
         ],
       },
       {
-        title: "3. User Accounts",
+        title: "3. Review every output",
         bullets: [
-          "Provide accurate registration information and keep credentials secure.",
-          "You are responsible for activity under your account.",
-          "Guest users may access basic tools with stricter limits.",
+          "Conversions can change layout, fonts, tables, images, reading order, formulas, or metadata. Review the result before relying on it.",
+          "AI summaries can omit context or contain errors. Do not use them as legal, medical, financial, or professional advice.",
+          "The Sign PDF tool places a visual signature. It is not a certificate-based digital signature unless the tool expressly says otherwise.",
         ],
       },
       {
-        title: "4. Acceptable Use",
+        title: "4. Accounts and security",
         bullets: [
-          "Do not upload unlawful, harmful, or copyrighted content without permission.",
-          "Do not attempt to bypass usage limits, security, or access other users' data.",
-          "Do not use automated scraping or denial-of-service against the Service.",
+          "Provide accurate account information and protect your credentials and devices.",
+          "You are responsible for activity under your account unless applicable law states otherwise.",
+          "OnlyMyPDF may require identity verification for exports, account deletion, billing, or security changes.",
         ],
       },
       {
-        title: "5. File Upload Policy",
-        bullets: [
-          "Auto-deletion: files are deleted after 2 hours (free) or 24 hours (Pro).",
-          `File size: Free — ${freeSizeLabel}; Pro — ${proSizeLabel}.`,
-          "Daily limits: Free — 5 tool uses/day; Pro — 100 tool uses/day.",
-          "Supported formats vary by tool (PDF, Office, images, HTML, etc.).",
+        title: "5. Your files and processing permission",
+        paragraphs: [
+          "You retain ownership of your files. You grant OnlyMyPDF and its disclosed processors a limited permission to receive, copy, convert, and return files only to provide the feature you request, secure the service, and meet legal obligations.",
+          "You must have the right to upload and process every file. Do not submit files that violate privacy, intellectual property, confidentiality, or other rights.",
         ],
       },
       {
-        title: "6. Payment and Subscriptions",
+        title: "6. Limits and retention",
         bullets: [
-          "Pro plans are billed via Razorpay in INR (monthly or yearly).",
+          `Free plan: ${freeSizeLabel} and ${FILE_LIMITS.maxFreeUsesPerDay} tool uses per day under the default configuration.`,
+          `Pro plan: ${proSizeLabel} and ${FILE_LIMITS.maxProUsesPerDay} tool uses per day under the default configuration.`,
+          `Free files expire within ${FILE_LIMITS.fileRetentionHours} hours. Pro files expire within ${PUBLIC_RETENTION.proFileHours} hours. A tool may delete temporary data sooner.`,
+          "The selected tool can impose a lower file-count, page-count, format, memory, or processing limit.",
+        ],
+      },
+      {
+        title: "7. Acceptable use",
+        bullets: [
+          "Do not upload illegal, malicious, exploitative, or unauthorized content.",
+          "Do not bypass limits, probe another account, disrupt the service, or automate requests without written permission or an authorized API key.",
+          "Do not use OnlyMyPDF to remove protection from a file unless you own it or have permission.",
+        ],
+      },
+      {
+        title: "8. Paid plans and checkout",
+        bullets: [
           BILLING_COPY.checkoutModel,
-          "Auto-renewing subscriptions renew unless cancelled from Dashboard → Billing before the next charge.",
-          "GST tax invoices are available in Dashboard → Billing after successful payment.",
-          "Refunds follow our refund policy and applicable law.",
+          "The checkout page shows the price, billing period, taxes, and renewal status before payment. Prices displayed outside checkout are informational until confirmed at checkout.",
+          "For auto-renewing plans, cancel from Dashboard before the next charge. Access continues through the paid period unless law or account enforcement requires otherwise.",
+          "Refund requests follow the published Refund policy and any mandatory consumer rights.",
         ],
       },
       {
-        title: "7. Intellectual Property",
+        title: "9. Suspension and service changes",
         paragraphs: [
-          "You retain ownership of files you upload. You grant us a limited license to process files solely to provide the Service.",
-          "OnlyMyPDF branding, software, and site content remain our property.",
+          "OnlyMyPDF may restrict or suspend access to protect users, investigate abuse, comply with law, or prevent harm. We may change or discontinue a feature, but mandatory rights and paid entitlements remain subject to applicable law.",
         ],
       },
       {
-        title: "8. Disclaimer of Warranties",
+        title: "10. Intellectual property",
         paragraphs: [
-          "The Service is provided \"as is\" without warranties of any kind. We do not guarantee conversion accuracy for every document.",
+          "OnlyMyPDF branding, software, design, and site content remain the property of their respective owners. These terms do not transfer those rights to you.",
         ],
       },
       {
-        title: "9. Limitation of Liability",
+        title: "11. Warranty and liability limits",
         paragraphs: [
-          "To the maximum extent permitted by law, OnlyMyPDF is not liable for indirect or consequential damages arising from use of the Service.",
+          "The service is provided as available. To the extent allowed by law, OnlyMyPDF disclaims implied warranties and is not liable for indirect, incidental, or consequential loss.",
+          "Nothing in these terms excludes liability or consumer rights that applicable law does not allow us to exclude.",
         ],
       },
       {
-        title: "10. Contact",
-        paragraphs: [`Questions about these terms: ${SUPPORT_EMAIL}`],
+        title: "12. Law, changes, and contact",
+        paragraphs: [
+          `These terms are governed by applicable Indian law, subject to mandatory rights in your country. ${LEGAL_CONTACT.operatorName} operates from ${LEGAL_CONTACT.operatorCountry}.`,
+          "When terms change, the updated date appears on this page. We will provide additional notice when law requires it. Continued use after the effective date means the updated terms apply to later use.",
+          `Send legal or terms questions to ${LEGAL_CONTACT.supportEmail}.`,
+        ],
       },
     ],
   },
   hi: {
     pageTitle: "सेवा की शर्तें",
-    lastUpdated: "22 मई, 2026",
+    lastUpdated: LEGAL_POLICY_DATE.hi,
     sections: [
       {
-        title: "1. शर्तों की स्वीकृति",
+        title: "1. सहमति और पात्रता",
         paragraphs: [
-          "OnlyMyPDF (\"सेवा\") का उपयोग करके आप इन सेवा की शर्तों से बंधे होते हैं। असहमति होने पर सेवा का उपयोग न करें।",
-          "हम किसी भी समय शर्तें अपडेट कर सकते हैं। बदलाव के बाद उपयोग जारी रखना स्वीकृति माना जाएगा।",
+          "OnlyMyPDF उपयोग करके आप इन शर्तों से सहमत होते हैं। सहमत न होने पर सेवा उपयोग न करें।",
+          "आप अपने देश में binding contract करने योग्य होने चाहिए। स्वतंत्र सहमति न दे सकने वाले minor का उपयोग parent या guardian की देखरेख में होना चाहिए।",
         ],
       },
       {
-        title: "2. सेवा का विवरण",
+        title: "2. सेवा क्या करती है",
         paragraphs: [
-          "OnlyMyPDF मर्ज, स्प्लिट, कम्प्रेस, कन्वर्ट, एडिट, साइन, प्रोटेक्ट और AI सारांश सहित ऑनलाइन PDF टूल्स प्रदान करता है।",
-          "सेवा फ्री टियर (दैनिक सीमा) और Pro टियर (बढ़ी हुई सीमा और फीचर्स) में उपलब्ध है।",
+          "OnlyMyPDF documents को organize, convert, compress, edit, sign, protect, scan और summarize करने के लिए browser और server-based tools देता है।",
+          "Available tools, providers, limits और output quality file, plan, device और deployment configuration के अनुसार बदल सकते हैं।",
         ],
       },
       {
-        title: "3. उपयोगकर्ता खाते",
+        title: "3. हर output जांचें",
         bullets: [
-          "सही पंजीकरण जानकारी दें और क्रेडेंशियल सुरक्षित रखें।",
-          "अपने खाते के अंतर्गत गतिविधि की जिम्मेदारी आपकी है।",
-          "गेस्ट उपयोगकर्ता सख्त सीमाओं के साथ बुनियादी टूल्स उपयोग कर सकते हैं।",
+          "Conversion layout, fonts, tables, images, reading order, formulas या metadata बदल सकता है। भरोसा करने से पहले result जांचें।",
+          "AI summary context छोड़ सकती है या गलत हो सकती है। इसे legal, medical, financial या professional advice न मानें।",
+          "Sign PDF tool visual signature लगाता है। जब तक tool साफ न बताए, यह certificate-based digital signature नहीं है।",
         ],
       },
       {
-        title: "4. स्वीकार्य उपयोग",
+        title: "4. खाते और सुरक्षा",
         bullets: [
-          "गैर-कानूनी, हानिकारक या बिना अनुमति कॉपीराइट सामग्री अपलोड न करें।",
-          "उपयोग सीमा, सुरक्षा या अन्य उपयोगकर्ताओं के डेटा तक पहुँच बायपास न करें।",
-          "सेवा पर स्वचालित स्क्रैपिंग या DOS हमले न करें।",
+          "सही account information दें और credentials तथा devices सुरक्षित रखें।",
+          "लागू कानून के अलग कहने के अलावा account activity की जिम्मेदारी आपकी है।",
+          "Export, account deletion, billing या security change के लिए OnlyMyPDF identity verification मांग सकता है।",
         ],
       },
       {
-        title: "5. फ़ाइल अपलोड नीति",
+        title: "5. आपकी files और processing permission",
+        paragraphs: [
+          "Files का ownership आपका रहता है। मांगा हुआ feature देने, सेवा सुरक्षित रखने और कानूनी दायित्व पूरे करने के लिए आप OnlyMyPDF और disclosed processors को files receive, copy, convert और return करने की सीमित अनुमति देते हैं।",
+          "हर file upload और process करने का अधिकार आपके पास होना चाहिए। Privacy, intellectual property, confidentiality या दूसरे अधिकार तोड़ने वाली file submit न करें।",
+        ],
+      },
+      {
+        title: "6. Limits और retention",
         bullets: [
-          "ऑटो-डिलीट: फ्री — 2 घंटे; Pro — 24 घंटे के बाद फ़ाइलें हटाई जाती हैं।",
-          `फ़ाइल साइज़: फ्री — ${freeSizeLabel}; Pro — ${proSizeLabel}.`,
-          "दैनिक सीमा: फ्री — 5 उपयोग/दिन; Pro — 100 उपयोग/दिन।",
-          "समर्थित फॉर्मैट टूल के अनुसार (PDF, Office, इमेज, HTML, आदि)।",
+          `Free plan: default configuration में ${freeSizeLabel} और प्रतिदिन ${FILE_LIMITS.maxFreeUsesPerDay} tool uses।`,
+          `Pro plan: default configuration में ${proSizeLabel} और प्रतिदिन ${FILE_LIMITS.maxProUsesPerDay} tool uses।`,
+          `Free files ${FILE_LIMITS.fileRetentionHours} घंटे में और Pro files ${PUBLIC_RETENTION.proFileHours} घंटे में expire होती हैं। कोई tool temporary data पहले मिटा सकता है।`,
+          "Selected tool कम file-count, page-count, format, memory या processing limit लगा सकता है।",
         ],
       },
       {
-        title: "6. भुगतान और सब्सक्रिप्शन",
+        title: "7. स्वीकार्य उपयोग",
         bullets: [
-          "Pro प्लान Razorpay के ज़रिए INR में (मासिक/वार्षिक) बिल होते हैं।",
-          "कॉन्फ़िगर होने पर auto-renew subscription; अन्यथा one-time खरीद।",
-          "Dashboard → Billing से auto-renew रद्द करें; अवधि समाप्त होने तक Pro access जारी।",
-          "सफल भुगतान के बाद GST tax invoice Dashboard → Billing में उपलब्ध।",
-          "रिफंड हमारी रिफंड नीति और लागू कानून के अनुसार।",
+          "Illegal, malicious, exploitative या unauthorized content upload न करें।",
+          "Limits bypass, दूसरे account की जांच, service disrupt या written permission या authorized API key के बिना automated requests न करें।",
+          "File आपकी हो या permission हो तभी protection remove करने के लिए OnlyMyPDF उपयोग करें।",
         ],
       },
       {
-        title: "7. बौद्धिक संपदा",
+        title: "8. Paid plans और checkout",
+        bullets: [
+          "Payment से पहले checkout बताता है कि purchase auto-renew होगा या one-time। Live checkout उपलब्ध होने पर Razorpay payment process करता है।",
+          "Payment से पहले checkout price, billing period, tax और renewal status दिखाता है। Checkout से बाहर दिखा price confirmation तक informational है।",
+          "Auto-renew plan को अगली charge से पहले Dashboard में cancel करें। कानून या account enforcement के अलावा paid period तक access रहता है।",
+          "Refund request published Refund policy और mandatory consumer rights के अनुसार चलता है।",
+        ],
+      },
+      {
+        title: "9. Suspension और service changes",
         paragraphs: [
-          "अपलोड की गई फ़ाइलों का स्वामित्व आपका रहता है। सेवा देने के लिए सीमित प्रसंस्करण लाइसेंस आप हमें देते हैं।",
-          "OnlyMyPDF ब्रांडिंग, सॉफ़्टवेयर और साइट सामग्री हमारी संपत्ति है।",
+          "Users की सुरक्षा, abuse investigation, कानून पालन या harm रोकने के लिए OnlyMyPDF access restrict या suspend कर सकता है। Feature बदल या बंद हो सकता है, लेकिन mandatory rights और paid entitlement पर लागू कानून लागू रहेगा।",
         ],
       },
       {
-        title: "8. वारंटी अस्वीकरण",
+        title: "10. Intellectual property",
         paragraphs: [
-          "सेवा \"जैसी है\" आधार पर दी जाती है। हर दस्तावेज़ के लिए रूपांतरण की पूर्ण सटीकता की गारंटी नहीं।",
+          "OnlyMyPDF branding, software, design और site content अपने respective owners की property हैं। ये शर्तें वे rights आपको transfer नहीं करतीं।",
         ],
       },
       {
-        title: "9. दायित्व की सीमा",
+        title: "11. Warranty और liability limits",
         paragraphs: [
-          "कानून द्वारा अनुमत अधिकतम सीमा तक, अप्रत्यक्ष या परिणामी नुकसान के लिए OnlyMyPDF उत्तरदायी नहीं।",
+          "Service available basis पर दी जाती है। कानून की सीमा तक OnlyMyPDF implied warranties अस्वीकार करता है और indirect, incidental या consequential loss के लिए liable नहीं है।",
+          "इन terms से ऐसी liability या consumer right exclude नहीं होती जिसे कानून exclude करने की अनुमति नहीं देता।",
         ],
       },
       {
-        title: "10. संपर्क",
-        paragraphs: [`शर्तों से संबंधित प्रश्न: ${SUPPORT_EMAIL}`],
+        title: "12. कानून, बदलाव और संपर्क",
+        paragraphs: [
+          `ये terms लागू Indian law से governed हैं और आपके देश के mandatory rights लागू रहेंगे। ${LEGAL_CONTACT.operatorName}, ${LEGAL_CONTACT.operatorCountry} से operate करता है।`,
+          "Terms बदलने पर updated date इस page पर दिखेगी। कानून के अनुसार अतिरिक्त notice दिया जाएगा। Effective date के बाद use जारी रखने पर updated terms बाद के use पर लागू होंगी।",
+          `Legal या terms प्रश्न ${LEGAL_CONTACT.supportEmail} पर भेजें।`,
+        ],
       },
     ],
   },

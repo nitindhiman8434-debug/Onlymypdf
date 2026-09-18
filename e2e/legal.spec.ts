@@ -21,6 +21,37 @@ test.describe("Legal & branding", () => {
     await gotoAndSettle(page, "/privacy");
     await expect(page.getByText("OnlyMyPDF").first()).toBeVisible();
     await expect(page.getByText("Only4PDF")).toHaveCount(0);
+    await expect(page.getByText(/Cloudflare R2/).first()).toBeVisible();
+    await expect(page.getByText(/Railway/).first()).toBeVisible();
+    await expect(page.getByText(/does not sell personal data/i).first()).toBeVisible();
+  });
+
+  test("cookie page distinguishes essential storage from inactive optional tags", async ({ page }) => {
+    await gotoAndSettle(page, "/cookies");
+    await expect(page.getByText(/pd_guest_session/).first()).toBeVisible();
+    await expect(page.getByText(/does not load an analytics tag/i).first()).toBeVisible();
+    await expect(page.getByText(/does not load advertising or marketing tags/i).first()).toBeVisible();
+  });
+
+  test("trust center states accuracy and certification limits", async ({ page }) => {
+    await gotoAndSettle(page, "/trust");
+    await expect(page.getByText(/does not promise perfect conversion/i).first()).toBeVisible();
+    await expect(page.getByText(/does not currently claim SOC 2/i).first()).toBeVisible();
+    await expect(page.getByText(/certificate-based digital signature/i).first()).toBeVisible();
+  });
+
+  test("status page shows customer-facing fallback without operator setup instructions", async ({ page }) => {
+    await page.route("**/api/health", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ status: "ok", timestamp: "2026-09-18T00:00:00.000Z" }),
+      })
+    );
+    await gotoAndSettle(page, "/status");
+    await expect(page.getByText("All systems operational")).toBeVisible();
+    await expect(page.getByText(/Public incident history and update subscriptions are not available yet/i)).toBeVisible();
+    await expect(page.getByText(/NEXT_PUBLIC_STATUS_PAGE_URL/)).toHaveCount(0);
   });
 
   test("refund page mentions refund policy and Razorpay", async ({ page }) => {

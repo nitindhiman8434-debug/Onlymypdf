@@ -37,9 +37,13 @@ const AXE_PAGES = [
   { name: "login", path: "/login" },
   { name: "signup", path: "/signup" },
   { name: "forgot-password", path: "/forgot-password" },
+  { name: "privacy", path: "/privacy" },
+  { name: "cookies", path: "/cookies" },
+  { name: "trust", path: "/trust" },
   { name: "Hindi homepage", path: "/hi", lang: "hi" },
   { name: "Hindi merge-pdf", path: "/hi/merge-pdf", lang: "hi" },
   { name: "Hindi pricing", path: "/hi/pricing", lang: "hi" },
+  { name: "Hindi privacy", path: "/hi/privacy", lang: "hi" },
 ] as const;
 
 const MARKETING_CONTRAST_PAGES = [
@@ -47,6 +51,9 @@ const MARKETING_CONTRAST_PAGES = [
   { name: "pricing", path: "/pricing" },
   { name: "Hindi homepage", path: "/hi" },
   { name: "Hindi pricing", path: "/hi/pricing" },
+  { name: "privacy", path: "/privacy" },
+  { name: "cookies", path: "/cookies" },
+  { name: "trust", path: "/trust" },
 ] as const;
 
 const TOOL_CONTRAST_PAGES = [

@@ -104,9 +104,9 @@ export function ContactPageContent() {
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-pd-brand-muted">
                 <Send className="h-6 w-6 text-pd-brand" />
               </div>
-              <h2 className="mt-4 text-lg font-semibold text-pd-foreground">Message Sent!</h2>
+              <h2 className="mt-4 text-lg font-semibold text-pd-foreground">Message sent</h2>
               <p className="mt-2 text-sm text-pd-muted">
-                Thank you for reaching out. We&apos;ll get back to you within 24-48 hours.
+                We received your message. Any reply will go to the email address you provided.
               </p>
               <Button
                 className="mt-6"
@@ -130,7 +130,9 @@ export function ContactPageContent() {
                   </label>
                   <input
                     id="name"
+                    name="name"
                     type="text"
+                    autoComplete="name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className={inputClass}
@@ -148,7 +150,10 @@ export function ContactPageContent() {
                   </label>
                   <input
                     id="email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
+                    spellCheck={false}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className={inputClass}
@@ -166,6 +171,7 @@ export function ContactPageContent() {
                   </label>
                   <select
                     id="subject"
+                    name="subject"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     className={inputClass}
@@ -189,11 +195,12 @@ export function ContactPageContent() {
                   </label>
                   <textarea
                     id="message"
+                    name="message"
                     rows={5}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className={cn(inputClass, "resize-none")}
-                    placeholder="Tell us how we can help..."
+                    placeholder="Tell us how we can help…"
                   />
                   {errors.message && (
                     <p className="mt-1 text-xs text-pd-danger" role="alert">
@@ -239,15 +246,15 @@ export function ContactPageContent() {
             },
             {
               icon: Clock,
-              title: "Response Time",
-              body: <p className="text-sm text-pd-muted">We typically respond within 24-48 hours.</p>,
+              title: "Response times",
+              body: <p className="text-sm text-pd-muted">Response times are targets unless a signed agreement states a commitment.</p>,
             },
             {
               icon: HelpCircle,
-              title: "Quick Answers",
+              title: "Common answers",
               body: (
                 <>
-                  <p className="text-sm text-pd-muted">Check our FAQ for quick answers to common questions.</p>
+                  <p className="text-sm text-pd-muted">Check our FAQ for answers to common questions.</p>
                   <Link href="/faq" className="mt-3 inline-flex text-sm font-medium text-pd-brand">
                     Visit FAQ →
                   </Link>

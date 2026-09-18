@@ -6,7 +6,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 export const metadata: Metadata = buildPageMetadata({
   title: "Privacy Policy",
   description:
-    "Learn how OnlyMyPDF handles your data, files, and personal information. Your privacy is our priority.",
+    "How OnlyMyPDF processes files, account data, cookies, AI requests, payments, and privacy requests.",
   path: "/privacy",
 });
 

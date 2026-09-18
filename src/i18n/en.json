@@ -559,7 +559,7 @@
     "downloadAgain": "Download Again",
     "expired": "Deleted",
     "deleteAccount": "Delete Account",
-    "deleteAccountWarning": "This action cannot be undone. All your data will be permanently deleted.",
+    "deleteAccountWarning": "This action cannot be undone. Account-linked data is deleted; legally required billing records and short-lived staging follow the published Privacy policy.",
     "accountSettings": "Account Settings",
     "changeLanguage": "Language",
     "changePassword": "Change Password",
@@ -1230,13 +1230,13 @@
     "rejectNonEssential": "Reject non-essential",
     "resetBanner": "Reset banner",
     "deleteTitle": "Delete account",
-    "deleteDesc": "Permanently erase your account and associated files. This cannot be undone.",
+    "deleteDesc": "Erase your account, account-linked files, and product history. Short-lived staging and required billing records follow the Privacy policy.",
     "passwordLabel": "Password (if you use email sign-in)",
     "passwordPlaceholder": "Enter your password",
     "deleteConfirmRequired": "Enter your password or confirm with your sign-in provider before deleting your account.",
     "deleteBtn": "Delete my account",
     "deleting": "Deleting…",
-    "deleteConfirm": "Delete your OnlyMyPDF account permanently? This removes your profile, files, and job history. Payment records may be retained as required by law.",
+    "deleteConfirm": "Delete your OnlyMyPDF account permanently? This removes your profile, account-linked files, and job history. Short-lived staging expires through normal cleanup, and billing records may be retained as required by law.",
     "privacyEmail": "Questions? Email"
   }
 }

@@ -5,7 +5,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 export const metadata: Metadata = buildPageMetadata({
   title: "Cookie Policy",
   description:
-    "Learn how OnlyMyPDF uses cookies — essential, analytics, and marketing — and how to manage your preferences.",
+    "The essential browser storage OnlyMyPDF uses and how to manage optional cookie preferences.",
   path: "/cookies",
 });
 

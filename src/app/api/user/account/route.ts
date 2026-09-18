@@ -10,10 +10,6 @@ import {
 
   getUserProfile,
 
-  getUserUploadedFilePaths,
-
-  markFileDeleted,
-
   deleteUserConsentRecords,
 
   deleteUserErrorLogs,
@@ -28,8 +24,6 @@ import {
 
 } from "@/lib/db/queries";
 
-import { deleteFile } from "@/lib/services/upload.service";
-
 import { guardGeneralApiRateLimit, checkReauthRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
@@ -43,9 +37,13 @@ import { sanitizeOrganizationForRole } from "@/lib/enterprise/org-member-view";
 import { verifyUserStepUp } from "@/lib/auth/verify-reauth";
 import { clearStepUpCookie } from "@/lib/auth/step-up-auth";
 import {
+
+  AccountFileDeletionError,
+
   anonymizeBillingInvoicesForUser,
   assertAccountDeletionAllowed,
   cancelUserBillingBeforeDelete,
+  deleteAccountLinkedFilesBeforeRemoval,
   scrubUserFileMetadata,
 } from "@/lib/privacy/account-deletion.service";
 
@@ -410,31 +408,12 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
+    await deleteAccountLinkedFilesBeforeRemoval(user.id);
     await cancelUserBillingBeforeDelete(user.id);
     await anonymizeBillingInvoicesForUser(user.id);
     await scrubUserFileMetadata(user.id);
 
     const supabase = await createServiceClient();
-
-
-
-    const files = await getUserUploadedFilePaths(user.id);
-
-    for (const file of files) {
-
-      try {
-
-        await deleteFile(file.storage_path);
-
-        await markFileDeleted(file.id);
-
-      } catch {
-
-        await markFileDeleted(file.id);
-
-      }
-
-    }
 
 
 
@@ -478,12 +457,30 @@ export async function DELETE(request: NextRequest) {
 
       message:
 
-        "Your account and personal data have been deleted. Anonymized billing and tax records may be retained as required by law.",
+        "Your account and account-linked personal data have been deleted. Short-lived conversion staging expires through normal cleanup. Anonymized billing and tax records may be retained as required by law.",
 
     });
     return clearStepUpCookie(response);
 
   } catch (error) {
+
+    if (error instanceof AccountFileDeletionError) {
+
+      return NextResponse.json(
+
+        {
+
+          error:
+
+            "Some stored files could not be deleted. Your account was kept unchanged so you can retry.",
+
+        },
+
+        { status: 503 }
+
+      );
+
+    }
 
     captureApiError(error, { route: "user/account", method: "DELETE" });
 
@@ -494,5 +491,3 @@ export async function DELETE(request: NextRequest) {
   }
 
 }
-
-

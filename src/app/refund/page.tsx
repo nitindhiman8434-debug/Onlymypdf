@@ -5,7 +5,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 export const metadata: Metadata = buildPageMetadata({
   title: "Refund Policy",
   description:
-    "OnlyMyPDF refund policy — eligibility and how to request a refund for Pro purchases.",
+    "Eligibility, review factors, and request steps for an OnlyMyPDF purchase refund.",
   path: "/refund",
 });
 
