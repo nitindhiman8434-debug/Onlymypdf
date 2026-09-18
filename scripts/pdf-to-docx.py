@@ -404,14 +404,86 @@ def _build_searchable_ocr_pdf(
             print(f"WARN OCR table detection skipped: {exc}", file=sys.stderr, flush=True)
             return False
 
-    def tesseract_pdf(pix: fitz.Pixmap, *, page_number: int, psm: int) -> bytes | None:
+    def tesseract_pdf(
+        pix: fitz.Pixmap,
+        *,
+        page_number: int,
+        psm: int,
+        remove_table_lines: bool = False,
+    ) -> bytes | None:
         executable = shutil.which(os.environ.get("TESSERACT_PATH", "tesseract"))
         if executable is None:
             return None
         with tempfile.TemporaryDirectory(prefix="pdf2docx-tesseract-") as temp:
             image_path = os.path.join(temp, f"page-{page_number}.png")
             output_base = os.path.join(temp, f"page-{page_number}-psm-{psm}")
-            pix.save(image_path)
+            if remove_table_lines:
+                try:
+                    import cv2
+                    import numpy as np
+
+                    pixels = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
+                        pix.height,
+                        pix.width,
+                        pix.n,
+                    )
+                    if pix.n >= 3:
+                        gray = cv2.cvtColor(pixels[:, :, :3], cv2.COLOR_RGB2GRAY)
+                    else:
+                        gray = pixels[:, :, 0]
+                    binary = cv2.threshold(
+                        gray,
+                        0,
+                        255,
+                        cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU,
+                    )[1]
+                    horizontal = cv2.morphologyEx(
+                        binary,
+                        cv2.MORPH_OPEN,
+                        cv2.getStructuringElement(
+                            cv2.MORPH_RECT,
+                            (max(40, pix.width // 18), 1),
+                        ),
+                    )
+                    vertical = cv2.morphologyEx(
+                        binary,
+                        cv2.MORPH_OPEN,
+                        cv2.getStructuringElement(
+                            cv2.MORPH_RECT,
+                            (1, max(40, pix.height // 18)),
+                        ),
+                    )
+                    line_mask = np.zeros_like(gray)
+                    for mask, horizontal_axis in ((horizontal, True), (vertical, False)):
+                        count, labels, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
+                        for label in range(1, count):
+                            _x, _y, width, height, area = stats[label]
+                            if area <= 0:
+                                continue
+                            keep = (
+                                width >= pix.width * 0.25
+                                if horizontal_axis
+                                else height >= pix.height * 0.18
+                            )
+                            if keep:
+                                line_mask[labels == label] = 255
+                    line_mask = cv2.dilate(
+                        line_mask,
+                        cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3)),
+                    )
+                    cleaned = gray.copy()
+                    cleaned[line_mask > 0] = 255
+                    if not cv2.imwrite(image_path, cleaned):
+                        return None
+                except Exception as exc:
+                    print(
+                        f"WARN OCR table-line removal skipped: {exc}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    pix.save(image_path)
+            else:
+                pix.save(image_path)
             result = subprocess.run(
                 [
                     executable,
@@ -450,23 +522,31 @@ def _build_searchable_ocr_pdf(
             )
             selected_text = page_text(one_page_bytes)
             if looks_like_table(pix):
-                table_bytes = tesseract_pdf(pix, page_number=page_index + 1, psm=6)
-                if table_bytes is not None:
-                    table_text = page_text(table_bytes)
-                    default_score = text_score(selected_text)
-                    table_score = text_score(table_text)
-                    merged_text = merge_transcripts(selected_text, table_text)
-                    if table_score >= max(20, int(default_score * 0.5)):
-                        selected_text = merged_text
-                    if table_score > default_score:
-                        one_page_bytes = table_bytes
-                    print(
-                        "OCR_PAGE "
-                        f"page={page_index + 1} layout=table psm=3+6 "
-                        f"chars={len(selected_text)}",
-                        file=sys.stderr,
-                        flush=True,
+                default_score = text_score(selected_text)
+                used_modes = [3]
+                for psm in (6, 11):
+                    table_bytes = tesseract_pdf(
+                        pix,
+                        page_number=page_index + 1,
+                        psm=psm,
+                        remove_table_lines=True,
                     )
+                    if table_bytes is None:
+                        continue
+                    table_text = page_text(table_bytes)
+                    table_score = text_score(table_text)
+                    if table_score < max(20, int(default_score * 0.35)):
+                        continue
+                    selected_text = merge_transcripts(selected_text, table_text)
+                    used_modes.append(psm)
+                print(
+                    "OCR_PAGE "
+                    f"page={page_index + 1} layout=table "
+                    f"psm={'+'.join(str(mode) for mode in used_modes)} "
+                    f"chars={len(selected_text)}",
+                    file=sys.stderr,
+                    flush=True,
+                )
             one_page = fitz.open("pdf", one_page_bytes)
             try:
                 recognized_chars += len(selected_text)
