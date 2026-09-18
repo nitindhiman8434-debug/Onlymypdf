@@ -1,0 +1,38 @@
+{
+  "phase": "2.3A",
+  "benchmark": "image-only PDF to editable DOCX",
+  "passed": true,
+  "engine": "PyMuPDF + Tesseract + pdf2docx",
+  "language": "eng",
+  "durationMs": 1255,
+  "sourceBytes": 62492,
+  "outputBytes": 57375,
+  "editableCharacters": 233,
+  "mediaItems": 1,
+  "tokenRecall": 1.0,
+  "matchedTokens": [
+    "48932",
+    "accuracy",
+    "benchmark",
+    "editable",
+    "invoice",
+    "onlymypdf",
+    "quality",
+    "september",
+    "table",
+    "total"
+  ],
+  "expectedTokens": [
+    "48932",
+    "accuracy",
+    "benchmark",
+    "editable",
+    "invoice",
+    "onlymypdf",
+    "quality",
+    "september",
+    "table",
+    "total"
+  ],
+  "stderrTail": "PROGRESS pct=3\nPROGRESS pct=8\nPROGRESS pct=12\nPROGRESS pct=57\nPROGRESS pct=60\nPROGRESS pct=85\nPROGRESS pct=89\nOCR_RESULT method=visual-reference-plus-editable-transcript pages=1 language=eng dpi=220 recognized_chars=233 output_chars=229 editable=true\nPROGRESS pct=95\nPROGRESS pct=99\nOK size_kb=56\n"
+}

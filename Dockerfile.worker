@@ -4,15 +4,20 @@ FROM node:22-bookworm-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get -o Acquire::Retries=3 -o Acquire::http::Pipeline-Depth=0 update \
+    && apt-get -o Acquire::Retries=3 -o Acquire::http::Pipeline-Depth=0 install -y --no-install-recommends \
     libreoffice-writer \
     python3 \
     python3-pip \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-hin \
     ca-certificates \
     fonts-dejavu-core \
     fonts-noto-core \
-    && rm -rf /var/lib/apt/lists/* \
-    && pip3 install --no-cache-dir --break-system-packages pdf2docx
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache-dir --break-system-packages pdf2docx
 
 COPY package.json package-lock.json ./
 ENV PUPPETEER_SKIP_DOWNLOAD=true
@@ -27,6 +32,12 @@ ENV LIBREOFFICE_PATH=/usr/bin/soffice
 ENV PDF2DOCX_PYTHON=/usr/bin/python3
 ENV CONVERSION_WORKER_POLL_MS=1000
 ENV MAX_CONCURRENT_HEAVY_JOBS=1
+ENV PDF_OCR_ENABLED=true
+ENV PDF_OCR_REQUIRED=true
+ENV PDF_OCR_LANGUAGES=eng
+ENV PDF_OCR_DPI=220
+ENV PDF_OCR_MAX_PAGES=50
+ENV OMP_THREAD_LIMIT=1
 
 RUN groupadd --system nodejs \
     && useradd --system --gid nodejs --create-home --home-dir /home/worker worker \

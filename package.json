@@ -12,6 +12,7 @@
     "test:coverage": "vitest run --coverage",
     "test:pdf-to-word-quality": "vitest run src/lib/services/pdf-to-word-quality.ci.test.ts src/lib/services/pdf-to-word-hints.test.ts src/lib/services/pdf-to-word-hints.safety.test.ts src/lib/services/tool-isolation.test.ts src/lib/services/pdf-to-word-convertapi.service.test.ts src/lib/services/pdf-to-word-docx-post.test.ts src/lib/server/upload-validation.test.ts",
     "verify:pdf-to-word": "npx tsx scripts/verify-pdf-to-word-fixes.ts",
+    "phase2.3:ocr-benchmark": "node scripts/run-phase2-ocr-benchmark.cjs",
     "worker:conversions": "npx tsx workers/conversion-worker.ts",
     "worker:watchdog": "npx tsx workers/conversion-watchdog.ts",
     "phase1:corpus": "npx tsx scripts/phase1-corpus.ts",

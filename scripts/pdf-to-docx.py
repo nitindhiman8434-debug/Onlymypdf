@@ -6,7 +6,9 @@ import io
 import logging
 import os
 import re
+import shutil
 import sys
+import tempfile
 import threading
 import time
 import zipfile
@@ -111,7 +113,7 @@ def _sample_page_indices(page_count: int) -> list[int]:
 
 def prepare_input_pdf(pdf_path: str) -> tuple[str, list[str]]:
     """Decrypt/repair PDF so pdf2docx can read it. Returns path + temp files to delete."""
-    import fitz
+    import pymupdf as fitz
 
     cleanup: list[str] = []
     password = os.environ.get("PDF_INPUT_PASSWORD", "")
@@ -187,7 +189,7 @@ def validate_docx(docx_path: str, *, image_ok: bool = False) -> bool:
 
 def should_rasterize_pdf(pdf_path: str) -> bool:
     """Use full-page PNG export only for true scans, not design/infographic PDFs."""
-    import fitz
+    import pymupdf as fitz
 
     doc = fitz.open(pdf_path)
     try:
@@ -208,7 +210,7 @@ def should_rasterize_pdf(pdf_path: str) -> bool:
 
 def pdf_open_stats(pdf_path: str) -> tuple[int, int, bool, bool, bool]:
     """One pass: page_count, text_pages_sample, needs_transform, image_heavy, drawing_heavy."""
-    import fitz
+    import pymupdf as fitz
 
     doc = fitz.open(pdf_path)
     try:
@@ -265,9 +267,190 @@ def pdf_open_stats(pdf_path: str) -> tuple[int, int, bool, bool, bool]:
         doc.close()
 
 
+def _env_flag(name: str, default: bool) -> bool:
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _bounded_int(name: str, default: int, minimum: int, maximum: int) -> int:
+    try:
+        value = int(os.environ.get(name, str(default)))
+    except ValueError:
+        value = default
+    return max(minimum, min(maximum, value))
+
+
+def _tesseract_ready() -> bool:
+    if shutil.which(os.environ.get("TESSERACT_PATH", "tesseract")) is None:
+        return False
+    try:
+        import pymupdf as fitz
+
+        fitz.get_tessdata()
+        return True
+    except Exception:
+        return False
+
+
+def _build_searchable_ocr_pdf(
+    pdf_path: str,
+    output_path: str,
+    *,
+    language: str,
+    dpi: int,
+) -> tuple[int, int]:
+    """Render a scan and add a hidden OCR text layer using PyMuPDF/Tesseract."""
+    import pymupdf as fitz
+
+    source = fitz.open(pdf_path)
+    searchable = fitz.open()
+    recognized_chars = 0
+    try:
+        total = len(source)
+        for page_index, page in enumerate(source):
+            emit_progress(12 + int(45 * (page_index + 1) / max(1, total)))
+            pix = page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB, alpha=False)
+            one_page_bytes = pix.pdfocr_tobytes(
+                compress=True,
+                language=language,
+            )
+            one_page = fitz.open("pdf", one_page_bytes)
+            try:
+                recognized_chars += len(one_page[0].get_text().strip())
+                searchable.insert_pdf(one_page)
+            finally:
+                one_page.close()
+
+        if len(searchable) == 0:
+            return 0, 0
+        searchable.save(output_path, garbage=4, deflate=True)
+        return len(searchable), recognized_chars
+    finally:
+        searchable.close()
+        source.close()
+
+
+def _build_ocr_reference_transcript_docx(searchable_pdf: str, docx_path: str) -> bool:
+    """Keep a visual page reference beside visible, editable OCR text."""
+    import pymupdf as fitz
+    from docx import Document
+    from docx.shared import Inches, Pt
+
+    source = fitz.open(searchable_pdf)
+    word = Document()
+    section = word.sections[0]
+    section.top_margin = Inches(0.45)
+    section.bottom_margin = Inches(0.45)
+    section.left_margin = Inches(0.45)
+    section.right_margin = Inches(0.45)
+    try:
+        total = len(source)
+        for page_index, page in enumerate(source):
+            if page_index > 0:
+                word.add_page_break()
+            table = word.add_table(rows=1, cols=2)
+            table.autofit = False
+            visual_cell, text_cell = table.rows[0].cells
+            visual_cell.width = Inches(3.35)
+            text_cell.width = Inches(3.65)
+
+            preview = page.get_pixmap(dpi=110, colorspace=fitz.csRGB, alpha=False)
+            visual_cell.paragraphs[0].add_run().add_picture(
+                io.BytesIO(preview.tobytes("jpeg", jpg_quality=72)),
+                width=Inches(3.2),
+            )
+
+            extracted = page.get_text("text", sort=True).strip()
+            text_cell.paragraphs[0]._element.getparent().remove(
+                text_cell.paragraphs[0]._element
+            )
+            for block in re.split(r"\n\s*\n", extracted):
+                cleaned = re.sub(r"[ \t]+", " ", block).strip()
+                if not cleaned:
+                    continue
+                paragraph = text_cell.add_paragraph(cleaned)
+                paragraph.paragraph_format.space_after = Pt(4)
+                for run in paragraph.runs:
+                    run.font.size = Pt(9.5)
+            emit_progress(62 + int(27 * (page_index + 1) / max(1, total)))
+        word.save(docx_path)
+    finally:
+        source.close()
+
+    return validate_docx(docx_path)
+
+
+def convert_scanned_pdf_with_ocr(pdf_path: str, docx_path: str) -> bool:
+    """Create a layout-preserving searchable PDF, then convert it to editable DOCX."""
+    from pdf2docx import Converter
+
+    language = os.environ.get("PDF_OCR_LANGUAGES", "eng").strip() or "eng"
+    dpi = _bounded_int("PDF_OCR_DPI", 220, 150, 300)
+    work_dir = tempfile.mkdtemp(prefix="pdf2docx-ocr-")
+    searchable_pdf = os.path.join(work_dir, "searchable.pdf")
+    try:
+        pages, recognized_chars = _build_searchable_ocr_pdf(
+            pdf_path,
+            searchable_pdf,
+            language=language,
+            dpi=dpi,
+        )
+        minimum_chars = max(20, pages * 12)
+        if pages == 0 or recognized_chars < minimum_chars:
+            print(
+                f"WARN OCR text below gate: chars={recognized_chars} need={minimum_chars}",
+                file=sys.stderr,
+                flush=True,
+            )
+            return False
+
+        emit_progress(60, force=True)
+        cv = Converter(searchable_pdf)
+        try:
+            cv.convert(
+                docx_path,
+                start=0,
+                end=max(0, pages - 1),
+                **optimal_settings(pages, image_heavy=False),
+            )
+        finally:
+            cv.close()
+
+        metrics = docx_metrics(docx_path) if os.path.isfile(docx_path) else {"chars": 0}
+        output_chars = metrics.get("chars", 0)
+        ok = validate_docx(docx_path) and output_chars >= minimum_chars
+        method = "searchable-pdf"
+        if not ok:
+            try:
+                os.remove(docx_path)
+            except OSError:
+                pass
+            ok = _build_ocr_reference_transcript_docx(searchable_pdf, docx_path)
+            metrics = docx_metrics(docx_path) if ok else {"chars": 0}
+            output_chars = metrics.get("chars", 0)
+            ok = ok and output_chars >= minimum_chars
+            method = "visual-reference-plus-editable-transcript"
+        print(
+            "OCR_RESULT "
+            f"method={method} pages={pages} language={language} dpi={dpi} "
+            f"recognized_chars={recognized_chars} output_chars={output_chars} "
+            f"editable={str(ok).lower()}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return ok
+    except Exception as exc:
+        print(f"WARN OCR conversion failed: {exc}", file=sys.stderr, flush=True)
+        return False
+    finally:
+        shutil.rmtree(work_dir, ignore_errors=True)
+
+
 def convert_image_pdf_to_docx(pdf_path: str, docx_path: str) -> bool:
-    """Fallback for image-only / scanned PDFs — one page image per Word page."""
-    import fitz
+    """Convert a scan with OCR; keep image-only fallback for local compatibility."""
+    import pymupdf as fitz
     from docx import Document
     from docx.shared import Inches
 
@@ -275,6 +458,26 @@ def convert_image_pdf_to_docx(pdf_path: str, docx_path: str) -> bool:
     try:
         if len(doc) == 0:
             return False
+        page_count = len(doc)
+    finally:
+        doc.close()
+
+    ocr_enabled = _env_flag("PDF_OCR_ENABLED", True)
+    ocr_required = _env_flag("PDF_OCR_REQUIRED", False)
+    ocr_max_pages = _bounded_int("PDF_OCR_MAX_PAGES", 50, 1, MAX_IMAGE_PATH_PAGES)
+    if ocr_enabled and page_count <= ocr_max_pages and _tesseract_ready():
+        if convert_scanned_pdf_with_ocr(pdf_path, docx_path):
+            return True
+        if ocr_required:
+            print("ERROR OCR_REQUIRED OCR could not produce editable text", file=sys.stderr)
+            return False
+    elif ocr_required:
+        reason = "page limit exceeded" if page_count > ocr_max_pages else "Tesseract unavailable"
+        print(f"ERROR OCR_REQUIRED {reason}", file=sys.stderr)
+        return False
+
+    doc = fitz.open(pdf_path)
+    try:
         word = Document()
         usable_width = Inches(6.5)
         total = len(doc)
@@ -290,6 +493,11 @@ def convert_image_pdf_to_docx(pdf_path: str, docx_path: str) -> bool:
         word.save(docx_path)
     finally:
         doc.close()
+    print(
+        "WARN OCR_FALLBACK image-only DOCX; text is not editable",
+        file=sys.stderr,
+        flush=True,
+    )
     return validate_docx(docx_path, image_ok=True)
 
 

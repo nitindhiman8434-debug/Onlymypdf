@@ -4,11 +4,13 @@
 
 **Branch:** `phase1-dependable-beta`
 
-**Phase 2 overall completion:** 31%
+**Phase 2 overall completion:** 40%
 
-**Current work package:** Phase 2.2 — legal, privacy, and public trust evidence
+**Current work package:** Phase 2.3 — semantic Office output and OCR
 
-**Phase 2.2 status:** Engineering gate complete; production legal-operator identity must be confirmed before public launch
+**Phase 2.2 status:** Complete. The confirmed publishable operator is `OnlyMyPDF`, India.
+
+**Phase 2.3A status:** Implementation and local Linux container gate complete; Railway worker deployment verification pending.
 
 ## Scope and safety boundary
 
@@ -100,25 +102,25 @@ Phase 2.2 aligns public policies and trust claims with implemented behavior. It 
 | Production build | Pass | Next.js 16.3.5 webpack build; 154/154 static pages generated |
 | Visual browser review | Pass | Privacy, Trust Center, and live Status reviewed; zero browser warnings or errors |
 
-## Phase 2.2 production configuration still required
+## Phase 2.2 production identity
 
-Set these public values to the real legal owner before the public launch build:
+The user confirmed these publishable values on 18 September 2026:
 
-- `NEXT_PUBLIC_LEGAL_OPERATOR_NAME`: the person or registered entity responsible for OnlyMyPDF
-- `NEXT_PUBLIC_LEGAL_OPERATOR_COUNTRY`: the operator's legal country
+- `NEXT_PUBLIC_LEGAL_OPERATOR_NAME`: `OnlyMyPDF`
+- `NEXT_PUBLIC_LEGAL_OPERATOR_COUNTRY`: `India`
 - `NEXT_PUBLIC_PRIVACY_EMAIL`: the monitored address for privacy requests
 
-The code currently falls back to `OnlyMyPDF`, `India`, and the configured support email. These fallbacks keep local and staging builds usable, but the operator name must be confirmed rather than inferred. Independent legal review remains an external launch decision and is not a software test.
+The confirmed values match the code defaults. No production code change is required for the name or country. Independent legal review remains an external launch decision and is not a software test.
 
 ## Updated Phase 2 workstream status
 
 | Workstream | Phase 2 weight | Complete | Status |
 |---|---:|---:|---|
 | Accessibility and inclusive UX | 20% | 12% | Automated keyboard and primary-flow gate complete; real screen-reader review pending |
-| Legal, privacy and public trust evidence | 20% | 19% | Engineering gate complete; production operator identity confirmation pending |
-| Semantic Office output and OCR | 35% | 0% | Requires separate output-change approval |
+| Legal, privacy and public trust evidence | 20% | 20% | Engineering gate and operator identity complete |
+| Semantic Office output and OCR | 35% | 8% | Phase 2.3A PDF-to-Word OCR foundation passed; broader OCR and Excel/PowerPoint semantics pending |
 | Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 0% | Pending demand order and implementation |
 | Verified customer feedback | 5% | 0% | Pending real consented customer evidence |
-| **Total** | **100%** | **31%** | **Phase 2.2 engineering complete** |
+| **Total** | **100%** | **40%** | **Phase 2.2 complete; Phase 2.3A local gate complete** |
 
-Phase 2.3 must not start until the Phase 2.2 result is reported and the next output-changing scope is approved.
+Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.

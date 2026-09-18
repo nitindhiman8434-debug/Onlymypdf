@@ -1,0 +1,25 @@
+FROM python:3.11-slim-bookworm
+
+WORKDIR /app
+
+RUN apt-get -o Acquire::Retries=3 -o Acquire::http::Pipeline-Depth=0 update \
+    && apt-get -o Acquire::Retries=3 -o Acquire::http::Pipeline-Depth=0 install -y --no-install-recommends \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-hin \
+    fonts-dejavu-core \
+    fonts-noto-core \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir pdf2docx
+
+COPY scripts ./scripts
+
+ENV PDF_OCR_ENABLED=true
+ENV PDF_OCR_REQUIRED=true
+ENV PDF_OCR_LANGUAGES=eng
+ENV PDF_OCR_DPI=220
+ENV PDF_OCR_MAX_PAGES=10
+ENV OMP_THREAD_LIMIT=1
+
+CMD ["python3", "scripts/phase2-ocr-benchmark.py", "/tmp/latest-report.json"]
