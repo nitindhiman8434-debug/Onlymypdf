@@ -4,7 +4,7 @@
 
 **Approved output-changing scope:** PDF to Word DOCX accuracy and scanned/image-only PDF OCR readiness.
 
-**Phase 2.3A status:** 100% implementation and local Linux container gate complete; Railway deployment verification pending.
+**Phase 2.3A status:** 100% complete. Implementation, local Linux container gate and Railway production worker deployment are verified.
 
 ## Recorded decision gate
 
@@ -48,6 +48,8 @@ No OCR engine can honestly guarantee 100% recognition for every scan. Handwritin
 | PDF-to-Word regression suite | Pass | 46/46 tests across engine planning, quality gates, retry behavior, hint safety and upload validation |
 | TypeScript | Pass | `tsc --noEmit` |
 | Python syntax | Pass | `py_compile` for the production converter and OCR benchmark |
+| Railway production image | Pass | Deployment `6d1712d8-2569-4611-8975-ad35d71d5d9c` built commit `30841eb`; build logs confirm LibreOffice, Tesseract `eng`/`hin` and `pdf2docx` installation |
+| Railway worker runtime | Pass | Deployment reached `Active`; runtime logged `[conversion-worker] ready { pending: 0, processing: 0 }` and cleanup completed without failures |
 
 The committed machine-readable result is `quality/phase2-pdf-to-word/latest-report.json`.
 
@@ -55,7 +57,7 @@ The committed machine-readable result is `quality/phase2-pdf-to-word/latest-repo
 
 | Work package | Phase 2 weight | Status |
 |---|---:|---|
-| 2.3A PDF-to-Word OCR foundation | 8% | Local implementation gate complete; Railway deployment verification pending |
+| 2.3A PDF-to-Word OCR foundation | 8% | Complete: local and Railway production gates passed |
 | 2.3B Hindi, mixed-language and difficult-scan corpus | 6% | Pending |
 | 2.3C PDF-to-Excel semantic accuracy | 8% | Pending |
 | 2.3D PDF-to-PowerPoint semantic accuracy | 8% | Pending |
@@ -63,7 +65,6 @@ The committed machine-readable result is `quality/phase2-pdf-to-word/latest-repo
 
 ## Remaining Phase 2.3 work
 
-- Verify the full Railway worker image and runtime after deployment.
 - Add Hindi and mixed-language corpus cases before enabling `eng+hin` by default.
 - Add skew, low-resolution, multi-column, tables, forms, handwriting and damaged-scan cases.
 - Set measured job limits from Railway CPU/memory and cost data rather than advertising unlimited files.

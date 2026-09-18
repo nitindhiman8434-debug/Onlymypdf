@@ -10,7 +10,7 @@
 
 **Phase 2.2 status:** Complete. The confirmed publishable operator is `OnlyMyPDF`, India.
 
-**Phase 2.3A status:** Implementation and local Linux container gate complete; Railway worker deployment verification pending.
+**Phase 2.3A status:** Complete. Local Linux and Railway production worker gates passed on deployment `6d1712d8-2569-4611-8975-ad35d71d5d9c`.
 
 ## Scope and safety boundary
 
@@ -121,6 +121,6 @@ The confirmed values match the code defaults. No production code change is requi
 | Semantic Office output and OCR | 35% | 8% | Phase 2.3A PDF-to-Word OCR foundation passed; broader OCR and Excel/PowerPoint semantics pending |
 | Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 0% | Pending demand order and implementation |
 | Verified customer feedback | 5% | 0% | Pending real consented customer evidence |
-| **Total** | **100%** | **40%** | **Phase 2.2 complete; Phase 2.3A local gate complete** |
+| **Total** | **100%** | **40%** | **Phase 2.2 and Phase 2.3A complete** |
 
 Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.
