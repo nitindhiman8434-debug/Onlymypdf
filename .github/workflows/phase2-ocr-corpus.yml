@@ -32,7 +32,7 @@ jobs:
             fonts-dejavu-core fonts-noto-core libreoffice-writer
 
       - name: Install Python converter dependencies
-        run: python3 -m pip install --disable-pip-version-check pdf2docx
+        run: python3 -m pip install --disable-pip-version-check pdf2docx pillow
 
       - name: Verify OCR language packs
         run: |
