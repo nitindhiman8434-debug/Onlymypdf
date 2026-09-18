@@ -330,6 +330,99 @@ def _build_searchable_ocr_pdf(
     """Render a scan and add a hidden OCR text layer using PyMuPDF/Tesseract."""
     import pymupdf as fitz
 
+    def page_text(pdf_bytes: bytes) -> str:
+        candidate = fitz.open("pdf", pdf_bytes)
+        try:
+            return candidate[0].get_text("text", sort=True).strip()
+        finally:
+            candidate.close()
+
+    def text_score(text: str) -> int:
+        tokens = re.findall(r"[a-z0-9]+|[\u0900-\u097f]+", text.lower())
+        return sum(character.isalnum() for character in text) + 2 * len(tokens)
+
+    def looks_like_table(pix: fitz.Pixmap) -> bool:
+        try:
+            import cv2
+            import numpy as np
+
+            pixels = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
+                pix.height,
+                pix.width,
+                pix.n,
+            )
+            if pix.n >= 3:
+                gray = cv2.cvtColor(pixels[:, :, :3], cv2.COLOR_RGB2GRAY)
+            else:
+                gray = pixels[:, :, 0]
+            binary = cv2.threshold(
+                gray,
+                0,
+                255,
+                cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU,
+            )[1]
+            horizontal = cv2.morphologyEx(
+                binary,
+                cv2.MORPH_OPEN,
+                cv2.getStructuringElement(cv2.MORPH_RECT, (max(40, pix.width // 18), 1)),
+            )
+            vertical = cv2.morphologyEx(
+                binary,
+                cv2.MORPH_OPEN,
+                cv2.getStructuringElement(cv2.MORPH_RECT, (1, max(40, pix.height // 18))),
+            )
+
+            def long_components(mask, *, horizontal_axis: bool) -> int:
+                _, _, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
+                count = 0
+                for _x, _y, width, height, area in stats[1:]:
+                    if area <= 0:
+                        continue
+                    if horizontal_axis and width >= pix.width * 0.25:
+                        count += 1
+                    elif not horizontal_axis and height >= pix.height * 0.18:
+                        count += 1
+                return count
+
+            return (
+                long_components(horizontal, horizontal_axis=True) >= 3
+                and long_components(vertical, horizontal_axis=False) >= 2
+            )
+        except Exception as exc:
+            print(f"WARN OCR table detection skipped: {exc}", file=sys.stderr, flush=True)
+            return False
+
+    def tesseract_pdf(pix: fitz.Pixmap, *, page_number: int, psm: int) -> bytes | None:
+        executable = shutil.which(os.environ.get("TESSERACT_PATH", "tesseract"))
+        if executable is None:
+            return None
+        with tempfile.TemporaryDirectory(prefix="pdf2docx-tesseract-") as temp:
+            image_path = os.path.join(temp, f"page-{page_number}.png")
+            output_base = os.path.join(temp, f"page-{page_number}-psm-{psm}")
+            pix.save(image_path)
+            result = subprocess.run(
+                [
+                    executable,
+                    image_path,
+                    output_base,
+                    "-l",
+                    language,
+                    "--dpi",
+                    str(dpi),
+                    "--psm",
+                    str(psm),
+                    "pdf",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=90,
+                check=False,
+            )
+            output_pdf = f"{output_base}.pdf"
+            if result.returncode != 0 or not os.path.isfile(output_pdf):
+                return None
+            return Path(output_pdf).read_bytes()
+
     source = fitz.open(pdf_path)
     searchable = fitz.open()
     recognized_chars = 0
@@ -342,9 +435,24 @@ def _build_searchable_ocr_pdf(
                 compress=True,
                 language=language,
             )
+            selected_text = page_text(one_page_bytes)
+            if looks_like_table(pix):
+                table_bytes = tesseract_pdf(pix, page_number=page_index + 1, psm=6)
+                if table_bytes is not None:
+                    table_text = page_text(table_bytes)
+                    if text_score(table_text) > text_score(selected_text):
+                        one_page_bytes = table_bytes
+                        selected_text = table_text
+                        print(
+                            "OCR_PAGE "
+                            f"page={page_index + 1} layout=table psm=6 "
+                            f"chars={len(selected_text)}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
             one_page = fitz.open("pdf", one_page_bytes)
             try:
-                recognized_chars += len(one_page[0].get_text().strip())
+                recognized_chars += len(selected_text)
                 searchable.insert_pdf(one_page)
             finally:
                 one_page.close()
@@ -454,7 +562,8 @@ def convert_scanned_pdf_with_ocr(
 
         metrics = docx_metrics(docx_path) if os.path.isfile(docx_path) else {"chars": 0}
         output_chars = metrics.get("chars", 0)
-        ok = validate_docx(docx_path) and output_chars >= minimum_chars
+        minimum_output_chars = max(minimum_chars, int(recognized_chars * 0.6))
+        ok = validate_docx(docx_path) and output_chars >= minimum_output_chars
         method = "searchable-pdf"
         if not ok:
             try:
@@ -464,7 +573,7 @@ def convert_scanned_pdf_with_ocr(
             ok = _build_ocr_reference_transcript_docx(searchable_pdf, docx_path)
             metrics = docx_metrics(docx_path) if ok else {"chars": 0}
             output_chars = metrics.get("chars", 0)
-            ok = ok and output_chars >= minimum_chars
+            ok = ok and output_chars >= minimum_output_chars
             method = "visual-reference-plus-editable-transcript"
         print(
             "OCR_RESULT "
