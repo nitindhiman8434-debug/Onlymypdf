@@ -78,6 +78,19 @@ def _draw_lines(
         cursor = box[3] + gap
 
 
+def _draw_segments(
+    draw: ImageDraw.ImageDraw,
+    segments: list[tuple[str, ImageFont.FreeTypeFont]],
+    *,
+    x: int,
+    y: int,
+) -> None:
+    cursor = x
+    for text, font in segments:
+        draw.text((cursor, y), text, fill="black", font=font)
+        cursor = draw.textbbox((cursor, y), text, font=font)[2]
+
+
 def _clean_hindi(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) -> Image.Image:
     image, draw = _canvas()
     _draw_lines(
@@ -94,44 +107,40 @@ def _clean_hindi(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) -
 
 def _mixed_language(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) -> Image.Image:
     image, draw = _canvas()
-    _draw_lines(
-        draw,
-        [
-            ("OnlyMyPDF Mixed Language Test", _font(latin.path, 52)),
-            ("Invoice 73195 - चालान सितंबर 2026", _font(hindi.path, 42)),
-            ("Editable text और सटीक परिणाम", _font(hindi.path, 40)),
-            ("Total कुल राशि 2499 रुपये", _font(hindi.path, 43)),
-        ],
-    )
+    latin_52 = _font(latin.path, 52)
+    latin_42 = _font(latin.path, 42)
+    hindi_42 = _font(hindi.path, 42)
+    draw.text((90, 100), "OnlyMyPDF Mixed Language Test", fill="black", font=latin_52)
+    _draw_segments(draw, [("Invoice 73195 - ", latin_42), ("चालान सितंबर 2026", hindi_42)], x=90, y=205)
+    _draw_segments(draw, [("Editable text ", latin_42), ("और सटीक परिणाम", hindi_42)], x=90, y=300)
+    _draw_segments(draw, [("Total ", latin_42), ("कुल राशि 2499 रुपये", hindi_42)], x=90, y=395)
     return image
 
 
 def _skewed(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) -> Image.Image:
     image, draw = _canvas()
-    _draw_lines(
-        draw,
-        [
-            ("OnlyMyPDF Skew Accuracy", _font(latin.path, 50)),
-            ("रसीद 84512 - गुणवत्ता जाँच", _font(hindi.path, 42)),
-            ("Editable document कुल राशि 3280", _font(hindi.path, 40)),
-            ("September सितंबर verified", _font(hindi.path, 40)),
-        ],
-        y=150,
-    )
+    latin_50 = _font(latin.path, 50)
+    latin_40 = _font(latin.path, 40)
+    hindi_42 = _font(hindi.path, 42)
+    hindi_40 = _font(hindi.path, 40)
+    draw.text((90, 150), "OnlyMyPDF Skew Accuracy", fill="black", font=latin_50)
+    draw.text((90, 250), "रसीद 84512 - गुणवत्ता जाँच", fill="black", font=hindi_42)
+    _draw_segments(draw, [("Editable document ", latin_40), ("कुल राशि 3280", hindi_40)], x=90, y=345)
+    _draw_segments(draw, [("September ", latin_40), ("सितंबर ", hindi_40), ("verified", latin_40)], x=90, y=440)
     return image.rotate(2.4, resample=Image.Resampling.BICUBIC, fillcolor="white")
 
 
 def _low_resolution(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) -> Image.Image:
     image, draw = _canvas()
-    _draw_lines(
-        draw,
-        [
-            ("OnlyMyPDF Low Resolution", _font(latin.path, 48)),
-            ("चालान 91307 गुणवत्ता परीक्षण", _font(hindi.path, 42)),
-            ("Editable पाठ कुल राशि 1875", _font(hindi.path, 39)),
-            ("सितंबर 2026 परिणाम", _font(hindi.path, 40)),
-        ],
-    )
+    latin_48 = _font(latin.path, 48)
+    latin_39 = _font(latin.path, 39)
+    hindi_42 = _font(hindi.path, 42)
+    hindi_39 = _font(hindi.path, 39)
+    hindi_40 = _font(hindi.path, 40)
+    draw.text((90, 100), "OnlyMyPDF Low Resolution", fill="black", font=latin_48)
+    draw.text((90, 200), "चालान 91307 गुणवत्ता परीक्षण", fill="black", font=hindi_42)
+    _draw_segments(draw, [("Editable ", latin_39), ("पाठ कुल राशि 1875", hindi_39)], x=90, y=295)
+    draw.text((90, 390), "सितंबर 2026 परिणाम", fill="black", font=hindi_40)
     image = image.resize((510, 660), Image.Resampling.LANCZOS)
     image = image.filter(ImageFilter.GaussianBlur(0.35))
     return image.resize(PAGE_SIZE, Image.Resampling.BILINEAR)
@@ -139,7 +148,12 @@ def _low_resolution(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont
 
 def _multi_column(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) -> Image.Image:
     image, draw = _canvas()
-    draw.text((80, 70), "OnlyMyPDF दो कॉलम परीक्षण", fill="black", font=_font(hindi.path, 49))
+    _draw_segments(
+        draw,
+        [("OnlyMyPDF ", _font(latin.path, 49)), ("दो कॉलम परीक्षण", _font(hindi.path, 49))],
+        x=80,
+        y=70,
+    )
     draw.line((620, 165, 620, 1430), fill=(170, 170, 170), width=3)
     _draw_lines(
         draw,
@@ -172,9 +186,20 @@ def _multi_column(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) 
 
 def _table_form(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) -> Image.Image:
     image, draw = _canvas()
-    draw.text((80, 70), "OnlyMyPDF Invoice चालान", fill="black", font=_font(hindi.path, 50))
-    draw.text((80, 155), "Customer ग्राहक: Nitin", fill="black", font=_font(hindi.path, 37))
-    draw.text((80, 215), "Invoice 68429  Date तारीख: 18-09-2026", fill="black", font=_font(hindi.path, 37))
+    latin_50 = _font(latin.path, 50)
+    latin_37 = _font(latin.path, 37)
+    latin_30 = _font(latin.path, 30)
+    hindi_50 = _font(hindi.path, 50)
+    hindi_37 = _font(hindi.path, 37)
+    hindi_30 = _font(hindi.path, 30)
+    _draw_segments(draw, [("OnlyMyPDF Invoice ", latin_50), ("चालान", hindi_50)], x=80, y=70)
+    _draw_segments(draw, [("Customer ", latin_37), ("ग्राहक: ", hindi_37), ("Nitin", latin_37)], x=80, y=155)
+    _draw_segments(
+        draw,
+        [("Invoice 68429  Date ", latin_37), ("तारीख: ", hindi_37), ("18-09-2026", latin_37)],
+        x=80,
+        y=215,
+    )
     left, top, right, bottom = 80, 330, 1190, 820
     rows = 5
     cols = (left, 650, 900, right)
@@ -184,32 +209,35 @@ def _table_form(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) ->
         y = top + int((bottom - top) * row / rows)
         draw.line((left, y, right, y), fill="black", width=4)
     cells = [
-        ("Item वस्तु", "Qty मात्रा", "Amount राशि"),
-        ("Document", "2", "1000"),
-        ("OCR सेवा", "1", "250"),
-        ("Tax कर", "", "225"),
-        ("Total कुल", "", "1475"),
+        ((("Item ", latin_30), ("वस्तु", hindi_30)), (("Qty ", latin_30), ("मात्रा", hindi_30)), (("Amount ", latin_30), ("राशि", hindi_30))),
+        ((("Document", latin_30),), (("2", latin_30),), (("1000", latin_30),)),
+        ((("OCR ", latin_30), ("सेवा", hindi_30)), (("1", latin_30),), (("250", latin_30),)),
+        ((("Tax ", latin_30), ("कर", hindi_30)), (), (("225", latin_30),)),
+        ((("Total ", latin_30), ("कुल", hindi_30)), (), (("1475", latin_30),)),
     ]
     for row, values in enumerate(cells):
         y = top + 28 + int((bottom - top) * row / rows)
-        for x, value in zip((left + 22, 670, 920), values):
-            draw.text((x, y), value, fill="black", font=_font(hindi.path, 30))
-    draw.text((80, 900), "Approved स्वीकृत: Yes", fill="black", font=_font(hindi.path, 38))
+        for x, segments in zip((left + 22, 670, 920), values):
+            _draw_segments(draw, list(segments), x=x, y=y)
+    _draw_segments(
+        draw,
+        [("Approved ", _font(latin.path, 38)), ("स्वीकृत: ", _font(hindi.path, 38)), ("Yes", _font(latin.path, 38))],
+        x=80,
+        y=900,
+    )
     return image
 
 
 def _damaged_scan(hindi: ImageFont.FreeTypeFont, latin: ImageFont.FreeTypeFont) -> Image.Image:
     image, draw = _canvas()
-    _draw_lines(
-        draw,
-        [
-            ("OnlyMyPDF Damaged Scan", _font(latin.path, 48)),
-            ("चालान 55721 गुणवत्ता जाँच", _font(hindi.path, 42)),
-            ("Editable पाठ कुल राशि 3125", _font(hindi.path, 39)),
-            ("September सितंबर result", _font(hindi.path, 39)),
-        ],
-        y=180,
-    )
+    latin_48 = _font(latin.path, 48)
+    latin_39 = _font(latin.path, 39)
+    hindi_42 = _font(hindi.path, 42)
+    hindi_39 = _font(hindi.path, 39)
+    draw.text((90, 180), "OnlyMyPDF Damaged Scan", fill="black", font=latin_48)
+    draw.text((90, 280), "चालान 55721 गुणवत्ता जाँच", fill="black", font=hindi_42)
+    _draw_segments(draw, [("Editable ", latin_39), ("पाठ कुल राशि 3125", hindi_39)], x=90, y=375)
+    _draw_segments(draw, [("September ", latin_39), ("सितंबर ", hindi_39), ("result", latin_39)], x=90, y=470)
     rng = random.Random(2309)
     for _ in range(750):
         x = rng.randrange(0, PAGE_SIZE[0])
@@ -266,6 +294,36 @@ def _render_pdf(pdf_path: Path, png_path: Path) -> None:
         pdf.close()
 
 
+def _render_docx_preview(docx_path: Path, artifacts_dir: Path) -> bool:
+    office = shutil.which("libreoffice") or shutil.which("soffice")
+    if office is None:
+        return False
+    with tempfile.TemporaryDirectory(prefix="onlymypdf-phase23b-preview-") as temp:
+        result = subprocess.run(
+            [
+                office,
+                "--headless",
+                "--convert-to",
+                "pdf",
+                "--outdir",
+                temp,
+                str(docx_path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=90,
+            check=False,
+        )
+        rendered = Path(temp) / f"{docx_path.stem}.pdf"
+        if result.returncode != 0 or not rendered.is_file() or rendered.stat().st_size < 1000:
+            return False
+        output_pdf = artifacts_dir / f"{docx_path.stem}-output.pdf"
+        output_png = artifacts_dir / f"{docx_path.stem}-output.png"
+        shutil.copy2(rendered, output_pdf)
+        _render_pdf(output_pdf, output_png)
+        return output_png.is_file() and output_png.stat().st_size > 1000
+
+
 def _docx_text(path: Path) -> tuple[str, int, bool]:
     try:
         with zipfile.ZipFile(path) as archive:
@@ -284,11 +342,15 @@ def _tokens(text: str) -> list[str]:
 
 def _token_recall(expected: tuple[str, ...], actual_text: str) -> tuple[float, list[str]]:
     actual = _tokens(actual_text)
+    compact = re.sub(r"[^a-z0-9\u0900-\u097f]+", "", unicodedata.normalize("NFKC", actual_text).lower())
     matched: list[str] = []
     for token in expected:
         expected_norm = unicodedata.normalize("NFKC", token).lower()
         threshold = 1.0 if expected_norm.isdigit() else 0.78
-        if any(SequenceMatcher(None, expected_norm, candidate).ratio() >= threshold for candidate in actual):
+        if expected_norm in compact or any(
+            SequenceMatcher(None, expected_norm, candidate).ratio() >= threshold
+            for candidate in actual
+        ):
             matched.append(token)
     recall = len(matched) / max(1, len(expected))
     return recall, matched
@@ -328,6 +390,10 @@ def _run_case(
     duration_ms = round((time.perf_counter() - started) * 1000)
     text, media, valid_docx = _docx_text(docx_path)
     recall, matched = _token_recall(case.expected_tokens, text)
+    output_preview = False
+    if artifacts_dir is not None and valid_docx:
+        artifacts_dir.mkdir(parents=True, exist_ok=True)
+        output_preview = _render_docx_preview(docx_path, artifacts_dir)
     if case.expect_success:
         passed = (
             result.returncode == 0
@@ -335,6 +401,7 @@ def _run_case(
             and len(text.strip()) >= case.min_chars
             and media >= 1
             and recall >= case.min_recall
+            and (artifacts_dir is None or output_preview)
         )
     else:
         passed = result.returncode != 0 and not valid_docx
@@ -356,6 +423,7 @@ def _run_case(
         "sourceBytes": pdf_path.stat().st_size,
         "outputBytes": docx_path.stat().st_size if docx_path.exists() else 0,
         "validDocx": valid_docx,
+        "outputPreviewRendered": output_preview,
         "editableCharacters": len(text.strip()),
         "mediaItems": media,
         "tokenRecall": round(recall, 4),
