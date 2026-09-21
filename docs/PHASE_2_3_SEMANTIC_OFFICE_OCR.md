@@ -12,7 +12,7 @@
 
 **Phase 2.3D status:** 100% complete for the controlled PDF-to-PowerPoint semantic gate. Seven cases passed locally and on Ubuntu; the local HTTP route returned an openable PPTX with on-slide editable text, while an image-only scan remained visual-only. Public production behavior remains unverified for Phase 2.3E.
 
-**Phase 2.3E status:** In progress. The production-image dependency gap is addressed in source and CI verification is pending. Public conversion, representative resource limits and per-job cost have not passed their gates.
+**Phase 2.3E status:** In progress. The full web image now passes its Ubuntu build and real Excel/PPT converter-script gate in GitHub Actions run 35651492549. Public conversion, representative resource limits and per-job cost have not passed their gates.
 
 ## Recorded decision gate
 

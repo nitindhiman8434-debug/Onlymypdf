@@ -2,7 +2,7 @@
 
 **Started:** 22 September 2026
 
-**Status:** In progress; public production gate is not passed.
+**Status:** In progress. Production-image Office gate passed; public production gate is not passed.
 **Phase 2 completion:** stays at 62% while this 5%-weight work package is incomplete.
 
 ## What is established
@@ -19,7 +19,9 @@
 
 The full web Docker image originally copied the Next.js standalone output but not the dynamically invoked `scripts/` directory. It also installed `pdf2docx` without explicitly installing `python-pptx` and Pillow. Local corpus success therefore did not prove that the production web image could run PDF-to-Excel or PDF-to-PowerPoint.
 
-`Dockerfile.full` now copies the converter scripts and installs their Python dependencies. The first full-image CI build also exposed a Puppeteer installation failure in the slim Node image: Chrome extraction needed a missing archive utility. The image now skips Puppeteer's download during `npm ci` and installs Debian Chromium explicitly in the runtime image. The Phase 2.3D GitHub workflow builds the actual full image and runs both converter scripts against a tracked synthetic PDF inside that image. This remains a source-level correction until image CI passes. The test checks real XLSX-extraction JSON and an openable PPTX package, rather than imports alone. HTML-to-PDF's Chromium launch remains a separate deployment check.
+`Dockerfile.full` now copies the converter scripts and installs their Python dependencies. The first full-image CI build also exposed a Puppeteer installation failure in the slim Node image: Chrome extraction needed a missing archive utility. The image now skips Puppeteer's download during `npm ci` and installs Debian Chromium explicitly in the runtime image. The Phase 2.3D GitHub workflow builds the actual full image and runs both converter scripts against a tracked synthetic PDF inside that image. The test checks real XLSX-extraction JSON and an openable PPTX package, rather than imports alone.
+
+[GitHub Actions run 35651492549](https://github.com/nitindhiman8434-debug/Onlymypdf/actions/runs/35651492549) passed both the semantic corpus and the full-image runtime job. The full image built 154/154 static pages, found the Python converters and Chromium, extracted two tables from the two-page fixture, and produced a 33,206-byte PPTX with two editable slides. This resolves the missing-script and dependency packaging defect for the tested image. It does not prove a live HTTP deployment, a full Excel workbook through the API, or HTML-to-PDF's Chromium sandbox launch.
 
 ## HTTP and capacity gates
 
@@ -47,5 +49,7 @@ For a low-cost controlled beta, use existing trial/free allocations and avoid a 
 - Realistic size and concurrency samples yield observed CPU/RAM/disk/latency/timeout and failure rates; per-tool support limits are set accordingly.
 - Provider usage gives a defensible cost per conversion and monthly low/medium/high-volume scenarios.
 - Retention and failure cleanup are observed in the deployed environment.
+
+An earlier live R2 retention drill (`quality/phase1-corpus/retention-retry-report.json`) already passed controlled deletion-failure accounting and retry cleanup with the configured two-hour worker TTL. The new public frontend flow still needs its own end-to-end cleanup observation.
 
 Until then, Phase 2.3E is **not 100% complete**, and Phase 2 overall remains **62%**.

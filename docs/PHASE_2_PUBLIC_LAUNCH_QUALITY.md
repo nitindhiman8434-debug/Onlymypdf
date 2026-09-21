@@ -18,7 +18,7 @@
 
 **Phase 2.3D status:** Complete for its controlled semantic gate. PDF-to-PowerPoint passed 7/7 local and Ubuntu cases with editable on-slide text for selectable PDFs, rendered visual comparison and a local HTTP artifact check. Public production behavior remains for Phase 2.3E.
 
-**Phase 2.3E status:** In progress. Production-image Office packaging and an HTTP artifact gate are being verified. Public frontend deployment, representative size/load measurements and per-job cost evidence are still required; the 62% Phase 2 completion figure has not been raised.
+**Phase 2.3E status:** In progress. Production-image Office packaging passed GitHub Actions run 35651492549. Public frontend deployment, Office HTTP artifacts, representative size/load measurements and per-job cost evidence are still required; the 62% Phase 2 completion figure has not been raised.
 
 ## Scope and safety boundary
 
