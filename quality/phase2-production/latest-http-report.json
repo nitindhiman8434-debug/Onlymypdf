@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-09-21T20:50:16.632Z",
+  "target": "local",
+  "baseUrl": "http://127.0.0.1:3001",
+  "fixture": "quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf",
+  "note": "One controlled HTTP sample per tool. This is not a latency percentile, load test, or universal accuracy score.",
+  "conversions": [
+    {
+      "tool": "pdf-to-excel",
+      "elapsedMs": 11371,
+      "inputBytes": 2311,
+      "outputBytes": 7295,
+      "sha256": "c483017f58f4082c84388eb87627bb67f7a161bbc702ef64076e96c49bab82cd",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "validation": {
+        "openable": true,
+        "partCount": 2,
+        "expectedEditableTextFound": true
+      }
+    },
+    {
+      "tool": "pdf-to-ppt",
+      "elapsedMs": 2215,
+      "inputBytes": 2311,
+      "outputBytes": 33303,
+      "sha256": "e26f6854599687dd525709bd8a46ac1bfd5ecb6c0ac806f08399d83a0d794ea7",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "validation": {
+        "openable": true,
+        "partCount": 2,
+        "expectedEditableTextFound": true
+      }
+    }
+  ]
+}

@@ -27,7 +27,21 @@ The full web Docker image originally copied the Next.js standalone output but no
 
 `npm run phase2.3e:http-smoke` sends the controlled two-page regression PDF to the Excel and PowerPoint API routes, checks content type, Office ZIP integrity and the expected editable fixture text, and records one wall-time sample for each tool. Set `PHASE2_3E_BASE_URL` to the deployment URL; set `PHASE2_3E_EXPECT_PUBLIC=1` to reject localhost and non-HTTPS targets. One sample is not a p95 latency or load test.
 
-The first local run did **not** exercise the converters: the app returned HTTP 429 because this guest had already used its five daily free conversions. The request was blocked by the intended usage limit. The earlier `tsx` invocation also failed before HTTP because the Windows runtime could not resolve account information (`uv_os_get_passwd` reported `ENOMEM`); the smoke runner now uses plain Node and reached the app. Do not count either attempt as a conversion or quality result.
+The first local run did **not** exercise the converters: the app returned HTTP 429 because this guest had already used its five daily free conversions. The request was blocked by the intended usage limit. The earlier `tsx` invocation also failed before HTTP because the Windows runtime could not resolve account information (`uv_os_get_passwd` reported `ENOMEM`); the smoke runner now uses plain Node. Do not count either attempt as a conversion or quality result.
+
+### No-paid-plan local preview
+
+The user chose local testing before any public Railway frontend deployment or paid-plan purchase. Run `npm run dev:local-preview` from the project directory and open `http://127.0.0.1:3001`. This opt-in profile binds to loopback, uses a separate Next build directory, and overrides Supabase, Upstash, R2, AI and payment keys only in its child process; `.env.local` is unchanged. The app's existing development fallback permits local conversion tests without consuming the production guest's five daily uses. Do not expose this profile on a public interface: its development auth and rate-limit behavior are deliberately different from production.
+
+On 22 September 2026, the local preview homepage, PDF-to-Excel page and PDF-to-PowerPoint page rendered in the browser. Real HTTP uploads of the tracked two-page PDF then passed:
+
+| Tool | Local HTTP result | Verification |
+|---|---:|---|
+| PDF to Word | 37,409-byte DOCX, `pdf2docx` engine | Guest job queue, completed status, download, Office ZIP CRC and editable fixture text passed. |
+| PDF to Excel | 7,295-byte XLSX in 11.4 s including first-route compilation | Office ZIP CRC, two worksheets, editable fixture text and MIME passed. |
+| PDF to PowerPoint | 33,303-byte PPTX in 2.2 s | Office ZIP CRC, two slides, editable fixture text and MIME passed. |
+
+Commands: `npm run dev:local-preview:word-smoke`; in another terminal set `PHASE2_3E_BASE_URL=http://127.0.0.1:3001` and run `npm run phase2.3e:http-smoke`. The local Word result and Excel/PPT report are controlled-fixture results, not universal layout accuracy, large-file reliability, p95 speed or public deployment evidence. The local preview uses HTTP because it is confined to the user's own device; it does not verify the site's production HTTPS and retention claims. Cloud-dependent features and payments are intentionally unavailable in this preview.
 
 The first public gate needs an actual HTTPS frontend using the full image, configured Supabase, Upstash and R2, plus a working worker/watchdog. Then run controlled Word/Excel/PowerPoint uploads and verify downloaded DOCX/XLSX/PPTX bytes, editability, failure handling and cleanup. Measure at least small, typical and large realistic PDFs, plus concurrent jobs, while observing peak RAM/CPU, queue time, timeout/OOM, temporary disk, storage retention and invoice usage. Set per-tool supported caps from those results; a global 200 MB upload cap is not proof every Office route can process 200 MB.
 

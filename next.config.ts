@@ -34,6 +34,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Keep the opt-in, localhost-only preview separate from an existing dev server.
+  distDir: process.env.ONLYMYPDF_LOCAL_PREVIEW === "1" ? ".next-local-preview" : ".next",
   output: "standalone",
   outputFileTracingRoot: path.join(__dirname),
   poweredByHeader: false,

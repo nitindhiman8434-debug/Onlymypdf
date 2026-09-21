@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "node --max-old-space-size=4096 ./node_modules/next/dist/bin/next dev --webpack",
+    "dev:local-preview": "node scripts/run-local-preview.cjs",
+    "dev:local-preview:word-smoke": "node scripts/local-preview-word-smoke.mjs",
     "build": "node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build --webpack",
     "start": "next start",
     "lint": "eslint",
