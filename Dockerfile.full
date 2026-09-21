@@ -51,7 +51,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/* \
-    && pip3 install --no-cache-dir --break-system-packages pdf2docx
+    && pip3 install --no-cache-dir --break-system-packages pdf2docx python-pptx==1.0.2 pillow==12.2.0
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -63,6 +63,13 @@ RUN addgroup --system nodejs && adduser --system --ingroup nodejs nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+# The Office routes execute Python scripts by filesystem path at runtime.
+# Next.js standalone tracing does not guarantee these dynamic paths are copied.
+COPY --from=builder /app/scripts ./scripts
+
+RUN python3 -c "import fitz, pptx; from PIL import Image" \
+    && test -f scripts/pdf-to-ppt-build.py \
+    && test -f scripts/pdf-extract-tables.py
 
 USER nextjs
 EXPOSE 3000

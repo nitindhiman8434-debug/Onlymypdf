@@ -18,6 +18,8 @@
 
 **Phase 2.3D status:** Complete for its controlled semantic gate. PDF-to-PowerPoint passed 7/7 local and Ubuntu cases with editable on-slide text for selectable PDFs, rendered visual comparison and a local HTTP artifact check. Public production behavior remains for Phase 2.3E.
 
+**Phase 2.3E status:** In progress. Production-image Office packaging and an HTTP artifact gate are being verified. Public frontend deployment, representative size/load measurements and per-job cost evidence are still required; the 62% Phase 2 completion figure has not been raised.
+
 ## Scope and safety boundary
 
 Phase 2 covers public-launch accessibility, legal/privacy evidence, semantic Office output improvements, OCR, requested PDF tools and verified customer feedback. Phase 2.1 deliberately changes navigation, forms, upload controls and accessibility tests only. It does not change conversion engines, file output, conversion timing, quality scoring, queueing or storage behavior.
@@ -131,4 +133,4 @@ The confirmed values match the code defaults. No production code change is requi
 
 Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.
 
-The next gated work package is Phase 2.3E: measured limits, cost and public production quality. It has not started.
+Phase 2.3E is underway. Its measured-limit, cost and public deployment gates are tracked in `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`. The next phase must not begin until these gates are resolved or explicitly scoped out.

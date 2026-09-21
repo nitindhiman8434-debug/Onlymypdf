@@ -11,6 +11,7 @@ on:
       - "scripts/phase2-ppt-corpus.py"
       - "scripts/phase2-ppt-corpus.ts"
       - "src/lib/services/pdf-to-ppt.service.ts"
+      - "Dockerfile.full"
   workflow_dispatch:
 
 permissions:
@@ -54,3 +55,38 @@ jobs:
             tmp/pdfs/phase2.3d
           if-no-files-found: warn
           retention-days: 14
+
+  full-image-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build production web image with Office dependencies
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.full
+          push: false
+          load: true
+          tags: onlymypdf-full:phase2e
+          build-args: |
+            NEXT_PUBLIC_APP_URL=https://example.com
+            NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Convert a controlled PDF inside the production image
+        run: |
+          docker run --rm --entrypoint python3 onlymypdf-full:phase2e -c "import fitz, pptx; from PIL import Image; print('Office Python dependencies available')"
+          docker run --rm \
+            --mount "type=bind,source=$PWD/quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf,target=/tmp/fixture.pdf,readonly" \
+            --entrypoint sh onlymypdf-full:phase2e -c '
+              set -eu
+              test -f scripts/pdf-to-ppt-build.py
+              test -f scripts/pdf-extract-tables.py
+              python3 scripts/pdf-extract-tables.py /tmp/fixture.pdf /tmp/excel
+              python3 scripts/pdf-to-ppt-build.py /tmp/fixture.pdf /tmp/slides /tmp/result.pptx
+              python3 -c "import json, zipfile; p=json.load(open(\"/tmp/excel/tables.json\")); assert p[\"pageCount\"] > 0; z=zipfile.ZipFile(\"/tmp/result.pptx\"); assert \"ppt/presentation.xml\" in z.namelist()"
+            '

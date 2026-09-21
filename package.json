@@ -16,6 +16,7 @@
     "phase2.3b:ocr-corpus": "node scripts/run-phase2-ocr-corpus.cjs",
     "phase2.3c:excel-corpus": "tsx scripts/phase2-excel-corpus.ts",
     "phase2.3d:ppt-corpus": "tsx scripts/phase2-ppt-corpus.ts",
+    "phase2.3e:http-smoke": "node scripts/phase2-production-http-smoke.mjs",
     "worker:conversions": "npx tsx workers/conversion-worker.ts",
     "worker:watchdog": "npx tsx workers/conversion-watchdog.ts",
     "phase1:corpus": "npx tsx scripts/phase1-corpus.ts",
