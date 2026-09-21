@@ -1,0 +1,35 @@
+{
+  "startedAt": "2026-09-21T21:06:20.039Z",
+  "completedAt": "2026-09-21T21:06:22.732Z",
+  "baseUrl": "http://127.0.0.1:3001",
+  "caseName": "parallel",
+  "fixture": "quality/phase2-production/generated/mixed-4-page.pdf",
+  "inputBytes": 4712092,
+  "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 25/200 MB capacity claim.",
+  "results": [
+    {
+      "status": "passed",
+      "tool": "pdf-to-excel",
+      "elapsedMs": 1393,
+      "outputBytes": 9333,
+      "sha256": "e4b1e310ad53f8dea29e978cf0a10d5dc6d5f252ab3668588bea1f4c83a77421",
+      "validation": {
+        "crcPassed": true,
+        "partCount": 4,
+        "editableToken": "BENCH-P01-R01"
+      }
+    },
+    {
+      "status": "passed",
+      "tool": "pdf-to-ppt",
+      "elapsedMs": 2661,
+      "outputBytes": 9546122,
+      "sha256": "b1604eb7b5eb1270e17f9d2e253837f4d3a011b826446c2abc15e7993efbbcdf",
+      "validation": {
+        "crcPassed": true,
+        "partCount": 4,
+        "editableToken": "BENCH-P01-R01"
+      }
+    }
+  ]
+}

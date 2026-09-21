@@ -660,7 +660,7 @@ def convert_scanned_pdf_with_ocr(
             cv.convert(
                 docx_path,
                 start=0,
-                end=max(0, pages - 1),
+                end=pages,  # pdf2docx treats end as exclusive.
                 **optimal_settings(pages, image_heavy=False),
             )
         finally:
@@ -794,7 +794,7 @@ def _convert_page_range(args: tuple[str, int, int, str, bool]) -> tuple[int, int
         cv.convert(
             out_path,
             start=start,
-            end=end,
+            end=end + 1,  # Our chunk spec is inclusive; pdf2docx is exclusive.
             **optimal_settings(pages, image_heavy=image_heavy),
         )
     finally:
@@ -944,7 +944,7 @@ def convert_pdf_single(
 ) -> None:
     from pdf2docx import Converter
 
-    end_page = max(0, page_count - 1)
+    end_page = page_count  # pdf2docx treats end as exclusive.
     _PROGRESS_SCOPE["base"] = 10
     _PROGRESS_SCOPE["span"] = 75
 

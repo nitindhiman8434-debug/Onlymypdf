@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-09-21T21:15:23.111Z",
+  "completedAt": "2026-09-21T21:15:27.737Z",
+  "baseUrl": "http://127.0.0.1:3001",
+  "caseName": "free-cap-excel",
+  "fixture": "quality/phase2-production/generated/mixed-22-page.pdf",
+  "inputBytes": 25898723,
+  "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 200 MB capacity claim.",
+  "results": [
+    {
+      "status": "passed",
+      "tool": "pdf-to-excel",
+      "elapsedMs": 4622,
+      "outputBytes": 24645,
+      "sha256": "b836799b1ca607756453884b9d40b18e504bea7f7d55b532143aa4f3a8d7f9fc",
+      "validation": {
+        "crcPassed": true,
+        "partCount": 22,
+        "editablePageMarkers": 22
+      }
+    }
+  ]
+}

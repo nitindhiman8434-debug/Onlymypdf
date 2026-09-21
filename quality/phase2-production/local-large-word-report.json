@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-09-21T21:11:06.114Z",
+  "completedAt": "2026-09-21T21:11:12.246Z",
+  "baseUrl": "http://127.0.0.1:3001",
+  "caseName": "large-word",
+  "fixture": "quality/phase2-production/generated/mixed-8-page.pdf",
+  "inputBytes": 9419544,
+  "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 25/200 MB capacity claim.",
+  "results": [
+    {
+      "status": "passed",
+      "tool": "pdf-to-word",
+      "elapsedMs": 6111,
+      "outputBytes": 33015139,
+      "sha256": "a4f7b9bc5c985841d60774f18ec1918113f4074125689802ce448cdeba3a58a3",
+      "engine": "pdf2docx",
+      "oneTimeDownloadReplayStatus": 404,
+      "validation": {
+        "crcPassed": true,
+        "partCount": 1,
+        "editablePageMarkers": 8
+      }
+    }
+  ]
+}

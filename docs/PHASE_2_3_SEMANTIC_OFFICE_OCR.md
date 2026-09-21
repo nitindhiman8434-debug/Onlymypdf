@@ -105,7 +105,7 @@ The committed machine-readable result is `quality/phase2-pdf-to-word/latest-repo
 | 2.3B Hindi, mixed-language and difficult-scan corpus | 6% | Complete: 8/8 Ubuntu gate and rendered preview review passed |
 | 2.3C PDF-to-Excel semantic accuracy | 8% | Complete: 6/6 Ubuntu semantic corpus and local API artifact gate passed |
 | 2.3D PDF-to-PowerPoint semantic accuracy | 8% | Complete: 7/7 local and Ubuntu semantic cases passed |
-| 2.3E measured limits, cost and production quality gate | 5% | In progress; no completion credit until public gates pass |
+| 2.3E measured limits, cost and production quality gate | 5% | In progress; local Free-cap Office HTTP and last-page completeness gates passed; no completion credit until public gates pass |
 
 ## Remaining Phase 2.3 work
 

@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-09-21T21:16:20.389Z",
+  "completedAt": "2026-09-21T21:16:43.138Z",
+  "baseUrl": "http://127.0.0.1:3001",
+  "caseName": "free-cap-word",
+  "fixture": "quality/phase2-production/generated/mixed-22-page.pdf",
+  "inputBytes": 25898723,
+  "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 200 MB capacity claim.",
+  "results": [
+    {
+      "status": "passed",
+      "tool": "pdf-to-word",
+      "elapsedMs": 22688,
+      "outputBytes": 90726186,
+      "sha256": "8272ad6b694d2a1015768cc4ec934761c7cd7d1062a490f7620e3d190e4ecaf6",
+      "engine": "pdf2docx",
+      "oneTimeDownloadReplayStatus": 404,
+      "validation": {
+        "crcPassed": true,
+        "partCount": 1,
+        "editablePageMarkers": 22
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-09-21T21:15:32.101Z",
+  "completedAt": "2026-09-21T21:15:41.016Z",
+  "baseUrl": "http://127.0.0.1:3001",
+  "caseName": "free-cap-ppt",
+  "fixture": "quality/phase2-production/generated/mixed-22-page.pdf",
+  "inputBytes": 25898723,
+  "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 200 MB capacity claim.",
+  "results": [
+    {
+      "status": "passed",
+      "tool": "pdf-to-ppt",
+      "elapsedMs": 8878,
+      "outputBytes": 52379923,
+      "sha256": "46f9f053ae6c8ab293c09bf37787bdba20589c3234943a44e4bb08d3c9b1dcb7",
+      "validation": {
+        "crcPassed": true,
+        "partCount": 22,
+        "editablePageMarkers": 22
+      }
+    }
+  ]
+}

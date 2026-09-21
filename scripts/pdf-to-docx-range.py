@@ -43,7 +43,7 @@ def main() -> int:
         cv.convert(
             docx_path,
             start=start,
-            end=end,
+            end=end + 1,  # CLI chunk range is inclusive; pdf2docx is exclusive.
             **optimal_settings(pages, image_heavy=False),
         )
     finally:
