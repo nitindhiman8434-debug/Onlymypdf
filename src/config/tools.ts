@@ -103,7 +103,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Can I convert a scanned PDF to Word?",
         answer:
-          "Scanned PDFs (image-only pages) need OCR first. Use our PDF Scanner tool to create a searchable PDF, then convert to Word for editable text.",
+          "PDF to Word can add editable OCR text to readable printed English and Hindi scans. Unclear or unsupported scans may be rejected; the PDF Scanner tool does not add a searchable text layer.",
       },
       {
         question: "What Word format does the converter output?",
@@ -399,12 +399,12 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Will tables be preserved in Excel?",
         answer:
-          "Text-based PDFs with clear column structure convert well. Complex layouts or scanned documents may require manual cleanup after conversion.",
+          "Text-based PDFs with clear columns convert best. Complex layouts may need manual cleanup; image-only scanned PDFs need OCR before conversion.",
       },
       {
         question: "Does it work with scanned PDFs?",
         answer:
-          "This tool extracts selectable text from PDFs. For scanned documents, use the PDF Scanner tool first or ensure your PDF has a text layer.",
+          "This tool requires selectable text. For an image-only scan, first use OCR software that creates a searchable PDF, then upload it here. Our PDF Scanner tool does not add a text layer.",
       },
     ],
   },

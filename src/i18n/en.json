@@ -121,7 +121,7 @@
     "pdfScanner": {
       "name": "PDF Scanner",
       "description": "Scan documents to PDF",
-      "longDescription": "Convert scanned images and photos of documents into clean, searchable PDFs."
+      "longDescription": "Convert scanned images and photos of documents into clean PDFs. This tool does not add searchable OCR text."
     },
     "unlockPdf": {
       "name": "Unlock PDF",

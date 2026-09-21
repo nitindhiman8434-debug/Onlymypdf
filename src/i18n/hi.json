@@ -121,7 +121,7 @@
     "pdfScanner": {
       "name": "PDF स्कैनर",
       "description": "डॉक्यूमेंट स्कैन करके PDF बनाएँ",
-      "longDescription": "स्कैन की गई इमेज और डॉक्यूमेंट की फ़ोटो को साफ़, सर्च करने योग्य PDF में बदलें।"
+      "longDescription": "स्कैन की गई इमेज और डॉक्यूमेंट की फ़ोटो को साफ़ PDF में बदलें। यह tool searchable OCR text नहीं जोड़ता।"
     },
     "unlockPdf": {
       "name": "PDF अनलॉक करें",
@@ -1413,7 +1413,7 @@
       },
       {
         "question": "क्या scanned PDF को Word में convert कर सकता हूँ?",
-        "answer": "Image-only scanned PDFs के लिए पहले PDF Scanner tool से searchable PDF बनाएँ, फिर Word conversion करें।"
+        "answer": "PDF to Word readable printed English और Hindi scans में editable OCR text जोड़ सकता है। Unclear scans reject हो सकती हैं; PDF Scanner tool searchable text layer नहीं जोड़ता।"
       },
       {
         "question": "Output किस Word format में मिलता है?",
@@ -1427,11 +1427,11 @@
     "pdf-to-excel": [
       {
         "question": "क्या Excel में tables preserve होंगी?",
-        "answer": "Text-based PDFs जिनमें clear column structure है, अच्छी तरह convert होते हैं। Complex layouts या scanned documents में manual cleanup की ज़रूरत पड़ सकती है।"
+        "answer": "Clear columns वाली text-based PDFs बेहतर convert होती हैं। Complex layouts में manual cleanup की ज़रूरत हो सकती है; image-only scans को पहले OCR चाहिए।"
       },
       {
         "question": "क्या scanned PDFs पर काम करता है?",
-        "answer": "यह tool selectable text extract करता है। Scanned documents के लिए पहले PDF Scanner tool use करें या text layer वाली PDF upload करें।"
+        "answer": "इस tool को selectable text चाहिए। Image-only scan को पहले OCR software से searchable PDF बनाएँ, फिर upload करें। हमारा PDF Scanner tool text layer नहीं जोड़ता।"
       },
       {
         "question": "Output format क्या है?",
