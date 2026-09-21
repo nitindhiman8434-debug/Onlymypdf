@@ -1,6 +1,6 @@
 {
-  "startedAt": "2026-09-21T21:17:34.346Z",
-  "completedAt": "2026-09-21T21:17:36.715Z",
+  "startedAt": "2026-09-21T21:46:06.761Z",
+  "completedAt": "2026-09-21T21:46:07.743Z",
   "baseUrl": "http://127.0.0.1:3001",
   "caseName": "above-free-cap",
   "fixture": "quality/phase2-production/generated/mixed-23-page.pdf",
@@ -8,7 +8,19 @@
   "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 200 MB capacity claim.",
   "results": [
     {
+      "tool": "pdf-to-word",
+      "status": "passed",
+      "expectedStatus": 400,
+      "actualStatus": 400
+    },
+    {
       "tool": "pdf-to-excel",
+      "status": "passed",
+      "expectedStatus": 400,
+      "actualStatus": 400
+    },
+    {
+      "tool": "pdf-to-ppt",
       "status": "passed",
       "expectedStatus": 400,
       "actualStatus": 400

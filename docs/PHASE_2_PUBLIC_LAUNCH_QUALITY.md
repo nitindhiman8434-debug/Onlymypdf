@@ -18,7 +18,7 @@
 
 **Phase 2.3D status:** Complete for its controlled semantic gate. PDF-to-PowerPoint passed 7/7 local and Ubuntu cases with editable on-slide text for selectable PDFs, rendered visual comparison and a local HTTP artifact check. Public production behavior remains for Phase 2.3E.
 
-**Phase 2.3E status:** In progress. Production-image Office packaging passed GitHub Actions run 35651492549. No-cost localhost HTTP checks now cover Word, Excel and PowerPoint with a synthetic PDF at 98.8% of the Free file cap, plus an above-cap rejection and one parallel pair. A last-page Word truncation defect was fixed and retested. Public HTTPS frontend artifacts, representative production load/retention and per-job provider cost evidence are still required; the 62% Phase 2 completion figure has not been raised. See `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`.
+**Phase 2.3E status:** In progress. Production-image Office packaging passed GitHub Actions run 35651492549. No-cost localhost HTTP checks now cover Word, Excel and PowerPoint with a synthetic PDF at 98.8% of the Free file cap, above-cap rejection on all three routes, a parallel pair and a simultaneous three-tool run. A last-page Word truncation defect was fixed and retested. Public HTTPS frontend artifacts, representative production load/retention and per-job provider cost evidence are still required; the 62% Phase 2 completion figure has not been raised. See `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`.
 
 ## Scope and safety boundary
 

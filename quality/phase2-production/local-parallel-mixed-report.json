@@ -1,0 +1,49 @@
+{
+  "startedAt": "2026-09-21T21:45:01.680Z",
+  "completedAt": "2026-09-21T21:45:06.515Z",
+  "baseUrl": "http://127.0.0.1:3001",
+  "caseName": "parallel-mixed",
+  "fixture": "quality/phase2-production/generated/mixed-4-page.pdf",
+  "inputBytes": 4712092,
+  "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 200 MB capacity claim.",
+  "results": [
+    {
+      "status": "passed",
+      "tool": "pdf-to-word",
+      "elapsedMs": 4819,
+      "outputBytes": 16525723,
+      "sha256": "4952ea87eca7a5077178d3e5f95fbf243d3a4c98242ce40694665faf80afa8d3",
+      "engine": "pdf2docx",
+      "oneTimeDownloadReplayStatus": 404,
+      "validation": {
+        "crcPassed": true,
+        "partCount": 1,
+        "editablePageMarkers": 4
+      }
+    },
+    {
+      "status": "passed",
+      "tool": "pdf-to-excel",
+      "elapsedMs": 1676,
+      "outputBytes": 9334,
+      "sha256": "f7c0f89b54fec60985ad48bd87a89de8b62e671f1b8abd617e5e57613478d3ee",
+      "validation": {
+        "crcPassed": true,
+        "partCount": 4,
+        "editablePageMarkers": 4
+      }
+    },
+    {
+      "status": "passed",
+      "tool": "pdf-to-ppt",
+      "elapsedMs": 2740,
+      "outputBytes": 9546122,
+      "sha256": "a70487e764b9749513c4c68610a5b1bdb17cfdcb668b54cc09e4c59e0bb325cc",
+      "validation": {
+        "crcPassed": true,
+        "partCount": 4,
+        "editablePageMarkers": 4
+      }
+    }
+  ]
+}

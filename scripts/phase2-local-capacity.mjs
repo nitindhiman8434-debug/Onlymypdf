@@ -11,8 +11,8 @@ if (!["127.0.0.1", "localhost"].includes(new URL(baseUrl).hostname)) {
 }
 
 const caseName = process.argv[2] || "medium";
-if (!["medium", "large", "large-word", "parallel", "free-cap-excel", "free-cap-ppt", "free-cap-word", "above-free-cap"].includes(caseName)) {
-  throw new Error("Choose medium, large, large-word, parallel or a free-cap tool case.");
+if (!["medium", "large", "large-word", "parallel", "parallel-mixed", "free-cap-excel", "free-cap-ppt", "free-cap-word", "above-free-cap"].includes(caseName)) {
+  throw new Error("Choose medium, large, large-word, parallel, parallel-mixed or a free-cap tool case.");
 }
 const nearFreeCap = caseName.startsWith("free-cap-");
 const fixtureName = caseName === "above-free-cap" ? "mixed-23-page.pdf"
@@ -107,7 +107,7 @@ async function runWord() {
 
 const startedAt = new Date().toISOString();
 const results = [];
-const attempts = caseName === "medium"
+const attempts = caseName === "medium" || caseName === "parallel-mixed"
   ? [["pdf-to-word", runWord], ["pdf-to-excel", () => runOffice("pdf-to-excel", "xlsx")], ["pdf-to-ppt", () => runOffice("pdf-to-ppt", "pptx")]]
   : caseName === "large-word" ? [["pdf-to-word", runWord]]
   : caseName === "free-cap-word" ? [["pdf-to-word", runWord]]
@@ -115,14 +115,16 @@ const attempts = caseName === "medium"
   : caseName === "free-cap-ppt" ? [["pdf-to-ppt", () => runOffice("pdf-to-ppt", "pptx")]]
   : [["pdf-to-excel", () => runOffice("pdf-to-excel", "xlsx")], ["pdf-to-ppt", () => runOffice("pdf-to-ppt", "pptx")]];
 if (caseName === "above-free-cap") {
-  const response = await fetch(`${baseUrl}/api/tools/pdf-to-excel`, {
-    method: "POST", headers: { Origin: baseUrl }, body: formForFixture(), signal: AbortSignal.timeout(60_000),
-  });
-  const body = await response.text();
-  results.push({ tool: "pdf-to-excel", status: response.status === 400 && /25\s*MB|too large|exceeds/i.test(body)
-    ? "passed" : "failed", expectedStatus: 400, actualStatus: response.status,
-  });
-} else if (caseName === "parallel") {
+  for (const tool of ["pdf-to-word", "pdf-to-excel", "pdf-to-ppt"]) {
+    const response = await fetch(`${baseUrl}/api/tools/${tool}`, {
+      method: "POST", headers: { Origin: baseUrl }, body: formForFixture(), signal: AbortSignal.timeout(60_000),
+    });
+    const body = await response.text();
+    results.push({ tool, status: response.status === 400 && /25\s*MB|too large|exceeds/i.test(body)
+      ? "passed" : "failed", expectedStatus: 400, actualStatus: response.status,
+    });
+  }
+} else if (caseName === "parallel" || caseName === "parallel-mixed") {
   const parallel = await Promise.allSettled(attempts.map(([, run]) => run()));
   parallel.forEach((item, index) => results.push(item.status === "fulfilled"
     ? { status: "passed", ...item.value }

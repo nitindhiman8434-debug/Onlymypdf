@@ -57,7 +57,9 @@ A stricter four-page Word check found only pages 1-3 in the downloaded DOCX whil
 | 8 pages, 9,419,544 bytes | 8/8; 6.1 s; 33.0 MB DOCX | 8/8; 1.7 s | 8/8; 3.7 s |
 | 22 pages, 25,898,723 bytes | 22/22; 22.7 s; 90.7 MB DOCX | 22/22; 4.6 s | 22/22; 8.9 s; 52.4 MB PPTX |
 
-The 22-page file is 98.8% of the configured 25 MiB Free cap (26,214,400 bytes). A separate 27,076,295-byte input received the expected HTTP 400 size rejection. One parallel pair (4-page Excel and PowerPoint) both completed with valid outputs. A spot sample during the 20-page Word trial showed about 1,024 MB Windows memory available and about 2,153 MB RSS for the development server; this is not a peak measurement or a production Linux sizing result. Cold route compilation, local machine contention and fixture shape affect these timings. They are individual samples, not p95 latency, a capacity guarantee or a 200 MiB Pro test.
+The 22-page file is 98.8% of the configured 25 MiB Free cap (26,214,400 bytes). A separate 27,076,295-byte input received the expected HTTP 400 size rejection on **all three** Word, Excel and PowerPoint routes (`local-above-free-cap-report.json`). A parallel pair (4-page Excel and PowerPoint) and a new simultaneous three-tool run (4-page Word, Excel and PowerPoint) completed with valid Office outputs and 4/4 editable page markers (`local-parallel-mixed-report.json`). The Word job's completed download remained one-time (replay HTTP 404).
+
+The first simultaneous three-tool run took 18.8 s wall time (Word 18.8 s, Excel 12.2 s, PowerPoint 14.0 s); a warm repeat took 4.8 s wall time (Word 4.8 s, Excel 1.7 s, PowerPoint 2.7 s). The cause of that first-run difference was not isolated; route compilation and local contention are possibilities, not confirmed diagnoses. One process snapshot during the first run showed roughly 1,858 MiB working set for the listening local Next server and 115 MiB for a Python process; the Python process was not independently attributed to a specific request. An earlier spot sample during the 20-page Word trial showed about 1,024 MB Windows memory available and about 2,153 MB RSS for the development server. Neither snapshot is a peak, child-process total or production Linux sizing result. These are individual development-machine samples, not p95 latency, a capacity guarantee or a 200 MiB Pro test.
 
 After the Python fix, `tsc --noEmit`, 46 targeted PDF-to-Word tests, Python compile checks and the last-page regression passed. The tested local job download was one-time: replay returned HTTP 404. Existing local temporary job directories dated before this run remain; the current run left no new job directory visible. This is local cleanup evidence only, not deployed R2 retention evidence.
 
@@ -78,7 +80,7 @@ The current localhost tests use no billable cloud conversion service. A dependab
 
 - Full production web image CI passes with both converter scripts and valid outputs.
 - Public HTTPS frontend URL is deployed, configured and the three Office HTTP flows pass with inspected downloads.
-- Realistic size and concurrency samples yield observed CPU/RAM/disk/latency/timeout and failure rates; per-tool support limits are set accordingly. Synthetic localhost samples now cover three sizes up to 98.8% of the Free cap and one parallel pair, but not a representative public workload or 200 MiB Pro files.
+- Realistic size and concurrency samples yield observed CPU/RAM/disk/latency/timeout and failure rates; per-tool support limits are set accordingly. Synthetic localhost samples now cover three sizes up to 98.8% of the Free cap, a parallel pair and one simultaneous Word/Excel/PowerPoint run, but not a representative public workload or 200 MiB Pro files.
 - Provider usage gives a defensible cost per conversion and monthly low/medium/high-volume scenarios.
 - Retention and failure cleanup are observed in the deployed environment.
 
