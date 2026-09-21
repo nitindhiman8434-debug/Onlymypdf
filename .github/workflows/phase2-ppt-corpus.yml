@@ -80,6 +80,7 @@ jobs:
       - name: Convert a controlled PDF inside the production image
         run: |
           docker run --rm --entrypoint python3 onlymypdf-full:phase2e -c "import fitz, pptx; from PIL import Image; print('Office Python dependencies available')"
+          docker run --rm --entrypoint chromium onlymypdf-full:phase2e --version
           docker run --rm \
             --mount "type=bind,source=$PWD/quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf,target=/tmp/fixture.pdf,readonly" \
             --entrypoint sh onlymypdf-full:phase2e -c '

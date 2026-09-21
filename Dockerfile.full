@@ -8,6 +8,7 @@
 
 FROM node:20-bookworm-slim AS deps
 WORKDIR /app
+ENV PUPPETEER_SKIP_DOWNLOAD=1
 COPY package.json package-lock.json ./
 RUN npm ci
 
@@ -45,6 +46,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice-writer \
     libreoffice-calc \
     libreoffice-impress \
+    chromium \
     python3 \
     python3-pip \
     python3-venv \
@@ -57,6 +59,7 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV LIBREOFFICE_PATH=/usr/bin/soffice
 ENV PDF2DOCX_PYTHON=/usr/bin/python3
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 RUN addgroup --system nodejs && adduser --system --ingroup nodejs nextjs
 
@@ -68,6 +71,7 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/scripts ./scripts
 
 RUN python3 -c "import fitz, pptx; from PIL import Image" \
+    && chromium --version \
     && test -f scripts/pdf-to-ppt-build.py \
     && test -f scripts/pdf-extract-tables.py
 

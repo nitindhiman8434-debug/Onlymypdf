@@ -19,7 +19,7 @@
 
 The full web Docker image originally copied the Next.js standalone output but not the dynamically invoked `scripts/` directory. It also installed `pdf2docx` without explicitly installing `python-pptx` and Pillow. Local corpus success therefore did not prove that the production web image could run PDF-to-Excel or PDF-to-PowerPoint.
 
-`Dockerfile.full` now copies the converter scripts and installs their Python dependencies. The Phase 2.3D GitHub workflow builds the actual full image and runs both converter scripts against a tracked synthetic PDF inside that image. This is a source-level correction until its image CI job passes. The test checks real XLSX-extraction JSON and an openable PPTX package, rather than imports alone.
+`Dockerfile.full` now copies the converter scripts and installs their Python dependencies. The first full-image CI build also exposed a Puppeteer installation failure in the slim Node image: Chrome extraction needed a missing archive utility. The image now skips Puppeteer's download during `npm ci` and installs Debian Chromium explicitly in the runtime image. The Phase 2.3D GitHub workflow builds the actual full image and runs both converter scripts against a tracked synthetic PDF inside that image. This remains a source-level correction until image CI passes. The test checks real XLSX-extraction JSON and an openable PPTX package, rather than imports alone. HTML-to-PDF's Chromium launch remains a separate deployment check.
 
 ## HTTP and capacity gates
 
