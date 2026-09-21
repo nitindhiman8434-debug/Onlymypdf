@@ -12,7 +12,9 @@ on:
       - "scripts/phase2-excel-corpus.ts"
       - "quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf"
       - "src/lib/services/pdf-to-excel.service.ts"
+      - "src/lib/services/conversion-input-error.ts"
       - "src/lib/services/pdf-document-excel.service.ts"
+      - "src/lib/api/tool-route.ts"
   workflow_dispatch:
 
 permissions:

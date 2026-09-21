@@ -8,6 +8,8 @@
 
 **Phase 2.3B status:** 100% complete. The Hindi, mixed-language and difficult-scan corpus passed 8/8 cases on the Ubuntu production-equivalent gate, with rendered source and Word previews.
 
+**Phase 2.3C status:** 100% complete for the controlled PDF-to-Excel semantic gate. Six cases passed locally and on Ubuntu; the local HTTP route returned an openable XLSX and rejected an image-only PDF with HTTP 422. Public production browser behavior remains unverified and belongs to the measured deployment gate in 2.3E.
+
 ## Recorded decision gate
 
 | Decision | Phase 2.3A value |
@@ -97,7 +99,7 @@ The committed machine-readable result is `quality/phase2-pdf-to-word/latest-repo
 |---|---:|---|
 | 2.3A PDF-to-Word OCR foundation | 8% | Complete: local and Railway production gates passed |
 | 2.3B Hindi, mixed-language and difficult-scan corpus | 6% | Complete: 8/8 Ubuntu gate and rendered preview review passed |
-| 2.3C PDF-to-Excel semantic accuracy | 8% | Pending |
+| 2.3C PDF-to-Excel semantic accuracy | 8% | Complete: 6/6 Ubuntu semantic corpus and local API artifact gate passed |
 | 2.3D PDF-to-PowerPoint semantic accuracy | 8% | Pending |
 | 2.3E measured limits, cost and production quality gate | 5% | Pending |
 
@@ -105,4 +107,16 @@ The committed machine-readable result is `quality/phase2-pdf-to-word/latest-repo
 
 - Handwriting remains unsupported and must not be marketed as accurate without a separate measured corpus.
 - Set measured job limits from Railway CPU/memory and cost data rather than advertising unlimited files.
-- Extend the same semantic gates to PDF to Excel and PDF to PowerPoint.
+- Extend the same semantic gate to PDF to PowerPoint in Phase 2.3D.
+
+## Phase 2.3C findings and verification
+
+1. The old Excel extractor could replace the uploaded PDF with a sibling file or a bundled reference table, and its landscape-page shortcut could omit portrait content. Those substitution paths and the page-dropping shortcut were removed. The current extraction reads the uploaded PDF only.
+2. Borderless tables split multi-word descriptions into extra columns. PyMuPDF's text-table strategy now runs before the word-position fallback; fully empty phantom columns are removed in ordinary tables.
+3. Identifiers with leading zeros and more than 15 significant digits remain text. Quantities and amounts become numeric cells; percentage, currency, and accounting-negative display formats are preserved.
+4. Image-only pages previously produced a structurally valid workbook with a “no text” message. They now fail before extraction with an OCR instruction. The local API returns HTTP 422 and no XLSX for that input.
+5. Two unrelated test assertions were stale or timing-sensitive: billing checkout copy now tests its actual renewal/one-time meaning, and the public health-route import test has a 15-second timeout. Product billing copy and health-route behavior were not changed.
+
+The six-case corpus covers ruled invoices, borderless multi-word tables, multi-page tables, mixed portrait/landscape pages, image-only rejection, and a saved two-page Phase 1 regression PDF. Each successful XLSX was reopened and checked for contiguous editable rows and numeric/text types; source PDFs were rendered and visually inspected. Local result: 6/6. GitHub Actions Ubuntu run [`35632810064`](https://github.com/nitindhiman8434-debug/Onlymypdf/actions/runs/35632810064): success. The existing Phase 2.3B OCR workflows also passed on the same commit. Local Next.js API: HTTP 200 with a 6,636-byte XLSX that openpyxl opened with the expected four rows; scanned input: HTTP 422 with a clear OCR instruction. Full unit suite: 614/614; TypeScript, Python syntax, and production webpack build passed.
+
+The machine-readable corpus result is `quality/phase2-pdf-to-excel/latest-corpus-report.json`. The 6/6 result measures this controlled set, not arbitrary PDF-to-Excel accuracy. Scans need OCR first; complex merged headers, non-Latin tables, and file-size/CPU limits remain unmeasured. Phase 2.3E will measure public production quality, speed, and cost.

@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import { logError } from "@/lib/db/queries";
+import { UnsupportedConversionInputError } from "@/lib/services/conversion-input-error";
 import {
   extractDocumentTablesForExcel,
   isWeakDocumentExtraction,
@@ -687,14 +688,17 @@ export async function pdfToExcel(fileBuffer: Buffer): Promise<Buffer> {
     const buffer = await workbook.xlsx.writeBuffer();
     return Buffer.from(buffer);
   } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
     await logError({
       tool_name: "pdf-to-excel",
       error_type: "PDF_TO_EXCEL_FAILED",
-      error_message: err instanceof Error ? err.message : String(err),
+      error_message: message,
       stack_trace: err instanceof Error ? err.stack : undefined,
     });
-    throw new Error(
-      `Failed to convert PDF to Excel: ${err instanceof Error ? err.message : "Unknown error"}`
-    );
+    const userMessage = `Failed to convert PDF to Excel: ${message}`;
+    if (/no selectable text|no extractable text/i.test(message)) {
+      throw new UnsupportedConversionInputError(userMessage);
+    }
+    throw new Error(userMessage);
   }
 }
