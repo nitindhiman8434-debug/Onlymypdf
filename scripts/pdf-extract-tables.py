@@ -80,6 +80,14 @@ def trim_table_rows(rows, preserve_wide=False, preserve_newlines=False):
     normalized = [r[:max_cols] for r in normalized]
 
     if not preserve_wide:
+        populated_columns = [
+            index
+            for index in range(max_cols)
+            if any(clean_cell(row[index]) for row in normalized)
+        ]
+        if populated_columns:
+            normalized = [[row[index] for index in populated_columns] for row in normalized]
+            max_cols = len(populated_columns)
         lead = 0
         while lead < max_cols - 1:
             if all(clean_cell(r[lead]) == "" for r in normalized):
@@ -775,25 +783,6 @@ def build_global_spreadsheet_col_x(doc):
     return None
 
 
-def select_landscape_financial_doc(doc):
-    """When a PDF mixes portrait cover pages with landscape tables, keep landscape pages."""
-    landscape_pages = []
-    for page_idx in range(doc.page_count):
-        page = doc[page_idx]
-        if page.rect.width <= page.rect.height:
-            continue
-        anchors = parse_smallpdf_month_anchors(page)
-        if anchors and len(anchors) >= 40:
-            landscape_pages.append(page_idx)
-    if not landscape_pages:
-        return doc, False
-    subset = fitz.open()
-    for page_idx in landscape_pages[:6]:
-        subset.insert_pdf(doc, from_page=page_idx, to_page=page_idx)
-    doc.close()
-    return subset, True
-
-
 def resolve_spreadsheet_mode(doc):
     """Use word-grid spreadsheet extraction for wide landscape financial PDFs."""
     global_col_x = build_global_spreadsheet_col_x(doc)
@@ -936,151 +925,6 @@ def extract_spreadsheet_page_table(page, col_x):
 def page_has_full_financial_grid(page, y_tol=3.0):
     anchors = parse_smallpdf_month_anchors(page, y_tol)
     return bool(anchors and len(anchors) >= 24)
-
-
-THAILAND_REFERENCE_PATH = os.path.join(
-    os.path.dirname(__file__), "templates", "cannabis-thailand-smallpdf-ref.json"
-)
-
-LANDSCAPE_SIBLING_NAMES = (
-    "copy (5).pdf",
-    "copy (4).pdf",
-    "copy (6).pdf",
-    "Nitin- Cannabis - Thailand copy (5).pdf",
-    "Nitin- Cannabis - Thailand copy (4).pdf",
-    "Nitin- Cannabis - Thailand copy (6).pdf",
-)
-
-
-def find_store_sale_row(table):
-    if not table:
-        return None
-    for row in table.get("rows", []):
-        label = clean_cell(row[1] if len(row) > 1 else row[0]).upper()
-        if "STORE" in label and "SALE" in label:
-            return row
-    return None
-
-
-def count_store_month_values(table):
-    row = find_store_sale_row(table)
-    if not row:
-        return 0
-    count = 0
-    start = 2 if len(row) >= 62 else 1
-    for value in row[start:]:
-        if value in ("", None, "-"):
-            continue
-        text = str(value).replace(",", "").strip()
-        if text.isdigit():
-            count += 1
-    return count
-
-
-def store_month_prefix(table, length=14):
-    row = find_store_sale_row(table)
-    if not row:
-        return []
-    values = []
-    start = 2 if len(row) >= 62 else 1
-    for value in row[start:]:
-        if value in ("", None, "-"):
-            continue
-        text = str(value).replace(",", "").strip()
-        if text.isdigit():
-            values.append(int(text))
-        if len(values) >= length:
-            break
-    return values
-
-
-def is_portrait_cannabis_bundle(doc):
-    if not is_cannabis_financial_document(doc):
-        return False
-    content_idx = first_content_page_index(doc)
-    page = doc[content_idx]
-    if page.rect.width > page.rect.height:
-        return False
-    anchors = parse_smallpdf_month_anchors(page)
-    return not anchors or len(anchors) < 40
-
-
-def try_open_landscape_sibling_pdf(pdf_path):
-    """When the portrait export is uploaded, use a landscape sibling from the same folder."""
-    folder = os.path.dirname(os.path.abspath(pdf_path))
-    base = os.path.basename(pdf_path)
-    candidates = list(LANDSCAPE_SIBLING_NAMES)
-    if base.endswith(".pdf"):
-        stem = base[:-4]
-        candidates.extend(
-            [
-                f"{stem} (5).pdf",
-                f"{stem} (4).pdf",
-                f"{stem} (6).pdf",
-                base.replace(".pdf", " (5).pdf"),
-                base.replace(".pdf", " (4).pdf"),
-            ]
-        )
-    seen = set()
-    for name in candidates:
-        if name in seen:
-            continue
-        seen.add(name)
-        path = os.path.join(folder, name)
-        if not os.path.isfile(path) or os.path.abspath(path) == os.path.abspath(pdf_path):
-            continue
-        try:
-            sibling = fitz.open(path)
-            page = sibling[0]
-            anchors = parse_smallpdf_month_anchors(page)
-            if (
-                page.rect.width > page.rect.height
-                and anchors
-                and len(anchors) >= 40
-            ):
-                return sibling, path
-            sibling.close()
-        except Exception:
-            continue
-    return None, None
-
-
-def load_thailand_reference_tables():
-    if not os.path.isfile(THAILAND_REFERENCE_PATH):
-        return None
-    with open(THAILAND_REFERENCE_PATH, "r", encoding="utf-8") as handle:
-        payload = json.load(handle)
-    tables = payload.get("exportTables") or []
-    if not tables:
-        return None
-    normalized = []
-    for index, table in enumerate(tables):
-        rows = normalize_financial_rows(table.get("rows") or [])
-        table_obj = table_dict(rows, preserve_wide=True)
-        if table_obj:
-            normalized.append({**table_obj, "page": index + 1})
-    return normalized or None
-
-
-def should_use_thailand_reference_fallback(was_portrait_bundle, export_tables):
-    if not was_portrait_bundle or not export_tables:
-        return False
-    primary = export_tables[0]
-    store_count = count_store_month_values(primary)
-    ref_tables = load_thailand_reference_tables()
-    if not ref_tables:
-        return False
-    prefix = store_month_prefix(primary, 8)
-    ref_prefix = store_month_prefix(ref_tables[0], 8)
-    if len(prefix) < 4 or len(ref_prefix) < 4:
-        return False
-    if prefix[: min(len(prefix), len(ref_prefix))] != ref_prefix[: min(len(prefix), len(ref_prefix))]:
-        return False
-    if store_count < 40:
-        return True
-    if primary["row_count"] < ref_tables[0]["row_count"] - 4:
-        return True
-    return False
 
 
 DOCUMENT_SECTION_RE = re.compile(r"^(\d+)\.\s")
@@ -1475,6 +1319,24 @@ def extract_complete_page_table(page, global_col_x=None):
     if best:
         return best
 
+    # Borderless tables are often split into one column per word by the
+    # positional fallback. PyMuPDF's text strategies retain multi-word cells.
+    try:
+        text_tables = page.find_tables(
+            vertical_strategy="text", horizontal_strategy="text"
+        ).tables
+        text_candidates = []
+        for detected in text_tables:
+            rows = [row for row in rows_from_table_object(detected) if any(clean_cell(cell) for cell in row)]
+            candidate = table_dict(rows)
+            if is_meaningful_table(candidate):
+                text_candidates.append(candidate)
+        text_best = pick_best_table(text_candidates)
+        if text_best:
+            return text_best
+    except Exception:
+        pass
+
     words_table = table_dict(words_to_grid(page))
     if words_table and is_meaningful_table(words_table):
         return words_table
@@ -1648,32 +1510,22 @@ def merge_page_tables(all_pages):
 
 def extract_tables(pdf_path, output_dir):
     doc = fitz.open(pdf_path)
-    doc, _subset_closed = select_landscape_financial_doc(doc)
-    was_portrait_bundle = is_portrait_cannabis_bundle(doc)
-    used_sibling = None
-    fallback_mode = "pdf"
-
-    if was_portrait_bundle:
-        sibling, sibling_path = try_open_landscape_sibling_pdf(pdf_path)
-        if sibling:
-            doc.close()
-            doc = sibling
-            used_sibling = sibling_path
-            fallback_mode = "landscape_sibling"
-
     page_count = doc.page_count
     include_debug = page_count <= 100
     document_mode = is_document_layout_pdf(doc)
+    unsupported_pages = []
+    for page_idx in range(page_count):
+        page = doc[page_idx]
+        if not page.get_text("text").strip() and (page.get_images(full=True) or page.get_drawings()):
+            unsupported_pages.append(page_idx + 1)
+    if unsupported_pages:
+        doc.close()
+        pages = ", ".join(str(number) for number in unsupported_pages)
+        raise ValueError(
+            f"Pages {pages} have no selectable text. Run OCR before converting to Excel."
+        )
 
     export_tables, spreadsheet_mode, global_col_x = build_export_tables_from_doc(doc)
-
-    if should_use_thailand_reference_fallback(was_portrait_bundle, export_tables):
-        reference_tables = load_thailand_reference_tables()
-        if reference_tables:
-            export_tables = reference_tables
-            spreadsheet_mode = True
-            global_col_x = None
-            fallback_mode = "smallpdf_reference"
 
     master_table = build_master_table(export_tables, spreadsheet_mode)
 
@@ -1685,8 +1537,7 @@ def extract_tables(pdf_path, output_dir):
                 else ("document" if document_mode else "tables")
             ),
             "columns": export_tables[0]["col_count"] if export_tables else (len(global_col_x) if global_col_x else 0),
-            "fallback": fallback_mode,
-            "sibling": used_sibling,
+            "fallback": "uploaded_pdf_only",
         }),
         file=sys.stderr,
     )
@@ -1732,6 +1583,7 @@ def extract_tables(pdf_path, output_dir):
     result = {
         "pageCount": page_count,
         "exportTables": export_tables,
+        "unsupportedPages": unsupported_pages,
     }
     if master_table and is_meaningful_table(master_table):
         result["masterTable"] = master_table

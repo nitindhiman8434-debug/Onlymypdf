@@ -64,6 +64,7 @@ interface ExportTableData extends TableData {
 
 interface ExtractResult {
   pageCount: number;
+  unsupportedPages?: number[];
   pages?: PageData[];
   exportTables?: ExportTableData[];
   masterTable?: TableData;
@@ -95,15 +96,36 @@ async function getPdfPageCount(python: string, pdfPath: string): Promise<number>
 
 /* ─── helpers ─── */
 
-function parseNumeric(value: string): number | null {
-  const cleaned = value.replace(/[$,\s]/g, "");
-  if (/^-?\d+(\.\d+)?%?$/.test(cleaned)) {
-    if (value.includes("%")) {
-      return parseFloat(cleaned.replace("%", "")) / 100;
-    }
-    return parseFloat(cleaned);
+function parseSemanticNumber(value: string): { value: number; numFmt: string } | null {
+  const source = value.trim();
+  const negative = source.startsWith("(") && source.endsWith(")");
+  const unwrapped = negative ? source.slice(1, -1).trim() : source;
+  const currency = unwrapped.match(/^([$€£₹])\s*/)?.[1];
+  const withoutCurrency = currency ? unwrapped.replace(/^[$€£₹]\s*/, "") : unwrapped;
+  const percent = withoutCurrency.endsWith("%");
+  if (currency && percent) return null;
+  const numeric = percent ? withoutCurrency.slice(0, -1).trim() : withoutCurrency;
+  if (!/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(numeric)) return null;
+  const unsigned = numeric.replace(/^-/, "").replace(/,/g, "");
+  const integerPart = unsigned.split(".")[0];
+  if (integerPart.length > 1 && integerPart.startsWith("0")) return null;
+  const significantDigits = unsigned.replace(/^0+/, "").replace(".", "").length;
+  if (significantDigits > 15) return null;
+  const parsed = Number(numeric.replace(/,/g, ""));
+  const numericValue = (negative ? -parsed : parsed) / (percent ? 100 : 1);
+  if (!Number.isFinite(numericValue)) return null;
+  const decimals = (unsigned.split(".")[1] ?? "").length;
+  const decimalFormat = decimals ? `.${"0".repeat(Math.min(decimals, 8))}` : "";
+  const baseFormat = `#,##0${decimalFormat}`;
+  if (percent) return { value: numericValue, numFmt: `${baseFormat}%` };
+  if (currency) {
+    const currencyFormat = `"${currency}"${baseFormat}`;
+    return {
+      value: numericValue,
+      numFmt: negative ? `${currencyFormat};("${currency}"${baseFormat})` : currencyFormat,
+    };
   }
-  return null;
+  return { value: numericValue, numFmt: negative ? `${baseFormat};(${baseFormat})` : baseFormat };
 }
 
 function autoFitColumns(sheet: ExcelJS.Worksheet, maxWidth = 48) {
@@ -432,7 +454,7 @@ function applySmallpdfFinancialStyle(sheet: ExcelJS.Worksheet, columnCount: numb
           cell.alignment = { horizontal: "center", vertical: "middle" };
         }
       } else if (c >= 3) {
-        if (typeof cell.value === "number") {
+        if (typeof cell.value === "number" && cell.numFmt === "General") {
           cell.numFmt = "#,##0";
         }
         cell.font = { size: FINANCIAL_DATA_FONT_SIZE, name: "Calibri" };
@@ -558,13 +580,15 @@ function writeTableToSheet(
         continue;
       }
 
-      const num = parseNumeric(text.replace(/,/g, ""));
-      cell.value =
-        useDocumentStyle && num === null
+      const num = parseSemanticNumber(text);
+      if (num) {
+        cell.value = num.value;
+        cell.numFmt = num.numFmt;
+      } else {
+        cell.value = useDocumentStyle
           ? documentCellValue(text, rowIdx, colIdx, table.col_count)
-          : num !== null
-            ? num
-            : text;
+          : text;
+      }
     }
   }
 
@@ -610,6 +634,11 @@ async function resolveExportTables(
 export async function pdfToExcel(fileBuffer: Buffer): Promise<Buffer> {
   try {
     const extracted = await extractTablesFromPdf(fileBuffer);
+    if (extracted.unsupportedPages?.length) {
+      throw new Error(
+        `Pages ${extracted.unsupportedPages.join(", ")} have no selectable text. Run OCR before converting to Excel.`
+      );
+    }
     validateFinancialExtraction(extracted);
     const { tables: pageTables, useDocumentStyle } = await resolveExportTables(
       fileBuffer,
@@ -646,7 +675,7 @@ export async function pdfToExcel(fileBuffer: Buffer): Promise<Buffer> {
         }
         autoFitColumns(sheet);
       } else {
-        sheet.addRow(["No extractable text found in this PDF."]);
+        throw new Error("No extractable text found in this PDF. Run OCR before converting to Excel.");
       }
     }
 

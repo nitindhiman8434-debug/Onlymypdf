@@ -1,0 +1,56 @@
+name: Phase 2.3C Excel semantic corpus
+
+on:
+  push:
+    branches: [phase1-dependable-beta]
+    paths:
+      - ".github/workflows/phase2-excel-corpus.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/pdf-extract-tables.py"
+      - "scripts/phase2-excel-corpus.py"
+      - "scripts/phase2-excel-corpus.ts"
+      - "quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf"
+      - "src/lib/services/pdf-to-excel.service.ts"
+      - "src/lib/services/pdf-document-excel.service.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  semantic-corpus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install converter dependencies
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+        run: |
+          npm ci
+          python -m pip install --disable-pip-version-check pymupdf==1.27.2
+      - name: Run semantic workbook gate
+        run: npm run phase2.3c:excel-corpus
+      - name: Typecheck and source syntax
+        run: |
+          npm run typecheck
+          python -m py_compile scripts/pdf-extract-tables.py scripts/phase2-excel-corpus.py
+      - name: Upload source, workbook, and report evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase2.3c-excel-corpus-${{ github.sha }}
+          path: |
+            quality/phase2-pdf-to-excel/latest-corpus-report.json
+            tmp/pdfs/phase2.3c
+          if-no-files-found: warn
+          retention-days: 14

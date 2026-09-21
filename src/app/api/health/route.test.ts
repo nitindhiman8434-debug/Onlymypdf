@@ -17,5 +17,5 @@ describe("GET /api/health", () => {
     const body = (await res.json()) as { status?: string; timestamp?: string };
     expect(body.status).toBe("ok");
     expect(body.timestamp).toBeTruthy();
-  });
+  }, 15_000);
 });

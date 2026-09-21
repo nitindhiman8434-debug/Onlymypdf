@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-09-21T17:32:38.245Z",
+  "passed": 6,
+  "total": 6,
+  "results": [
+    {
+      "id": "ruled-invoice",
+      "passed": true,
+      "worksheetCount": 1,
+      "checkedRows": 4,
+      "outputBytes": 6635,
+      "durationMs": 1008
+    },
+    {
+      "id": "borderless-table",
+      "passed": true,
+      "worksheetCount": 1,
+      "checkedRows": 4,
+      "outputBytes": 6657,
+      "durationMs": 685
+    },
+    {
+      "id": "multi-page-table",
+      "passed": true,
+      "worksheetCount": 2,
+      "checkedRows": 4,
+      "outputBytes": 7164,
+      "durationMs": 677
+    },
+    {
+      "id": "mixed-orientation",
+      "passed": true,
+      "worksheetCount": 2,
+      "checkedRows": 2,
+      "outputBytes": 7102,
+      "durationMs": 622
+    },
+    {
+      "id": "image-only-table",
+      "passed": true,
+      "expectedRejection": true,
+      "error": "Failed to convert PDF to Excel: Pages 1 have no selectable text. Run OCR before converting to Excel.",
+      "durationMs": 550
+    },
+    {
+      "id": "phase1-table-regression",
+      "passed": true,
+      "worksheetCount": 2,
+      "checkedRows": 2,
+      "outputBytes": 7294,
+      "durationMs": 620
+    }
+  ]
+}
