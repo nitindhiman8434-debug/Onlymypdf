@@ -141,7 +141,7 @@
     "pdfToPpt": {
       "name": "PDF to PowerPoint",
       "description": "Convert PDF to PowerPoint slides",
-      "longDescription": "Turn each PDF page into a full-slide image in a PowerPoint (.pptx) file. The page appearance is preserved, but text, charts, links, and page elements are flattened into the slide image."
+      "longDescription": "Turn PDF pages into PowerPoint (.pptx) slides. Selectable horizontal text becomes editable text boxes; scanned text, charts, and images remain part of the visual background."
     },
     "excelToPdf": {
       "name": "Excel to PDF",

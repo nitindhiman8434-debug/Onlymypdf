@@ -1,8 +1,7 @@
-"""Render PDF pages in parallel and build a PPTX with editable text layers.
+"""Preserve PDF visuals and place selectable source text on editable slides.
 
-Each slide shows the PDF page image. Full page text is stored in:
-1) the slide Notes pane (primary — click Notes below the slide to edit), and
-2) an off-slide "Page text" shape (View → Selection Pane → Page text).
+Text is removed only from the rendered background and recreated as on-slide
+PowerPoint text boxes. Image-only scans remain visual slides, not fake text.
 """
 from __future__ import annotations
 
@@ -22,14 +21,15 @@ except ImportError:
 try:
     from pptx import Presentation
     from pptx.util import Inches, Pt
+    from pptx.enum.text import MSO_AUTO_SIZE, MSO_ANCHOR
+    from pptx.dml.color import RGBColor
     from PIL import Image
 except ImportError:
     print(json.dumps({"error": "python-pptx and Pillow required. Run: pip install python-pptx pillow"}))
     sys.exit(1)
 
 PT_PER_INCH = 72.0
-MIN_TEXT_CHARS = 12
-TEXT_MARGIN_IN = 0.12
+MAX_EDITABLE_LINES_PER_PAGE = 1500
 
 
 def resolve_target_width(page_count: int) -> int:
@@ -89,64 +89,113 @@ def resolve_slide_size_inches(sizes: list[tuple[float, float]]) -> tuple[float, 
         return sizes[0]
     portrait = sum(1 for w, h in sizes if h >= w)
     landscape = len(sizes) - portrait
-    dominant_portrait = portrait >= landscape
+    # A tie uses landscape, the more practical uniform canvas for a deck.
+    dominant_portrait = portrait > landscape
     pool = [(w, h) for w, h in sizes if (h >= w if dominant_portrait else w > h)] or sizes
     return max(w for w, _ in pool), max(h for _, h in pool)
 
 
-def add_page_text_layer(
-    slide,
-    page: fitz.Page,
-    slide_w_in: float,
-    slide_h_in: float,
-) -> bool:
-    lines = extract_page_lines(page)
-    full_text = "\n".join(lines)
-    if len(full_text.strip()) < MIN_TEXT_CHARS:
-        return False
-
-    # Primary edit surface: Notes pane (View → Notes in PowerPoint).
-    notes_tf = slide.notes_slide.notes_text_frame
-    notes_tf.clear()
-    notes_tf.text = full_text
-    for index, paragraph in enumerate(notes_tf.paragraphs):
-        if paragraph.text.strip():
-            paragraph.font.size = Pt(11)
-
-    # Backup edit surface: Selection Pane → "Page text" (visible, off-slide).
-    box = slide.shapes.add_textbox(
-        Inches(-slide_w_in - 0.25),
-        Inches(0),
-        Inches(max(0.5, slide_w_in - TEXT_MARGIN_IN * 2)),
-        Inches(max(0.5, slide_h_in - TEXT_MARGIN_IN * 2)),
-    )
-    box.name = "Page text"
-    tf = box.text_frame
-    tf.clear()
-    tf.word_wrap = True
-    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
-
-    for index, line in enumerate(lines):
-        paragraph = tf.paragraphs[0] if index == 0 else tf.add_paragraph()
-        paragraph.text = line
-        paragraph.font.size = Pt(11)
-
-    return True
-
-
-def extract_page_lines(page: fitz.Page) -> list[str]:
-    lines: list[str] = []
+def extract_page_lines(page: fitz.Page) -> list[dict]:
+    lines: list[dict] = []
     data = page.get_text("dict")
+    traces = page.get_texttrace()
+    visible_boxes = [
+        fitz.Rect(span["bbox"])
+        for span in traces
+        if span.get("type") in (0, 1) and span.get("opacity", 1) > 0.01
+    ]
     text_blocks = sorted(
         [b for b in data.get("blocks", []) if b.get("type") == 0],
         key=lambda b: (round(b["bbox"][1], 1), round(b["bbox"][0], 1)),
     )
     for block in text_blocks:
         for line in block.get("lines", []):
-            text = clean_text("".join(span.get("text", "") for span in line.get("spans", [])))
-            if text.strip():
-                lines.append(text)
+            direction = line.get("dir", (1, 0))
+            # Rotated text stays in the rendered background until its geometry
+            # can be reproduced reliably as an editable PowerPoint shape.
+            if abs(direction[0] - 1) > 0.01 or abs(direction[1]) > 0.01:
+                continue
+            spans = [
+                {
+                    "text": clean_text(span.get("text", "")),
+                    "size": span.get("size", 11),
+                    "font": span.get("font", "Arial"),
+                    "color": span.get("color", 0),
+                }
+                for span in line.get("spans", [])
+            ]
+            bounds = fitz.Rect(line["bbox"])
+            if (
+                any(span["text"].strip() for span in spans)
+                and (not traces or any(bounds.intersects(box) for box in visible_boxes))
+            ):
+                lines.append({"bbox": line["bbox"], "spans": spans})
     return lines
+
+
+def is_full_page_raster(page: fitz.Page) -> bool:
+    area = page.rect.width * page.rect.height
+    if area <= 0:
+        return False
+    covers_page = any(
+        fitz.Rect(image["bbox"]).intersect(page.rect).get_area() / area >= 0.85
+        for image in page.get_image_info()
+    )
+    if not covers_page:
+        return False
+    # Searchable scans often have an invisible OCR layer. A slide built from
+    # that layer would draw duplicate text over the photographed text. A photo
+    # background with genuinely visible PDF text is still editable.
+    return not any(
+        span.get("type") in (0, 1) and span.get("opacity", 1) > 0.01
+        for span in page.get_texttrace()
+    )
+
+
+def remove_editable_text_from_background(page: fitz.Page, lines: list[dict]) -> None:
+    for line in lines:
+        page.add_redact_annot(fitz.Rect(line["bbox"]), fill=False, cross_out=False)
+    if lines:
+        # Preserve photographs, chart vectors, rules, and page fills.
+        page.apply_redactions(images=0, graphics=0, text=0)
+
+
+def add_editable_lines(slide, lines: list[dict], scale: float, left: float, top: float) -> int:
+    count = 0
+    for line in lines:
+        x0, y0, x1, y1 = line["bbox"]
+        size = max(span["size"] for span in line["spans"])
+        box = slide.shapes.add_textbox(
+            Pt(left + x0 * scale),
+            Pt(top + (y0 - size * 0.14) * scale),
+            Pt(max(1, (x1 - x0 + size * 0.35) * scale)),
+            Pt(max(1, (y1 - y0 + size * 0.45) * scale)),
+        )
+        box.name = f"Editable line {count + 1}"
+        frame = box.text_frame
+        frame.clear()
+        frame.word_wrap = False
+        frame.auto_size = MSO_AUTO_SIZE.NONE
+        frame.vertical_anchor = MSO_ANCHOR.TOP
+        frame.margin_left = frame.margin_right = frame.margin_top = frame.margin_bottom = 0
+        paragraph = frame.paragraphs[0]
+        paragraph.space_before = paragraph.space_after = Pt(0)
+        for span in line["spans"]:
+            run = paragraph.add_run()
+            run.text = span["text"]
+            run.font.size = Pt(max(1, span["size"] * scale))
+            run.font.name = re.sub(r"^[A-Z]{6}\+", "", span["font"])
+            if span["color"] is not None:
+                color = span["color"]
+                run.font.color.rgb = RGBColor(
+                    (color >> 16) & 255, (color >> 8) & 255, color & 255
+                )
+            run.font.bold = "bold" in span["font"].lower()
+            run.font.italic = (
+                "italic" in span["font"].lower() or "oblique" in span["font"].lower()
+            )
+        count += 1
+    return count
 
 
 def render_one_page(
@@ -160,6 +209,10 @@ def render_one_page(
     doc = fitz.open(pdf_path)
     try:
         page = doc[page_index]
+        lines = [] if is_full_page_raster(page) else extract_page_lines(page)
+        if len(lines) > MAX_EDITABLE_LINES_PER_PAGE:
+            raise ValueError(f"Page {page_index + 1} has too many editable text lines")
+        remove_editable_text_from_background(page, lines)
         scale = target_width / page.rect.width
         pix = page.get_pixmap(matrix=fitz.Matrix(scale, scale), alpha=False)
         ext = "jpg" if image_format == "JPEG" else "png"
@@ -170,6 +223,7 @@ def render_one_page(
             "path": out_path,
             "widthPt": round(page.rect.width, 4),
             "heightPt": round(page.rect.height, 4),
+            "lines": lines,
         }
     finally:
         doc.close()
@@ -184,23 +238,24 @@ def build_pptx(pdf_path: str, pages: list[dict], output_path: str) -> int:
     prs.slide_height = Inches(slide_h_in)
     blank = prs.slide_layouts[6]
 
-    doc = fitz.open(pdf_path)
     editable_slides = 0
-    try:
-        for page in pages:
-            slide = prs.slides.add_slide(blank)
-            slide.shapes.add_picture(
-                page["path"],
-                Inches(0),
-                Inches(0),
-                width=Inches(pt_to_inches(page["widthPt"])),
-                height=Inches(pt_to_inches(page["heightPt"])),
-            )
-            pdf_page = doc[page["page"] - 1]
-            if add_page_text_layer(slide, pdf_page, slide_w_in, slide_h_in):
-                editable_slides += 1
-    finally:
-        doc.close()
+    for page in pages:
+        slide = prs.slides.add_slide(blank)
+        scale = min(
+            slide_w_in * PT_PER_INCH / page["widthPt"],
+            slide_h_in * PT_PER_INCH / page["heightPt"],
+        )
+        left = (slide_w_in * PT_PER_INCH - page["widthPt"] * scale) / 2
+        top = (slide_h_in * PT_PER_INCH - page["heightPt"] * scale) / 2
+        slide.shapes.add_picture(
+            page["path"],
+            Pt(left),
+            Pt(top),
+            width=Pt(page["widthPt"] * scale),
+            height=Pt(page["heightPt"] * scale),
+        )
+        if add_editable_lines(slide, page["lines"], scale, left, top):
+            editable_slides += 1
 
     prs.save(output_path)
     return editable_slides
@@ -259,7 +314,7 @@ def main() -> None:
                 "workers": workers,
                 "outputPath": output_path,
                 "outputSizeBytes": os.path.getsize(output_path),
-                "mode": "hybrid_editable",
+                "mode": "on_slide_editable_text",
             }
         )
     )

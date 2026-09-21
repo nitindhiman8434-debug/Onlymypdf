@@ -5,10 +5,6 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { logError } from "@/lib/db/queries";
 import { resolvePdf2docxPython } from "@/lib/services/pdf-to-word-pdf2docx.service";
-import {
-  isConvertApiPptAvailable,
-  pdfToPptConvertApi,
-} from "@/lib/services/pdf-to-ppt-convertapi.service";
 
 const execFileAsync = promisify(execFile);
 
@@ -75,17 +71,9 @@ async function pdfToPptLocal(fileBuffer: Buffer): Promise<Buffer> {
 
 export async function pdfToPpt(
   fileBuffer: Buffer,
-  fileName = "document.pdf"
+  _fileName = "document.pdf"
 ): Promise<Buffer> {
   try {
-    if (isConvertApiPptAvailable()) {
-      try {
-        return await pdfToPptConvertApi(fileBuffer, fileName);
-      } catch (err) {
-        console.warn("[pdf-to-ppt] ConvertAPI failed, falling back to local build:", err);
-      }
-    }
-
     return await pdfToPptLocal(fileBuffer);
   } catch (err) {
     await logError({

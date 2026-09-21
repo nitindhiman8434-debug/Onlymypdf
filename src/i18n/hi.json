@@ -141,7 +141,7 @@
     "pdfToPpt": {
       "name": "PDF से PowerPoint",
       "description": "PDF को PowerPoint स्लाइड में बदलें",
-      "longDescription": "हर PDF पेज को PowerPoint (.pptx) में full-slide image के रूप में बदलें। पेज का दिखना सुरक्षित रहता है, लेकिन अलग टेक्स्ट, चार्ट, लिंक और form elements editable नहीं होते।"
+      "longDescription": "PDF पेज को PowerPoint (.pptx) slides में बदलें। Selectable horizontal text slide पर edit हो सकता है; scan, chart और images visual background में रहते हैं।"
     },
     "excelToPdf": {
       "name": "Excel से PDF",
@@ -1445,15 +1445,15 @@
     "pdf-to-ppt": [
       {
         "question": "क्या images और layout preserve होते हैं?",
-        "answer": "हाँ। हर PDF page एक slide बनता है high-quality image के रूप में, इसलिए charts, logos और formatting intact रहते हैं।"
+        "answer": "हाँ। हर PDF page एक slide बनता है। Visual background charts और logos को रखता है; selectable text अलग editable boxes में आता है।"
       },
       {
         "question": "Conversion के बाद slides edit कर सकता हूँ?",
-        "answer": "Output .pptx PowerPoint और compatible apps में खुलती है और slides reorder या annotate की जा सकती हैं। मूल पेज full-slide image होता है, इसलिए अलग text, chart, link और form elements editable नहीं होते।"
+        "answer": "Selectable horizontal PDF text slide पर सीधे edit कर सकते हैं। Scanned text, rotated labels, charts, links और forms अलग editable objects नहीं बनते। Complex fonts को adjust करना पड़ सकता है।"
       },
       {
         "question": "क्या multi-page PDFs supported हैं?",
-        "answer": "हाँ। हर page अलग slide बनता है; page count की कोई hard limit नहीं, plan file size limits लागू होती हैं।"
+        "answer": "हाँ। हर PDF page अलग slide बनता है। Plan की file-size limit और server processing limit लागू होती हैं; बहुत बड़े PDFs को split करना पड़ सकता है।"
       },
       {
         "question": "क्या file size limit है?",

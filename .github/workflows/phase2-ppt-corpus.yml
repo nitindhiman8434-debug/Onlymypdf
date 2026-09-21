@@ -1,0 +1,56 @@
+name: Phase 2.3D PowerPoint semantic corpus
+
+on:
+  push:
+    branches: [phase1-dependable-beta]
+    paths:
+      - ".github/workflows/phase2-ppt-corpus.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/pdf-to-ppt-build.py"
+      - "scripts/phase2-ppt-corpus.py"
+      - "scripts/phase2-ppt-corpus.ts"
+      - "src/lib/services/pdf-to-ppt.service.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  semantic-corpus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install open-source converter and preview tools
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+        run: |
+          npm ci
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libreoffice-impress fonts-dejavu-core
+          python -m pip install --disable-pip-version-check pymupdf==1.27.2 python-pptx==1.0.2 pillow==12.2.0
+      - name: Verify editable and visual slides
+        run: npm run phase2.3d:ppt-corpus
+      - name: Typecheck and source syntax
+        run: |
+          npm run typecheck
+          python -m py_compile scripts/pdf-to-ppt-build.py scripts/phase2-ppt-corpus.py
+      - name: Upload sources, rendered slides and metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase2.3d-ppt-corpus
+          path: |
+            quality/phase2-pdf-to-ppt/latest-corpus-report.json
+            tmp/pdfs/phase2.3d
+          if-no-files-found: warn
+          retention-days: 14

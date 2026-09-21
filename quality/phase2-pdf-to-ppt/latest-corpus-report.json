@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-09-21T18:14:22.254Z",
+  "passed": 7,
+  "total": 7,
+  "results": [
+    {
+      "id": "styled-vector",
+      "passed": true,
+      "pageCount": 1,
+      "editableTextBoxes": [
+        3
+      ],
+      "visualMeanAbs": [
+        3.33
+      ],
+      "errors": []
+    },
+    {
+      "id": "three-pages",
+      "passed": true,
+      "pageCount": 3,
+      "editableTextBoxes": [
+        2,
+        2,
+        2
+      ],
+      "visualMeanAbs": [
+        1.98,
+        2.07,
+        2.03
+      ],
+      "errors": []
+    },
+    {
+      "id": "mixed-orientation",
+      "passed": true,
+      "pageCount": 2,
+      "editableTextBoxes": [
+        1,
+        1
+      ],
+      "visualMeanAbs": [
+        0.36,
+        0.7
+      ],
+      "errors": []
+    },
+    {
+      "id": "photo-with-text",
+      "passed": true,
+      "pageCount": 1,
+      "editableTextBoxes": [
+        1
+      ],
+      "visualMeanAbs": [
+        1.75
+      ],
+      "errors": []
+    },
+    {
+      "id": "image-only",
+      "passed": true,
+      "pageCount": 1,
+      "editableTextBoxes": [
+        0
+      ],
+      "visualMeanAbs": [
+        0.37
+      ],
+      "errors": []
+    },
+    {
+      "id": "hidden-ocr",
+      "passed": true,
+      "pageCount": 1,
+      "editableTextBoxes": [
+        0
+      ],
+      "visualMeanAbs": [
+        0.37
+      ],
+      "errors": []
+    },
+    {
+      "id": "rotated-label",
+      "passed": true,
+      "pageCount": 1,
+      "editableTextBoxes": [
+        1
+      ],
+      "visualMeanAbs": [
+        0.95
+      ],
+      "errors": []
+    }
+  ]
+}

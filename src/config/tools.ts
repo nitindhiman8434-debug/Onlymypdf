@@ -431,19 +431,19 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "pdf-to-ppt": {
     title: "PDF to PowerPoint — Convert PDF to PPTX Online | OnlyMyPDF",
     metaDescription:
-      "Convert PDF files to PowerPoint presentations (.pptx) online. Each PDF page becomes a full-slide image; the page appearance is preserved but individual text, chart, link, and form elements are not editable.",
+      "Convert PDF to PowerPoint (.pptx). Selectable PDF text becomes editable slide text; images and graphics remain visual backgrounds. Scans without visible text stay image-only.",
     h1: "Convert PDF to PowerPoint — Free Online Tool",
     seoContent:
-      "Transform PDF pages into a PowerPoint presentation (.pptx). Each PDF page is rendered as a full slide image that preserves layout, fonts, and graphics — ideal for repurposing reports and invoices into presentations.",
+      "Turn PDF pages into PowerPoint slides. Selectable horizontal text becomes on-slide editable text boxes over a preserved visual background. Photos, charts, and scanned text remain part of the image.",
     faqs: [
       {
         question: "Are images and layout preserved?",
         answer:
-          "Yes. Each PDF page becomes one slide with the page rendered as a high-quality image, so charts, logos, and formatting stay intact.",
+          "Yes. Each PDF page becomes one slide with a rendered visual background. Selectable text is recreated as editable slide text; complex charts and images remain flattened.",
       },
       {
         question: "Can I edit the slides after conversion?",
-        answer: "The .pptx file opens in PowerPoint and compatible apps, and slides can be reordered or annotated. The original page content is a flattened image, so individual text, charts, links, and form elements are not editable.",
+        answer: "Selectable horizontal PDF text can be edited directly on slides. Scanned text, rotated labels, charts, links, and forms are not converted into editable PowerPoint objects. Complex fonts may need adjustment.",
       },
     ],
   },

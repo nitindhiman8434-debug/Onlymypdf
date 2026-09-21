@@ -2,13 +2,15 @@
 
 **Started:** 18 September 2026
 
-**Approved output-changing scope:** PDF to Word DOCX accuracy and scanned/image-only PDF OCR readiness.
+**Approved output-changing scope:** PDF-to-Word OCR and semantic PDF-to-Excel/PowerPoint accuracy, each started by the user as a separate phase.
 
 **Phase 2.3A status:** 100% complete. Implementation, local Linux container gate and Railway production worker deployment are verified.
 
 **Phase 2.3B status:** 100% complete. The Hindi, mixed-language and difficult-scan corpus passed 8/8 cases on the Ubuntu production-equivalent gate, with rendered source and Word previews.
 
 **Phase 2.3C status:** 100% complete for the controlled PDF-to-Excel semantic gate. Six cases passed locally and on Ubuntu; the local HTTP route returned an openable XLSX and rejected an image-only PDF with HTTP 422. Public production browser behavior remains unverified and belongs to the measured deployment gate in 2.3E.
+
+**Phase 2.3D status:** Implementation and local 7/7 PowerPoint semantic corpus pass; Ubuntu CI gate and phase closure pending.
 
 ## Recorded decision gate
 
@@ -100,14 +102,14 @@ The committed machine-readable result is `quality/phase2-pdf-to-word/latest-repo
 | 2.3A PDF-to-Word OCR foundation | 8% | Complete: local and Railway production gates passed |
 | 2.3B Hindi, mixed-language and difficult-scan corpus | 6% | Complete: 8/8 Ubuntu gate and rendered preview review passed |
 | 2.3C PDF-to-Excel semantic accuracy | 8% | Complete: 6/6 Ubuntu semantic corpus and local API artifact gate passed |
-| 2.3D PDF-to-PowerPoint semantic accuracy | 8% | Pending |
+| 2.3D PDF-to-PowerPoint semantic accuracy | 8% | Local 7/7 pass; Ubuntu CI pending |
 | 2.3E measured limits, cost and production quality gate | 5% | Pending |
 
 ## Remaining Phase 2.3 work
 
 - Handwriting remains unsupported and must not be marketed as accurate without a separate measured corpus.
 - Set measured job limits from Railway CPU/memory and cost data rather than advertising unlimited files.
-- Extend the same semantic gate to PDF to PowerPoint in Phase 2.3D.
+- Close the Phase 2.3D Ubuntu PowerPoint corpus gate, then measure public deployment behavior and resource limits in 2.3E.
 
 ## Phase 2.3C findings and verification
 
@@ -121,3 +123,13 @@ The committed machine-readable result is `quality/phase2-pdf-to-word/latest-repo
 The six-case corpus covers ruled invoices, borderless multi-word tables, multi-page tables, mixed portrait/landscape pages, image-only rejection, and a saved two-page Phase 1 regression PDF. Each successful XLSX was reopened and checked for contiguous editable rows and numeric/text types; source PDFs were rendered and visually inspected. Local result: 6/6. GitHub Actions Ubuntu run [`35632810064`](https://github.com/nitindhiman8434-debug/Onlymypdf/actions/runs/35632810064): success. The existing Phase 2.3B OCR workflows also passed on the same commit. Local Next.js API: HTTP 200 with a 6,636-byte XLSX that openpyxl opened with the expected four rows; scanned input: HTTP 422 with a clear OCR instruction. Full unit suite: 614/614; TypeScript, Python syntax, and production webpack build passed.
 
 The machine-readable corpus result is `quality/phase2-pdf-to-excel/latest-corpus-report.json`. The 6/6 result measures this controlled set, not arbitrary PDF-to-Excel accuracy. Scans need OCR first; complex merged headers, non-Latin tables, and file-size/CPU limits remain unmeasured. Phase 2.3E will measure public production quality, speed, and cost.
+
+## Phase 2.3D PowerPoint implementation and local evidence
+
+The old converter placed a complete PDF-page screenshot on each slide. It copied text only into Notes and an off-slide shape, so visible slide text could not actually be edited. For PDFs with selectable, visible, horizontal text, the local open-source pipeline now removes that text from the rendered background and recreates it as on-slide PowerPoint text boxes at the source positions, sizes and colors. Charts, photographs, page fills and rules stay in the image layer. Pages of different orientations are centered and scaled proportionally on a uniform presentation canvas. Rotated labels remain in the visual background until their editable geometry can be measured reliably.
+
+Image-only scans remain image slides. A full-page image with an invisible OCR layer also remains visual-only, so the converter does not falsely present hidden OCR as editable visible text. A full-page image with genuinely visible PDF text over it still gets editable text boxes. This scope uses the local Python converter rather than the unmeasured paid ConvertAPI path; it does not require a paid conversion API.
+
+The deterministic seven-case corpus includes styled vector slides, a three-page report, mixed portrait/landscape pages, visible text over a photo background, an image-only scan, a full-page scan with invisible OCR, and a rotated label. It reopens each PPTX, checks on-slide editable text and page count, renders it through LibreOffice Impress, verifies visible expected tokens, and compares rendered pages against their source images. Local result: 7/7, with mean absolute pixel difference between 0.36 and 3.33 on the 0-255 channel scale. Source and rendered previews were visually inspected. The local HTTP route returned a 29,247-byte openable PPTX with three editable text boxes, and a 58,139-byte image-only PPTX with no false editable text. Full unit suite: 614/614; TypeScript, Python syntax and webpack production build passed.
+
+The machine-readable local result is `quality/phase2-pdf-to-ppt/latest-corpus-report.json`. This measures the controlled corpus, not arbitrary PDF-to-PowerPoint accuracy. Text in scanned images, charts, links, forms, rotated labels and unusual font substitutions is not promised as editable. Public production conversion, speed, file-size/CPU limits and deployment Python dependencies remain for Phase 2.3E.
