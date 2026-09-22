@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-09-22T17:48:39.828487+00:00",
+  "startedAt": "2026-09-22T18:11:01.689249+00:00",
   "baseUrl": "http://127.0.0.1:3001",
   "note": "Public samples, local dev HTTP only. Token recall is a diagnostic, not layout or universal accuracy.",
   "cases": [
@@ -15,11 +15,11 @@
         {
           "tool": "pdf-to-word",
           "httpStatus": 200,
-          "elapsedSeconds": 2.59,
+          "elapsedSeconds": 4.42,
           "engine": "reference-transcript",
           "outputBytes": 537565,
           "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          "sha256": "5d5928ef30058b22b0550d55a37f6fb3e52b67dd404fbfe100ff814146173ab3",
+          "sha256": "cccea2ebc6a8f59d69fabf3daafd3578752d591871b0db55624fb390438d13aa",
           "validation": {
             "zipCrcPassed": true,
             "editableTextChars": 10258,
@@ -30,11 +30,11 @@
         {
           "tool": "pdf-to-excel",
           "httpStatus": 200,
-          "elapsedSeconds": 9.3,
+          "elapsedSeconds": 8.2,
           "engine": null,
-          "outputBytes": 29369,
+          "outputBytes": 29368,
           "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "sha256": "c3439798fe0386a8da5af1207270854a426c805fc19f6d9fba07e958286d6760",
+          "sha256": "6dc3c6f2563fa94ed865e13c7e2fc94f50da2a6ac6ce3d55b3b7a3c5e2acca28",
           "validation": {
             "zipCrcPassed": true,
             "editableTextChars": 21197,
@@ -46,20 +46,20 @@
         {
           "tool": "pdf-to-ppt",
           "httpStatus": 200,
-          "elapsedSeconds": 2.81,
+          "elapsedSeconds": 3.41,
           "engine": null,
-          "outputBytes": 1425885,
+          "outputBytes": 1426031,
           "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-          "sha256": "b7b8320602a7d467e4ffe61f4f54a6eb94380730708d9b6be8dc6d3bdd58c89a",
+          "sha256": "4cdb0d0dc73f3b57aed9376fd52d413279e2699c81642f6bd5299a99f67f19f9",
           "validation": {
             "zipCrcPassed": true,
-            "editableTextChars": 18215,
+            "editableTextChars": 10494,
             "uniqueTokenRecall": 1.0,
             "slides": 2,
             "pictures": 2,
             "editableTextShapes": 0,
             "onSlideTextChars": 0,
-            "notesTextChars": 18215
+            "notesTextChars": 10494
           }
         }
       ]
@@ -76,11 +76,11 @@
         {
           "tool": "pdf-to-word",
           "httpStatus": 200,
-          "elapsedSeconds": 3.62,
+          "elapsedSeconds": 3.55,
           "engine": "reference-transcript",
           "outputBytes": 2220754,
           "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          "sha256": "3ea47806609aa9883e0e5ded091d907d36adeb5bb3403924e63ee5799b240614",
+          "sha256": "bf6120d971e719f277fcb9b178df18031c266ea3a7284bade44cf80783dd3584",
           "validation": {
             "zipCrcPassed": true,
             "editableTextChars": 38157,
@@ -91,11 +91,11 @@
         {
           "tool": "pdf-to-excel",
           "httpStatus": 200,
-          "elapsedSeconds": 17.74,
+          "elapsedSeconds": 13.09,
           "engine": null,
-          "outputBytes": 62125,
+          "outputBytes": 62124,
           "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "sha256": "e6bc705d9bf6b71637c5d8790f643af0e3014e9c9906f873d64bac068226857a",
+          "sha256": "8dc6bf28f1d553e0e5b5933ade3e46418e40f7dde2146cecdc74fc0241e6096d",
           "validation": {
             "zipCrcPassed": true,
             "editableTextChars": 70528,
@@ -107,20 +107,20 @@
         {
           "tool": "pdf-to-ppt",
           "httpStatus": 200,
-          "elapsedSeconds": 5.2,
+          "elapsedSeconds": 5.61,
           "engine": null,
-          "outputBytes": 5784275,
+          "outputBytes": 5783832,
           "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-          "sha256": "a218ec3734d199ffa178382e46ebb31c134c90d193aa3d0587e6d7ce4f08606c",
+          "sha256": "d3bc90d502e703255bd907be1f19f8faee37c66e7f321607c2048a00ee32574c",
           "validation": {
             "zipCrcPassed": true,
-            "editableTextChars": 50986,
-            "uniqueTokenRecall": 0.9928,
+            "editableTextChars": 38070,
+            "uniqueTokenRecall": 1.0,
             "slides": 8,
             "pictures": 8,
             "editableTextShapes": 0,
             "onSlideTextChars": 0,
-            "notesTextChars": 50986
+            "notesTextChars": 38070
           }
         }
       ]
@@ -137,25 +137,25 @@
         {
           "tool": "pdf-to-word",
           "httpStatus": 500,
-          "elapsedSeconds": 2.64,
+          "elapsedSeconds": 2.45,
           "engine": null,
-          "error": "{\"progress\": 95, \"status\": \"error\", \"error\": \"PDF OCR could not extract editable text. Try a clearer scan or supported OCR language.\", \"engine\": null, \"queueTimeMs\": 28, \"processingTimeMs\": 1446, \"attemptedEngines\": [\"pdf2docx\"], \"outputValid\": null}"
+          "error": "{\"progress\": 95, \"status\": \"error\", \"error\": \"PDF OCR could not extract editable text. Try a clearer scan or supported OCR language.\", \"engine\": null, \"queueTimeMs\": 22, \"processingTimeMs\": 1336, \"attemptedEngines\": [\"pdf2docx\"], \"outputValid\": null}"
         },
         {
           "tool": "pdf-to-excel",
           "httpStatus": 422,
-          "elapsedSeconds": 0.53,
+          "elapsedSeconds": 0.49,
           "engine": null,
-          "error": "{\"error\":\"Failed to convert PDF to Excel: Pages 1 have no selectable text. Run OCR before converting to Excel.\",\"correlationId\":\"63565197-d6ee-4af0-9b35-dc8a98cbeaa5\"}"
+          "error": "{\"error\":\"Failed to convert PDF to Excel: Pages 1 have no selectable text. Run OCR before converting to Excel.\",\"correlationId\":\"75bd8b5c-bafb-473b-8828-7c0cf7d351df\"}"
         },
         {
           "tool": "pdf-to-ppt",
           "httpStatus": 200,
-          "elapsedSeconds": 4.72,
+          "elapsedSeconds": 3.38,
           "engine": null,
           "outputBytes": 5887610,
           "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-          "sha256": "8991131e7de51cd9c9d3b730f7d100436ec1eec6c19ec062c54dc35db65ec56a",
+          "sha256": "1c5e89b068ef23684e8b3e1beb91f348766aabd0427f93c77906c439b30f43df",
           "validation": {
             "zipCrcPassed": true,
             "editableTextChars": 0,
@@ -170,5 +170,5 @@
       ]
     }
   ],
-  "completedAt": "2026-09-22T17:49:31.154565+00:00"
+  "completedAt": "2026-09-22T18:11:47.424561+00:00"
 }

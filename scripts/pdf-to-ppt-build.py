@@ -216,7 +216,8 @@ def render_one_page(
         # Dense pages wrap unpredictably in PowerPoint/LibreOffice fonts. Keep
         # their visual page intact and place the selectable transcript in notes.
         visual_reference = len(lines) > MAX_RELIABLE_ON_SLIDE_LINES
-        transcript = page.get_text("text", sort=True).strip() if visual_reference else ""
+        # PyMuPDF's sorted mode duplicates text on some forms and papers.
+        transcript = page.get_text("text").strip() if visual_reference else ""
         if not visual_reference:
             remove_editable_text_from_background(page, lines)
         scale = target_width / page.rect.width

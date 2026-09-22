@@ -195,10 +195,14 @@ def main() -> None:
                 else:
                     output_path = CORPUS / f"{pdf_path.stem}-{tool}{extension}"
                     output_path.write_bytes(body)
+                    validation = inspect_office(output_path, extension, source["tokenSet"])
+                    if (extension == ".pptx" and source["selectableTextChars"]
+                            and validation["notesTextChars"] > source["selectableTextChars"] * 1.1):
+                        raise ValueError("Speaker notes contain more text than the selectable source; possible duplication")
                     result.update({"outputBytes": len(body),
                                    "contentType": headers.get("content-type"),
                                    "sha256": hashlib.sha256(body).hexdigest(),
-                                   "validation": inspect_office(output_path, extension, source["tokenSet"])})
+                                   "validation": validation})
             except Exception as error:
                 result["error"] = f"{type(error).__name__}: {error}"
             case["results"].append(result)
