@@ -65,6 +65,7 @@ next-env.d.ts
 /scripts/output/
 /quality/phase1-corpus/generated/
 /quality/phase2-production/generated/
+/quality/phase2-production/real-world/
 /test-*.docx
 /test-*.pdf
 /test-founder-summary.pdf

@@ -3,6 +3,7 @@ export type PdfToWordEngine =
   | "word-com"
   | "libreoffice"
   | "pdf2docx"
+  | "reference-transcript"
   | "visual"
   | "node";
 
@@ -11,6 +12,9 @@ export type PdfToWordEnginePlanInput = {
   convertApiAvailable: boolean;
   convertApiOnly: boolean;
   textRichManual?: boolean;
+  denseEditableForm?: boolean;
+  imageOnly?: boolean;
+  ocrRequired?: boolean;
   hybridScanned?: boolean;
   largePdf?: boolean;
   pdf2docxReady?: boolean;
@@ -34,12 +38,24 @@ export function isConvertApiOnlyMode(): boolean {
  * Windows dev: word-com (design) OR pdf2docx (manuals).
  */
 export function resolveConversionStrategy(input: PdfToWordEnginePlanInput): ConversionStrategy {
-  const emergency: PdfToWordEngine[] = input.largePdf ? [] : ["visual", "node"];
+  const emergency: PdfToWordEngine[] = input.largePdf || (input.ocrRequired && input.imageOnly)
+    ? [] : ["visual", "node"];
 
   if (input.convertApiAvailable && input.convertApiOnly) {
     const engines: PdfToWordEngine[] = ["convertapi"];
     if (input.pdf2docxReady) engines.push("pdf2docx");
     return { engines, emergency };
+  }
+
+  if (input.denseEditableForm) {
+    const engines: PdfToWordEngine[] = [];
+    if (input.convertApiAvailable) engines.push("convertapi");
+    if (input.pdf2docxReady) engines.push("reference-transcript");
+    // A failed form conversion should still offer editable text, not a silent
+    // full-page image DOCX that claims to be editable.
+    return engines.length
+      ? { engines, emergency: input.largePdf ? [] : ["node"] }
+      : { engines: input.largePdf ? [] : ["node"], emergency: [] };
   }
 
   // Hybrid scanned journals: preserve full-page figures — never Word COM first.
@@ -48,7 +64,8 @@ export function resolveConversionStrategy(input: PdfToWordEnginePlanInput): Conv
     if (input.convertApiAvailable) engines.push("convertapi");
     if (input.pdf2docxReady) engines.push("pdf2docx");
     if (input.wordComReady) engines.push("word-com");
-    const hybridEmergency: PdfToWordEngine[] = input.largePdf ? [] : ["visual"];
+    const hybridEmergency: PdfToWordEngine[] = input.largePdf || (input.ocrRequired && input.imageOnly)
+      ? [] : ["visual"];
     return { engines: engines.length ? engines : ["pdf2docx"], emergency: hybridEmergency };
   }
 

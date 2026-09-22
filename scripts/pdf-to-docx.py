@@ -1042,15 +1042,42 @@ def _convert_pdf_inner(pdf_path: str, docx_path: str) -> bool:
 
 
 def main() -> int:
-    if len(sys.argv) != 3:
-        print("Usage: pdf-to-docx.py <input.pdf> <output.docx>", file=sys.stderr)
+    reference_transcript = len(sys.argv) == 4 and sys.argv[1] == "--reference-transcript"
+    if not reference_transcript and len(sys.argv) != 3:
+        print("Usage: pdf-to-docx.py [--reference-transcript] <input.pdf> <output.docx>", file=sys.stderr)
         return 1
 
     import logging
 
     install_progress_logging()
 
-    pdf_path, docx_path = sys.argv[1], sys.argv[2]
+    pdf_path, docx_path = sys.argv[-2], sys.argv[-1]
+
+    if reference_transcript:
+        import pymupdf as fitz
+
+        with fitz.open(pdf_path) as source:
+            # sort=True can duplicate text in some XFA forms; compare against
+            # the normal extractable text volume used by our output gate.
+            source_chars = sum(len(page.get_text("text").strip()) for page in source)
+        if source_chars < 500:
+            print("ERROR Reference transcript needs selectable source text", file=sys.stderr)
+            return 3
+        if not _build_ocr_reference_transcript_docx(pdf_path, docx_path):
+            print("ERROR Reference transcript produced invalid DOCX", file=sys.stderr)
+            return 3
+        output_chars = docx_metrics(docx_path)["chars"]
+        if output_chars < source_chars * 0.65:
+            os.remove(docx_path)
+            print("ERROR Reference transcript lost too much editable text", file=sys.stderr)
+            return 3
+        emit_progress(99)
+        print(
+            f"OK reference-transcript source_chars={source_chars} output_chars={output_chars}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return 0
 
     try:
         from pdf2docx import Converter  # noqa: F401

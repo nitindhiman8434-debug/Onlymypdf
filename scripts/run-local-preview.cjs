@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports -- This launcher is intentionally CommonJS. */
 
 const path = require("node:path");
 const { spawn } = require("node:child_process");
@@ -30,6 +31,7 @@ env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "your_supabase_anon_key";
 env.NEXT_PUBLIC_APP_URL = "http://127.0.0.1:3001";
 env.ONLYMYPDF_LOCAL_PREVIEW = "1";
 env.BILLING_MODE = "disabled";
+env.PDF_OCR_REQUIRED = "true";
 
 const child = spawn(
   process.execPath,

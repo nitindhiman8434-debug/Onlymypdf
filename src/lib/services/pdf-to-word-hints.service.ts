@@ -3,7 +3,15 @@ import { PDFDocument } from "pdf-lib";
 export type PdfHintProfile = {
   pageCount?: number;
   pdfTextChars?: number;
+  formFieldCount?: number;
 };
+
+/** Dense interactive forms are too costly for pdf2docx's table geometry pass. */
+export function isDenseEditableForm(hints: PdfHintProfile): boolean {
+  return (hints.formFieldCount ?? 0) >= 40 &&
+    (hints.pageCount ?? 0) <= 10 &&
+    (hints.pdfTextChars ?? 0) >= 500;
+}
 
 /** Manuals / datasheets: dense text across many pages (register maps, specs). */
 export function isTextRichManual(hints: PdfHintProfile, byteLength: number): boolean {
@@ -151,9 +159,17 @@ export async function estimatePdfHintsFast(
   data: Buffer
 ): Promise<PdfHintProfile> {
   let pageCount: number | undefined;
+  let formFieldCount: number | undefined;
   try {
     const pdf = await PDFDocument.load(data, { ignoreEncryption: true });
     pageCount = pdf.getPageCount();
+    if (data.length <= 8 * 1024 * 1024 && pageCount <= 10) {
+      try {
+        formFieldCount = pdf.getForm().getFields().length;
+      } catch {
+        formFieldCount = undefined;
+      }
+    }
   } catch {
     pageCount = undefined;
   }
@@ -208,5 +224,5 @@ export async function estimatePdfHintsFast(
     pdfTextChars = undefined;
   }
 
-  return { pageCount, pdfTextChars };
+  return { pageCount, pdfTextChars, formFieldCount };
 }

@@ -1,0 +1,26 @@
+{
+  "startedAt": "2026-09-22T16:48:07.355059+00:00",
+  "baseUrl": "http://127.0.0.1:3001",
+  "note": "Public samples, local dev HTTP only. Token recall is a diagnostic, not layout or universal accuracy.",
+  "cases": [
+    {
+      "source": "archives-declaration-scan.pdf",
+      "type": "image-only-scan",
+      "pages": 1,
+      "inputBytes": 2195695,
+      "sha256": "8b96bf5fc354f4820cc928ef1d8568800a87d1fd5111709ec97887d19a1d9572",
+      "selectableTextChars": 0,
+      "imageCount": 1,
+      "results": [
+        {
+          "tool": "pdf-to-word",
+          "httpStatus": 500,
+          "elapsedSeconds": 3.05,
+          "engine": null,
+          "error": "{\"progress\": 95, \"status\": \"error\", \"error\": \"PDF OCR could not extract editable text. Try a clearer scan or supported OCR language.\", \"engine\": null, \"queueTimeMs\": 13, \"processingTimeMs\": 2079, \"attemptedEngines\": [\"pdf2docx\"], \"outputValid\": null}"
+        }
+      ]
+    }
+  ],
+  "completedAt": "2026-09-22T16:48:10.457048+00:00"
+}

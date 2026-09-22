@@ -63,6 +63,10 @@ The first simultaneous three-tool run took 18.8 s wall time (Word 18.8 s, Excel 
 
 After the Python fix, `tsc --noEmit`, 46 targeted PDF-to-Word tests, Python compile checks and the last-page regression passed. The tested local job download was one-time: replay returned HTTP 404. Existing local temporary job directories dated before this run remain; the current run left no new job directory visible. This is local cleanup evidence only, not deployed R2 retention evidence.
 
+### Public-document QA on localhost
+
+Three public, non-sensitive sources (a dense IRS form, a two-column article and an image-only National Archives scan) were tested through all three Office HTTP routes. The form exposed a serious Word fallback defect: 188.94 s to an image-only DOCX with zero editable text. A targeted dense-form reference-plus-editable-transcript path now returns 10,258 editable characters and two page references; warm local HTTP conversion took 3.42 s. The local OCR-required profile now reports a clear failure for a scan when OCR is unavailable instead of silently returning an image-only Word file. The final nine-route rerun and visual-reference checks are recorded in [the real-world QA checkpoint](PHASE_2_3E_REAL_WORLD_QA.md) and `quality/phase2-production/local-real-world-final-report.json`. Excel omitted source tokens in the form and prose-heavy paper, so 100% semantic accuracy is not established.
+
 The first public gate needs an actual HTTPS frontend using the full image, configured Supabase, Upstash and R2, plus a working worker/watchdog. Then run controlled Word/Excel/PowerPoint uploads and verify downloaded DOCX/XLSX/PPTX bytes, editability, failure handling and cleanup. Measure at least small, typical and large realistic PDFs, plus concurrent jobs, while observing peak RAM/CPU, queue time, timeout/OOM, temporary disk, storage retention and invoice usage. Set per-tool supported caps from those results; a global 200 MB upload cap is not proof every Office route can process 200 MB.
 
 ## Cost baseline, not an invoice estimate

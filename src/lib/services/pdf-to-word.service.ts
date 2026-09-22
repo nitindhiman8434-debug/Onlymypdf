@@ -28,6 +28,8 @@ import { pdfToWordNode } from "@/lib/services/pdf-to-word-node.service";
 import { pdfToWordVisual } from "@/lib/services/pdf-to-word-visual.service";
 import { pdfToWordWordCom, isWordComPdfImportAvailable } from "@/lib/services/pdf-to-word-word-com.service";
 import {
+  isDenseEditableForm,
+  isImageHeavyPdf,
   resolvePdfHintsSafe,
   isTextRichManual,
 } from "@/lib/services/pdf-to-word-hints.service";
@@ -251,6 +253,14 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
 
   const hints = await resolveHints(options.inputPath, options.buffer, byteLength);
   const textRichManual = isTextRichManual(hints, byteLength);
+  const denseEditableForm = isDenseEditableForm(hints);
+  const imageOnly = hints.pdfTextChars !== undefined &&
+    hints.pdfTextChars <= Math.max(40, (hints.pageCount ?? 1) * 20) &&
+    isImageHeavyPdf(hints, byteLength);
+  const ocrSetting = process.env.PDF_OCR_REQUIRED?.toLowerCase();
+  const ocrRequired = ocrSetting === undefined
+    ? process.env.NODE_ENV === "production"
+    : ["1", "true"].includes(ocrSetting);
   const hybridScanned = hints.hybridScanned ?? false;
   const wordComTimeoutMs = Math.min(
     officeTimeoutMs,
@@ -379,6 +389,32 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     }
   }
 
+  async function tryReferenceTranscript(): Promise<PdfToWordResult | null> {
+    if (!pdf2docxReady) return null;
+    try {
+      const buffer = options.inputPath ? Buffer.alloc(0) : await loadBuffer();
+      const result = await pdfToWordPdf2docx(buffer, {
+        timeoutMs: Math.min(timeoutMs, 90_000),
+        onProgress,
+        inputPath: options.inputPath,
+        outputPath: options.outputPath,
+        referenceTranscript: true,
+      });
+      if (diskOnly && options.outputPath) {
+        return finalizeDiskPathResult("reference-transcript", options.outputPath, hints, onProgress);
+      }
+      return finalizeDocxResult("reference-transcript", result as Buffer | undefined, {
+        diskOnly,
+        outputPath: options.outputPath,
+        hints,
+        onProgress,
+      });
+    } catch (err) {
+      console.warn("[pdf-to-word] Reference transcript failed:", err);
+      return null;
+    }
+  }
+
   async function tryVisual(): Promise<PdfToWordResult | null> {
     if (largePdf) return null;
     try {
@@ -420,6 +456,7 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     convertapi: tryConvertApi,
     "word-com": tryWordCom,
     pdf2docx: tryPdf2docx,
+    "reference-transcript": tryReferenceTranscript,
     libreoffice: tryLibreOffice,
     visual: tryVisual,
     node: tryNode,
@@ -430,6 +467,9 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     convertApiAvailable: isConvertApiAvailable(),
     convertApiOnly: isConvertApiOnlyMode(),
     textRichManual,
+    denseEditableForm,
+    imageOnly,
+    ocrRequired,
     hybridScanned,
     largePdf,
     pdf2docxReady,
@@ -453,6 +493,10 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     error_type: "PDF_TO_WORD_FAILED",
     error_message: "All conversion engines failed",
   }).catch(() => {});
+
+  if (ocrRequired && imageOnly) {
+    throw new Error("PDF OCR could not extract editable text. Try a clearer scan or supported OCR language.");
+  }
 
   if (largePdf) {
     throw new Error(

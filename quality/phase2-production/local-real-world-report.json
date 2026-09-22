@@ -1,0 +1,176 @@
+{
+  "startedAt": "2026-09-21T21:59:28.309997+00:00",
+  "baseUrl": "http://127.0.0.1:3001",
+  "note": "Public samples, local dev HTTP only. Token recall is a diagnostic, not layout or universal accuracy.",
+  "cases": [
+    {
+      "source": "irs-form-1040-2025.pdf",
+      "type": "form",
+      "pages": 2,
+      "inputBytes": 220237,
+      "sha256": "3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982",
+      "selectableTextChars": 10497,
+      "imageCount": 0,
+      "results": [
+        {
+          "tool": "pdf-to-word",
+          "httpStatus": 200,
+          "elapsedSeconds": 188.94,
+          "engine": "visual",
+          "outputBytes": 1949259,
+          "contentType": null,
+          "sha256": "6d3e05a9adb1f33dea695821b09aea7ec814da88a88a70f8211f94878a314719",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 0,
+            "uniqueTokenRecall": 0.0,
+            "mediaParts": 3
+          }
+        },
+        {
+          "tool": "pdf-to-excel",
+          "httpStatus": 200,
+          "elapsedSeconds": 15.19,
+          "engine": null,
+          "outputBytes": 15098,
+          "contentType": null,
+          "sha256": "3a72ef570fb0d68fa7c13b1fe852771566a7ac18ed388def4402a72545bcc146",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 8332,
+            "uniqueTokenRecall": 0.7848,
+            "sheets": 2,
+            "populatedCells": 145
+          }
+        },
+        {
+          "tool": "pdf-to-ppt",
+          "httpStatus": 200,
+          "elapsedSeconds": 14.89,
+          "engine": null,
+          "outputBytes": 105290,
+          "contentType": null,
+          "sha256": "1b9ba6ef17968238bdf9e7249684bcf17fbbfffc3adb7bf6a745bb6beed4bd87",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 10490,
+            "uniqueTokenRecall": 1.0,
+            "slides": 2,
+            "pictures": 2,
+            "editableTextShapes": 1102
+          }
+        }
+      ]
+    },
+    {
+      "source": "arxiv-2010.12647.pdf",
+      "type": "two-column-paper",
+      "pages": 8,
+      "inputBytes": 197254,
+      "sha256": "077bdcaf7f1463e431dd056a091cd4d8a8a0aed436cb4c46313864461a8f2038",
+      "selectableTextChars": 38078,
+      "imageCount": 2,
+      "results": [
+        {
+          "tool": "pdf-to-word",
+          "httpStatus": 200,
+          "elapsedSeconds": 25.45,
+          "engine": "pdf2docx",
+          "outputBytes": 106831,
+          "contentType": null,
+          "sha256": "cca7738dc93bae681079ea5fc4fcb304689adf6e028015c1c7a9635d821f2e7a",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 39134,
+            "uniqueTokenRecall": 0.9829,
+            "mediaParts": 2
+          }
+        },
+        {
+          "tool": "pdf-to-excel",
+          "httpStatus": 200,
+          "elapsedSeconds": 21.12,
+          "engine": null,
+          "outputBytes": 36148,
+          "contentType": null,
+          "sha256": "ad643328507187a33dcaf100a7aeade1706fceb7a6ec320a7d1c8b783ef6f0b3",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 30510,
+            "uniqueTokenRecall": 0.6445,
+            "sheets": 8,
+            "populatedCells": 2228
+          }
+        },
+        {
+          "tool": "pdf-to-ppt",
+          "httpStatus": 200,
+          "elapsedSeconds": 8.83,
+          "engine": null,
+          "outputBytes": 256800,
+          "contentType": null,
+          "sha256": "5ad379b9d02905e37da7c04395952d938f195ef321e20fc12e3fada0c8c47b57",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 38029,
+            "uniqueTokenRecall": 0.9982,
+            "slides": 8,
+            "pictures": 8,
+            "editableTextShapes": 891
+          }
+        }
+      ]
+    },
+    {
+      "source": "archives-declaration-scan.pdf",
+      "type": "image-only-scan",
+      "pages": 1,
+      "inputBytes": 2195695,
+      "sha256": "8b96bf5fc354f4820cc928ef1d8568800a87d1fd5111709ec97887d19a1d9572",
+      "selectableTextChars": 0,
+      "imageCount": 1,
+      "results": [
+        {
+          "tool": "pdf-to-word",
+          "httpStatus": 200,
+          "elapsedSeconds": 3.84,
+          "engine": "pdf2docx",
+          "outputBytes": 3264157,
+          "contentType": null,
+          "sha256": "25d27d9f662ac36368f035b51b0a03f1f8d68c43f79aebc1d73c77c566cf487e",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 0,
+            "uniqueTokenRecall": null,
+            "mediaParts": 1
+          }
+        },
+        {
+          "tool": "pdf-to-excel",
+          "httpStatus": 422,
+          "elapsedSeconds": 1.41,
+          "engine": null,
+          "error": "{\"error\":\"Failed to convert PDF to Excel: Pages 1 have no selectable text. Run OCR before converting to Excel.\",\"correlationId\":\"0fab7021-b28f-4c9f-b486-6f747f9bbb42\"}"
+        },
+        {
+          "tool": "pdf-to-ppt",
+          "httpStatus": 200,
+          "elapsedSeconds": 4.28,
+          "engine": null,
+          "outputBytes": 5887610,
+          "contentType": null,
+          "sha256": "b3abeb9968ba63439362af03750922e28d827c2e67cd10a6f742090bae40364a",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 0,
+            "uniqueTokenRecall": null,
+            "slides": 1,
+            "pictures": 1,
+            "editableTextShapes": 0
+          }
+        }
+      ]
+    }
+  ],
+  "completedAt": "2026-09-21T22:04:16.242469+00:00"
+}

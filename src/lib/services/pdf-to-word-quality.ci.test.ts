@@ -86,6 +86,33 @@ describe("PDF→Word quality regression (CI)", () => {
 });
 
 describe("PDF→Word engine plan (CI)", () => {
+  it("keeps dense selectable forms editable when a reference conversion is available", () => {
+    const strategy = resolveConversionStrategy({
+      platform: "win32",
+      convertApiAvailable: false,
+      convertApiOnly: false,
+      denseEditableForm: true,
+      pdf2docxReady: true,
+      wordComReady: false,
+    });
+    expect(strategy.engines).toEqual(["reference-transcript"]);
+    expect(strategy.emergency).toEqual(["node"]);
+    expect([...strategy.engines, ...strategy.emergency]).not.toContain("visual");
+  });
+
+  it("does not silently return an image-only Word fallback when OCR is required", () => {
+    const strategy = resolveConversionStrategy({
+      platform: "win32",
+      convertApiAvailable: false,
+      convertApiOnly: false,
+      imageOnly: true,
+      ocrRequired: true,
+      pdf2docxReady: true,
+    });
+    expect(strategy.engines).toEqual(["pdf2docx"]);
+    expect(strategy.emergency).toEqual([]);
+  });
+
   it("prefers ConvertAPI first on all platforms when configured", () => {
     expect(
       resolvePdfToWordEngineOrder({

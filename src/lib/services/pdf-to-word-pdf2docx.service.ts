@@ -134,6 +134,7 @@ export async function pdfToWordPdf2docx(
     inputPath?: string;
     outputPath?: string;
     pdfPassword?: string;
+    referenceTranscript?: boolean;
   } = {}
 ): Promise<Buffer | void> {
   const python = await resolvePdf2docxPython();
@@ -161,7 +162,7 @@ export async function pdfToWordPdf2docx(
 
     const result = await runCommand(
       python,
-      [SCRIPT_PATH, pdfPath, docxPath],
+      [SCRIPT_PATH, ...(options.referenceTranscript ? ["--reference-transcript"] : []), pdfPath, docxPath],
       timeoutMs,
       onProgress,
       options.pdfPassword

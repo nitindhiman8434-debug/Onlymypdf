@@ -72,8 +72,8 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ["Non-consecutive page selection", "Original quality preserved", "Visual page picker", "No signup required for basic use", "Files deleted after retention window"]
   ),
   "pdf-to-word": aeo(
-    "OnlyMyPDF PDF to Word converts PDF files to editable .docx documents online. Text, tables, headings, and lists are extracted for editing in Word or Google Docs.",
-    "PDF to Word transforms static PDF content into an editable Word document using layout-aware conversion engines on the server.",
+    "OnlyMyPDF PDF to Word converts supported PDF text to editable .docx documents online. Complex forms may keep a visual page reference beside editable text.",
+    "PDF to Word extracts editable text with layout-aware engines when supported; review complex layouts and form fields in the downloaded Word file.",
     [
       { name: "Upload PDF", text: "Upload the PDF you want to convert to Word format." },
       { name: "Convert", text: "Start conversion; processing runs securely on OnlyMyPDF servers." },

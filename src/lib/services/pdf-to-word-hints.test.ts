@@ -1,9 +1,18 @@
 import { describe, expect, it } from "vitest";
 import {
+  isDenseEditableForm,
   isHybridScannedPdf,
   isImageHeavyPdf,
   isTextRichManual,
 } from "@/lib/services/pdf-to-word-hints.service";
+
+describe("isDenseEditableForm", () => {
+  it("routes a short form with many fields and selectable text to the fast reference path", () => {
+    expect(isDenseEditableForm({ pageCount: 2, pdfTextChars: 10_000, formFieldCount: 199 })).toBe(true);
+    expect(isDenseEditableForm({ pageCount: 2, pdfTextChars: 10_000, formFieldCount: 4 })).toBe(false);
+    expect(isDenseEditableForm({ pageCount: 2, pdfTextChars: 0, formFieldCount: 199 })).toBe(false);
+  });
+});
 
 describe("isTextRichManual", () => {
   it("detects dense multi-page manuals by text volume", () => {

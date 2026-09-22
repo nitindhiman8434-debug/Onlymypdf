@@ -1,0 +1,34 @@
+{
+  "startedAt": "2026-09-22T16:42:57.146769+00:00",
+  "baseUrl": "http://127.0.0.1:3001",
+  "note": "Public samples, local dev HTTP only. Token recall is a diagnostic, not layout or universal accuracy.",
+  "cases": [
+    {
+      "source": "irs-form-1040-2025.pdf",
+      "type": "form",
+      "pages": 2,
+      "inputBytes": 220237,
+      "sha256": "3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982",
+      "selectableTextChars": 10497,
+      "imageCount": 0,
+      "results": [
+        {
+          "tool": "pdf-to-word",
+          "httpStatus": 200,
+          "elapsedSeconds": 3.42,
+          "engine": "reference-transcript",
+          "outputBytes": 436915,
+          "contentType": null,
+          "sha256": "159708cf4f6972ab59021160e4e745d273f849fc548aab23bc70ef631dcc0163",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 10258,
+            "uniqueTokenRecall": 1.0,
+            "mediaParts": 2
+          }
+        }
+      ]
+    }
+  ],
+  "completedAt": "2026-09-22T16:43:00.710274+00:00"
+}

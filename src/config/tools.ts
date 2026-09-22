@@ -93,12 +93,12 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       "Convert PDF files to editable Word documents (.docx) online for free. Real text, tables, headings, and bullet lists you can edit.",
     h1: "Convert PDF to Word — Free Online Converter",
     seoContent:
-      "Transform your PDF documents into fully editable Word files (.docx). OnlyMyPDF extracts real text, headings, bullet lists, and tables — so you can edit content in Microsoft Word, Google Docs, or LibreOffice. Layout and formatting are preserved as closely as possible.",
+      "Convert PDF text into an editable Word file (.docx). OnlyMyPDF extracts supported text, headings, lists, and tables for editing in Microsoft Word, Google Docs, or LibreOffice. Complex layouts can need adjustment; dense fillable forms may include a visual page reference beside editable text rather than editable form controls.",
     faqs: [
       {
         question: "How accurate is the PDF to Word conversion?",
         answer:
-          "We use a multi-engine pipeline for professional-grade results: ConvertAPI (when configured), Microsoft Word or LibreOffice on the server, then pdf2docx (Python). Complex layouts like tax invoices keep tables, fonts, and images. The basic text-only fallback is never used when a quality engine is available.",
+          "Accuracy depends on the PDF. Selectable text usually becomes editable, while complex graphics and form fields may remain visual references. Dense fillable forms can use an editable transcript beside each source page; review the result before relying on its layout or calculations.",
       },
       {
         question: "Can I convert a scanned PDF to Word?",

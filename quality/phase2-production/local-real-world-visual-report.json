@@ -1,0 +1,50 @@
+{
+  "note": "Mean absolute RGB pixel difference (0-255) measures embedded page-reference images only, not complete editable Office layout.",
+  "cases": [
+    {
+      "source": "irs-form-1040-2025.pdf",
+      "tool": "pdf-to-word",
+      "pages": 2,
+      "pageReferenceMae": [
+        2.718,
+        2.424
+      ],
+      "maxMae": 2.718
+    },
+    {
+      "source": "irs-form-1040-2025.pdf",
+      "tool": "pdf-to-ppt",
+      "pages": 2,
+      "pageReferenceMae": [
+        14.22,
+        12.348
+      ],
+      "maxMae": 14.22
+    },
+    {
+      "source": "arxiv-2010.12647.pdf",
+      "tool": "pdf-to-ppt",
+      "pages": 8,
+      "pageReferenceMae": [
+        13.854,
+        17.263,
+        10.789,
+        16.569,
+        16.451,
+        16.363,
+        14.966,
+        13.873
+      ],
+      "maxMae": 17.263
+    },
+    {
+      "source": "archives-declaration-scan.pdf",
+      "tool": "pdf-to-ppt",
+      "pages": 1,
+      "pageReferenceMae": [
+        0.0
+      ],
+      "maxMae": 0.0
+    }
+  ]
+}
