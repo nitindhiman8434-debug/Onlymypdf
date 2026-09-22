@@ -60,6 +60,7 @@ const cases: Case[] = [
     rows: [["Quarterly summary cover"], ["North", 42, 9100]],
   },
   { id: "image-only-table", rejected: true },
+  { id: "table-with-unmapped-text", rows: [["Notebook", 2, 25]], minimumSheets: 2 },
   {
     id: "phase1-table-regression",
     sourcePath: "quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf",
@@ -117,12 +118,19 @@ async function main() {
       if (!validation.valid) throw new Error(validation.errors.join("; "));
       await fs.writeFile(path.join(outputDir, `${item.id}.xlsx`), output);
       const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(output as any);
+      await workbook.xlsx.load(output);
       if (workbook.worksheets.length < (item.minimumSheets ?? 1)) {
         throw new Error(`Expected at least ${item.minimumSheets} worksheets; got ${workbook.worksheets.length}.`);
       }
       const missing = (item.rows ?? []).filter((row) => !findRow(workbook, row));
       if (missing.length) throw new Error(`Missing semantic rows: ${JSON.stringify(missing)}`);
+      if (item.id === "table-with-unmapped-text") {
+        const sourceSheet = workbook.getWorksheet("Source text");
+        const sourceText = sourceSheet?.getColumn(2).values.map(String).join(" ") ?? "";
+        if (!sourceText.includes("Important warranty exceptions and shipping conditions")) {
+          throw new Error("Unmapped selectable text was not preserved in Source text.");
+        }
+      }
       if (item.percentCell) {
         const match = findRow(workbook, item.rows?.[1] ?? []);
         const format = match?.cells.getCell(match.start + item.percentCell - 1).numFmt ?? "";

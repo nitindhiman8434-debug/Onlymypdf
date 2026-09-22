@@ -6,13 +6,13 @@ export default function PdfToPptPage() {
   return (
     <ConvertToolPage
       title="PDF to PowerPoint"
-      description="Convert PDF pages into PowerPoint slides with editable text from selectable PDF text"
+      description="Convert PDF pages into slides; simple text stays on-slide editable, dense pages keep an editable notes transcript"
       accept=".pdf,application/pdf"
-      uploadHint="Select a PDF file — selectable horizontal text becomes editable on slides"
+      uploadHint="Select a PDF file — dense pages may keep a visual slide with editable speaker notes"
       processLabel="Convert to PowerPoint"
       processingLabel="Converting to PowerPoint..."
       successTitle="PowerPoint file ready!"
-      successDescription="Your slides are ready. Selectable horizontal PDF text can be edited directly on slides; scans and graphics remain visual."
+      successDescription="Your slides are ready. Simple text is editable on-slide; dense pages keep their visual layout with editable text in speaker notes."
       downloadLabel="Download PPTX"
       outputExtension="pptx"
       apiPath="/api/tools/pdf-to-ppt"

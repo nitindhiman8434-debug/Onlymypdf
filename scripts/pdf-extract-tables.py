@@ -1572,9 +1572,30 @@ def extract_tables(pdf_path, output_dir):
         ]
 
     pages_text = []
-    if not export_tables and page_count <= 500:
+    source_text_pages = []
+    source_text_omitted_pages = []
+    source_text_budget = 8_000_000
+    if page_count <= 500:
         for page_idx in range(page_count):
-            pages_text.append(doc[page_idx].get_text("text"))
+            text = doc[page_idx].get_text("text")
+            if not export_tables:
+                pages_text.append(text)
+                continue
+            table_text = " ".join(
+                str(cell)
+                for table in export_tables
+                if table.get("page") == page_idx + 1
+                for row in table["rows"]
+                for cell in row
+            )
+            source_tokens = set(re.findall(r"[a-z0-9]{4,}", text.lower()))
+            table_tokens = set(re.findall(r"[a-z0-9]{4,}", table_text.lower()))
+            if source_tokens and len(source_tokens & table_tokens) / len(source_tokens) < 0.98:
+                if len(text) <= source_text_budget:
+                    source_text_pages.append({"page": page_idx + 1, "text": text})
+                    source_text_budget -= len(text)
+                else:
+                    source_text_omitted_pages.append(page_idx + 1)
 
     doc.close()
 
@@ -1592,6 +1613,12 @@ def extract_tables(pdf_path, output_dir):
         result["mergedTables"] = merged
     if pages_text:
         result["pagesText"] = pages_text
+    if source_text_pages:
+        result["sourceTextPages"] = source_text_pages
+    if source_text_omitted_pages:
+        result["sourceTextOmittedPages"] = source_text_omitted_pages
+    if page_count > 500 and export_tables:
+        result["sourceTextBackupUnavailable"] = True
 
     out_path = os.path.join(output_dir, "tables.json")
     with open(out_path, "w", encoding="utf-8") as f:

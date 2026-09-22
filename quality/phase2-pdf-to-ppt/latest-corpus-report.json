@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-21T18:14:22.254Z",
-  "passed": 7,
-  "total": 7,
+  "generatedAt": "2026-09-22T17:47:14.360Z",
+  "passed": 8,
+  "total": 8,
   "results": [
     {
       "id": "styled-vector",
@@ -90,6 +90,18 @@
       ],
       "visualMeanAbs": [
         0.95
+      ],
+      "errors": []
+    },
+    {
+      "id": "dense-two-column",
+      "passed": true,
+      "pageCount": 1,
+      "editableTextBoxes": [
+        0
+      ],
+      "visualMeanAbs": [
+        5.63
       ],
       "errors": []
     }

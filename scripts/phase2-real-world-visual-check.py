@@ -15,9 +15,10 @@ from PIL import Image, ImageChops, ImageStat
 
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "quality" / "phase2-production" / "real-world"
-REPORT = ROOT / "quality" / "phase2-production" / "local-real-world-visual-report.json"
+REPORT = ROOT / "quality" / "phase2-production" / "local-real-world-visual-phase2e-report.json"
 CASES = [
     ("irs-form-1040-2025", "pdf-to-word", ".docx", "word/media/"),
+    ("arxiv-2010.12647", "pdf-to-word", ".docx", "word/media/"),
     ("irs-form-1040-2025", "pdf-to-ppt", ".pptx", "ppt/media/"),
     ("arxiv-2010.12647", "pdf-to-ppt", ".pptx", "ppt/media/"),
     ("archives-declaration-scan", "pdf-to-ppt", ".pptx", "ppt/media/"),

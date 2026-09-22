@@ -68,6 +68,11 @@ def main(output_dir):
     save(doc, output_dir, "mixed-orientation")
 
     doc = fitz.open()
+    page = table_page(doc, [["Item", "Qty", "Amount"], ["Notebook", "2", "25"]])
+    page.insert_text((48, 480), "Important warranty exceptions and shipping conditions apply below.", fontsize=12)
+    save(doc, output_dir, "table-with-unmapped-text")
+
+    doc = fitz.open()
     source = table_page(doc, invoice_rows)
     image_bytes = source.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False).tobytes("png")
     doc.close()
@@ -76,7 +81,7 @@ def main(output_dir):
     page.insert_image(page.rect, stream=image_bytes)
     save(scanned, output_dir, "image-only-table")
 
-    print(json.dumps({"cases": 5, "outputDir": output_dir}))
+    print(json.dumps({"cases": 6, "outputDir": output_dir}))
 
 
 if __name__ == "__main__":

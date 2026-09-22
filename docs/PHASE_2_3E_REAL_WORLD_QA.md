@@ -1,5 +1,7 @@
 # Phase 2.3E: public-document local QA, 22 September 2026
 
+This document records the initial diagnostic and first fix. The later Excel, article-Word and dense-PowerPoint remediation is recorded in [Phase 2.3E quality remediation](PHASE_2_3E_QUALITY_REMEDIATION.md), with a separate final HTTP report.
+
 **Scope:** No-cost loopback preview at `http://127.0.0.1:3001`. Three non-sensitive, publicly available PDFs were downloaded into the gitignored `quality/phase2-production/real-world/` directory. Their contents and Office outputs are not committed. The checked-in reports record source hashes, output hashes and measurements.
 
 ## Sources and method

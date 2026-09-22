@@ -29,6 +29,7 @@ import { pdfToWordVisual } from "@/lib/services/pdf-to-word-visual.service";
 import { pdfToWordWordCom, isWordComPdfImportAvailable } from "@/lib/services/pdf-to-word-word-com.service";
 import {
   isDenseEditableForm,
+  isDenseShortDocument,
   isImageHeavyPdf,
   resolvePdfHintsSafe,
   isTextRichManual,
@@ -254,6 +255,7 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
   const hints = await resolveHints(options.inputPath, options.buffer, byteLength);
   const textRichManual = isTextRichManual(hints, byteLength);
   const denseEditableForm = isDenseEditableForm(hints);
+  const denseShortDocument = isDenseShortDocument(hints);
   const imageOnly = hints.pdfTextChars !== undefined &&
     hints.pdfTextChars <= Math.max(40, (hints.pageCount ?? 1) * 20) &&
     isImageHeavyPdf(hints, byteLength);
@@ -468,6 +470,7 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     convertApiOnly: isConvertApiOnlyMode(),
     textRichManual,
     denseEditableForm,
+    denseShortDocument,
     imageOnly,
     ocrRequired,
     hybridScanned,

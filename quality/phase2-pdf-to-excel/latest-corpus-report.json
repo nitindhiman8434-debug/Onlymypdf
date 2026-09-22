@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-09-21T17:41:01.989Z",
-  "passed": 6,
-  "total": 6,
+  "generatedAt": "2026-09-22T17:45:55.389Z",
+  "passed": 7,
+  "total": 7,
   "results": [
     {
       "id": "ruled-invoice",
       "passed": true,
       "worksheetCount": 1,
       "checkedRows": 4,
-      "outputBytes": 6635,
-      "durationMs": 855
+      "outputBytes": 6636,
+      "durationMs": 1223
     },
     {
       "id": "borderless-table",
@@ -17,7 +17,7 @@
       "worksheetCount": 1,
       "checkedRows": 4,
       "outputBytes": 6658,
-      "durationMs": 462
+      "durationMs": 637
     },
     {
       "id": "multi-page-table",
@@ -25,7 +25,7 @@
       "worksheetCount": 2,
       "checkedRows": 4,
       "outputBytes": 7165,
-      "durationMs": 454
+      "durationMs": 566
     },
     {
       "id": "mixed-orientation",
@@ -33,22 +33,30 @@
       "worksheetCount": 2,
       "checkedRows": 2,
       "outputBytes": 7102,
-      "durationMs": 434
+      "durationMs": 943
     },
     {
       "id": "image-only-table",
       "passed": true,
       "expectedRejection": true,
       "error": "Failed to convert PDF to Excel: Pages 1 have no selectable text. Run OCR before converting to Excel.",
-      "durationMs": 409
+      "durationMs": 472
+    },
+    {
+      "id": "table-with-unmapped-text",
+      "passed": true,
+      "worksheetCount": 2,
+      "checkedRows": 1,
+      "outputBytes": 7525,
+      "durationMs": 882
     },
     {
       "id": "phase1-table-regression",
       "passed": true,
-      "worksheetCount": 2,
+      "worksheetCount": 3,
       "checkedRows": 2,
-      "outputBytes": 7295,
-      "durationMs": 488
+      "outputBytes": 8707,
+      "durationMs": 958
     }
   ]
 }

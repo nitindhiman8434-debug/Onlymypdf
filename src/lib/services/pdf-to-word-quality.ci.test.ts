@@ -100,6 +100,17 @@ describe("PDF→Word engine plan (CI)", () => {
     expect([...strategy.engines, ...strategy.emergency]).not.toContain("visual");
   });
 
+  it("routes short dense text to a readable reference plus transcript", () => {
+    const strategy = resolveConversionStrategy({
+      platform: "linux",
+      convertApiAvailable: false,
+      convertApiOnly: false,
+      denseShortDocument: true,
+      pdf2docxReady: true,
+    });
+    expect(strategy.engines).toEqual(["reference-transcript"]);
+  });
+
   it("does not silently return an image-only Word fallback when OCR is required", () => {
     const strategy = resolveConversionStrategy({
       platform: "win32",

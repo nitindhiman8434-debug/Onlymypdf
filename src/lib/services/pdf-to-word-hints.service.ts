@@ -13,6 +13,12 @@ export function isDenseEditableForm(hints: PdfHintProfile): boolean {
     (hints.pdfTextChars ?? 0) >= 500;
 }
 
+/** Short, text-dense documents commonly have columns that reflow badly in DOCX. */
+export function isDenseShortDocument(hints: PdfHintProfile): boolean {
+  const pages = hints.pageCount ?? 0;
+  return pages >= 4 && pages <= 10 && (hints.pdfTextChars ?? 0) / pages >= 3_500;
+}
+
 /** Manuals / datasheets: dense text across many pages (register maps, specs). */
 export function isTextRichManual(hints: PdfHintProfile, byteLength: number): boolean {
   const pages = hints.pageCount ?? 0;

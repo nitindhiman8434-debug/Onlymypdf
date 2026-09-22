@@ -112,7 +112,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ["Supports .xls and .xlsx", "Print-ready PDF output", "No desktop software needed", "Free tier available", "SSL encrypted uploads"]
   ),
   "pdf-to-ppt": aeo(
-    "OnlyMyPDF PDF to PowerPoint creates .pptx slides with editable text from selectable PDF text, while scanned pages and complex graphics retain their visual appearance.",
+    "OnlyMyPDF PDF to PowerPoint creates editable on-slide text for simple pages. Dense pages retain a visual slide and place extracted text in editable speaker notes; scans remain visual.",
     "PDF to PowerPoint turns PDF content into presentation slides, useful for reusing PDF visuals in decks.",
     [
       { name: "Upload PDF", text: "Upload the PDF you want as a presentation." },

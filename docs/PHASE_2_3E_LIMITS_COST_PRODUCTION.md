@@ -5,6 +5,8 @@
 **Status:** In progress. Production-image packaging and the no-cost local capacity/page-completeness gates passed; public production gate is not passed.
 **Phase 2 completion:** stays at 62% while this 5%-weight work package is incomplete.
 
+Later no-cost real-document QA found and repaired omitted Excel source text, unreadable short dense Word layout and dense PowerPoint text overlap. The [quality remediation checkpoint](PHASE_2_3E_QUALITY_REMEDIATION.md) and its final nine-route HTTP report supersede the earlier public-document observations below. The updated full-image OCR test and public production gate remain unverified.
+
 ## What is established
 
 | Area | Evidence | Honest boundary |

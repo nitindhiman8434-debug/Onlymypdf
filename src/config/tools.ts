@@ -93,12 +93,12 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       "Convert PDF files to editable Word documents (.docx) online for free. Real text, tables, headings, and bullet lists you can edit.",
     h1: "Convert PDF to Word — Free Online Converter",
     seoContent:
-      "Convert PDF text into an editable Word file (.docx). OnlyMyPDF extracts supported text, headings, lists, and tables for editing in Microsoft Word, Google Docs, or LibreOffice. Complex layouts can need adjustment; dense fillable forms may include a visual page reference beside editable text rather than editable form controls.",
+      "Convert PDF text into an editable Word file (.docx). OnlyMyPDF extracts supported text, headings, lists, and tables for editing in Microsoft Word, Google Docs, or LibreOffice. Dense forms and short text-heavy documents can include a visual page reference beside an editable transcript; page count and formatting may differ.",
     faqs: [
       {
         question: "How accurate is the PDF to Word conversion?",
         answer:
-          "Accuracy depends on the PDF. Selectable text usually becomes editable, while complex graphics and form fields may remain visual references. Dense fillable forms can use an editable transcript beside each source page; review the result before relying on its layout or calculations.",
+          "Accuracy depends on the PDF. Selectable text usually becomes editable, while complex graphics and form fields may remain visual references. Dense forms and text-heavy documents can use an editable transcript beside each source page; this does not recreate form controls or guarantee the same page count. Review the result before relying on its layout or calculations.",
       },
       {
         question: "Can I convert a scanned PDF to Word?",
@@ -399,7 +399,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Will tables be preserved in Excel?",
         answer:
-          "Text-based PDFs with clear columns convert best. Complex layouts may need manual cleanup; image-only scanned PDFs need OCR before conversion.",
+          "Text-based PDFs with clear columns convert best. When table extraction misses selectable text, a Source text worksheet keeps that text for review, but its rows may not match the original cell positions. Complex layouts may need manual cleanup; image-only scans need OCR first.",
       },
       {
         question: "Does it work with scanned PDFs?",
@@ -431,19 +431,19 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "pdf-to-ppt": {
     title: "PDF to PowerPoint — Convert PDF to PPTX Online | OnlyMyPDF",
     metaDescription:
-      "Convert PDF to PowerPoint (.pptx). Selectable PDF text becomes editable slide text; images and graphics remain visual backgrounds. Scans without visible text stay image-only.",
+      "Convert PDF to PowerPoint (.pptx). Simple selectable text becomes editable slide text. Dense pages keep a faithful visual slide with an editable transcript in speaker notes; scans stay image-only.",
     h1: "Convert PDF to PowerPoint — Free Online Tool",
     seoContent:
-      "Turn PDF pages into PowerPoint slides. Selectable horizontal text becomes on-slide editable text boxes over a preserved visual background. Photos, charts, and scanned text remain part of the image.",
+      "Turn PDF pages into PowerPoint slides. Simple horizontal text becomes on-slide editable text boxes. Dense pages keep the original page as a visual slide, with selectable text in editable speaker notes to avoid overlapping text. Photos, charts, and scanned text remain visual.",
     faqs: [
       {
         question: "Are images and layout preserved?",
         answer:
-          "Yes. Each PDF page becomes one slide with a rendered visual background. Selectable text is recreated as editable slide text; complex charts and images remain flattened.",
+          "Each PDF page becomes one slide with a rendered visual background. Simple text is editable on the slide; dense pages keep the original appearance and put an editable transcript in speaker notes. Charts and images remain flattened.",
       },
       {
         question: "Can I edit the slides after conversion?",
-        answer: "Selectable horizontal PDF text can be edited directly on slides. Scanned text, rotated labels, charts, links, and forms are not converted into editable PowerPoint objects. Complex fonts may need adjustment.",
+        answer: "Simple horizontal text can be edited on slides. For dense pages, open PowerPoint speaker notes to edit the extracted transcript while the slide keeps its visual source. Scanned text, rotated labels, charts, links, and forms are not converted into editable slide objects.",
       },
     ],
   },

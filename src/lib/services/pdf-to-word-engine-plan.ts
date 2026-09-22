@@ -13,6 +13,7 @@ export type PdfToWordEnginePlanInput = {
   convertApiOnly: boolean;
   textRichManual?: boolean;
   denseEditableForm?: boolean;
+  denseShortDocument?: boolean;
   imageOnly?: boolean;
   ocrRequired?: boolean;
   hybridScanned?: boolean;
@@ -47,7 +48,7 @@ export function resolveConversionStrategy(input: PdfToWordEnginePlanInput): Conv
     return { engines, emergency };
   }
 
-  if (input.denseEditableForm) {
+  if (input.denseEditableForm || input.denseShortDocument) {
     const engines: PdfToWordEngine[] = [];
     if (input.convertApiAvailable) engines.push("convertapi");
     if (input.pdf2docxReady) engines.push("reference-transcript");

@@ -594,7 +594,7 @@ def _build_ocr_reference_transcript_docx(
 
             preview = page.get_pixmap(dpi=110, colorspace=fitz.csRGB, alpha=False)
             visual_cell.paragraphs[0].add_run().add_picture(
-                io.BytesIO(preview.tobytes("jpeg", jpg_quality=72)),
+                io.BytesIO(preview.tobytes("png")),
                 width=Inches(3.2),
             )
 

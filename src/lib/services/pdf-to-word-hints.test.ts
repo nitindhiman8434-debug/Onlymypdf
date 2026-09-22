@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   isDenseEditableForm,
+  isDenseShortDocument,
   isHybridScannedPdf,
   isImageHeavyPdf,
   isTextRichManual,
@@ -11,6 +12,14 @@ describe("isDenseEditableForm", () => {
     expect(isDenseEditableForm({ pageCount: 2, pdfTextChars: 10_000, formFieldCount: 199 })).toBe(true);
     expect(isDenseEditableForm({ pageCount: 2, pdfTextChars: 10_000, formFieldCount: 4 })).toBe(false);
     expect(isDenseEditableForm({ pageCount: 2, pdfTextChars: 0, formFieldCount: 199 })).toBe(false);
+  });
+});
+
+describe("isDenseShortDocument", () => {
+  it("chooses a visual reference plus editable transcript for dense short text", () => {
+    expect(isDenseShortDocument({ pageCount: 8, pdfTextChars: 35_000 })).toBe(true);
+    expect(isDenseShortDocument({ pageCount: 8, pdfTextChars: 10_000 })).toBe(false);
+    expect(isDenseShortDocument({ pageCount: 64, pdfTextChars: 280_000 })).toBe(false);
   });
 });
 

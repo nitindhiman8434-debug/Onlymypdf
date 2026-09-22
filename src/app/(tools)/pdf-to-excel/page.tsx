@@ -12,7 +12,7 @@ export default function PdfToExcelPage() {
       processLabel="Convert to Excel"
       processingLabel="Converting to Excel..."
       successTitle="Excel file ready!"
-      successDescription="Your spreadsheet has been generated from the PDF content."
+      successDescription="Your spreadsheet is ready. If table mapping missed text, review the Source text worksheet."
       downloadLabel="Download XLSX"
       outputExtension="xlsx"
       apiPath="/api/tools/pdf-to-excel"

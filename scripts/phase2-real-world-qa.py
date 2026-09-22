@@ -142,12 +142,16 @@ def inspect_office(output_path: Path, extension: str, source_tokens: set[str]) -
             presentation = Presentation(output_path)
             slide_text = [shape.text for slide in presentation.slides for shape in slide.shapes
                           if shape.has_text_frame]
-            text = " ".join(slide_text)
+            notes_text = [slide.notes_slide.notes_text_frame.text for slide in presentation.slides
+                          if slide.has_notes_slide and slide.notes_slide.notes_text_frame]
+            text = " ".join(slide_text + notes_text)
             structure = {
                 "slides": len(presentation.slides),
                 "pictures": sum(shape.shape_type == 13 for slide in presentation.slides for shape in slide.shapes),
                 "editableTextShapes": sum(bool(shape.text.strip()) for slide in presentation.slides
                                           for shape in slide.shapes if shape.has_text_frame),
+                "onSlideTextChars": len(" ".join(slide_text)),
+                "notesTextChars": len(" ".join(notes_text)),
             }
     output_tokens = tokens(text)
     return {

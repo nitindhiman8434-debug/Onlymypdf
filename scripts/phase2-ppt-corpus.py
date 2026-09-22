@@ -89,6 +89,15 @@ def make_cases(out_dir):
     save(doc, out_dir, "rotated-label")
     cases.append({"id": "rotated-label", "tokens": [["Horizontal editable"]], "editable": [True]})
 
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    for number in range(1, 46):
+        y = 80 + number * 12
+        page.insert_text((48, y), f"Left column line {number:02d} with details", fontsize=8)
+        page.insert_text((320, y), f"Right column line {number:02d} with details", fontsize=8)
+    save(doc, out_dir, "dense-two-column")
+    cases.append({"id": "dense-two-column", "tokens": [[]], "notesTokens": [["Left column line 01", "Right column line 45"]], "editable": [False]})
+
     print(json.dumps({"cases": cases}))
 
 
@@ -117,6 +126,11 @@ def inspect_case(case, out_dir):
         for token in case["tokens"][index]:
             if token not in texts or token not in render_page.get_text():
                 errors.append(f"page {index + 1} lost editable/visible token: {token}")
+        if case.get("notesTokens"):
+            notes = slide.notes_slide.notes_text_frame.text
+            for token in case["notesTokens"][index]:
+                if token not in notes:
+                    errors.append(f"page {index + 1} lost editable notes token: {token}")
         if bool(text_shapes) != case["editable"][index]:
             errors.append(f"page {index + 1} editable state mismatch")
 

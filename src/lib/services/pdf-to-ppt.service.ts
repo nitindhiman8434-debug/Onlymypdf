@@ -14,6 +14,7 @@ const MAX_CONVERSION_TIMEOUT_MS = 720_000;
 interface BuildScriptResult {
   pageCount?: number;
   editableSlides?: number;
+  editableNotesSlides?: number;
   targetWidth?: number;
   outputPath?: string;
   error?: string;
@@ -60,7 +61,8 @@ async function pdfToPptLocal(fileBuffer: Buffer): Promise<Buffer> {
 
     console.info(
       `[pdf-to-ppt] Built ${result.pageCount} slides at ${result.targetWidth}px width` +
-        (result.editableSlides != null ? ` (${result.editableSlides} with editable text)` : "")
+        (result.editableSlides != null ? ` (${result.editableSlides} with on-slide editable text` +
+          (result.editableNotesSlides ? `, ${result.editableNotesSlides} with editable notes` : "") + ")" : "")
     );
 
     return await fs.readFile(pptxPath);

@@ -1,18 +1,18 @@
 {
-  "startedAt": "2026-09-21T21:10:52.395Z",
-  "completedAt": "2026-09-21T21:11:01.260Z",
+  "startedAt": "2026-09-22T17:57:50.977Z",
+  "completedAt": "2026-09-22T17:57:57.706Z",
   "baseUrl": "http://127.0.0.1:3001",
   "caseName": "medium",
   "fixture": "quality/phase2-production/generated/mixed-4-page.pdf",
   "inputBytes": 4712092,
-  "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 25/200 MB capacity claim.",
+  "note": "Synthetic mixed text/image fixture on one local development machine; no public-service, p95, universal-accuracy or 200 MB capacity claim.",
   "results": [
     {
       "status": "passed",
       "tool": "pdf-to-word",
-      "elapsedMs": 4851,
+      "elapsedMs": 3625,
       "outputBytes": 16525723,
-      "sha256": "77e80de50d9e396bbb213e3ababba6b944ccd409db70d2e5cf9bbab92f151efe",
+      "sha256": "52023f3ddaf9e8a4f75ccd596500dce8e18a4c4ca0a87db2ff484a3be0e53ac5",
       "engine": "pdf2docx",
       "oneTimeDownloadReplayStatus": 404,
       "validation": {
@@ -24,21 +24,21 @@
     {
       "status": "passed",
       "tool": "pdf-to-excel",
-      "elapsedMs": 934,
-      "outputBytes": 9333,
-      "sha256": "8df1a58535f9c473346ee940ae2da2b6b8359e36844049b50af0fc7ecde80b2f",
+      "elapsedMs": 732,
+      "outputBytes": 11060,
+      "sha256": "7287f1b60f20c9d2b41a3aaaf62fc90a5189666c03b0acbeed27c62d16d164e7",
       "validation": {
         "crcPassed": true,
-        "partCount": 4,
+        "partCount": 5,
         "editablePageMarkers": 4
       }
     },
     {
       "status": "passed",
       "tool": "pdf-to-ppt",
-      "elapsedMs": 3060,
+      "elapsedMs": 2352,
       "outputBytes": 9546122,
-      "sha256": "56bc16cfbbfa892566aab150250d25bb8953d46c3e997ed3e3d8b23974b6ea62",
+      "sha256": "a900c7d93636aefcfa0de6046c16e171f9a7e5835bb5bbfb0554d95433ee7ce7",
       "validation": {
         "crcPassed": true,
         "partCount": 4,

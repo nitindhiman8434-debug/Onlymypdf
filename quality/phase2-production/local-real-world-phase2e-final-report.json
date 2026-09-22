@@ -1,0 +1,174 @@
+{
+  "startedAt": "2026-09-22T17:48:39.828487+00:00",
+  "baseUrl": "http://127.0.0.1:3001",
+  "note": "Public samples, local dev HTTP only. Token recall is a diagnostic, not layout or universal accuracy.",
+  "cases": [
+    {
+      "source": "irs-form-1040-2025.pdf",
+      "type": "form",
+      "pages": 2,
+      "inputBytes": 220237,
+      "sha256": "3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982",
+      "selectableTextChars": 10497,
+      "imageCount": 0,
+      "results": [
+        {
+          "tool": "pdf-to-word",
+          "httpStatus": 200,
+          "elapsedSeconds": 2.59,
+          "engine": "reference-transcript",
+          "outputBytes": 537565,
+          "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "sha256": "5d5928ef30058b22b0550d55a37f6fb3e52b67dd404fbfe100ff814146173ab3",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 10258,
+            "uniqueTokenRecall": 1.0,
+            "mediaParts": 2
+          }
+        },
+        {
+          "tool": "pdf-to-excel",
+          "httpStatus": 200,
+          "elapsedSeconds": 9.3,
+          "engine": null,
+          "outputBytes": 29369,
+          "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "sha256": "c3439798fe0386a8da5af1207270854a426c805fc19f6d9fba07e958286d6760",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 21197,
+            "uniqueTokenRecall": 1.0,
+            "sheets": 3,
+            "populatedCells": 2355
+          }
+        },
+        {
+          "tool": "pdf-to-ppt",
+          "httpStatus": 200,
+          "elapsedSeconds": 2.81,
+          "engine": null,
+          "outputBytes": 1425885,
+          "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "sha256": "b7b8320602a7d467e4ffe61f4f54a6eb94380730708d9b6be8dc6d3bdd58c89a",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 18215,
+            "uniqueTokenRecall": 1.0,
+            "slides": 2,
+            "pictures": 2,
+            "editableTextShapes": 0,
+            "onSlideTextChars": 0,
+            "notesTextChars": 18215
+          }
+        }
+      ]
+    },
+    {
+      "source": "arxiv-2010.12647.pdf",
+      "type": "two-column-paper",
+      "pages": 8,
+      "inputBytes": 197254,
+      "sha256": "077bdcaf7f1463e431dd056a091cd4d8a8a0aed436cb4c46313864461a8f2038",
+      "selectableTextChars": 38078,
+      "imageCount": 2,
+      "results": [
+        {
+          "tool": "pdf-to-word",
+          "httpStatus": 200,
+          "elapsedSeconds": 3.62,
+          "engine": "reference-transcript",
+          "outputBytes": 2220754,
+          "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "sha256": "3ea47806609aa9883e0e5ded091d907d36adeb5bb3403924e63ee5799b240614",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 38157,
+            "uniqueTokenRecall": 0.9928,
+            "mediaParts": 8
+          }
+        },
+        {
+          "tool": "pdf-to-excel",
+          "httpStatus": 200,
+          "elapsedSeconds": 17.74,
+          "engine": null,
+          "outputBytes": 62125,
+          "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "sha256": "e6bc705d9bf6b71637c5d8790f643af0e3014e9c9906f873d64bac068226857a",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 70528,
+            "uniqueTokenRecall": 1.0,
+            "sheets": 9,
+            "populatedCells": 4016
+          }
+        },
+        {
+          "tool": "pdf-to-ppt",
+          "httpStatus": 200,
+          "elapsedSeconds": 5.2,
+          "engine": null,
+          "outputBytes": 5784275,
+          "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "sha256": "a218ec3734d199ffa178382e46ebb31c134c90d193aa3d0587e6d7ce4f08606c",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 50986,
+            "uniqueTokenRecall": 0.9928,
+            "slides": 8,
+            "pictures": 8,
+            "editableTextShapes": 0,
+            "onSlideTextChars": 0,
+            "notesTextChars": 50986
+          }
+        }
+      ]
+    },
+    {
+      "source": "archives-declaration-scan.pdf",
+      "type": "image-only-scan",
+      "pages": 1,
+      "inputBytes": 2195695,
+      "sha256": "8b96bf5fc354f4820cc928ef1d8568800a87d1fd5111709ec97887d19a1d9572",
+      "selectableTextChars": 0,
+      "imageCount": 1,
+      "results": [
+        {
+          "tool": "pdf-to-word",
+          "httpStatus": 500,
+          "elapsedSeconds": 2.64,
+          "engine": null,
+          "error": "{\"progress\": 95, \"status\": \"error\", \"error\": \"PDF OCR could not extract editable text. Try a clearer scan or supported OCR language.\", \"engine\": null, \"queueTimeMs\": 28, \"processingTimeMs\": 1446, \"attemptedEngines\": [\"pdf2docx\"], \"outputValid\": null}"
+        },
+        {
+          "tool": "pdf-to-excel",
+          "httpStatus": 422,
+          "elapsedSeconds": 0.53,
+          "engine": null,
+          "error": "{\"error\":\"Failed to convert PDF to Excel: Pages 1 have no selectable text. Run OCR before converting to Excel.\",\"correlationId\":\"63565197-d6ee-4af0-9b35-dc8a98cbeaa5\"}"
+        },
+        {
+          "tool": "pdf-to-ppt",
+          "httpStatus": 200,
+          "elapsedSeconds": 4.72,
+          "engine": null,
+          "outputBytes": 5887610,
+          "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "sha256": "8991131e7de51cd9c9d3b730f7d100436ec1eec6c19ec062c54dc35db65ec56a",
+          "validation": {
+            "zipCrcPassed": true,
+            "editableTextChars": 0,
+            "uniqueTokenRecall": null,
+            "slides": 1,
+            "pictures": 1,
+            "editableTextShapes": 0,
+            "onSlideTextChars": 0,
+            "notesTextChars": 0
+          }
+        }
+      ]
+    }
+  ],
+  "completedAt": "2026-09-22T17:49:31.154565+00:00"
+}

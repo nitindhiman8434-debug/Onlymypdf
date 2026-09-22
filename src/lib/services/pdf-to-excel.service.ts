@@ -71,6 +71,9 @@ interface ExtractResult {
   masterTable?: TableData;
   mergedTables?: TableData[];
   pagesText?: string[];
+  sourceTextPages?: Array<{ page: number; text: string }>;
+  sourceTextOmittedPages?: number[];
+  sourceTextBackupUnavailable?: boolean;
 }
 
 function computeExtractTimeoutMs(pageCount: number, fileBytes: number): number {
@@ -685,6 +688,7 @@ export async function pdfToExcel(fileBuffer: Buffer): Promise<Buffer> {
       sheet.addRow(["No extractable content found in this PDF."]);
     }
 
+    addSourceTextSheet(workbook, extracted);
     const buffer = await workbook.xlsx.writeBuffer();
     return Buffer.from(buffer);
   } catch (err) {
@@ -701,4 +705,32 @@ export async function pdfToExcel(fileBuffer: Buffer): Promise<Buffer> {
     }
     throw new Error(userMessage);
   }
+}
+
+function addSourceTextSheet(workbook: ExcelJS.Workbook, extracted: ExtractResult): void {
+  const pages = extracted.sourceTextPages ?? [];
+  const omitted = extracted.sourceTextOmittedPages ?? [];
+  if (pages.length === 0 && omitted.length === 0 && !extracted.sourceTextBackupUnavailable) return;
+
+  const sheet = workbook.addWorksheet("Source text");
+  sheet.addRow(["Page", "Selectable text not fully mapped to table cells"]);
+  sheet.addRow(["Info", "Review this text against the table sheets; its reading order and cell positions may differ from the PDF."]);
+  for (const { page, text } of pages) {
+    for (const line of text.split(/\r?\n/)) {
+      if (!line.trim()) continue;
+      for (let offset = 0; offset < line.length; offset += 32_000) {
+        sheet.addRow([page, line.slice(offset, offset + 32_000)]);
+      }
+    }
+  }
+  if (omitted.length) {
+    sheet.addRow(["Limit", `Source text backup exceeded its 8-million-character safety budget on PDF pages ${omitted.join(", ")}. Split the PDF to review those pages.`]);
+  }
+  if (extracted.sourceTextBackupUnavailable) {
+    sheet.addRow(["Limit", "Source text backup was not generated for this PDF over 500 pages. Review table cells against the source or split the PDF."]);
+  }
+  sheet.getColumn(1).width = 12;
+  sheet.getColumn(2).width = 90;
+  sheet.getColumn(2).alignment = { wrapText: true, vertical: "top" };
+  sheet.views = [{ state: "frozen", ySplit: 2 }];
 }

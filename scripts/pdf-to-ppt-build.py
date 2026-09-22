@@ -30,6 +30,7 @@ except ImportError:
 
 PT_PER_INCH = 72.0
 MAX_EDITABLE_LINES_PER_PAGE = 1500
+MAX_RELIABLE_ON_SLIDE_LINES = 70
 
 
 def resolve_target_width(page_count: int) -> int:
@@ -212,7 +213,12 @@ def render_one_page(
         lines = [] if is_full_page_raster(page) else extract_page_lines(page)
         if len(lines) > MAX_EDITABLE_LINES_PER_PAGE:
             raise ValueError(f"Page {page_index + 1} has too many editable text lines")
-        remove_editable_text_from_background(page, lines)
+        # Dense pages wrap unpredictably in PowerPoint/LibreOffice fonts. Keep
+        # their visual page intact and place the selectable transcript in notes.
+        visual_reference = len(lines) > MAX_RELIABLE_ON_SLIDE_LINES
+        transcript = page.get_text("text", sort=True).strip() if visual_reference else ""
+        if not visual_reference:
+            remove_editable_text_from_background(page, lines)
         scale = target_width / page.rect.width
         pix = page.get_pixmap(matrix=fitz.Matrix(scale, scale), alpha=False)
         ext = "jpg" if image_format == "JPEG" else "png"
@@ -224,12 +230,14 @@ def render_one_page(
             "widthPt": round(page.rect.width, 4),
             "heightPt": round(page.rect.height, 4),
             "lines": lines,
+            "visualReference": visual_reference,
+            "transcript": transcript,
         }
     finally:
         doc.close()
 
 
-def build_pptx(pdf_path: str, pages: list[dict], output_path: str) -> int:
+def build_pptx(pdf_path: str, pages: list[dict], output_path: str) -> tuple[int, int]:
     sizes = [(pt_to_inches(p["widthPt"]), pt_to_inches(p["heightPt"])) for p in pages]
     slide_w_in, slide_h_in = resolve_slide_size_inches(sizes)
 
@@ -239,6 +247,7 @@ def build_pptx(pdf_path: str, pages: list[dict], output_path: str) -> int:
     blank = prs.slide_layouts[6]
 
     editable_slides = 0
+    editable_notes_slides = 0
     for page in pages:
         slide = prs.slides.add_slide(blank)
         scale = min(
@@ -254,11 +263,14 @@ def build_pptx(pdf_path: str, pages: list[dict], output_path: str) -> int:
             width=Pt(page["widthPt"] * scale),
             height=Pt(page["heightPt"] * scale),
         )
-        if add_editable_lines(slide, page["lines"], scale, left, top):
+        if page["visualReference"]:
+            slide.notes_slide.notes_text_frame.text = page["transcript"]
+            editable_notes_slides += 1
+        elif add_editable_lines(slide, page["lines"], scale, left, top):
             editable_slides += 1
 
     prs.save(output_path)
-    return editable_slides
+    return editable_slides, editable_notes_slides
 
 
 def main() -> None:
@@ -301,20 +313,21 @@ def main() -> None:
             pages.append(future.result())
 
     pages.sort(key=lambda p: p["page"])
-    editable_slides = build_pptx(pdf_path, pages, output_path)
+    editable_slides, editable_notes_slides = build_pptx(pdf_path, pages, output_path)
 
     print(
         json.dumps(
             {
                 "pageCount": page_count,
                 "editableSlides": editable_slides,
+                "editableNotesSlides": editable_notes_slides,
                 "targetWidth": target_width,
                 "imageFormat": image_format,
                 "jpegQuality": jpeg_quality,
                 "workers": workers,
                 "outputPath": output_path,
                 "outputSizeBytes": os.path.getsize(output_path),
-                "mode": "on_slide_editable_text",
+                "mode": "adaptive_on_slide_or_visual_reference_with_editable_notes",
             }
         )
     )
