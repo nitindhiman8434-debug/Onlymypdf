@@ -1,8 +1,11 @@
 import type { NextRequest } from "next/server";
+import { createHash } from "crypto";
 import { extractApiKeyFromRequest, hashApiKey } from "@/lib/auth/api-key-auth";
 import { buildRateLimitMessage, type RateLimitScope } from "@/lib/rate-limit-message";
 import { getGuestUsageKey, getTrustedClientIp } from "@/lib/server/client-ip";
 import { CORRELATION_ID_HEADER, getCorrelationId } from "@/lib/server/correlation-id";
+import { isSupabaseServiceConfigured } from "@/lib/supabase/server";
+import { checkSupabaseRateLimit } from "@/lib/server/supabase-runtime-coordination";
 
 type Bucket = { count: number; resetAt: number };
 
@@ -104,6 +107,14 @@ export async function checkRateLimit(
   const windowSec = Math.max(1, Math.ceil(options.windowMs / 1000));
 
   try {
+    if (isSupabaseServiceConfigured()) {
+      return await checkSupabaseRateLimit(
+        `pdf-doctor:${createHash("sha256").update(key).digest("hex")}`,
+        options.maxRequests,
+        windowSec
+      );
+    }
+
     const limiter = await getUpstashLimiter(options.maxRequests, windowSec);
     if (limiter) {
       const result = await limiter.limit(key);
@@ -118,12 +129,12 @@ export async function checkRateLimit(
     }
 
     if (process.env.NODE_ENV === "production") {
-      console.error("[rate-limit] Upstash unavailable in production — denying request");
+      console.error("[rate-limit] Distributed store unavailable in production — denying request");
       return { allowed: false, remaining: 0, retryAfterSec: 60 };
     }
   } catch (err) {
     if (process.env.NODE_ENV === "production") {
-      console.error("[rate-limit] Upstash error in production:", err);
+      console.error("[rate-limit] Distributed store error in production:", err);
       return { allowed: false, remaining: 0, retryAfterSec: 60 };
     }
   }

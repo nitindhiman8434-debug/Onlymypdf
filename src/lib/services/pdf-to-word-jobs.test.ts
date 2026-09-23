@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/supabase/server", () => ({
   isSupabaseConfigured: () => false,
+  isSupabaseServiceConfigured: () => false,
   createServiceClient: vi.fn(async () => {
     throw new Error("Supabase is disabled in this test");
   }),

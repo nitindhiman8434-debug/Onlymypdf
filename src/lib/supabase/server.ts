@@ -42,6 +42,12 @@ export function isSupabaseConfigured(): boolean {
   }
 }
 
+export function isSupabaseServiceConfigured(): boolean {
+  if (!isSupabaseConfigured()) return false;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  return Boolean(key && key.length > 20 && !key.includes("your_"));
+}
+
 export async function createClient() {
   const cookieStore = await cookies();
 

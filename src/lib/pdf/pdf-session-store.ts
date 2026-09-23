@@ -2,7 +2,11 @@ import { randomUUID, createHash } from "crypto";
 import fs from "fs/promises";
 import os from "os";
 import path from "path";
-import { createServiceClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  createServiceClient,
+  isSupabaseConfigured,
+  isSupabaseServiceConfigured,
+} from "@/lib/supabase/server";
 import {
   isUpstashConfigured,
   upstashDel,
@@ -63,7 +67,7 @@ function redisKey(sessionId: string): string {
 }
 
 function isDistributedStoreEnabled(): boolean {
-  return isUpstashConfigured() && isSupabaseConfigured();
+  return (isSupabaseServiceConfigured() || isUpstashConfigured()) && isSupabaseConfigured();
 }
 
 async function cleanupSessionFiles(session: PdfSession) {
@@ -89,13 +93,50 @@ function pruneExpiredLocal() {
 }
 
 async function readStoredSession(sessionId: string): Promise<StoredPdfSession | null> {
+  if (isSupabaseServiceConfigured()) {
+    const supabase = await createServiceClient();
+    const { data, error } = await supabase
+      .from("pdf_session_records")
+      .select("payload")
+      .eq("session_id", sessionId)
+      .maybeSingle();
+    if (error) throw new Error(`PDF session read failed: ${error.message}`);
+    return (data as { payload: StoredPdfSession } | null)?.payload ?? null;
+  }
   if (!isUpstashConfigured()) return null;
   return upstashGetJson<StoredPdfSession>(redisKey(sessionId));
 }
 
 async function writeStoredSession(sessionId: string, stored: StoredPdfSession): Promise<void> {
+  if (isSupabaseServiceConfigured()) {
+    const supabase = await createServiceClient();
+    const { error } = await supabase.from("pdf_session_records").upsert(
+      {
+        session_id: sessionId,
+        payload: { ...stored, localPath: undefined },
+        expires_at: new Date(stored.expiresAt).toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "session_id" }
+    );
+    if (error) throw new Error(`PDF session write failed: ${error.message}`);
+    return;
+  }
   if (!isUpstashConfigured()) return;
   await upstashSetJson(redisKey(sessionId), stored, sessionTtlSec());
+}
+
+async function deleteStoredSession(sessionId: string): Promise<void> {
+  if (isSupabaseServiceConfigured()) {
+    const supabase = await createServiceClient();
+    const { error } = await supabase
+      .from("pdf_session_records")
+      .delete()
+      .eq("session_id", sessionId);
+    if (error) throw new Error(`PDF session delete failed: ${error.message}`);
+    return;
+  }
+  await upstashDel(redisKey(sessionId));
 }
 
 async function uploadSessionPdf(sessionId: string, buffer: Buffer): Promise<string | null> {
@@ -125,7 +166,7 @@ async function hydrateLocalFromStored(
   stored: StoredPdfSession
 ): Promise<PdfSession | null> {
   if (stored.expiresAt <= Date.now()) {
-    await upstashDel(redisKey(sessionId));
+    await deleteStoredSession(sessionId);
     return null;
   }
 
@@ -249,7 +290,7 @@ export async function getPdfSessionBuffer(id: string, ownerHash?: string): Promi
       }
     }
     sessions.delete(id);
-    await upstashDel(redisKey(id));
+    await deleteStoredSession(id);
     return null;
   }
 }

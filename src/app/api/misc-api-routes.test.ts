@@ -27,6 +27,12 @@ vi.mock("@/lib/server/safe-error", () => ({
 vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: vi.fn(),
   isSupabaseConfigured: vi.fn(),
+  isSupabaseServiceConfigured: vi.fn(() => true),
+}));
+
+vi.mock("@/lib/services/conversion-queue-provider", () => ({
+  getConversionQueueProvider: vi.fn(() => "supabase"),
+  isDurableConversionQueueConfigured: vi.fn(() => true),
 }));
 
 vi.mock("@/lib/config/env-security", () => ({

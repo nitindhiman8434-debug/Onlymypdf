@@ -28,9 +28,9 @@ OnlyMyPDF is a dependable-beta SaaS PDF toolkit. Merge, split, compress, convert
 - File auto-deletion after 2 hours
 
 ### Production Hardening
-- Distributed rate limits (Upstash Redis) — fail-closed in production
+- Supabase-backed distributed rate limits, leases, one-time claims, and preview metadata
 - Atomic payment fulfillment (migration `007_payment_processing_status.sql`)
-- PDF→Word async jobs stored in Redis + Supabase Storage (multi-instance safe)
+- PDF→Word async jobs stored in Supabase Queues + private object storage (multi-instance safe)
 - CSRF origin checks on auth and payment mutations
 - GDPR consent sync for logged-in users
 
@@ -38,7 +38,7 @@ OnlyMyPDF is a dependable-beta SaaS PDF toolkit. Merge, split, compress, convert
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 14 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | Styling | Tailwind CSS |
 | Database | Supabase (PostgreSQL) |
@@ -56,7 +56,7 @@ OnlyMyPDF is a dependable-beta SaaS PDF toolkit. Merge, split, compress, convert
 - npm installed
 - Supabase account
 - Razorpay account (for payments)
-- Upstash Redis (required for production rate limits and PDF→Word jobs)
+- Supabase Queues migration `023_supabase_conversion_queue.sql`
 - Gemini API key (for AI features)
 
 ### Installation
@@ -72,14 +72,14 @@ npm run dev
 
 ### Database migrations
 
-Run all files in `supabase/migrations/` in order (001 through **021**) in the Supabase SQL Editor.
+Run all files in `supabase/migrations/` in order (001 through **023**) in the Supabase SQL Editor.
 
 ### Production readiness
 
 Before deploying:
 
-1. Set `PRODUCTION_URL`, `CRON_SECRET`, `HEALTH_CHECK_SECRET`, Upstash, and Supabase secrets
-2. Run migrations through **021** and keep the `pdf-files` bucket private
+1. Set `PRODUCTION_URL`, `CRON_SECRET`, `HEALTH_CHECK_SECRET`, and Supabase secrets
+2. Run migrations through **023** and keep the `pdf-files` bucket private
 3. Deploy the isolated `Dockerfile.worker` image and verify its heartbeat
 4. Verify authenticated `/api/health` returns `healthy` (not `degraded`)
 4. See `docs/OPERATIONS.md` and `PRODUCTION_CHECKLIST.md`

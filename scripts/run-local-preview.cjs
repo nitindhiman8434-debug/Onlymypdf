@@ -22,6 +22,7 @@ const offlineKeys = [
   "FILE_STORAGE_PROVIDER",
   "NEXT_PUBLIC_FILE_STORAGE_PROVIDER",
   "INLINE_CONVERSION_WORKER",
+  "CONVERSION_QUEUE_PROVIDER",
 ];
 
 const env = { ...process.env };
@@ -30,6 +31,7 @@ env.NEXT_PUBLIC_SUPABASE_URL = "your_supabase_url";
 env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "your_supabase_anon_key";
 env.NEXT_PUBLIC_APP_URL = "http://127.0.0.1:3001";
 env.ONLYMYPDF_LOCAL_PREVIEW = "1";
+env.CONVERSION_QUEUE_PROVIDER = "memory";
 env.BILLING_MODE = "disabled";
 env.PDF_OCR_REQUIRED = "true";
 

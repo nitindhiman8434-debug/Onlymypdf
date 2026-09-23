@@ -7,7 +7,7 @@ Production operations guide for monitoring, deployments, backups, conversion wor
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /api/health` | Public liveness (`200` JSON with `status`) |
-| `GET /api/health` + `Authorization: Bearer $HEALTH_CHECK_SECRET` or `x-health-key` | Detailed checks (Upstash, DB, private storage, worker heartbeat, secrets) |
+| `GET /api/health` + `Authorization: Bearer $HEALTH_CHECK_SECRET` or `x-health-key` | Detailed checks (queue provider, DB, private storage, worker heartbeat, secrets) |
 | `GET /status` | Public status page (polls `/api/health`; links external page when configured) |
 | Vercel/host dashboard | Process uptime, memory, cold starts |
 
@@ -126,7 +126,7 @@ Run in order in Supabase SQL Editor (or `supabase db push`):
 
 After each migration, verify in Table Editor and run a smoke test (upload → convert → download).
 
-**Production gate:** Do not deploy until authenticated `/api/health` returns `healthy` (not `degraded`) with Upstash, Supabase, and required secrets configured.
+**Production gate:** Do not deploy until migration 023 is applied and authenticated `/api/health` returns `healthy` with Supabase and required secrets configured.
 
 ## Environment variables
 
@@ -142,8 +142,7 @@ HEALTH_CHECK_SECRET=
 UPLOAD_GRANT_SECRET=       # optional dedicated key; otherwise CRON_SECRET fallback
 JOB_PAYLOAD_SECRET=        # optional dedicated key; otherwise CRON_SECRET fallback
 IP_HASH_SALT=
-UPSTASH_REDIS_REST_URL=
-UPSTASH_REDIS_REST_TOKEN=
+CONVERSION_QUEUE_PROVIDER=supabase
 CONVERSION_CLEANUP_INTERVAL_MS=3600000
 # For the 200 MB PDF→Word path on Cloudflare R2:
 NEXT_PUBLIC_FILE_STORAGE_PROVIDER=r2
@@ -186,13 +185,13 @@ PDF2DOCX_PYTHON=         # local pdf2docx (Dockerfile.full sets this)
 LIBREOFFICE_PATH=        # local Office conversions (Dockerfile.full sets this)
 ```
 
-When **Upstash** and private object storage are configured:
+When **Supabase migration 023** and private object storage are configured:
 
-- **Heavy conversions** share a distributed semaphore. PDF-to-Word additionally uses durable Redis pending/processing queues and private staged storage. Without Upstash in production, heavy routes fail closed.
+- **Heavy conversions** share a Supabase-backed distributed semaphore. PDF-to-Word uses a durable PGMQ queue and private staged storage. Production fails closed if durable coordination is unavailable.
 - **Large PDF-to-Word uploads** go browser → signed private R2 or Supabase upload → durable queue, so file bytes do not cross the app server request body. Supabase Free remains capped at 50 MB; select R2 for the tested 200 MB path.
-- **Dedicated worker health** is written to Upstash every 15 seconds and becomes unhealthy after 60 seconds without a fresh heartbeat.
+- **Dedicated worker health** is written to Supabase every 60 seconds and becomes unhealthy after 150 seconds without a fresh heartbeat.
 - **Worker watchdog** runs `npm run worker:watchdog` every five minutes in a separate Railway cron service. A stale/error heartbeat exits non-zero so Railway's deployment-crash notification rule sends email and in-app alerts.
-- **PDF preview sessions** persist metadata in Redis and PDF bytes in bucket `pdf-files` under `temp-sessions/pdf/{sessionId}.pdf` (30 min TTL).
+- **PDF preview sessions** persist metadata in Supabase and PDF bytes in bucket `pdf-files` under `temp-sessions/pdf/{sessionId}.pdf`.
 
 See `docs/PRODUCTION_CHECKLIST.md` and `.env.example` for the full list.
 
@@ -228,7 +227,7 @@ docker compose up -d conversion-worker
 
 Uses Next.js `output: "standalone"` from `next.config.ts`. Node **20+** (see `.nvmrc`).
 
-**Slim image limitations:** LibreOffice, Python (pdf2docx), and Puppeteer are **not** included — PDF→Word on slim Docker requires `CONVERTAPI_SECRET` or a sidecar. Rate limits and PDF→Word async jobs require Upstash Redis.
+**Slim image limitations:** LibreOffice, Python (pdf2docx), and Puppeteer are **not** included — PDF→Word on slim Docker requires `CONVERTAPI_SECRET` or a sidecar. Rate limits and PDF→Word async jobs use Supabase migration 023.
 
 **Full image:** Sets `LIBREOFFICE_PATH=/usr/bin/soffice` and `PDF2DOCX_PYTHON=/usr/bin/python3`. Puppeteer/Chromium is still not bundled — HTML→PDF may need separate setup per deployment guide.
 

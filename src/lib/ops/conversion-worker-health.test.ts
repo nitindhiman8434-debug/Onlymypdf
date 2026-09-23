@@ -31,7 +31,7 @@ describe("conversion worker heartbeat", () => {
   it("rejects a stale heartbeat", async () => {
     const now = new Date("2026-09-17T10:00:00.000Z");
     await recordConversionWorkerHeartbeat({ state: "ready" }, now);
-    const health = await getConversionWorkerHealth(now.getTime() + 60_001);
+    const health = await getConversionWorkerHealth(now.getTime() + 150_001);
     expect(health.ok).toBe(false);
   });
 

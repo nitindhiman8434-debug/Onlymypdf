@@ -6,7 +6,6 @@ import { mapPdfToWordError } from "@/lib/services/pdf-to-word.service";
 import { toSafeApiError } from "@/lib/server/safe-error";
 import {
   getUpstashRedis,
-  isUpstashConfigured,
   upstashDel,
   upstashGetJson,
   upstashSetJson,
@@ -23,6 +22,16 @@ import {
   putPdfBlobObject,
   readPdfBlobObject,
 } from "@/lib/server/pdf-blob-storage";
+import { getConversionQueueProvider } from "@/lib/services/conversion-queue-provider";
+import {
+  acknowledgeSupabaseConversionMessage,
+  claimSupabaseConversionJob,
+  deleteSupabaseConversionJob,
+  enqueueSupabaseConversionJob,
+  getSupabaseConversionQueueDepth,
+  readSupabaseConversionJob,
+  writeSupabaseConversionJob,
+} from "@/lib/services/supabase-conversion-queue";
 
 export type PdfToWordJobStatus = "queued" | "running" | "done" | "error";
 
@@ -62,14 +71,18 @@ export type PdfToWordJob = {
   completedAt?: number;
   queueTimeMs?: number;
   processingTimeMs?: number;
+  /** Supabase PGMQ receipt used to acknowledge a completed queue message. */
+  queueMessageId?: string;
 };
 
 const JOB_TTL_MS = 2 * 60 * 60 * 1000;
 const JOB_TTL_SEC = Math.ceil(JOB_TTL_MS / 1000);
 const WORKER_LEASE_MS = 15 * 60 * 1000;
+const RECOVERY_INTERVAL_MS = 60 * 1000;
 const REDIS_PREFIX = "pdf-to-word:job:";
 const REDIS_PENDING_QUEUE = "pdf-to-word:queue:pending";
 const REDIS_PROCESSING_QUEUE = "pdf-to-word:queue:processing";
+let lastRecoveryAt = 0;
 
 type JobStore = Map<string, PdfToWordJob>;
 
@@ -96,7 +109,13 @@ function redisKey(jobId: string): string {
 }
 
 async function readJob(jobId: string): Promise<PdfToWordJob | undefined> {
-  if (isUpstashConfigured()) {
+  const provider = getConversionQueueProvider();
+  if (provider === "supabase") {
+    const remote = await readSupabaseConversionJob<PdfToWordJob>(jobId);
+    if (remote) memoryStore().set(jobId, remote);
+    return remote;
+  }
+  if (provider === "upstash") {
     const remote = await upstashGetJson<PdfToWordJob>(redisKey(jobId));
     if (remote) return remote;
   }
@@ -105,14 +124,22 @@ async function readJob(jobId: string): Promise<PdfToWordJob | undefined> {
 
 async function writeJob(jobId: string, job: PdfToWordJob): Promise<void> {
   memoryStore().set(jobId, job);
-  if (isUpstashConfigured()) {
+  const provider = getConversionQueueProvider();
+  if (provider === "supabase") {
+    await writeSupabaseConversionJob(jobId, job, JOB_TTL_MS);
+  } else if (provider === "upstash") {
     await upstashSetJson(redisKey(jobId), job, JOB_TTL_SEC);
+  } else if (provider === "unavailable") {
+    throw new Error("Configured conversion queue provider is unavailable.");
   }
 }
 
 async function deleteJobRecord(jobId: string): Promise<void> {
   memoryStore().delete(jobId);
-  if (isUpstashConfigured()) {
+  const provider = getConversionQueueProvider();
+  if (provider === "supabase") {
+    await deleteSupabaseConversionJob(jobId);
+  } else if (provider === "upstash") {
     await upstashDel(redisKey(jobId));
   }
 }
@@ -224,11 +251,19 @@ export async function stagePdfToWordJobInputFromStorage(
 export async function enqueuePdfToWordJob(jobId: string): Promise<void> {
   const job = await readJob(jobId);
   if (!job || job.status !== "queued") throw new Error("Queued job was not found.");
-  if (isUpstashConfigured()) {
+  const provider = getConversionQueueProvider();
+  if (provider === "supabase") {
+    await enqueueSupabaseConversionJob(jobId);
+    return;
+  }
+  if (provider === "upstash") {
     const redis = await getUpstashRedis();
     if (!redis) throw new Error("Conversion queue is unavailable.");
     await redis.rpush(REDIS_PENDING_QUEUE, jobId);
     return;
+  }
+  if (provider === "unavailable") {
+    throw new Error("Configured conversion queue provider is unavailable.");
   }
   const queue = localQueue();
   if (!queue.pending.includes(jobId) && !queue.processing.has(jobId)) {
@@ -237,7 +272,13 @@ export async function enqueuePdfToWordJob(jobId: string): Promise<void> {
 }
 
 async function removeProcessingJob(jobId: string): Promise<void> {
-  if (isUpstashConfigured()) {
+  const provider = getConversionQueueProvider();
+  if (provider === "supabase") {
+    const job = await readJob(jobId);
+    if (job?.queueMessageId) {
+      await acknowledgeSupabaseConversionMessage(job.queueMessageId);
+    }
+  } else if (provider === "upstash") {
     const redis = await getUpstashRedis();
     if (redis) await redis.lrem(REDIS_PROCESSING_QUEUE, 1, jobId);
   } else {
@@ -246,8 +287,11 @@ async function removeProcessingJob(jobId: string): Promise<void> {
 }
 
 export async function recoverStalePdfToWordJobs(): Promise<number> {
+  const provider = getConversionQueueProvider();
+  // PGMQ makes an unacknowledged message visible again when its lease expires.
+  if (provider === "supabase") return 0;
   let ids: string[] = [];
-  if (isUpstashConfigured()) {
+  if (provider === "upstash") {
     const redis = await getUpstashRedis();
     if (!redis) return 0;
     ids = await redis.lrange<string>(REDIS_PROCESSING_QUEUE, 0, -1);
@@ -276,9 +320,21 @@ export async function recoverStalePdfToWordJobs(): Promise<number> {
 }
 
 export async function claimNextPdfToWordJob(): Promise<{ id: string; job: PdfToWordJob } | null> {
-  await recoverStalePdfToWordJobs();
+  const provider = getConversionQueueProvider();
+  if (provider === "unavailable") {
+    throw new Error("Configured conversion queue provider is unavailable.");
+  }
+  if (provider !== "supabase" && Date.now() - lastRecoveryAt >= RECOVERY_INTERVAL_MS) {
+    await recoverStalePdfToWordJobs();
+    lastRecoveryAt = Date.now();
+  }
   let id: string | null | undefined;
-  if (isUpstashConfigured()) {
+  let queueMessageId: string | undefined;
+  if (provider === "supabase") {
+    const claimed = await claimSupabaseConversionJob();
+    id = claimed?.jobId;
+    queueMessageId = claimed?.messageId;
+  } else if (provider === "upstash") {
     const redis = await getUpstashRedis();
     if (!redis) return null;
     id = (await redis.lmove<string>(
@@ -295,10 +351,30 @@ export async function claimNextPdfToWordJob(): Promise<{ id: string; job: PdfToW
   if (!id) return null;
 
   const job = await readJob(id);
-  if (!job || job.status !== "queued") {
-    await removeProcessingJob(id);
-    return claimNextPdfToWordJob();
+  if (!job) {
+    if (queueMessageId) await acknowledgeSupabaseConversionMessage(queueMessageId);
+    else await removeProcessingJob(id);
+    return null;
   }
+  if (
+    provider === "supabase" &&
+    job.status === "running" &&
+    job.startedAt &&
+    Date.now() - job.startedAt >= WORKER_LEASE_MS
+  ) {
+    job.status = "queued";
+    job.startedAt = undefined;
+    job.queueTimeMs = undefined;
+  }
+  if (job.status !== "queued") {
+    if (queueMessageId && (job.status === "done" || job.status === "error")) {
+      await acknowledgeSupabaseConversionMessage(queueMessageId);
+    } else if (!queueMessageId) {
+      await removeProcessingJob(id);
+    }
+    return null;
+  }
+  if (queueMessageId) job.queueMessageId = queueMessageId;
   job.status = "running";
   job.startedAt = Date.now();
   job.queueTimeMs = Math.max(0, job.startedAt - job.queuedAt);
@@ -403,7 +479,7 @@ export async function completePdfToWordJob(
     try {
       job.storagePath = await uploadOutputToStorage(jobId, payload.outputPath);
     } catch (err) {
-      if (process.env.NODE_ENV === "production" || isUpstashConfigured()) {
+      if (process.env.NODE_ENV === "production" || getConversionQueueProvider() !== "memory") {
         throw new Error("Conversion output could not be persisted to private storage.", {
           cause: err,
         });
@@ -437,7 +513,11 @@ export async function getPdfToWordQueueDepth(): Promise<{
   pending: number;
   processing: number;
 }> {
-  if (isUpstashConfigured()) {
+  const provider = getConversionQueueProvider();
+  if (provider === "supabase") {
+    return getSupabaseConversionQueueDepth();
+  }
+  if (provider === "upstash") {
     const redis = await getUpstashRedis();
     if (!redis) return { pending: 0, processing: 0 };
     const [pending, processing] = await Promise.all([
@@ -445,6 +525,9 @@ export async function getPdfToWordQueueDepth(): Promise<{
       redis.llen(REDIS_PROCESSING_QUEUE),
     ]);
     return { pending, processing };
+  }
+  if (provider === "unavailable") {
+    throw new Error("Configured conversion queue provider is unavailable.");
   }
   const queue = localQueue();
   return { pending: queue.pending.length, processing: queue.processing.size };

@@ -1,5 +1,8 @@
 /** Shared Upstash Redis REST client for distributed job state and rate limits. */
 
+import { isSupabaseServiceConfigured } from "@/lib/supabase/server";
+import { claimSupabaseOneTimeKey } from "@/lib/server/supabase-runtime-coordination";
+
 let cachedRedis: import("@upstash/redis").Redis | null | undefined;
 
 export function isUpstashConfigured(): boolean {
@@ -68,6 +71,9 @@ function localClaimStore(): LocalClaimStore {
 
 /** Claim a short-lived token exactly once. Production uses Redis NX; local dev uses memory. */
 export async function claimOneTimeKey(key: string, ttlSec: number): Promise<boolean> {
+  if (isSupabaseServiceConfigured()) {
+    return claimSupabaseOneTimeKey(key, ttlSec);
+  }
   const redis = await getUpstashRedis();
   if (redis) {
     const result = await redis.set(key, "1", { nx: true, ex: ttlSec });

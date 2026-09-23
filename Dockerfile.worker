@@ -1,4 +1,4 @@
-# Isolated Phase 1 conversion worker. It polls the durable Upstash queue and
+# Isolated conversion worker. It polls the durable Supabase queue and
 # reads/writes private staged files in the configured object storage.
 FROM node:22-bookworm-slim
 
@@ -31,6 +31,8 @@ ENV NODE_ENV=production
 ENV LIBREOFFICE_PATH=/usr/bin/soffice
 ENV PDF2DOCX_PYTHON=/usr/bin/python3
 ENV CONVERSION_WORKER_POLL_MS=1000
+ENV CONVERSION_WORKER_MAX_POLL_MS=30000
+ENV CONVERSION_WORKER_HEARTBEAT_MS=60000
 ENV MAX_CONCURRENT_HEAVY_JOBS=1
 ENV PDF_OCR_ENABLED=true
 ENV PDF_OCR_REQUIRED=true

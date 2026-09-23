@@ -4,7 +4,7 @@ OnlyMyPDF exposes:
 
 | Surface | Purpose |
 |---------|---------|
-| `GET /api/health` | Monitor target (200 = liveness; `degraded` in production if Supabase/Upstash missing) |
+| `GET /api/health` | Monitor target (200 = liveness; `degraded` in production if Supabase coordination is missing) |
 | `/status` | Public page with live health badge + link to external status |
 | Footer **System status** | Links to external URL when configured, else `/status` |
 

@@ -1,8 +1,13 @@
 import { getUpstashRedis, isUpstashConfigured, upstashGetJson } from "@/lib/server/upstash-kv";
+import { getConversionQueueProvider } from "@/lib/services/conversion-queue-provider";
+import {
+  readSupabaseWorkerHeartbeat,
+  writeSupabaseWorkerHeartbeat,
+} from "@/lib/services/supabase-conversion-queue";
 
 const HEARTBEAT_KEY = "pdf-to-word:worker:heartbeat";
 const HEARTBEAT_TTL_SECONDS = 90;
-const MAX_HEARTBEAT_AGE_MS = 60_000;
+const MAX_HEARTBEAT_AGE_MS = 150_000;
 
 export type ConversionWorkerState = "ready" | "idle" | "processed" | "stopping" | "error";
 
@@ -33,13 +38,17 @@ export async function recordConversionWorkerHeartbeat(
   };
   localHeartbeatStore().value = heartbeat;
 
-  const redis = await getUpstashRedis();
-  if (redis) {
+  const provider = getConversionQueueProvider();
+  if (provider === "supabase") {
+    await writeSupabaseWorkerHeartbeat(heartbeat, heartbeat.recordedAt);
+  } else if (provider === "upstash") {
+    const redis = await getUpstashRedis();
+    if (!redis) throw new Error("Conversion worker heartbeat could not connect to Upstash Redis.");
     await redis.set(HEARTBEAT_KEY, JSON.stringify(heartbeat), {
       ex: HEARTBEAT_TTL_SECONDS,
     });
-  } else if (process.env.NODE_ENV === "production") {
-    throw new Error("Conversion worker heartbeat requires Upstash Redis in production.");
+  } else if (provider === "unavailable" || process.env.NODE_ENV === "production") {
+    throw new Error("Conversion worker heartbeat requires a durable queue provider in production.");
   }
 }
 
@@ -48,9 +57,13 @@ export async function getConversionWorkerHealth(nowMs = Date.now()): Promise<{
   detail: string;
   heartbeat: ConversionWorkerHeartbeat | null;
 }> {
-  const heartbeat = isUpstashConfigured()
-    ? await upstashGetJson<ConversionWorkerHeartbeat>(HEARTBEAT_KEY)
-    : localHeartbeatStore().value;
+  const provider = getConversionQueueProvider();
+  const heartbeat =
+    provider === "supabase"
+      ? await readSupabaseWorkerHeartbeat<ConversionWorkerHeartbeat>()
+      : provider === "upstash" && isUpstashConfigured()
+        ? await upstashGetJson<ConversionWorkerHeartbeat>(HEARTBEAT_KEY)
+        : localHeartbeatStore().value;
 
   if (!heartbeat) {
     return {

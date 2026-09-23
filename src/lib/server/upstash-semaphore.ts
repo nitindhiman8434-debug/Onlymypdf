@@ -1,10 +1,15 @@
 import { randomUUID } from "crypto";
 import { getMaxConcurrentHeavyJobs } from "@/lib/config/runtime-limits";
 import { getUpstashRedis, isUpstashConfigured } from "@/lib/server/upstash-kv";
+import { isSupabaseServiceConfigured } from "@/lib/supabase/server";
+import {
+  releaseSupabaseHeavyJobLease,
+  tryAcquireSupabaseHeavyJobLease,
+} from "@/lib/server/supabase-runtime-coordination";
 
 const SEMAPHORE_KEY = "pdf-doctor:heavy-jobs:leases";
 const LEASE_MS = 10 * 60 * 1000;
-const POLL_MS = 200;
+const POLL_MS = 1000;
 const WAIT_TIMEOUT_MS = 120_000;
 
 const ACQUIRE_SCRIPT = `
@@ -27,13 +32,23 @@ return redis.call('ZREM', KEYS[1], ARGV[1])
 `;
 
 async function tryAcquireLease(): Promise<string | null> {
+  const leaseId = randomUUID();
+  const max = getMaxConcurrentHeavyJobs();
+
+  if (isSupabaseServiceConfigured()) {
+    const acquired = await tryAcquireSupabaseHeavyJobLease(
+      leaseId,
+      max,
+      Math.ceil(LEASE_MS / 1000)
+    );
+    return acquired ? leaseId : null;
+  }
+
   const redis = await getUpstashRedis();
   if (!redis) return null;
 
-  const leaseId = randomUUID();
   const now = Date.now();
   const expireAt = now + LEASE_MS;
-  const max = getMaxConcurrentHeavyJobs();
 
   const acquired = (await redis.eval(
     ACQUIRE_SCRIPT,
@@ -45,6 +60,10 @@ async function tryAcquireLease(): Promise<string | null> {
 }
 
 export async function releaseHeavyJobLease(leaseId: string): Promise<void> {
+  if (isSupabaseServiceConfigured()) {
+    await releaseSupabaseHeavyJobLease(leaseId);
+    return;
+  }
   const redis = await getUpstashRedis();
   if (!redis) return;
   await redis.eval(RELEASE_SCRIPT, [SEMAPHORE_KEY], [leaseId]);
@@ -52,7 +71,7 @@ export async function releaseHeavyJobLease(leaseId: string): Promise<void> {
 
 /** Acquire a distributed heavy-job slot; polls until timeout. */
 export async function acquireHeavyJobLease(): Promise<string | null> {
-  if (!isUpstashConfigured()) return null;
+  if (!isDistributedSemaphoreEnabled()) return null;
 
   const deadline = Date.now() + WAIT_TIMEOUT_MS;
   while (Date.now() < deadline) {
@@ -64,5 +83,5 @@ export async function acquireHeavyJobLease(): Promise<string | null> {
 }
 
 export function isDistributedSemaphoreEnabled(): boolean {
-  return isUpstashConfigured();
+  return isSupabaseServiceConfigured() || isUpstashConfigured();
 }

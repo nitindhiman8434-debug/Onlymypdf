@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServiceClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  createServiceClient,
+  isSupabaseConfigured,
+  isSupabaseServiceConfigured,
+} from "@/lib/supabase/server";
 import { isProductionReady } from "@/lib/config/env-security";
 import { isConvertApiAvailable } from "@/lib/services/pdf-to-word-convertapi.service";
 import { isConvertApiOnlyMode } from "@/lib/services/pdf-to-word-engine-plan";
@@ -11,6 +15,10 @@ import {
   resolveLibreOfficeBinary,
 } from "@/lib/services/libreoffice-core.service";
 import { isUpstashConfigured } from "@/lib/server/upstash-kv";
+import {
+  getConversionQueueProvider,
+  isDurableConversionQueueConfigured,
+} from "@/lib/services/conversion-queue-provider";
 import {
   getCleanupOperationalStatus,
   getConversionOperationalMetrics,
@@ -27,7 +35,11 @@ function publicStatus(): { status: string; httpStatus: number } {
   if (process.env.NODE_ENV !== "production") {
     return { status: "ok", httpStatus: 200 };
   }
-  if (!isSupabaseConfigured() || !isProductionReady() || !isUpstashConfigured()) {
+  if (
+    !isSupabaseServiceConfigured() ||
+    !isProductionReady() ||
+    !isDurableConversionQueueConfigured()
+  ) {
     return { status: "degraded", httpStatus: 200 };
   }
   return { status: "ok", httpStatus: 200 };
@@ -50,9 +62,23 @@ export async function GET(request: NextRequest) {
   const checks: Record<string, { ok: boolean; detail?: string }> = {
     app: { ok: true },
     secrets: { ok: isProductionReady() },
+    coordination_store: {
+      ok: isSupabaseServiceConfigured() || isUpstashConfigured(),
+      detail: isSupabaseServiceConfigured()
+        ? "Supabase provides rate limits, leases, one-time claims, and preview metadata"
+        : isUpstashConfigured()
+          ? "Upstash compatibility fallback"
+          : "No distributed coordination store configured",
+    },
+    conversion_queue_provider: {
+      ok: isDurableConversionQueueConfigured(),
+      detail: getConversionQueueProvider(),
+    },
     upstash: {
-      ok: isUpstashConfigured(),
-      detail: "Required for distributed rate limits in production",
+      ok: true,
+      detail: isUpstashConfigured()
+        ? "Configured as a compatibility fallback"
+        : "Not required when Supabase runtime coordination is configured",
     },
     libreoffice: {
       ok: isLibreOfficeAvailable(),
@@ -166,7 +192,8 @@ export async function GET(request: NextRequest) {
     checks.app.ok &&
     checks.secrets.ok &&
     (checks.database?.ok ?? false) &&
-    (!isProd || checks.upstash.ok) &&
+    (!isProd || checks.coordination_store.ok) &&
+    (!isProd || checks.conversion_queue_provider.ok) &&
     (!isProd || (checks.storage_private?.ok ?? false)) &&
     (!isProd || checks.direct_upload_security.ok) &&
     (!isProd || checks.dedicated_worker_mode.ok) &&

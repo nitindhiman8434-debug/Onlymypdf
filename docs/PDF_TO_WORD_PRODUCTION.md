@@ -5,7 +5,7 @@ This guide covers high-traffic production deployment for OnlyMyPDF PDF→Word co
 ## Recommended architecture (big traffic)
 
 ```
-User upload → private R2/Supabase object → Redis queue → Worker converts → private object → Download
+User upload → private R2/Supabase object → Supabase Queue → Worker converts → private object → Download
                               ↓
                     1. ConvertAPI (primary)
                     2. pdf2docx (Linux fallback)
@@ -39,9 +39,8 @@ PDF_TO_WORD_CONVERTAPI_ONLY=1
 # Optional tuning
 CONVERTAPI_TIMEOUT_MS=180000
 
-# Already required for async PDF→Word jobs at scale
-UPSTASH_REDIS_REST_URL=...
-UPSTASH_REDIS_REST_TOKEN=...
+# Durable PGMQ queue and database coordination (migration 023)
+CONVERSION_QUEUE_PROVIDER=supabase
 
 # Lowest-cost 200 MB object path
 NEXT_PUBLIC_FILE_STORAGE_PROVIDER=r2
@@ -57,7 +56,7 @@ R2_BUCKET_NAME=onlymypdf-files
 | `CONVERTAPI_SECRET` | Cloud PDF→Word API (primary engine) |
 | `PDF_TO_WORD_CONVERTAPI_ONLY=1` | Production mode: ConvertAPI → pdf2docx → visual only |
 | `CONVERTAPI_TIMEOUT_MS` | Max wait per API call (default 180s) |
-| `UPSTASH_REDIS_*` | Job queue + rate limits across instances |
+| `CONVERSION_QUEUE_PROVIDER=supabase` | Supabase PGMQ jobs + database coordination across instances |
 | `FILE_STORAGE_PROVIDER=r2` | Use private Cloudflare R2 objects instead of the Supabase 50 MB Free limit |
 | `R2_*` | Server-only R2 S3 credentials and private bucket |
 
@@ -123,7 +122,7 @@ Look for:
 
 | Item | Action |
 |------|--------|
-| Async jobs | Use existing `/api/tools/pdf-to-word` job flow (Redis-backed) |
+| Async jobs | Use existing `/api/tools/pdf-to-word` job flow (Supabase PGMQ-backed) |
 | Concurrency | Default `MAX_CONCURRENT_HEAVY_JOBS=8` per instance (raise on dedicated workers) |
 | File limits | Pro: 200 MB through R2; files above an engine limit must use a validated local worker engine |
 | Monitoring | Alert if `convertapi.ok: false` in detailed health |
@@ -139,7 +138,7 @@ Look for:
 | **Slim** (`Dockerfile`) | Requires `CONVERTAPI_SECRET` — recommended for production |
 | **Full** (`Dockerfile.full`) | ConvertAPI + pdf2docx + LibreOffice fallbacks |
 
-For big traffic: **Slim + ConvertAPI + Redis queue**.
+For big traffic: **Slim + ConvertAPI + Supabase Queue**.
 
 ---
 
@@ -190,6 +189,6 @@ PDF_TO_WORD_CONVERTAPI_ONLY=1
 
 ## Related docs
 
-- `docs/OPERATIONS.md` — Redis, rate limits, slim Docker limits
+- `docs/OPERATIONS.md` — Supabase coordination, rate limits, slim Docker limits
 - `docs/PRODUCTION_CHECKLIST.md` — full deploy checklist
 - `.env.example` — all optional conversion vars

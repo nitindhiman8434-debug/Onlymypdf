@@ -1,5 +1,8 @@
-import { isSupabaseConfigured } from "../src/lib/supabase/server";
-import { isUpstashConfigured } from "../src/lib/server/upstash-kv";
+import {
+  isSupabaseConfigured,
+  isSupabaseServiceConfigured,
+} from "../src/lib/supabase/server";
+import { getConversionQueueProvider } from "../src/lib/services/conversion-queue-provider";
 import { getPdfToWordQueueDepth } from "../src/lib/services/pdf-to-word-jobs.service";
 import { processNextPdfToWordJob } from "../src/lib/services/pdf-to-word-worker.service";
 import { recordConversionWorkerHeartbeat } from "../src/lib/ops/conversion-worker-health";
@@ -8,8 +11,17 @@ import {
   startCleanupRun,
 } from "../src/lib/ops/conversion-telemetry";
 import { cleanupExpiredConversionJobs } from "../src/lib/services/cleanup.service";
+import { cleanupExpiredSupabaseRuntimeRecords } from "../src/lib/server/supabase-runtime-coordination";
 
-const pollMs = Math.max(250, Number(process.env.CONVERSION_WORKER_POLL_MS ?? "1000"));
+const minPollMs = Math.max(500, Number(process.env.CONVERSION_WORKER_POLL_MS ?? "1000"));
+const maxPollMs = Math.max(
+  minPollMs,
+  Number(process.env.CONVERSION_WORKER_MAX_POLL_MS ?? "30000")
+);
+const heartbeatIntervalMs = Math.max(
+  30_000,
+  Number(process.env.CONVERSION_WORKER_HEARTBEAT_MS ?? "60000")
+);
 const cleanupIntervalMs = Math.max(
   5 * 60 * 1000,
   Number(process.env.CONVERSION_CLEANUP_INTERVAL_MS ?? 60 * 60 * 1000)
@@ -23,7 +35,7 @@ async function heartbeat(
   force = false
 ) {
   const now = Date.now();
-  if (!force && now - lastHeartbeatAt < 15_000) return;
+  if (!force && now - lastHeartbeatAt < heartbeatIntervalMs) return;
   await recordConversionWorkerHeartbeat(input);
   lastHeartbeatAt = now;
 }
@@ -39,6 +51,9 @@ async function runScheduledCleanup() {
   const telemetryRun = await startCleanupRun();
   try {
     const result = await cleanupExpiredConversionJobs();
+    if (isSupabaseServiceConfigured()) {
+      await cleanupExpiredSupabaseRuntimeRecords();
+    }
     await finishCleanupRun(telemetryRun, {
       status: result.failed > 0 ? "failed" : "completed",
       filesDeleted: 0,
@@ -68,30 +83,54 @@ async function runScheduledCleanup() {
 }
 
 async function main() {
-  if (!isUpstashConfigured() || !isSupabaseConfigured()) {
-    throw new Error("The production worker requires Upstash Redis and Supabase storage.");
+  const provider = getConversionQueueProvider();
+  if (provider === "unavailable") {
+    throw new Error("The configured conversion queue provider is unavailable.");
+  }
+  if (process.env.NODE_ENV === "production" && (provider === "memory" || !isSupabaseConfigured())) {
+    throw new Error("The production worker requires a durable queue and Supabase storage.");
   }
 
-  console.log("[conversion-worker] ready", await getPdfToWordQueueDepth());
-  await heartbeat({ state: "ready" }, true);
+  try {
+    console.log("[conversion-worker] ready", {
+      provider,
+      ...(await getPdfToWordQueueDepth()),
+    });
+    await heartbeat({ state: "ready" }, true);
+  } catch (error) {
+    console.error("[conversion-worker] queue unavailable at startup; retrying with backoff", error);
+  }
+  let idlePollMs = minPollMs;
   while (!stopping) {
     if (Date.now() >= nextCleanupAt) await runScheduledCleanup();
-    const result = await processNextPdfToWordJob();
-    if (result.processed) {
-      await heartbeat(
-        {
-          state: "processed",
-          jobId: result.jobId,
-          result: result.status,
-        },
-        true
+    try {
+      const result = await processNextPdfToWordJob();
+      if (result.processed) {
+        idlePollMs = minPollMs;
+        await heartbeat(
+          {
+            state: "processed",
+            jobId: result.jobId,
+            result: result.status,
+          },
+          true
+        );
+      } else {
+        await heartbeat({ state: "idle" });
+        await new Promise((resolve) => setTimeout(resolve, idlePollMs));
+        idlePollMs = Math.min(maxPollMs, Math.ceil(idlePollMs * 1.5));
+      }
+    } catch (error) {
+      console.error(
+        `[conversion-worker] queue poll failed; retrying in ${maxPollMs}ms`,
+        error
       );
-    } else {
-      await heartbeat({ state: "idle" });
-      await new Promise((resolve) => setTimeout(resolve, pollMs));
+      await recordConversionWorkerHeartbeat({ state: "error" }).catch(() => undefined);
+      idlePollMs = maxPollMs;
+      await new Promise((resolve) => setTimeout(resolve, maxPollMs));
     }
   }
-  await heartbeat({ state: "stopping" }, true);
+  await heartbeat({ state: "stopping" }, true).catch(() => undefined);
   console.log("[conversion-worker] stopped");
 }
 

@@ -3,7 +3,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { verifyAdmin } from "@/lib/auth/verify-admin";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
-import { isUpstashConfigured } from "@/lib/server/upstash-kv";
+import { isDurableConversionQueueConfigured } from "@/lib/services/conversion-queue-provider";
 import { updateAdminSetting } from "@/lib/db/queries";
 import { toSafeApiError } from "@/lib/server/safe-error";
 import { logAdminAction } from "@/lib/admin/audit-log";
@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
       proBefore > 0 ? Math.round(((proNow - proBefore) / proBefore) * 1000) / 10 : proNow > 0 ? 100 : 0;
 
     const dbOk = isSupabaseConfigured();
-    const upstashOk = isUpstashConfigured();
+    const durableQueueOk = isDurableConversionQueueConfigured();
 
     return NextResponse.json({
       stats: {
@@ -156,7 +156,11 @@ export async function GET(request: NextRequest) {
         database: dbOk ? "healthy" : "down",
         storage: dbOk ? "healthy" : "degraded",
         api: "healthy",
-        queue: upstashOk ? "healthy" : process.env.NODE_ENV === "production" ? "degraded" : "healthy",
+        queue: durableQueueOk
+          ? "healthy"
+          : process.env.NODE_ENV === "production"
+            ? "degraded"
+            : "healthy",
       },
     });
   } catch (err) {

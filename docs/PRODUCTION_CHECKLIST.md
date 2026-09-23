@@ -2,7 +2,7 @@
 
 
 
-Copy this checklist when deploying to Vercel, Docker, or any host. Phase 1 requires a private storage bucket, durable Redis queue, and an isolated conversion worker.
+Copy this checklist when deploying to Vercel, Docker, or any host. Production requires a private storage bucket, migration 023's durable Supabase queue, and an isolated conversion worker.
 
 
 
@@ -29,9 +29,9 @@ Copy this checklist when deploying to Vercel, Docker, or any host. Phase 1 requi
 
 | `IP_HASH_SALT` | Hashes guest IPs for rate limits / logs |
 
-| `UPSTASH_REDIS_REST_URL` | **Required in production** — distributed rate limits, heavy-job semaphore, PDF sessions |
+| `CONVERSION_QUEUE_PROVIDER` | Set to `supabase` after migration 023 |
 
-| `UPSTASH_REDIS_REST_TOKEN` | Upstash auth token |
+Upstash variables are optional rollback compatibility only.
 
 
 
