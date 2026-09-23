@@ -15,6 +15,18 @@ This blueprint prepares OnlyMyPDF for a controlled public beta without a continu
 
 This does not change any PDF conversion algorithm or output-selection logic.
 
+## Current Google Cloud checkpoint (24 September 2026)
+
+- Google Cloud project name: `OnlyMyPDF`
+- Project ID: `onlymypdf-prod-2026`
+- Project number: `861153394297`
+- Billing account: not linked
+- Cloud Run Admin API: not enabled; the console requires a linked billing account before it can be enabled
+- Free trial: not activated
+- Paid resources: none created
+
+The project is reserved and ready for the prerequisites below. Stop at this checkpoint while the product remains local-only. Linking billing and enabling the deployment APIs is a later production action.
+
 ## Cost boundary
 
 Google Cloud requires an active billing account even for Free Tier resources. The blueprint does not create a billing account or deploy anything by itself.
