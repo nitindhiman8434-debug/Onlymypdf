@@ -4,7 +4,7 @@
 
 **Branch:** `phase1-dependable-beta`
 
-**Phase 2 overall completion:** 62%
+**Phase 2 overall completion:** 82%
 
 **Current work package:** Phase 2.3 — semantic Office output and OCR
 
@@ -18,7 +18,7 @@
 
 **Phase 2.3D status:** Complete for its controlled semantic gate. PDF-to-PowerPoint passed 7/7 local and Ubuntu cases with editable on-slide text for selectable PDFs, rendered visual comparison and a local HTTP artifact check. Public production behavior remains for Phase 2.3E.
 
-**Phase 2.3E status:** In progress. Production-image Office packaging passed GitHub Actions run 35651492549. No-cost localhost HTTP checks cover Word, Excel and PowerPoint with a synthetic PDF at 98.8% of the Free file cap, above-cap rejection on all three routes, a parallel pair and a simultaneous three-tool run. The last-page Word truncation defect was fixed and retested. Public-document QA subsequently found and fixed a dense-form Word image-only fallback, while recording Excel accuracy limits and local scan behavior in `docs/PHASE_2_3E_REAL_WORLD_QA.md`. Public HTTPS frontend artifacts, representative production load/retention and per-job provider cost evidence are still required; the 62% Phase 2 completion figure has not been raised. See `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`.
+**Phase 2.3E status:** In progress. Production-image Office packaging passed GitHub Actions run 35651492549. No-cost localhost HTTP checks cover Word, Excel and PowerPoint with a synthetic PDF at 98.8% of the Free file cap, above-cap rejection on all three routes, a parallel pair and a simultaneous three-tool run. The last-page Word truncation defect was fixed and retested. Public-document QA subsequently found and fixed a dense-form Word image-only fallback, while recording Excel accuracy limits and local scan behavior in `docs/PHASE_2_3E_REAL_WORLD_QA.md`. Public HTTPS frontend artifacts, representative production load/retention and per-job provider cost evidence are still required. The separate advanced-tools gate has since raised overall Phase 2 completion to 82%. See `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`.
 
 ## Scope and safety boundary
 
@@ -127,10 +127,12 @@ The confirmed values match the code defaults. No production code change is requi
 | Accessibility and inclusive UX | 20% | 12% | Automated keyboard and primary-flow gate complete; real screen-reader review pending |
 | Legal, privacy and public trust evidence | 20% | 20% | Engineering gate and operator identity complete |
 | Semantic Office output and OCR | 35% | 30% | Phase 2.3A/B OCR, 2.3C Excel and 2.3D PowerPoint semantic gates passed; measured production limits pending |
-| Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 0% | Pending demand order and implementation |
+| Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 20% | Complete for controlled local HTTP/artifact and Linux production-image runtime gates; boundaries documented |
 | Verified customer feedback | 5% | 0% | Pending real consented customer evidence |
-| **Total** | **100%** | **62%** | **Phase 2.2 and Phase 2.3A/B/C/D complete** |
+| **Total** | **100%** | **82%** | **Advanced tools and Phase 2.2/2.3A/B/C/D complete; external gates remain** |
 
 Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.
 
 Phase 2.3E is underway. Its measured-limit, cost and public deployment gates are tracked in `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`. The next phase must not begin until these gates are resolved or explicitly scoped out.
+
+The six-tool workstream is complete for its controlled engineering gate. Implementation details, failures found during Linux-image testing and supported boundaries are recorded in `docs/PHASE_2_ADVANCED_PDF_TOOLS.md`.

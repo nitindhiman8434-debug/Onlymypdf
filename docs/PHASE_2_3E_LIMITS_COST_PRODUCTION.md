@@ -3,11 +3,11 @@
 **Started:** 22 September 2026
 
 **Status:** In progress. Production-image packaging, the no-cost local capacity/page-completeness gates and the live Supabase queue activation gate passed; public production gate is not passed.
-**Phase 2 completion:** stays at 62% while this 5%-weight work package is incomplete.
+**Phase 2 completion:** 82%. The separate 20%-weight advanced PDF tools workstream passed after this document began; this 5%-weight deployment package remains incomplete.
 
 Later no-cost real-document QA found and repaired omitted Excel source text, unreadable short dense Word layout and dense PowerPoint text overlap. The [quality remediation checkpoint](PHASE_2_3E_QUALITY_REMEDIATION.md) and its final nine-route HTTP report supersede the earlier public-document observations below. On 23 September, migration 023 and its Supabase PGMQ/runtime coordination paths were activated and verified; see the [Supabase queue activation checkpoint](PHASE_2_3E_SUPABASE_QUEUE_ACTIVATION.md). The updated full-image OCR smoke passes; the public HTTPS, deployed retention/load and provider-cost gates remain unverified.
 
-On 24 September, a cost-limited [Cloud Run deployment blueprint](../deploy/cloud-run/README.md) was added. It uses request-based billing, scale-to-zero, a two-instance ceiling, concurrency one, scheduled Supabase queue drains and production-safe disabled checkout. Code/build readiness does not constitute deployment: Google Cloud requires an active billing account even for Free Tier use, and no Google Cloud resource has been created yet.
+On 24 September, a cost-limited [Cloud Run deployment blueprint](../deploy/cloud-run/README.md) was added. It uses request-based billing, scale-to-zero, a two-instance ceiling, concurrency one, scheduled Supabase queue drains and production-safe disabled checkout. Code/build readiness does not constitute deployment: Google Cloud project `onlymypdf-prod-2026` exists, but it has no linked billing account, Cloud Run Admin API is not enabled and no paid compute resource has been created.
 
 ## What is established
 
@@ -94,4 +94,4 @@ The current localhost tests use no billable cloud conversion service. A dependab
 
 An earlier live R2 retention drill (`quality/phase1-corpus/retention-retry-report.json`) already passed controlled deletion-failure accounting and retry cleanup with the configured two-hour worker TTL. The new public frontend flow still needs its own end-to-end cleanup observation.
 
-Until then, Phase 2.3E is **not 100% complete**, and Phase 2 overall remains **62%**.
+Until then, Phase 2.3E is **not 100% complete**, and Phase 2 overall remains **82%**.
