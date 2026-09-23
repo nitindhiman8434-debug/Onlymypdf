@@ -5,6 +5,7 @@ This blueprint prepares OnlyMyPDF for a controlled public beta without a continu
 ## Architecture
 
 - One public Cloud Run service built from `Dockerfile.full`.
+- One dedicated Cloud Build identity runs the build/deploy, and one separate runtime identity can read only the service secrets.
 - Request-based billing with `min-instances=0`, so idle instances scale to zero.
 - `max-instances=2` limits an unexpected traffic spike; `concurrency=1` prevents two heavy conversions sharing one container.
 - Supabase PGMQ remains the durable queue and coordination store.
@@ -53,10 +54,68 @@ Cloud Run's monthly free allowance is usage based; it is not a hard spending cap
 2. Enable Cloud Build, Cloud Run, Artifact Registry, Secret Manager and Cloud Scheduler APIs.
 3. Create an Artifact Registry Docker repository named `onlymypdf` in `us-central1`.
 4. Create the Secret Manager secrets referenced in `cloudbuild.yaml`.
-5. Grant the Cloud Build service account permission to deploy Cloud Run and read only those secrets.
+5. Create the dedicated build and runtime service accounts described below. Do not use the Compute Engine default account.
 6. Supply the public Supabase URL/anon key, Turnstile site key, legal operator name and privacy email as Cloud Build substitutions.
 
 Never put service-role, R2, signing, email or Turnstile secret values into Cloud Build substitutions, GitHub variables, committed YAML or shell history. Store them in Secret Manager.
+
+## Dedicated identities and IAM
+
+The blueprint is pinned to these user-managed accounts in project `onlymypdf-prod-2026`:
+
+| Identity | Purpose | Access boundary |
+|---|---|---|
+| `onlymypdf-cloud-build@onlymypdf-prod-2026.iam.gserviceaccount.com` | Build, push and deploy | Cloud Run deployment, write to the single `onlymypdf` image repository, Cloud Logging, and permission to attach the runtime identity |
+| `onlymypdf-runtime@onlymypdf-prod-2026.iam.gserviceaccount.com` | Run the web container | Secret Accessor on the named OnlyMyPDF secrets only |
+
+Create the identities only when billing is linked and the listed APIs are enabled:
+
+```powershell
+$ProjectId = "onlymypdf-prod-2026"
+$Region = "us-central1"
+$Repository = "onlymypdf"
+$BuildSa = "onlymypdf-cloud-build@$ProjectId.iam.gserviceaccount.com"
+$RuntimeSa = "onlymypdf-runtime@$ProjectId.iam.gserviceaccount.com"
+$Deployer = (gcloud config get-value account).Trim()
+
+gcloud iam service-accounts create onlymypdf-cloud-build --project $ProjectId --display-name "OnlyMyPDF Cloud Build"
+gcloud iam service-accounts create onlymypdf-runtime --project $ProjectId --display-name "OnlyMyPDF Cloud Run runtime"
+
+gcloud projects add-iam-policy-binding $ProjectId --member "serviceAccount:$BuildSa" --role roles/run.admin
+gcloud projects add-iam-policy-binding $ProjectId --member "serviceAccount:$BuildSa" --role roles/logging.logWriter
+gcloud projects add-iam-policy-binding $ProjectId --member "serviceAccount:$BuildSa" --role roles/storage.objectViewer
+gcloud projects add-iam-policy-binding $ProjectId --member "serviceAccount:$BuildSa" --role roles/serviceusage.serviceUsageConsumer
+gcloud artifacts repositories add-iam-policy-binding $Repository --project $ProjectId --location $Region --member "serviceAccount:$BuildSa" --role roles/artifactregistry.writer
+
+gcloud iam service-accounts add-iam-policy-binding $RuntimeSa --project $ProjectId --member "serviceAccount:$BuildSa" --role roles/iam.serviceAccountUser
+gcloud iam service-accounts add-iam-policy-binding $BuildSa --project $ProjectId --member "user:$Deployer" --role roles/iam.serviceAccountUser
+```
+
+Grant the runtime identity access to each referenced secret rather than granting project-wide Secret Accessor:
+
+```powershell
+$Secrets = @(
+  "onlymypdf-supabase-service-role",
+  "onlymypdf-r2-account-id",
+  "onlymypdf-r2-access-key-id",
+  "onlymypdf-r2-secret-access-key",
+  "onlymypdf-cron-secret",
+  "onlymypdf-health-check-secret",
+  "onlymypdf-upload-grant-secret",
+  "onlymypdf-job-payload-secret",
+  "onlymypdf-step-up-secret",
+  "onlymypdf-ip-hash-salt",
+  "onlymypdf-sentry-dsn",
+  "onlymypdf-resend-api-key",
+  "onlymypdf-turnstile-secret-key"
+)
+
+foreach ($Secret in $Secrets) {
+  gcloud secrets add-iam-policy-binding $Secret --project $ProjectId --member "serviceAccount:$RuntimeSa" --role roles/secretmanager.secretAccessor
+}
+```
+
+`cloudbuild.yaml` rejects a runtime identity from another project, attaches the dedicated runtime account with `--service-account`, and declares the dedicated build account at the build level. Cloud Run checks secret access against the runtime identity before starting a revision.
 
 ## Build and deploy
 
@@ -64,6 +123,8 @@ After the prerequisites are complete:
 
 ```powershell
 gcloud builds submit `
+  --project onlymypdf-prod-2026 `
+  --region us-central1 `
   --config deploy/cloud-run/cloudbuild.yaml `
   --substitutions "_SUPABASE_URL=https://PROJECT.supabase.co,_SUPABASE_ANON_KEY=PUBLIC_ANON_KEY,_TURNSTILE_SITE_KEY=PUBLIC_SITE_KEY,_LEGAL_OPERATOR_NAME=LEGAL_NAME,_PRIVACY_EMAIL=privacy@example.com"
 ```

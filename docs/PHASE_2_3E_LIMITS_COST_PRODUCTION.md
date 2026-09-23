@@ -84,6 +84,14 @@ The first public gate needs an actual HTTPS frontend using the full image, confi
 
 The current localhost tests use no billable cloud conversion service. A dependable always-on public release may require paid compute and database tiers, but no plan has been purchased or selected. Per-job cost still needs actual deployed CPU-seconds, RAM-seconds, egress, R2 operations/storage, Redis commands and database usage from a representative load run. Local wall time alone cannot determine a provider invoice.
 
+## Cloud Run identity hardening checkpoint — 24 September 2026
+
+The no-cost deployment blueprint now separates the Cloud Build deployer identity from the Cloud Run runtime identity. `cloudbuild.yaml` declares a dedicated user-managed build account, attaches a dedicated runtime account on deployment and rejects a runtime account outside the active project. The deterministic service URL now uses Cloud Build's built-in project-number substitution, so the preflight does not need project-inspection access.
+
+The deployment guide includes resource-scoped Artifact Registry access, per-secret Secret Manager access for the runtime identity, Cloud Logging configuration and the exact permission needed for the build identity to attach the runtime identity. It deliberately avoids the Compute Engine default service account. This is configuration readiness only: no service account, IAM binding, secret, image, Cloud Run revision, Scheduler job or billable resource was created during this checkpoint.
+
+The YAML parses successfully and static checks confirm the custom build identity, runtime `--service-account`, scale-to-zero, two-instance ceiling, concurrency one, disabled billing and Supabase queue settings. A live Google Cloud validation cannot run until billing is linked and the required APIs are enabled, so the Phase 2.3E public gate and the overall **82%** estimate remain unchanged.
+
 ## Exit gate
 
 - Full production web image CI passes with both converter scripts and valid outputs.

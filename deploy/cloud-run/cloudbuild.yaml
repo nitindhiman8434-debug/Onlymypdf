@@ -5,14 +5,17 @@ steps:
     args:
       - -ceu
       - |
-        for value in "${_SUPABASE_URL}" "${_SUPABASE_ANON_KEY}" "${_TURNSTILE_SITE_KEY}" "${_LEGAL_OPERATOR_NAME}" "${_PRIVACY_EMAIL}"; do
+        for value in "${_SUPABASE_URL}" "${_SUPABASE_ANON_KEY}" "${_TURNSTILE_SITE_KEY}" "${_LEGAL_OPERATOR_NAME}" "${_PRIVACY_EMAIL}" "${_RUNTIME_SERVICE_ACCOUNT}"; do
           if [[ -z "$${value}" || "$${value}" == REPLACE_* ]]; then
             echo "A required Cloud Build substitution is still a placeholder." >&2
             exit 1
           fi
         done
-        PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
-        APP_URL="https://${_SERVICE}-$${PROJECT_NUMBER}.${_REGION}.run.app"
+        if [[ "${_RUNTIME_SERVICE_ACCOUNT}" != *"@$PROJECT_ID.iam.gserviceaccount.com" ]]; then
+          echo "The runtime service account must belong to the active project." >&2
+          exit 1
+        fi
+        APP_URL="https://${_SERVICE}-$PROJECT_NUMBER.${_REGION}.run.app"
         printf 'APP_URL=%s\n' "$${APP_URL}" > /workspace/cloud-run.env
         printf 'IMAGE_URL=%s-docker.pkg.dev/%s/%s/%s:%s\n' \
           '${_REGION}' "$PROJECT_ID" '${_REPOSITORY}' '${_IMAGE}' "$BUILD_ID" \
@@ -62,6 +65,7 @@ steps:
           --project "$PROJECT_ID" \
           --region '${_REGION}' \
           --image "$${IMAGE_URL}" \
+          --service-account '${_RUNTIME_SERVICE_ACCOUNT}' \
           --allow-unauthenticated \
           --execution-environment gen2 \
           --port 8080 \
@@ -80,12 +84,16 @@ substitutions:
   _SERVICE: onlymypdf-web
   _REPOSITORY: onlymypdf
   _IMAGE: web
+  _BUILD_SERVICE_ACCOUNT: onlymypdf-cloud-build@onlymypdf-prod-2026.iam.gserviceaccount.com
+  _RUNTIME_SERVICE_ACCOUNT: onlymypdf-runtime@onlymypdf-prod-2026.iam.gserviceaccount.com
   _SUPABASE_URL: REPLACE_SUPABASE_URL
   _SUPABASE_ANON_KEY: REPLACE_SUPABASE_ANON_KEY
   _TURNSTILE_SITE_KEY: REPLACE_TURNSTILE_SITE_KEY
   _LEGAL_OPERATOR_NAME: REPLACE_LEGAL_OPERATOR_NAME
   _LEGAL_OPERATOR_COUNTRY: India
   _PRIVACY_EMAIL: REPLACE_PRIVACY_EMAIL
+
+serviceAccount: projects/$PROJECT_ID/serviceAccounts/${_BUILD_SERVICE_ACCOUNT}
 
 options:
   logging: CLOUD_LOGGING_ONLY
