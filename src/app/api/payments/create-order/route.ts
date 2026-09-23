@@ -3,7 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthenticatedSupabaseUser } from "@/lib/auth/get-api-user";
 import { authGuardResponse } from "@/lib/server/auth-guard-http";
 import { createOrder } from "@/lib/services/payment.service";
-import { isBillingCheckoutAvailable, isMockBillingMode } from "@/lib/billing/billing-config";
+import {
+  getCheckoutUnavailableMessage,
+  isBillingCheckoutAvailable,
+  isMockBillingMode,
+} from "@/lib/billing/billing-config";
 import { createPayment, getCouponCode } from "@/lib/db/queries";
 import { checkAuthRateLimit, checkCouponAttemptRateLimit, rateLimitResponse } from "@/lib/server/rate-limiter";
 import { guardMutationOrigin } from "@/lib/server/mutation-origin";
@@ -28,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     if (!isBillingCheckoutAvailable()) {
       return NextResponse.json(
-        { error: "Online payments are not configured. Set BILLING_MODE=mock or add Razorpay keys." },
+        { error: getCheckoutUnavailableMessage() },
         { status: 503 }
       );
     }

@@ -1,6 +1,6 @@
 /** Production secret checks — wired via instrumentation.ts on server boot. */
 
-import { isMockBillingMode } from "@/lib/billing/billing-config";
+import { getBillingMode, isMockBillingMode } from "@/lib/billing/billing-config";
 
 /** Required for every production deploy (mock or live billing). */
 const CORE_REQUIRED_IN_PRODUCTION = [
@@ -11,8 +11,6 @@ const CORE_REQUIRED_IN_PRODUCTION = [
   "CRON_SECRET",
   "HEALTH_CHECK_SECRET",
   "IP_HASH_SALT",
-  "UPSTASH_REDIS_REST_URL",
-  "UPSTASH_REDIS_REST_TOKEN",
   "SENTRY_DSN",
   "RESEND_API_KEY",
   "TURNSTILE_SECRET_KEY",
@@ -43,10 +41,9 @@ function missingKeys(keys: readonly string[]): string[] {
 }
 
 export function getProductionRequiredSecretKeys(): readonly string[] {
-  if (isMockBillingMode()) {
-    return CORE_REQUIRED_IN_PRODUCTION;
-  }
-  return [...CORE_REQUIRED_IN_PRODUCTION, ...LIVE_BILLING_REQUIRED_IN_PRODUCTION];
+  return getBillingMode() === "live"
+    ? [...CORE_REQUIRED_IN_PRODUCTION, ...LIVE_BILLING_REQUIRED_IN_PRODUCTION]
+    : CORE_REQUIRED_IN_PRODUCTION;
 }
 
 function assertMockBillingNotInProduction(): void {

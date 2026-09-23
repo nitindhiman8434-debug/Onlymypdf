@@ -88,4 +88,24 @@ describe("billing-config", () => {
     const { isSubscriptionBillingAvailable } = await import("@/lib/billing/billing-config");
     expect(isSubscriptionBillingAvailable()).toBe(true);
   });
+
+  it("allows a production-safe disabled mode without exposing checkout", async () => {
+    process.env.BILLING_MODE = "disabled";
+    process.env.NEXT_PUBLIC_BILLING_MODE = "disabled";
+    process.env.RAZORPAY_KEY_ID = "should-not-enable-disabled-mode";
+    process.env.RAZORPAY_KEY_SECRET = "should-not-enable-disabled-mode";
+    process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID = "should-not-enable-disabled-mode";
+
+    const {
+      getBillingMode,
+      getCheckoutUnavailableMessage,
+      isBillingCheckoutAvailable,
+      isSubscriptionBillingAvailable,
+    } = await import("@/lib/billing/billing-config");
+
+    expect(getBillingMode()).toBe("disabled");
+    expect(isBillingCheckoutAvailable()).toBe(false);
+    expect(isSubscriptionBillingAvailable()).toBe(false);
+    expect(getCheckoutUnavailableMessage()).toContain("temporarily unavailable");
+  });
 });

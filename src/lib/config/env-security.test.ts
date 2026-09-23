@@ -8,8 +8,6 @@ const CORE_SECRETS = {
   CRON_SECRET: "cron-secret-value",
   HEALTH_CHECK_SECRET: "health-check-secret-value",
   IP_HASH_SALT: "ip-hash-salt-value",
-  UPSTASH_REDIS_REST_URL: "https://upstash.example.com",
-  UPSTASH_REDIS_REST_TOKEN: "upstash-token-value",
   SENTRY_DSN: "https://sentry.example.com/1",
   RESEND_API_KEY: "re_test_key",
   TURNSTILE_SECRET_KEY: "turnstile-secret-value",
@@ -79,6 +77,21 @@ describe("env-security", () => {
     expect(() => assertProductionSecrets()).not.toThrow();
   });
 
+  it("allows BILLING_MODE=disabled in production without Razorpay secrets", async () => {
+    process.env.BILLING_MODE = "disabled";
+    delete process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    delete process.env.RAZORPAY_KEY_ID;
+    delete process.env.RAZORPAY_KEY_SECRET;
+    delete process.env.RAZORPAY_WEBHOOK_SECRET;
+
+    const { assertProductionSecrets, getProductionRequiredSecretKeys } = await import(
+      "@/lib/config/env-security"
+    );
+
+    expect(getProductionRequiredSecretKeys()).not.toContain("RAZORPAY_WEBHOOK_SECRET");
+    expect(() => assertProductionSecrets()).not.toThrow();
+  });
+
   it("requires Razorpay webhook secret when billing is live", async () => {
     process.env.BILLING_MODE = "live";
     Object.assign(process.env, RAZORPAY_SECRETS);
@@ -102,6 +115,21 @@ describe("env-security", () => {
 
     expect(() => assertProductionSecrets()).not.toThrow();
     expect(isProductionReady()).toBe(true);
+  });
+
+  it("does not require the retired Upstash fallback", async () => {
+    process.env.BILLING_MODE = "live";
+    Object.assign(process.env, RAZORPAY_SECRETS);
+    delete process.env.UPSTASH_REDIS_REST_URL;
+    delete process.env.UPSTASH_REDIS_REST_TOKEN;
+
+    const { assertProductionSecrets, getProductionRequiredSecretKeys } = await import(
+      "@/lib/config/env-security"
+    );
+
+    expect(getProductionRequiredSecretKeys()).not.toContain("UPSTASH_REDIS_REST_URL");
+    expect(getProductionRequiredSecretKeys()).not.toContain("UPSTASH_REDIS_REST_TOKEN");
+    expect(() => assertProductionSecrets()).not.toThrow();
   });
 
   it("requires TRUSTED_PROXY_IP_HEADERS on self-hosted production", async () => {

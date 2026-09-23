@@ -30,6 +30,7 @@ Copy this checklist when deploying to Vercel, Docker, or any host. Production re
 | `IP_HASH_SALT` | Hashes guest IPs for rate limits / logs |
 
 | `CONVERSION_QUEUE_PROVIDER` | Set to `supabase` after migration 023 |
+| `CONVERSION_WORKER_RUNTIME` | `dedicated` for an always-running worker; `scheduled` for authenticated scale-to-zero queue drains |
 
 Upstash variables are optional rollback compatibility only.
 
@@ -39,7 +40,7 @@ Upstash variables are optional rollback compatibility only.
 
 
 
-Skip when using mock billing (`BILLING_MODE=mock` for dev/staging).
+Use `BILLING_MODE=disabled` for a production preview with checkout unavailable. `BILLING_MODE=mock` is local/staging only and is rejected in production.
 
 
 
@@ -47,7 +48,7 @@ Skip when using mock billing (`BILLING_MODE=mock` for dev/staging).
 
 |----------|---------|
 
-| `BILLING_MODE` | `mock` (no gateway) or `live` (Razorpay) |
+| `BILLING_MODE` | `disabled` (safe production preview), `mock` (local/staging only), or `live` (Razorpay) |
 
 | `RAZORPAY_KEY_ID` | Payment order creation |
 
@@ -224,7 +225,7 @@ Manual checks:
 - [ ] Cookie banner → dashboard settings syncs to server
 
 - [ ] Cron cleanup runs hourly (Vercel cron + `CRON_SECRET`, or external scheduler with Bearer auth)
-- [ ] `npm run worker:conversions` or the `conversion-worker` Compose service is continuously running
+- [ ] Either a dedicated worker is continuously running, or scheduled mode calls `/api/cron/conversion-worker?maxJobs=1` at least once per minute
 - [ ] Detailed health shows private `pdf-files` storage, direct-upload security, fresh worker heartbeat, queue, output validity, latency and latest cleanup as healthy
 - [ ] Real 25 MB and 200 MB files complete through ingress, worker, storage and download
 

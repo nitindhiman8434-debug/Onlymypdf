@@ -22,6 +22,7 @@ vi.mock("@/lib/services/payment.service", () => ({
 }));
 
 vi.mock("@/lib/billing/billing-config", () => ({
+  getCheckoutUnavailableMessage: vi.fn(() => "Online payments are temporarily unavailable."),
   isBillingCheckoutAvailable: vi.fn(),
   isMockBillingMode: vi.fn(),
 }));
@@ -136,6 +137,17 @@ describe("payment route handlers", () => {
     vi.mocked(createMockPaymentId).mockReturnValue("pay_mock_1");
     vi.mocked(createMockPaymentSignature).mockReturnValue("mock_sig");
     vi.mocked(isMockOrderId).mockReturnValue(true);
+  });
+
+  it("fails closed with a public-safe message when checkout is disabled", async () => {
+    vi.mocked(isBillingCheckoutAvailable).mockReturnValue(false);
+
+    const response = await createOrderPOST(requestJson({ plan: "pro", duration: "monthly" }));
+    const body = await readJson(response);
+
+    expect(response.status).toBe(503);
+    expect(body.error).toBe("Online payments are temporarily unavailable.");
+    expect(createOrder).not.toHaveBeenCalled();
   });
 
   it("creates discounted yearly Razorpay orders and stores INR amount", async () => {

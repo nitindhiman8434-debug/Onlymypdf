@@ -7,6 +7,8 @@
 
 Later no-cost real-document QA found and repaired omitted Excel source text, unreadable short dense Word layout and dense PowerPoint text overlap. The [quality remediation checkpoint](PHASE_2_3E_QUALITY_REMEDIATION.md) and its final nine-route HTTP report supersede the earlier public-document observations below. On 23 September, migration 023 and its Supabase PGMQ/runtime coordination paths were activated and verified; see the [Supabase queue activation checkpoint](PHASE_2_3E_SUPABASE_QUEUE_ACTIVATION.md). The updated full-image OCR smoke passes; the public HTTPS, deployed retention/load and provider-cost gates remain unverified.
 
+On 24 September, a cost-limited [Cloud Run deployment blueprint](../deploy/cloud-run/README.md) was added. It uses request-based billing, scale-to-zero, a two-instance ceiling, concurrency one, scheduled Supabase queue drains and production-safe disabled checkout. Code/build readiness does not constitute deployment: Google Cloud requires an active billing account even for Free Tier use, and no Google Cloud resource has been created yet.
+
 ## What is established
 
 | Area | Evidence | Honest boundary |

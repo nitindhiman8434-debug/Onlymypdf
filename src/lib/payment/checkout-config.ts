@@ -7,6 +7,7 @@ import {
 
 export function isRazorpayCheckoutConfigured(): boolean {
   if (typeof window !== "undefined") {
+    if (process.env.NEXT_PUBLIC_BILLING_MODE === "disabled") return false;
     return (
       process.env.NEXT_PUBLIC_BILLING_MODE === "mock" ||
       Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim())
@@ -17,6 +18,7 @@ export function isRazorpayCheckoutConfigured(): boolean {
 
 export function isRazorpaySubscriptionCheckoutConfigured(): boolean {
   if (typeof window !== "undefined") {
+    if (process.env.NEXT_PUBLIC_BILLING_MODE === "disabled") return false;
     return (
       process.env.NEXT_PUBLIC_BILLING_MODE === "mock" ||
       (isRazorpayCheckoutConfigured() &&

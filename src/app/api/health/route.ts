@@ -28,6 +28,7 @@ import { getConversionWorkerHealth } from "@/lib/ops/conversion-worker-health";
 import { isDirectUploadGrantSigningConfigured } from "@/lib/server/direct-upload-grant";
 import { isJobPayloadEncryptionConfigured } from "@/lib/server/job-payload-secret";
 import { checkPdfBlobStorage } from "@/lib/server/pdf-blob-storage";
+import { getConversionWorkerRuntime } from "@/lib/ops/conversion-worker-runtime";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +49,7 @@ function publicStatus(): { status: string; httpStatus: number } {
 export async function GET(request: NextRequest) {
   const detailed = isHealthDetailAuthorized(request);
   const pub = publicStatus();
+  const workerRuntime = getConversionWorkerRuntime();
 
   if (!detailed) {
     return NextResponse.json(
@@ -105,7 +107,9 @@ export async function GET(request: NextRequest) {
       detail:
         process.env.INLINE_CONVERSION_WORKER === "1"
           ? "Inline conversion worker is enabled"
-          : "Application instances enqueue only; dedicated worker claims jobs",
+          : workerRuntime === "scheduled"
+            ? "Authenticated scheduled requests drain the durable queue"
+            : "Application instances enqueue only; dedicated worker claims jobs",
     },
   };
 

@@ -1,0 +1,93 @@
+steps:
+  - id: preflight
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        for value in "${_SUPABASE_URL}" "${_SUPABASE_ANON_KEY}" "${_TURNSTILE_SITE_KEY}" "${_LEGAL_OPERATOR_NAME}" "${_PRIVACY_EMAIL}"; do
+          if [[ -z "$${value}" || "$${value}" == REPLACE_* ]]; then
+            echo "A required Cloud Build substitution is still a placeholder." >&2
+            exit 1
+          fi
+        done
+        PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
+        APP_URL="https://${_SERVICE}-$${PROJECT_NUMBER}.${_REGION}.run.app"
+        printf 'APP_URL=%s\n' "$${APP_URL}" > /workspace/cloud-run.env
+        printf 'IMAGE_URL=%s-docker.pkg.dev/%s/%s/%s:%s\n' \
+          '${_REGION}' "$PROJECT_ID" '${_REPOSITORY}' '${_IMAGE}' "$BUILD_ID" \
+          >> /workspace/cloud-run.env
+
+  - id: build-full-image
+    name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        source /workspace/cloud-run.env
+        docker build \
+          --file Dockerfile.full \
+          --tag "$${IMAGE_URL}" \
+          --build-arg "NEXT_PUBLIC_APP_URL=$${APP_URL}" \
+          --build-arg 'NEXT_PUBLIC_APP_NAME=OnlyMyPDF' \
+          --build-arg 'NEXT_PUBLIC_SUPABASE_URL=${_SUPABASE_URL}' \
+          --build-arg 'NEXT_PUBLIC_SUPABASE_ANON_KEY=${_SUPABASE_ANON_KEY}' \
+          --build-arg 'NEXT_PUBLIC_TURNSTILE_SITE_KEY=${_TURNSTILE_SITE_KEY}' \
+          --build-arg 'NEXT_PUBLIC_BILLING_MODE=disabled' \
+          --build-arg 'NEXT_PUBLIC_FILE_STORAGE_PROVIDER=r2' \
+          --build-arg 'NEXT_PUBLIC_LEGAL_OPERATOR_NAME=${_LEGAL_OPERATOR_NAME}' \
+          --build-arg 'NEXT_PUBLIC_LEGAL_OPERATOR_COUNTRY=${_LEGAL_OPERATOR_COUNTRY}' \
+          --build-arg 'NEXT_PUBLIC_PRIVACY_EMAIL=${_PRIVACY_EMAIL}' \
+          --build-arg 'NEXT_PUBLIC_MAX_FREE_FILE_SIZE_MB=25' \
+          --build-arg 'NEXT_PUBLIC_MAX_PRO_FILE_SIZE_MB=200' \
+          .
+
+  - id: push-full-image
+    name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        source /workspace/cloud-run.env
+        docker push "$${IMAGE_URL}"
+
+  - id: deploy-scale-to-zero
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        source /workspace/cloud-run.env
+        gcloud run deploy '${_SERVICE}' \
+          --project "$PROJECT_ID" \
+          --region '${_REGION}' \
+          --image "$${IMAGE_URL}" \
+          --allow-unauthenticated \
+          --execution-environment gen2 \
+          --port 8080 \
+          --cpu 2 \
+          --memory 4Gi \
+          --concurrency 1 \
+          --min-instances 0 \
+          --max-instances 2 \
+          --timeout 3600 \
+          --cpu-throttling \
+          --set-env-vars "NODE_ENV=production,NEXT_PUBLIC_APP_URL=$${APP_URL},NEXT_PUBLIC_APP_NAME=OnlyMyPDF,NEXT_PUBLIC_SUPABASE_URL=${_SUPABASE_URL},NEXT_PUBLIC_SUPABASE_ANON_KEY=${_SUPABASE_ANON_KEY},NEXT_PUBLIC_TURNSTILE_SITE_KEY=${_TURNSTILE_SITE_KEY},NEXT_PUBLIC_BILLING_MODE=disabled,BILLING_MODE=disabled,NEXT_PUBLIC_FILE_STORAGE_PROVIDER=r2,FILE_STORAGE_PROVIDER=r2,R2_BUCKET_NAME=onlymypdf-files,CONVERSION_QUEUE_PROVIDER=supabase,CONVERSION_WORKER_RUNTIME=scheduled,INLINE_CONVERSION_WORKER=0,MAX_CONCURRENT_HEAVY_JOBS=1,MAX_FREE_FILE_SIZE_MB=25,MAX_PRO_FILE_SIZE_MB=200,MAX_UPLOAD_BODY_MB=210,FILE_RETENTION_HOURS=2,TRUSTED_PROXY_IP_HEADERS=1,PDF_OCR_ENABLED=true,PDF_OCR_REQUIRED=true,PDF_OCR_LANGUAGES=eng+hin,PDF_OCR_DPI=220,PDF_OCR_MAX_PAGES=50,NEXT_PUBLIC_LEGAL_OPERATOR_NAME=${_LEGAL_OPERATOR_NAME},NEXT_PUBLIC_LEGAL_OPERATOR_COUNTRY=${_LEGAL_OPERATOR_COUNTRY},NEXT_PUBLIC_PRIVACY_EMAIL=${_PRIVACY_EMAIL}" \
+          --set-secrets "SUPABASE_SERVICE_ROLE_KEY=onlymypdf-supabase-service-role:latest,R2_ACCOUNT_ID=onlymypdf-r2-account-id:latest,R2_ACCESS_KEY_ID=onlymypdf-r2-access-key-id:latest,R2_SECRET_ACCESS_KEY=onlymypdf-r2-secret-access-key:latest,CRON_SECRET=onlymypdf-cron-secret:latest,HEALTH_CHECK_SECRET=onlymypdf-health-check-secret:latest,UPLOAD_GRANT_SECRET=onlymypdf-upload-grant-secret:latest,JOB_PAYLOAD_SECRET=onlymypdf-job-payload-secret:latest,STEP_UP_SECRET=onlymypdf-step-up-secret:latest,IP_HASH_SALT=onlymypdf-ip-hash-salt:latest,SENTRY_DSN=onlymypdf-sentry-dsn:latest,RESEND_API_KEY=onlymypdf-resend-api-key:latest,TURNSTILE_SECRET_KEY=onlymypdf-turnstile-secret-key:latest"
+
+substitutions:
+  _REGION: us-central1
+  _SERVICE: onlymypdf-web
+  _REPOSITORY: onlymypdf
+  _IMAGE: web
+  _SUPABASE_URL: REPLACE_SUPABASE_URL
+  _SUPABASE_ANON_KEY: REPLACE_SUPABASE_ANON_KEY
+  _TURNSTILE_SITE_KEY: REPLACE_TURNSTILE_SITE_KEY
+  _LEGAL_OPERATOR_NAME: REPLACE_LEGAL_OPERATOR_NAME
+  _LEGAL_OPERATOR_COUNTRY: India
+  _PRIVACY_EMAIL: REPLACE_PRIVACY_EMAIL
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 3600s

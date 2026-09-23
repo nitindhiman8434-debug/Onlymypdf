@@ -189,8 +189,9 @@ When **Supabase migration 023** and private object storage are configured:
 
 - **Heavy conversions** share a Supabase-backed distributed semaphore. PDF-to-Word uses a durable PGMQ queue and private staged storage. Production fails closed if durable coordination is unavailable.
 - **Large PDF-to-Word uploads** go browser → signed private R2 or Supabase upload → durable queue, so file bytes do not cross the app server request body. Supabase Free remains capped at 50 MB; select R2 for the tested 200 MB path.
-- **Dedicated worker health** is written to Supabase every 60 seconds and becomes unhealthy after 150 seconds without a fresh heartbeat.
-- **Worker watchdog** runs `npm run worker:watchdog` every five minutes in a separate Railway cron service. A stale/error heartbeat exits non-zero so Railway's deployment-crash notification rule sends email and in-app alerts.
+- **Dedicated worker mode** (`CONVERSION_WORKER_RUNTIME=dedicated`) writes health to Supabase every 60 seconds and becomes unhealthy after 150 seconds without a fresh heartbeat.
+- **Scale-to-zero scheduled mode** (`CONVERSION_WORKER_RUNTIME=scheduled`) uses authenticated calls to `/api/cron/conversion-worker?maxJobs=1`; each call records a ready/processed/idle/error heartbeat. Schedule it at least once per minute so the 150-second freshness gate remains valid.
+- The former Railway watchdog is paused. A dedicated deployment may still run `npm run worker:watchdog`; the Cloud Run blueprint uses Scheduler execution alerts plus authenticated health instead.
 - **PDF preview sessions** persist metadata in Supabase and PDF bytes in bucket `pdf-files` under `temp-sessions/pdf/{sessionId}.pdf`.
 
 See `docs/PRODUCTION_CHECKLIST.md` and `.env.example` for the full list.
@@ -229,14 +230,14 @@ Uses Next.js `output: "standalone"` from `next.config.ts`. Node **20+** (see `.n
 
 **Slim image limitations:** LibreOffice, Python (pdf2docx), and Puppeteer are **not** included — PDF→Word on slim Docker requires `CONVERTAPI_SECRET` or a sidecar. Rate limits and PDF→Word async jobs use Supabase migration 023.
 
-**Full image:** Sets `LIBREOFFICE_PATH=/usr/bin/soffice` and `PDF2DOCX_PYTHON=/usr/bin/python3`. Puppeteer/Chromium is still not bundled — HTML→PDF may need separate setup per deployment guide.
+**Full image:** Sets `LIBREOFFICE_PATH=/usr/bin/soffice`, `PDF2DOCX_PYTHON=/usr/bin/python3` and `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium`. It includes Chromium, English/Hindi Tesseract and the Office converter scripts.
 
 ## Backup & disaster recovery
 
 1. **Supabase**: enable daily backups (Pro plan); export schema periodically.
 2. **Storage**: `pdf-files` bucket is ephemeral by design; no long-term backup required for user files.
 3. **Secrets**: store in Vercel/host secret manager; rotate `CRON_SECRET` and `IP_HASH_SALT` on compromise.
-4. **Recovery**: redeploy from `main`, re-run migrations 001–021 on fresh DB if needed, restore env vars, verify `/api/health`, `/status`, the worker queue, cleanup status, and one tool conversion.
+4. **Recovery**: redeploy from `main`, re-run migrations 001–023 on a fresh DB if needed, restore env vars, verify `/api/health`, `/status`, the worker queue, cleanup status, and one tool conversion.
 
 ## Incident checklist
 
