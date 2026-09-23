@@ -331,7 +331,6 @@ def pdfa_pdf(input_path: str, output_path: str, options: dict) -> dict:
             "-dPDFACompatibilityPolicy=1",
             "-sDEVICE=pdfwrite",
             "-sColorConversionStrategy=RGB",
-            "-dUseCIEColor",
             "-dEmbedAllFonts=true",
             "-dSubsetFonts=true",
             f"-sOutputFile={output_path}",
