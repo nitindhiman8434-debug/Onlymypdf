@@ -327,6 +327,7 @@ def pdfa_pdf(input_path: str, output_path: str, options: dict) -> dict:
             "-dBATCH",
             "-dNOPAUSE",
             "-dSAFER",
+            f"--permit-file-read={profile}",
             f"-dPDFA={level[0]}",
             "-dPDFACompatibilityPolicy=1",
             "-sDEVICE=pdfwrite",
@@ -339,7 +340,9 @@ def pdfa_pdf(input_path: str, output_path: str, options: dict) -> dict:
         ]
         result = subprocess.run(command, capture_output=True, text=True, timeout=900, check=False)
         if result.returncode != 0 or not Path(output_path).is_file():
-            detail = (result.stderr or result.stdout or "Ghostscript conversion failed").strip()
+            detail = "\n".join(part for part in (result.stdout, result.stderr) if part).strip()
+            if not detail:
+                detail = "Ghostscript conversion failed"
             raise RuntimeError(detail[-600:])
     verified = open_pdf(output_path)
     try:
