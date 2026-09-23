@@ -43,6 +43,9 @@ interface ConvertToolPageProps {
   relatedTools?: RelatedTool[];
   extraFields?: ReactNode;
   buildFormData?: (file: File, formData: FormData) => FormData;
+  buildResultFilename?: (originalName: string) => string;
+  /** Additional page-specific condition that prevents processing. */
+  processDisabled?: boolean;
   /** Client fetch timeout in ms (default 120s). */
   fetchTimeoutMs?: number;
   /** Cap for fake progress bar while waiting on server (default 92). */
@@ -72,6 +75,8 @@ export function ConvertToolPage({
   relatedTools = [],
   extraFields,
   buildFormData,
+  buildResultFilename,
+  processDisabled = false,
   fetchTimeoutMs = 120_000,
   progressCap = 92,
   progressIntervalMs,
@@ -170,7 +175,11 @@ export function ConvertToolPage({
       completeProgress();
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
-      setResultFilename(file.name.replace(/\.[^.]+$/, `.${outputExtension}`));
+      setResultFilename(
+        buildResultFilename
+          ? buildResultFilename(file.name)
+          : file.name.replace(/\.[^.]+$/, `.${outputExtension}`)
+      );
       setResultSize(blob.size);
       if (pw) setPdfPassword(pw);
       setPasswordPrompt(null);
@@ -267,7 +276,7 @@ export function ConvertToolPage({
 
           <ToolPrimaryButton
             onClick={() => void handleProcess()}
-            disabled={!file}
+            disabled={!file || processDisabled}
             loading={processing}
             loadingLabel={processingLabel}
             loadingProgress={processing ? progress : undefined}

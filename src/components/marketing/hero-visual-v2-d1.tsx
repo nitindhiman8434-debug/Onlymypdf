@@ -140,7 +140,7 @@ export function HeroVisualV2D1() {
                     >
                       <tool.icon className="h-5 w-5 text-white" />
                     </div>
-                    <span className="text-[10px] font-semibold text-slate-600">{tool.label}</span>
+                    <span className="text-[10px] font-semibold text-slate-900">{tool.label}</span>
                   </div>
                 ))}
               </div>

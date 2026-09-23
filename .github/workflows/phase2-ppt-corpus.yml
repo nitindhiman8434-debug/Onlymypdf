@@ -10,9 +10,13 @@ on:
       - "scripts/pdf-to-ppt-build.py"
       - "scripts/pdf-to-docx.py"
       - "scripts/phase2-full-image-runtime-smoke.py"
+      - "scripts/pdf-advanced-tools.py"
+      - "scripts/phase2-advanced-tools-smoke.py"
       - "scripts/phase2-ppt-corpus.py"
       - "scripts/phase2-ppt-corpus.ts"
       - "src/lib/services/pdf-to-ppt.service.ts"
+      - "src/lib/services/advanced-pdf-tools.service.ts"
+      - "src/app/api/tools/**"
       - "Dockerfile.full"
   workflow_dispatch:
 
@@ -84,6 +88,7 @@ jobs:
           docker run --rm --entrypoint python3 onlymypdf-full:phase2e -c "import fitz, pptx; from PIL import Image; print('Office Python dependencies available')"
           docker run --rm --entrypoint chromium onlymypdf-full:phase2e --version
           docker run --rm --entrypoint python3 onlymypdf-full:phase2e scripts/phase2-full-image-runtime-smoke.py
+          docker run --rm --entrypoint python3 onlymypdf-full:phase2e scripts/phase2-advanced-tools-smoke.py
           docker run --rm \
             --mount "type=bind,source=$PWD/quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf,target=/tmp/fixture.pdf,readonly" \
             --entrypoint sh onlymypdf-full:phase2e -c '

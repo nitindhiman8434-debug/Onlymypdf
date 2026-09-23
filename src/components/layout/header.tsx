@@ -25,6 +25,12 @@ import {
   RotateCw,
   Trash2,
   Code2,
+  Wrench,
+  ScanText,
+  Archive,
+  ShieldX,
+  Crop,
+  FileSearch,
 } from "lucide-react";
 import { useFocusTrap } from "@/lib/a11y/use-focus-trap";
 import { cn } from "@/lib/utils/cn";
@@ -60,6 +66,8 @@ const megaMenuCategories: ToolCategory[] = [
       { name: "Rotate PDF", href: "/rotate-pdf", icon: <RotateCw className="h-4 w-4" />, iconBg: "bg-indigo-100", iconText: "text-indigo-600", hoverBg: "hover:bg-indigo-100/80" },
       { name: "Delete PDF Pages", href: "/delete-pdf", icon: <Trash2 className="h-4 w-4" />, iconBg: "bg-red-100", iconText: "text-red-500", hoverBg: "hover:bg-red-100/80" },
       { name: "Extract PDF Pages", href: "/extract-pdf", icon: <FileDown className="h-4 w-4" />, iconBg: "bg-cyan-100", iconText: "text-cyan-600", hoverBg: "hover:bg-cyan-100/80" },
+      { name: "Crop PDF", href: "/crop-pdf", icon: <Crop className="h-4 w-4" />, iconBg: "bg-amber-100", iconText: "text-amber-700", hoverBg: "hover:bg-amber-100/80" },
+      { name: "Compare PDF", href: "/compare-pdf", icon: <FileSearch className="h-4 w-4" />, iconBg: "bg-indigo-100", iconText: "text-indigo-600", hoverBg: "hover:bg-indigo-100/80" },
     ],
   },
   {
@@ -67,6 +75,9 @@ const megaMenuCategories: ToolCategory[] = [
     titleColor: "text-emerald-600",
     tools: [
       { name: "Compress PDF", href: "/compress-pdf", icon: <Minimize2 className="h-4 w-4" />, iconBg: "bg-emerald-100", iconText: "text-emerald-600", hoverBg: "hover:bg-emerald-100/80" },
+      { name: "Repair PDF", href: "/repair-pdf", icon: <Wrench className="h-4 w-4" />, iconBg: "bg-teal-100", iconText: "text-teal-600", hoverBg: "hover:bg-teal-100/80" },
+      { name: "OCR PDF", href: "/ocr-pdf", icon: <ScanText className="h-4 w-4" />, iconBg: "bg-sky-100", iconText: "text-sky-600", hoverBg: "hover:bg-sky-100/80" },
+      { name: "PDF to PDF/A", href: "/pdf-a", icon: <Archive className="h-4 w-4" />, iconBg: "bg-violet-100", iconText: "text-violet-600", hoverBg: "hover:bg-violet-100/80" },
     ],
   },
   {
@@ -105,6 +116,7 @@ const megaMenuCategories: ToolCategory[] = [
     tools: [
       { name: "Protect PDF", href: "/protect-pdf", icon: <Lock className="h-4 w-4" />, iconBg: "bg-amber-100", iconText: "text-amber-600", hoverBg: "hover:bg-amber-100/80" },
       { name: "Unlock PDF", href: "/unlock-pdf", icon: <Unlock className="h-4 w-4" />, iconBg: "bg-lime-100", iconText: "text-lime-700", hoverBg: "hover:bg-lime-100/80" },
+      { name: "Redact PDF", href: "/redact-pdf", icon: <ShieldX className="h-4 w-4" />, iconBg: "bg-rose-100", iconText: "text-rose-600", hoverBg: "hover:bg-rose-100/80" },
     ],
   },
   {

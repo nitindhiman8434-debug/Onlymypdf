@@ -576,6 +576,72 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       },
     ],
   },
+  "repair-pdf": {
+    title: "Repair PDF Online — Rebuild Damaged PDF Files | OnlyMyPDF",
+    metaDescription: "Repair supported damaged PDF files by rebuilding document structure and cross-reference data. Free online PDF repair with no desktop install.",
+    h1: "Repair PDF Files Online",
+    seoContent: "Repair PDF rebuilds supported document structure and writes a clean copy without changing the original upload. Recovery depends on how much readable data remains, so severely corrupted or truncated PDFs may not be repairable.",
+    faqs: [
+      { question: "Can every damaged PDF be repaired?", answer: "No. The tool can rebuild readable PDF structure, but it cannot recreate bytes or pages that are missing from a severely corrupted file." },
+      { question: "Does repair change the original file?", answer: "No. It creates a separate repaired copy for download." },
+      { question: "Will repaired pages keep their quality?", answer: "The tool rebuilds PDF structure without intentionally rasterizing page content, although recovery depends on the source file." },
+    ],
+  },
+  "ocr-pdf": {
+    title: "OCR PDF Online — Make Scanned PDF Searchable | OnlyMyPDF",
+    metaDescription: "Add searchable English or Hindi text to image-only PDF pages with OCR. Supports up to 50 pages per conversion; review handwriting and damaged scans.",
+    h1: "OCR PDF — Make Scans Searchable",
+    seoContent: "OCR PDF recognizes printed English or Hindi text on image-only pages and adds a searchable text layer. Existing searchable pages are preserved. Handwriting, unusual fonts, low-resolution images, and damaged scans can reduce accuracy and should be reviewed.",
+    faqs: [
+      { question: "Which OCR languages are supported?", answer: "You can select English, Hindi, or English and Hindi together." },
+      { question: "Does OCR work on handwriting?", answer: "Handwriting is not supported as a dependable input. The tool is designed for printed text." },
+      { question: "How many pages can I OCR?", answer: "This implementation processes up to 50 pages in one OCR job." },
+    ],
+  },
+  "pdf-a": {
+    title: "Convert PDF to PDF/A Online for Archiving | OnlyMyPDF",
+    metaDescription: "Convert supported PDFs to PDF/A-1b, PDF/A-2b, or PDF/A-3b for long-term archiving. Always validate against your archive's rules.",
+    h1: "Convert PDF to PDF/A Online",
+    seoContent: "Create an archival PDF/A copy using an sRGB color profile and the selected conformance level. PDF/A requirements vary by institution, so use a dedicated validator before regulatory, court, or records-management submission.",
+    faqs: [
+      { question: "Which PDF/A levels are available?", answer: "The tool offers PDF/A-1b, PDF/A-2b, and PDF/A-3b output." },
+      { question: "Is the result guaranteed to meet every archive rule?", answer: "No. The converter creates PDF/A output, but each archive may apply additional validation and acceptance rules." },
+      { question: "Which level should I choose?", answer: "Choose the level required by the organization receiving the file; PDF/A-2b is a practical default when no specific level is required." },
+    ],
+  },
+  "redact-pdf": {
+    title: "Redact PDF Online — Permanently Remove Exact Text | OnlyMyPDF",
+    metaDescription: "Find and permanently remove exact words or phrases from PDF text. Review every page before sharing confidential documents.",
+    h1: "Redact Text from PDF Online",
+    seoContent: "Redact PDF removes matching selectable text from the PDF content instead of placing a visual cover over it. It does not automatically detect sensitive information inside images, scans, annotations, metadata, or alternate spellings, so review the downloaded file carefully.",
+    faqs: [
+      { question: "Is redacted text actually removed?", answer: "Matching selectable text is removed using PDF redaction annotations and a new result is written." },
+      { question: "Does it redact text inside scanned images?", answer: "No. Image content is not automatically detected. OCR and manual review are required for scans." },
+      { question: "Should I review the result?", answer: "Yes. Check every page, metadata, comments, and embedded files before sharing a sensitive document." },
+    ],
+  },
+  "crop-pdf": {
+    title: "Crop PDF Online — Adjust PDF Page Margins | OnlyMyPDF",
+    metaDescription: "Crop visible PDF page margins by percentage on every page. Fast online page cropping with a clear security boundary.",
+    h1: "Crop PDF Page Margins Online",
+    seoContent: "Crop PDF changes the page CropBox to hide unwanted outer margins on every page. Content outside the visible box may remain in the file, so cropping must not be used to hide confidential information.",
+    faqs: [
+      { question: "Does cropping permanently remove hidden content?", answer: "No. Cropping changes the visible page area and is not secure redaction." },
+      { question: "Can I crop each side separately?", answer: "Yes. Set top, right, bottom, and left margin percentages." },
+      { question: "Will all pages be cropped?", answer: "The selected percentages are applied to every page in the uploaded PDF." },
+    ],
+  },
+  "compare-pdf": {
+    title: "Compare PDF Online — Visual Page Difference Report | OnlyMyPDF",
+    metaDescription: "Compare two PDF files page by page and download a side-by-side visual difference report for up to 50 pages.",
+    h1: "Compare Two PDF Files Online",
+    seoContent: "Compare PDF renders both documents page by page and creates a downloadable report with the original pages and highlighted visual differences. It detects visible changes, not document authenticity, hidden metadata, or legal equivalence.",
+    faqs: [
+      { question: "What differences does the report show?", answer: "It highlights visible pixel differences between corresponding rendered pages." },
+      { question: "Can it prove that two documents are legally identical?", answer: "No. It is a visual review aid and does not certify authenticity or legal equivalence." },
+      { question: "What are the current limits?", answer: "Each input can be up to 25 MB and the report compares up to 50 pages." },
+    ],
+  },
   "edit-pdf": {
     title: "Edit PDF — Add Text & Images Online Free | OnlyMyPDF",
     metaDescription:

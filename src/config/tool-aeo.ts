@@ -221,6 +221,66 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ],
     ["Password encryption", "Restrict unauthorized access", "Free online tool", "SSL encrypted upload", "Files deleted after retention"]
   ),
+  "repair-pdf": aeo(
+    "OnlyMyPDF Repair PDF rebuilds readable PDF structure and writes a clean copy. Recovery depends on how much valid source data remains.",
+    "Repair PDF reconstructs cross-reference information and saves a cleaned document without modifying the original upload.",
+    [
+      { name: "Upload damaged PDF", text: "Choose the PDF that fails to open or reports structural errors." },
+      { name: "Run repair", text: "Start repair to rebuild supported PDF structure." },
+      { name: "Verify download", text: "Open the repaired copy and check every required page." },
+    ],
+    ["Creates a separate result", "Does not recreate missing bytes", "No intentional page rasterization", "Severe corruption may be unrecoverable", "Review the output"]
+  ),
+  "ocr-pdf": aeo(
+    "OnlyMyPDF OCR PDF adds searchable English or Hindi text to image-only PDF pages, with a 50-page processing limit.",
+    "OCR PDF recognizes printed text in scanned page images and adds a searchable text layer while preserving pages that already contain searchable text.",
+    [
+      { name: "Upload scanned PDF", text: "Choose a PDF containing image-only pages." },
+      { name: "Choose language", text: "Select English, Hindi, or both and start OCR." },
+      { name: "Review text", text: "Download the searchable PDF and check names, numbers, and low-quality scans." },
+    ],
+    ["English and Hindi", "Up to 50 pages", "Printed text is the supported target", "Handwriting is not dependable", "Accuracy depends on scan quality"]
+  ),
+  "pdf-a": aeo(
+    "OnlyMyPDF converts supported PDFs to PDF/A-1b, PDF/A-2b, or PDF/A-3b for long-term archiving.",
+    "PDF/A is an ISO-standardized PDF profile designed to preserve documents for long-term access by restricting external dependencies.",
+    [
+      { name: "Upload PDF", text: "Choose the document you want to archive." },
+      { name: "Choose PDF/A level", text: "Select the conformance level required by the receiving archive." },
+      { name: "Convert and validate", text: "Download the result and validate it against the archive's submission rules." },
+    ],
+    ["PDF/A-1b, 2b, and 3b", "sRGB color profile", "Institutional rules can differ", "External validation is recommended", "Original upload stays unchanged"]
+  ),
+  "redact-pdf": aeo(
+    "OnlyMyPDF Redact PDF permanently removes exact matching selectable text and writes a new PDF for review.",
+    "Redaction removes selected document content rather than covering it with a visual white box.",
+    [
+      { name: "Upload PDF", text: "Choose the document containing text to remove." },
+      { name: "Enter exact terms", text: "Add one exact word or phrase per line and run redaction." },
+      { name: "Inspect result", text: "Check every page, metadata, annotations, and images before sharing." },
+    ],
+    ["Exact text matching", "Selectable text removal", "Scanned images require separate review", "Up to 20 terms", "Always inspect sensitive results"]
+  ),
+  "crop-pdf": aeo(
+    "OnlyMyPDF Crop PDF adjusts the visible top, right, bottom, and left page margins by percentage.",
+    "PDF cropping changes each page's visible CropBox; hidden content can remain in the underlying file.",
+    [
+      { name: "Upload PDF", text: "Choose the document whose visible margins need adjustment." },
+      { name: "Set margins", text: "Enter percentages for the four page edges." },
+      { name: "Crop and review", text: "Download the result and check that required content remains visible." },
+    ],
+    ["Separate controls for four edges", "Applies to every page", "Changes visible area", "Not secure redaction", "Source file remains unchanged"]
+  ),
+  "compare-pdf": aeo(
+    "OnlyMyPDF Compare PDF creates a side-by-side visual difference report for two PDFs, up to 50 pages and 25 MB per input.",
+    "PDF comparison renders corresponding pages and highlights visible pixel differences for manual review.",
+    [
+      { name: "Upload first PDF", text: "Choose the baseline document." },
+      { name: "Choose second PDF", text: "Add the document you want to compare against the baseline." },
+      { name: "Download report", text: "Review the side-by-side pages and highlighted visual differences." },
+    ],
+    ["Two PDF inputs", "Up to 50 pages", "25 MB per input", "Visual differences only", "Not an authenticity certification"]
+  ),
   "edit-pdf": aeo(
     "OnlyMyPDF Edit PDF adds text and images on top of any PDF page in a visual browser editor, then exports the updated file.",
     "Edit PDF is an online editor for annotating PDFs — add text blocks, insert images, drag to position, and download without desktop software.",

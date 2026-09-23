@@ -1,6 +1,6 @@
 {
-  "startedAt": "2026-09-21T21:46:06.761Z",
-  "completedAt": "2026-09-21T21:46:07.743Z",
+  "startedAt": "2026-09-23T19:34:42.979Z",
+  "completedAt": "2026-09-23T19:34:44.227Z",
   "baseUrl": "http://127.0.0.1:3001",
   "caseName": "above-free-cap",
   "fixture": "quality/phase2-production/generated/mixed-23-page.pdf",

@@ -20,6 +20,12 @@ import {
   Trash2,
   Code2,
   Type,
+  Wrench,
+  ScanText,
+  Archive,
+  ShieldX,
+  Crop,
+  FileSearch,
   type LucideIcon,
 } from "lucide-react";
 import { FILE_SIZE_MARKETING } from "@/config/constants";
@@ -46,6 +52,12 @@ export const ICON_MAP: Record<string, LucideIcon> = {
   Trash2,
   Code2,
   Type,
+  Wrench,
+  ScanText,
+  Archive,
+  ShieldX,
+  Crop,
+  FileSearch,
 };
 
 export const TOOL_KEYS = [
@@ -71,6 +83,12 @@ export const TOOL_KEYS = [
   { slug: "pdf-scanner", icon: "ScanLine", nameKey: "tools.pdfScanner.name", descKey: "tools.pdfScanner.description", category: "scan" },
   { slug: "unlock-pdf", icon: "Unlock", nameKey: "tools.unlockPdf.name", descKey: "tools.unlockPdf.description", category: "security" },
   { slug: "protect-pdf", icon: "Lock", nameKey: "tools.protectPdf.name", descKey: "tools.protectPdf.description", category: "security" },
+  { slug: "repair-pdf", icon: "Wrench", nameKey: "tools.repairPdf.name", descKey: "tools.repairPdf.description", category: "optimize" },
+  { slug: "ocr-pdf", icon: "ScanText", nameKey: "tools.ocrPdf.name", descKey: "tools.ocrPdf.description", category: "optimize" },
+  { slug: "pdf-a", icon: "Archive", nameKey: "tools.pdfA.name", descKey: "tools.pdfA.description", category: "optimize" },
+  { slug: "redact-pdf", icon: "ShieldX", nameKey: "tools.redactPdf.name", descKey: "tools.redactPdf.description", category: "security" },
+  { slug: "crop-pdf", icon: "Crop", nameKey: "tools.cropPdf.name", descKey: "tools.cropPdf.description", category: "organize" },
+  { slug: "compare-pdf", icon: "FileSearch", nameKey: "tools.comparePdf.name", descKey: "tools.comparePdf.description", category: "organize" },
 ] as const;
 
 export const FAQ_KEYS = ["faq1", "faq2", "faq3", "faq4", "faq5", "faq6", "faq7"] as const;
@@ -138,6 +156,12 @@ export const TOOL_ACCENT: Record<string, string> = {
   "pdf-scanner": "bg-[#00B894]",
   "unlock-pdf": "bg-[#F39C12]",
   "protect-pdf": "bg-[#E84393]",
+  "repair-pdf": "bg-[#0F766E]",
+  "ocr-pdf": "bg-[#0369A1]",
+  "pdf-a": "bg-[#7C3AED]",
+  "redact-pdf": "bg-[#BE123C]",
+  "crop-pdf": "bg-[#B45309]",
+  "compare-pdf": "bg-[#4338CA]",
 };
 
 /** Rich gradients for 3D tool icon tiles */
@@ -164,4 +188,10 @@ export const TOOL_GRADIENT: Record<string, string> = {
   "unlock-pdf": "from-amber-400 via-yellow-500 to-orange-600",
   "protect-pdf": "from-pink-400 via-rose-500 to-pink-700",
   "edit-pdf": "from-cyan-400 via-blue-500 to-blue-700",
+  "repair-pdf": "from-teal-400 via-teal-600 to-slate-800",
+  "ocr-pdf": "from-sky-400 via-blue-600 to-cyan-800",
+  "pdf-a": "from-violet-400 via-violet-600 to-indigo-800",
+  "redact-pdf": "from-rose-400 via-rose-700 to-slate-900",
+  "crop-pdf": "from-amber-400 via-orange-600 to-amber-800",
+  "compare-pdf": "from-indigo-400 via-indigo-600 to-blue-900",
 };

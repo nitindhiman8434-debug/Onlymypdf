@@ -157,6 +157,36 @@
       "name": "Add Watermark",
       "description": "Add text or image watermark",
       "longDescription": "Stamp a text or image watermark on every page of your PDF document."
+    },
+    "repairPdf": {
+      "name": "Repair PDF",
+      "description": "Rebuild damaged PDF structure",
+      "longDescription": "Rebuild cross-reference data and clean PDF structure so supported damaged files can open normally. Severely corrupted files may still be unrecoverable."
+    },
+    "ocrPdf": {
+      "name": "OCR PDF",
+      "description": "Make scanned PDF text searchable",
+      "longDescription": "Add a searchable text layer to image-only PDF pages using English, Hindi, or combined OCR. Handwriting and damaged scans may need manual review."
+    },
+    "pdfA": {
+      "name": "PDF to PDF/A",
+      "description": "Create an archival PDF",
+      "longDescription": "Convert a supported PDF to PDF/A-1b, PDF/A-2b, or PDF/A-3b for long-term archiving. Validate the result against your archive's acceptance rules."
+    },
+    "redactPdf": {
+      "name": "Redact PDF",
+      "description": "Permanently remove exact text",
+      "longDescription": "Search for exact words or phrases and remove matching text from the PDF content. Review every page before sharing the result."
+    },
+    "cropPdf": {
+      "name": "Crop PDF",
+      "description": "Adjust visible page margins",
+      "longDescription": "Set percentage margins to change the visible area of every PDF page. Cropping hides content outside the crop box and is not secure redaction."
+    },
+    "comparePdf": {
+      "name": "Compare PDF",
+      "description": "Create a visual difference report",
+      "longDescription": "Compare two PDFs page by page and download a report with side-by-side renderings and highlighted visual differences."
     }
   },
 
@@ -972,7 +1002,7 @@
   },
 
   "landing": {
-    "heroBadge": "22+ PDF tools · Start free in one click",
+    "heroBadge": "28+ PDF tools · Start free in one click",
     "heroTitle": "Your PDF problem,",
     "heroTitleHighlight": "solved in seconds.",
     "heroSubtitle": "Merge, split, compress, convert & sign — no downloads, no learning curve. Use core tools free every day, or go Pro for AI, e-signatures & 20× limits.",

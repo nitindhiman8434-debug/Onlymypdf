@@ -64,6 +64,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tesseract-ocr \
     tesseract-ocr-eng \
     tesseract-ocr-hin \
+    ghostscript \
     python3 \
     python3-pip \
     python3-venv \
@@ -93,9 +94,12 @@ COPY --from=builder /app/scripts ./scripts
 
 RUN python3 -c "import fitz, pptx; from PIL import Image" \
     && tesseract --list-langs \
+    && gs --version \
     && chromium --version \
     && test -f scripts/pdf-to-ppt-build.py \
-    && test -f scripts/pdf-extract-tables.py
+    && test -f scripts/pdf-extract-tables.py \
+    && test -f scripts/pdf-advanced-tools.py \
+    && test -f /usr/share/color/icc/ghostscript/srgb.icc
 
 USER nextjs
 EXPOSE 8080

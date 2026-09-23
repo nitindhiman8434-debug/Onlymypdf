@@ -157,6 +157,36 @@
       "name": "वॉटरमार्क जोड़ें",
       "description": "टेक्स्ट या इमेज वॉटरमार्क जोड़ें",
       "longDescription": "अपने PDF डॉक्यूमेंट के हर पेज पर टेक्स्ट या इमेज वॉटरमार्क लगाएँ।"
+    },
+    "repairPdf": {
+      "name": "PDF रिपेयर करें",
+      "description": "खराब PDF संरचना को दोबारा बनाएँ",
+      "longDescription": "क्रॉस-रेफरेंस डेटा और PDF संरचना को साफ करके समर्थित खराब फ़ाइलों को फिर से खोलने योग्य बनाएँ। बहुत ज़्यादा खराब फ़ाइल ठीक नहीं भी हो सकती।"
+    },
+    "ocrPdf": {
+      "name": "OCR PDF",
+      "description": "स्कैन PDF टेक्स्ट को searchable बनाएँ",
+      "longDescription": "English, Hindi या दोनों भाषाओं के OCR से image-only PDF पेज पर searchable text layer जोड़ें। Handwriting और खराब scan को manually जाँचें।"
+    },
+    "pdfA": {
+      "name": "PDF से PDF/A",
+      "description": "Archive के लिए PDF बनाएँ",
+      "longDescription": "लंबे समय के archive के लिए समर्थित PDF को PDF/A-1b, PDF/A-2b या PDF/A-3b में बदलें। अपने archive के नियमों से result validate करें।"
+    },
+    "redactPdf": {
+      "name": "PDF Redact करें",
+      "description": "Exact text को permanently हटाएँ",
+      "longDescription": "Exact शब्द या phrase खोजकर matching text को PDF content से हटाएँ। Share करने से पहले हर page review करें।"
+    },
+    "cropPdf": {
+      "name": "PDF Crop करें",
+      "description": "दिखने वाले page margins बदलें",
+      "longDescription": "हर PDF page के visible area को percentage margins से बदलें। Crop box के बाहर content छिपता है; यह secure redaction नहीं है।"
+    },
+    "comparePdf": {
+      "name": "PDF Compare करें",
+      "description": "Visual difference report बनाएँ",
+      "longDescription": "दो PDFs को page by page compare करें और side-by-side pages व highlighted visual differences वाली report डाउनलोड करें।"
     }
   },
 
@@ -972,7 +1002,7 @@
   },
 
   "landing": {
-    "heroBadge": "22+ PDF टूल्स · एक क्लिक में फ्री शुरू",
+    "heroBadge": "28+ PDF टूल्स · एक क्लिक में फ्री शुरू",
     "heroTitle": "आपकी PDF समस्या,",
     "heroTitleHighlight": "सेकंडों में हल।",
     "heroSubtitle": "मर्ज, स्प्लिट, कम्प्रेस, कन्वर्ट और साइन — बिना डाउनलोड, बिना सीखने की झंझट। कोर टूल्स रोज़ फ्री, AI और 20× लिमिट के लिए Pro।",
@@ -1566,6 +1596,66 @@
       {
         "question": "क्या file size limit है?",
         "answer": "हाँ। Free और Pro plan के हिसाब से file size limits लागू होती हैं।"
+      }
+    ],
+    "repair-pdf": [
+      {
+        "question": "क्या हर damaged PDF repair हो सकती है?",
+        "answer": "नहीं। Tool readable PDF structure को rebuild कर सकता है, लेकिन missing bytes या पूरी तरह खराब pages को दोबारा नहीं बना सकता।"
+      },
+      {
+        "question": "क्या original PDF बदलेगी?",
+        "answer": "नहीं। Repair के बाद अलग clean copy download होती है।"
+      }
+    ],
+    "ocr-pdf": [
+      {
+        "question": "कौन सी OCR languages supported हैं?",
+        "answer": "English, Hindi या English + Hindi चुन सकते हैं।"
+      },
+      {
+        "question": "क्या handwriting supported है?",
+        "answer": "Handwriting dependable input नहीं है। Printed text और साफ scan पर result बेहतर होता है।"
+      }
+    ],
+    "pdf-a": [
+      {
+        "question": "कौन से PDF/A levels available हैं?",
+        "answer": "PDF/A-1b, PDF/A-2b और PDF/A-3b output available हैं।"
+      },
+      {
+        "question": "क्या archive में submit करने से पहले validation करनी चाहिए?",
+        "answer": "हाँ। Receiving archive के अपने acceptance rules हो सकते हैं, इसलिए dedicated validator से result check करें।"
+      }
+    ],
+    "redact-pdf": [
+      {
+        "question": "क्या matching text permanently remove होता है?",
+        "answer": "हाँ, selectable exact-match text PDF content से remove होता है; केवल white box नहीं लगाया जाता।"
+      },
+      {
+        "question": "क्या scanned image का text भी redact होगा?",
+        "answer": "नहीं। Image content automatically detect नहीं होता। Scan पर पहले OCR और फिर manual review करें।"
+      }
+    ],
+    "crop-pdf": [
+      {
+        "question": "क्या crop hidden content को permanently delete करता है?",
+        "answer": "नहीं। Crop visible page area बदलता है; confidential content हटाने के लिए Redact PDF इस्तेमाल करें।"
+      },
+      {
+        "question": "क्या चारों margins अलग set कर सकता हूँ?",
+        "answer": "हाँ। Top, right, bottom और left percentages अलग set किए जा सकते हैं।"
+      }
+    ],
+    "compare-pdf": [
+      {
+        "question": "Compare report क्या दिखाती है?",
+        "answer": "दोनों PDFs के matching pages side by side और visible pixel differences highlight करके दिखाती है।"
+      },
+      {
+        "question": "क्या यह legal authenticity certify करती है?",
+        "answer": "नहीं। यह visual review aid है, authenticity या legal equivalence certificate नहीं।"
       }
     ],
     "ai-pdf-summarizer": [
