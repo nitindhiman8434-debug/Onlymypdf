@@ -2,10 +2,10 @@
 
 **Started:** 22 September 2026
 
-**Status:** In progress. Production-image packaging and the no-cost local capacity/page-completeness gates passed; public production gate is not passed.
+**Status:** In progress. Production-image packaging, the no-cost local capacity/page-completeness gates and the live Supabase queue activation gate passed; public production gate is not passed.
 **Phase 2 completion:** stays at 62% while this 5%-weight work package is incomplete.
 
-Later no-cost real-document QA found and repaired omitted Excel source text, unreadable short dense Word layout and dense PowerPoint text overlap. The [quality remediation checkpoint](PHASE_2_3E_QUALITY_REMEDIATION.md) and its final nine-route HTTP report supersede the earlier public-document observations below. The updated full-image OCR smoke passes; the public HTTPS, deployed retention/load and provider-cost gates remain unverified.
+Later no-cost real-document QA found and repaired omitted Excel source text, unreadable short dense Word layout and dense PowerPoint text overlap. The [quality remediation checkpoint](PHASE_2_3E_QUALITY_REMEDIATION.md) and its final nine-route HTTP report supersede the earlier public-document observations below. On 23 September, migration 023 and its Supabase PGMQ/runtime coordination paths were activated and verified; see the [Supabase queue activation checkpoint](PHASE_2_3E_SUPABASE_QUEUE_ACTIVATION.md). The updated full-image OCR smoke passes; the public HTTPS, deployed retention/load and provider-cost gates remain unverified.
 
 ## What is established
 
@@ -15,7 +15,7 @@ Later no-cost real-document QA found and repaired omitted Excel source text, unr
 | Excel semantics | 6/6 controlled PDF-to-Excel corpus cases passed on local and Ubuntu environments. | Complex tables, scans and 200 MB documents are not broadly validated. |
 | PowerPoint semantics | 7/7 controlled PDF-to-PowerPoint corpus cases passed on local and Ubuntu environments. | Editable text is limited to supported visible selectable text; image scans remain visual slides. |
 | Declared upload limits | Code defaults are 25 MiB Free and 200 MiB Pro; runtime admin settings can override them. A 25,898,723-byte synthetic PDF (98.8% of the 25 MiB cap) converted to Word, Excel and PowerPoint locally. | This is one document shape on one development machine, not a reliable limit for every file or a deployed service. No unlimited-file-size promise is justified. |
-| Public deployment | Railway project currently exposes two services: a private conversion worker and its watchdog. `NEXT_PUBLIC_APP_URL` in the local environment points to localhost. | No public web frontend URL or production Office HTTP gate is verified. |
+| Public deployment | Railway worker/watchdog auto-deploy is disabled, the watchdog schedule is removed, and no public web service was deployed. `NEXT_PUBLIC_APP_URL` in the local environment points to localhost. | No public web frontend URL or production Office HTTP gate is verified. |
 
 ## Packaging issue and correction
 
@@ -69,7 +69,7 @@ After the Python fix, `tsc --noEmit`, 46 targeted PDF-to-Word tests, Python comp
 
 Three public, non-sensitive sources (a dense IRS form, a two-column article and an image-only National Archives scan) were tested through all three Office HTTP routes. The form exposed a serious Word fallback defect: 188.94 s to an image-only DOCX with zero editable text. A targeted dense-form reference-plus-editable-transcript path now returns 10,258 editable characters and two page references; warm local HTTP conversion took 3.42 s. The local OCR-required profile now reports a clear failure for a scan when OCR is unavailable instead of silently returning an image-only Word file. The final nine-route rerun and visual-reference checks are recorded in [the real-world QA checkpoint](PHASE_2_3E_REAL_WORLD_QA.md) and `quality/phase2-production/local-real-world-final-report.json`. Excel omitted source tokens in the form and prose-heavy paper, so 100% semantic accuracy is not established.
 
-The first public gate needs an actual HTTPS frontend using the full image, configured Supabase, Upstash and R2, plus a working worker/watchdog. Then run controlled Word/Excel/PowerPoint uploads and verify downloaded DOCX/XLSX/PPTX bytes, editability, failure handling and cleanup. Measure at least small, typical and large realistic PDFs, plus concurrent jobs, while observing peak RAM/CPU, queue time, timeout/OOM, temporary disk, storage retention and invoice usage. Set per-tool supported caps from those results; a global 200 MB upload cap is not proof every Office route can process 200 MB.
+The first public gate needs an actual HTTPS frontend using the full image, configured Supabase queue/coordination and R2, plus a working worker/watchdog. Then run controlled Word/Excel/PowerPoint uploads and verify downloaded DOCX/XLSX/PPTX bytes, editability, failure handling and cleanup. Measure at least small, typical and large realistic PDFs, plus concurrent jobs, while observing peak RAM/CPU, queue time, timeout/OOM, temporary disk, storage retention and invoice usage. Set per-tool supported caps from those results; a global 200 MB upload cap is not proof every Office route can process 200 MB.
 
 ## Cost baseline, not an invoice estimate
 
@@ -77,7 +77,7 @@ The first public gate needs an actual HTTPS frontend using the full image, confi
 |---|---|---|
 | [Railway](https://railway.com/pricing) | The current Free offer has a $5 one-time, 30-day trial and then a $1 monthly resource allowance, with 1 GB RAM/service during trial and 0.5 GB afterward. Hobby has a $5 monthly minimum. Usage is metered for CPU, RAM and service egress. | The private worker/watchdog consume trial credit even before a public frontend is added. The earlier $4.59 trial balance is only a historical observation, not a current balance or cost per conversion. The local preview is not sized to Railway's Free service limits. |
 | [Cloudflare R2 Standard](https://developers.cloudflare.com/r2/pricing/) | 10 GB-month storage, 1 million Class A and 10 million Class B operations free monthly; then $0.015/GB-month, $4.50/million A and $0.36/million B; egress is free. | Standard fits short retention better than Infrequent Access, which has no free tier and a 30-day minimum storage duration. |
-| [Upstash Redis](https://upstash.com/pricing/redis) | Free: 256 MB data, 500,000 commands and 10 GB bandwidth per month. Pay-as-you-go: $0.20 per 100,000 commands, with other resource charges. | Count commands per job and failed retry before predicting monthly spend. A paid tier does not inherit the Free command allowance. |
+| [Upstash Redis](https://upstash.com/pricing/redis) | The earlier Free database reached its 500,000-command monthly quota. | Supabase is now the default queue/coordination provider. Upstash remains only as a rollback adapter and is not required by the no-cost local preview. |
 | [Supabase](https://supabase.com/pricing) | Free: $0, 500 MB database, 5 GB egress; pauses after one inactive week. Pro starts at $25/month. | Free is suitable for a controlled beta, not a reliable always-on launch without checking usage and availability. |
 
 The current localhost tests use no billable cloud conversion service. A dependable always-on public release may require paid compute and database tiers, but no plan has been purchased or selected. Per-job cost still needs actual deployed CPU-seconds, RAM-seconds, egress, R2 operations/storage, Redis commands and database usage from a representative load run. Local wall time alone cannot determine a provider invoice.
