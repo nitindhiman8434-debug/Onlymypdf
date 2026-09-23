@@ -101,6 +101,38 @@ test.describe("Keyboard accessibility", () => {
     await expect(password).toHaveAttribute("type", "text");
   });
 
+  test("watermark controls expose labels and skip the hidden color input", async ({ page }) => {
+    await gotoAndSettle(page, "/add-watermark");
+
+    await expect(page.getByRole("textbox", { name: "Watermark text" })).toBeVisible();
+    await expect(page.getByRole("slider", { name: /Opacity/ })).toBeVisible();
+    await expect(page.getByRole("spinbutton", { name: "Font size" })).toBeVisible();
+    await expect(page.getByRole("spinbutton", { name: "Rotation" })).toBeVisible();
+
+    const hiddenColorInput = page.locator("#watermark-custom-color");
+    await expect(hiddenColorInput).toHaveAttribute("aria-hidden", "true");
+    await expect(hiddenColorInput).toHaveAttribute("tabindex", "-1");
+  });
+
+  test("scanner input mode exposes and updates its pressed state", async ({ page }) => {
+    await gotoAndSettle(page, "/pdf-scanner");
+
+    const group = page.getByRole("group", { name: "Scanner input mode" });
+    const camera = group.getByRole("button", { name: "Camera" });
+    const upload = group.getByRole("button", { name: "Upload" });
+
+    const cameraPressed = (await camera.getAttribute("aria-pressed")) === "true";
+    const activeMode = cameraPressed ? camera : upload;
+    const inactiveMode = cameraPressed ? upload : camera;
+
+    await expect(activeMode).toHaveAttribute("aria-pressed", "true");
+    await expect(inactiveMode).toHaveAttribute("aria-pressed", "false");
+    await inactiveMode.focus();
+    await inactiveMode.press("Enter");
+    await expect(inactiveMode).toHaveAttribute("aria-pressed", "true");
+    await expect(activeMode).toHaveAttribute("aria-pressed", "false");
+  });
+
   test("signup validation moves focus to the field that needs correction", async ({ page }) => {
     await gotoAndSettle(page, "/signup");
     await page.locator("#fullName").fill("Test User");

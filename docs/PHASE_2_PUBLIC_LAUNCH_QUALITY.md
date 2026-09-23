@@ -39,6 +39,8 @@ Any later work that can change Word, Excel, PowerPoint or OCR output must be rev
 9. **Cookie dismissal waited for the consent API before closing.** The dialog now closes immediately, restores focus and synchronizes consent in the background.
 10. **Upload progress and decorative icons added noise.** Progress bars now have an accessible label, error text uses `role="alert"`, and touched decorative icons are hidden from assistive technology.
 11. **Broad `transition-all` rules were used on shared controls.** Touched shared controls now transition only the properties they animate.
+12. **Add Watermark option labels were not bound to their controls.** Text, opacity, font-size and rotation inputs now expose stable accessible names, and the programmatic color picker no longer creates a hidden Tab stop.
+13. **PDF Scanner mode controls had low contrast and no announced selected state.** Text actions now meet the 4.5:1 contrast target, and Camera/Upload expose an updating `aria-pressed` state in a labelled group.
 
 ## Verification evidence
 
@@ -60,6 +62,8 @@ Any later work that can change Word, Excel, PowerPoint or OCR output must be rev
 | Production build | Pass | Next.js 16.3.5 webpack build; 154/154 static pages generated |
 
 Automated evidence is not a substitute for a manual test with NVDA, JAWS, VoiceOver or another real screen reader. That manual review remains required before the full accessibility release gate can be marked complete.
+
+The 24 September revalidation expanded coverage to every one of the 28 tool routes: 40 serious/critical Axe checks, 37 color-contrast checks and 9 keyboard checks passed after the Watermark and Scanner fixes. A browser accessibility-tree walkthrough also confirmed the repaired names, values and Tab order. The local development run was executed in memory-safe batches after Chromium exhausted its renderer heap during one combined scan; affected routes passed on fresh reruns. Full evidence and the remaining real-screen-reader checklist are in `docs/PHASE_2_ACCESSIBILITY_REVALIDATION.md`.
 
 ## Phase 2 workstream status (Phase 2.1 historical checkpoint)
 
@@ -124,7 +128,7 @@ The confirmed values match the code defaults. No production code change is requi
 
 | Workstream | Phase 2 weight | Complete | Status |
 |---|---:|---:|---|
-| Accessibility and inclusive UX | 20% | 12% | Automated keyboard and primary-flow gate complete; real screen-reader review pending |
+| Accessibility and inclusive UX | 20% | 12% | All 28 tool routes pass expanded automated/keyboard checks; real screen-reader review pending |
 | Legal, privacy and public trust evidence | 20% | 20% | Engineering gate and operator identity complete |
 | Semantic Office output and OCR | 35% | 30% | Phase 2.3A/B OCR, 2.3C Excel and 2.3D PowerPoint semantic gates passed; measured production limits pending |
 | Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 20% | Complete for controlled local HTTP/artifact and Linux production-image runtime gates; boundaries documented |

@@ -504,7 +504,7 @@ export function PdfScannerWorkspace() {
 
         <div className="mt-5 flex flex-wrap justify-center gap-2">
 
-          <Button onClick={handleDownload} className="rounded-lg bg-teal-600 font-semibold hover:bg-teal-700">
+          <Button onClick={handleDownload} className="rounded-lg bg-teal-700 font-semibold hover:bg-teal-800">
 
             <Download className="h-4 w-4" />
 
@@ -542,7 +542,11 @@ export function PdfScannerWorkspace() {
 
           <span className="text-sm font-bold text-pd-foreground">{ws.scanner}</span>
 
-          <div className="ml-1 flex rounded-lg border border-pd-border/70 bg-white p-0.5">
+          <div
+            role="group"
+            aria-label="Scanner input mode"
+            className="ml-1 flex rounded-lg border border-pd-border/70 bg-white p-0.5"
+          >
 
             {(["camera", "upload"] as const).map((mode) => (
 
@@ -554,13 +558,15 @@ export function PdfScannerWorkspace() {
 
                 onClick={() => switchMode(mode)}
 
+                aria-pressed={inputMode === mode}
+
                 className={cn(
 
                   "flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition",
 
                   inputMode === mode
 
-                    ? "bg-teal-600 text-white"
+                    ? "bg-teal-700 text-white"
 
                     : "text-pd-muted hover:text-pd-foreground"
 
@@ -672,7 +678,7 @@ export function PdfScannerWorkspace() {
 
                     onClick={capturePhoto}
 
-                    className="w-auto shrink-0 rounded-lg bg-teal-600 px-4 font-semibold"
+                    className="w-auto shrink-0 rounded-lg bg-teal-700 px-4 font-semibold hover:bg-teal-800"
 
                   >
 
@@ -810,7 +816,7 @@ export function PdfScannerWorkspace() {
 
                   onClick={capturePhoto}
 
-                  className="w-auto shrink-0 rounded-lg bg-teal-600 px-4"
+                  className="w-auto shrink-0 rounded-lg bg-teal-700 px-4 hover:bg-teal-800"
 
                 >
 
@@ -1026,7 +1032,7 @@ export function PdfScannerWorkspace() {
 
                 onClick={() => void handleProcess()}
 
-                className="w-full shrink-0 rounded-lg bg-teal-600 font-semibold hover:bg-teal-700 sm:w-auto"
+                className="w-full shrink-0 rounded-lg bg-teal-700 font-semibold hover:bg-teal-800 sm:w-auto"
 
               >
 

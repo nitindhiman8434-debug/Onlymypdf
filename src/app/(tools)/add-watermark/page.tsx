@@ -287,18 +287,28 @@ export default function AddWatermarkPage() {
 
           {watermarkType === "text" ? (
             <div className="mt-4">
-              <label className="mb-1.5 block text-sm font-medium text-pd-foreground">Watermark text</label>
+              <label
+                htmlFor="watermark-text"
+                className="mb-1.5 block text-sm font-medium text-pd-foreground"
+              >
+                Watermark text
+              </label>
               <input
+                id="watermark-text"
+                name="watermarkText"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 className="w-full rounded-xl border border-pd-border px-4 py-2.5 text-sm outline-none focus:border-pd-brand focus:ring-2 focus:ring-pd-brand/20"
                 placeholder="CONFIDENTIAL"
+                autoComplete="off"
                 spellCheck={false}
               />
             </div>
           ) : (
             <div className="mt-4">
-              <label className="mb-1.5 block text-sm font-medium text-pd-foreground">Watermark image (PNG/JPG)</label>
+              <p className="mb-1.5 block text-sm font-medium text-pd-foreground">
+                Watermark image (PNG/JPG)
+              </p>
               {watermarkImage ? (
                 <div className="flex items-center gap-2 rounded-xl border border-pd-border bg-pd-background px-3 py-2">
                   <button
@@ -339,10 +349,15 @@ export default function AddWatermarkPage() {
 
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-pd-foreground">
+              <label
+                htmlFor="watermark-opacity"
+                className="mb-1.5 block text-sm font-medium text-pd-foreground"
+              >
                 Opacity <span className="text-pd-muted">({Math.round(opacity * 100)}%)</span>
               </label>
               <input
+                id="watermark-opacity"
+                name="watermarkOpacity"
                 type="range"
                 min={0.1}
                 max={0.8}
@@ -403,18 +418,28 @@ export default function AddWatermarkPage() {
                   </button>
                   <input
                     ref={customColorInputRef}
+                    id="watermark-custom-color"
+                    name="watermarkCustomColor"
                     type="color"
                     value={color}
                     onChange={(e) => setColor(e.target.value)}
                     className="sr-only"
                     aria-hidden
+                    tabIndex={-1}
                   />
                 </div>
               )}
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-pd-foreground">Font size</label>
+              <label
+                htmlFor="watermark-font-size"
+                className="mb-1.5 block text-sm font-medium text-pd-foreground"
+              >
+                Font size
+              </label>
               <input
+                id="watermark-font-size"
+                name="watermarkFontSize"
                 type="number"
                 min={18}
                 max={96}
@@ -428,8 +453,15 @@ export default function AddWatermarkPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-pd-foreground">Rotation</label>
+              <label
+                htmlFor="watermark-rotation"
+                className="mb-1.5 block text-sm font-medium text-pd-foreground"
+              >
+                Rotation
+              </label>
               <input
+                id="watermark-rotation"
+                name="watermarkRotation"
                 type="number"
                 min={-90}
                 max={90}
