@@ -13,6 +13,7 @@ import {
   Crown,
   Settings,
   Building2,
+  MessageSquareHeart,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useAuthContext } from "@/components/providers/auth-provider";
@@ -21,6 +22,7 @@ import { useTranslation } from "@/i18n";
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, labelKey: "dashboard.overview" },
   { href: "/dashboard/files", icon: FolderOpen, labelKey: "dashboard.myFiles" },
+  { href: "/dashboard/feedback", icon: MessageSquareHeart, labelKey: "dashboard.feedback" },
   { href: "/dashboard/settings", icon: Settings, labelKey: "dashboard.privacySettings" },
   { href: "/dashboard/security", icon: Shield, labelKey: "dashboard.security" },
   { href: "/#tools", icon: Wrench, labelKey: "dashboard.browseTools" },
@@ -157,7 +159,7 @@ export function DashboardMobileNav() {
   const pathname = usePathname();
   const { t } = useTranslation();
 
-  const items = navItems.slice(0, 4);
+  const items = navItems.slice(0, 5);
 
   return (
     <div className="mb-6 flex gap-2 overflow-x-auto pb-1 lg:hidden scrollbar-hide">

@@ -252,6 +252,19 @@ export async function checkContactEmailRateLimit(
   });
 }
 
+/** Authenticated customer feedback: 10 create/delete attempts per day per user/client. */
+export async function checkCustomerFeedbackRateLimit(
+  request: NextRequest,
+  userId: string
+): Promise<RateLimitResult> {
+  return checkRateLimit(request, {
+    keyPrefix: "customer-feedback",
+    keySuffix: userId,
+    maxRequests: 10,
+    windowMs: 24 * 60 * 60 * 1000,
+  });
+}
+
 /** Coupon attempts: 10 per 15 minutes per user. */
 export async function checkCouponAttemptRateLimit(
   request: NextRequest,

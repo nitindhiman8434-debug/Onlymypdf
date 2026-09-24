@@ -612,6 +612,7 @@
     "failed": "Failed",
     "freePlan": "Free",
     "myFiles": "My Files",
+    "feedback": "Feedback",
     "privacySettings": "Privacy & data",
     "security": "Security",
     "browseTools": "Browse Tools",
@@ -729,6 +730,37 @@
       "ctaTitle": "Ready to unlock every PDF tool?",
       "ctaDesc": "Compare the published limits and upgrade when you need signing, unlimited AI summaries, or priority processing."
     }
+  },
+
+  "feedbackPage": {
+    "navLabel": "Feedback",
+    "title": "Verified conversion feedback",
+    "subtitle": "Rate a conversion you completed while signed in. Feedback is linked to that completed job without publishing your file name or document content.",
+    "verifiedTitle": "Conversion-linked evidence",
+    "verifiedDescription": "Only completed conversions from your account are eligible. Submissions remain private and pending until reviewed; nothing is published automatically.",
+    "loading": "Loading eligible conversions…",
+    "loadError": "Feedback could not be loaded. Please try again.",
+    "noJobsTitle": "No eligible conversion available",
+    "noJobsDescription": "Complete a PDF tool while signed in, or you may already have reviewed every eligible conversion.",
+    "useTool": "Choose a PDF tool",
+    "conversionLabel": "Completed conversion",
+    "overallLabel": "Overall result",
+    "accuracyLabel": "Accuracy",
+    "speedLabel": "Speed",
+    "commentLabel": "What worked or needs improvement?",
+    "commentPlaceholder": "Describe the output accuracy, editability, layout, or processing experience.",
+    "storageConsent": "I consent to OnlyMyPDF storing this feedback and linking it to the selected conversion for product-quality research. I can withdraw it below.",
+    "publishConsent": "Optional: after staff review, OnlyMyPDF may publish this comment as a testimonial without my email, file name, or document content.",
+    "submit": "Submit verified feedback",
+    "saved": "Feedback saved. It will not be published automatically.",
+    "saveError": "Feedback could not be saved.",
+    "historyTitle": "Your submitted feedback",
+    "withdraw": "Withdraw",
+    "withdrawConfirm": "Withdraw and permanently delete this feedback?",
+    "withdrawn": "Feedback withdrawn and deleted.",
+    "withdrawError": "Feedback could not be withdrawn.",
+    "publicationAllowed": "Publication allowed after review; personal account details remain private.",
+    "publicationPrivate": "Private product feedback; publication is not allowed."
   },
 
   "admin": {

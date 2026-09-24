@@ -79,6 +79,8 @@ async function buildUserDataExportResponse(user: ApiUser): Promise<NextResponse>
 
     { data: billingInvoices },
 
+    { data: customerFeedback },
+
   ] = await Promise.all([
 
     supabase
@@ -155,6 +157,22 @@ async function buildUserDataExportResponse(user: ApiUser): Promise<NextResponse>
 
       .limit(500),
 
+    supabase
+
+      .from("customer_feedback")
+
+      .select(
+
+        "id, tool_job_id, tool_name, overall_rating, accuracy_rating, speed_rating, comment, publish_consent, consent_version, status, created_at, updated_at"
+
+      )
+
+      .eq("user_id", user.id)
+
+      .order("created_at", { ascending: false })
+
+      .limit(500),
+
   ]);
 
 
@@ -220,6 +238,8 @@ async function buildUserDataExportResponse(user: ApiUser): Promise<NextResponse>
       file_size_bytes: j.file_size_bytes,
 
     })),
+
+    customerFeedback: customerFeedback ?? [],
 
     payments: payments ?? [],
 
@@ -420,6 +440,8 @@ export async function DELETE(request: NextRequest) {
     await supabase.from("api_keys").delete().eq("user_id", user.id);
 
     await supabase.from("uploaded_files").delete().eq("user_id", user.id);
+
+    await supabase.from("customer_feedback").delete().eq("user_id", user.id);
 
     await supabase.from("tool_jobs").delete().eq("user_id", user.id);
 

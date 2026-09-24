@@ -27,9 +27,25 @@ export interface LocalDevUsageEntry {
   created_at: string;
 }
 
+export interface LocalDevCustomerFeedback {
+  id: string;
+  user_id: string;
+  tool_job_id: string;
+  tool_name: string;
+  overall_rating: number;
+  accuracy_rating: number;
+  speed_rating: number;
+  comment: string;
+  publish_consent: boolean;
+  consent_version: string;
+  status: "pending";
+  created_at: string;
+}
+
 interface LocalActivityDb {
   jobs: LocalDevJob[];
   usage: LocalDevUsageEntry[];
+  feedback: LocalDevCustomerFeedback[];
 }
 
 function retentionHours(): number {
@@ -44,9 +60,14 @@ export function isLocalDevActivityEnabled(): boolean {
 async function readDb(): Promise<LocalActivityDb> {
   try {
     const raw = await fs.readFile(ACTIVITY_FILE, "utf8");
-    return JSON.parse(raw) as LocalActivityDb;
+    const parsed = JSON.parse(raw) as Partial<LocalActivityDb>;
+    return {
+      jobs: parsed.jobs ?? [],
+      usage: parsed.usage ?? [],
+      feedback: parsed.feedback ?? [],
+    };
   } catch {
-    return { jobs: [], usage: [] };
+    return { jobs: [], usage: [], feedback: [] };
   }
 }
 
@@ -146,6 +167,77 @@ export async function getLocalDevTotalProcessed(userId: string): Promise<number>
   return db.jobs.filter(
     (job) => job.user_id === userId && job.status === "completed"
   ).length;
+}
+
+export async function getLocalDevCustomerFeedback(userId: string) {
+  if (!isLocalDevActivityEnabled()) return { jobs: [], feedback: [] };
+  const db = await readDb();
+  const feedback = db.feedback.filter((entry) => entry.user_id === userId);
+  const reviewedJobIds = new Set(feedback.map((entry) => entry.tool_job_id));
+  const jobs = db.jobs
+    .filter(
+      (job) =>
+        job.user_id === userId &&
+        job.status === "completed" &&
+        !reviewedJobIds.has(job.id)
+    )
+    .slice(0, 20);
+  return { jobs, feedback };
+}
+
+export async function createLocalDevCustomerFeedback(data: {
+  userId: string;
+  jobId: string;
+  overallRating: number;
+  accuracyRating: number;
+  speedRating: number;
+  comment: string;
+  publishConsent: boolean;
+  consentVersion: string;
+}): Promise<LocalDevCustomerFeedback> {
+  const db = await readDb();
+  const job = db.jobs.find(
+    (entry) =>
+      entry.id === data.jobId &&
+      entry.user_id === data.userId &&
+      entry.status === "completed"
+  );
+  if (!job) throw new Error("Completed conversion not found.");
+  if (db.feedback.some((entry) => entry.tool_job_id === data.jobId)) {
+    throw new Error("Feedback already exists for this conversion.");
+  }
+
+  const feedback: LocalDevCustomerFeedback = {
+    id: crypto.randomUUID(),
+    user_id: data.userId,
+    tool_job_id: data.jobId,
+    tool_name: job.tool_name,
+    overall_rating: data.overallRating,
+    accuracy_rating: data.accuracyRating,
+    speed_rating: data.speedRating,
+    comment: data.comment,
+    publish_consent: data.publishConsent,
+    consent_version: data.consentVersion,
+    status: "pending",
+    created_at: new Date().toISOString(),
+  };
+  db.feedback.unshift(feedback);
+  await writeDb(db);
+  return feedback;
+}
+
+export async function deleteLocalDevCustomerFeedback(
+  userId: string,
+  feedbackId: string
+): Promise<boolean> {
+  const db = await readDb();
+  const next = db.feedback.filter(
+    (entry) => !(entry.id === feedbackId && entry.user_id === userId)
+  );
+  if (next.length === db.feedback.length) return false;
+  db.feedback = next;
+  await writeDb(db);
+  return true;
 }
 
 export async function getLocalDevJobForDownload(

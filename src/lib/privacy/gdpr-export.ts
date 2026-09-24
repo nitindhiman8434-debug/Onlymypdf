@@ -1,9 +1,10 @@
-export const GDPR_EXPORT_FORMAT = "onlymypdf-gdpr-export-v3";
+export const GDPR_EXPORT_FORMAT = "onlymypdf-gdpr-export-v4";
 
 export type GdprExportSection =
   | "account"
   | "profile"
   | "tool_jobs"
+  | "customer_feedback"
   | "payments"
   | "subscriptions"
   | "consent_records"
@@ -19,6 +20,7 @@ export const GDPR_EXPORT_SECTIONS: GdprExportSection[] = [
   "account",
   "profile",
   "tool_jobs",
+  "customer_feedback",
   "payments",
   "subscriptions",
   "consent_records",
@@ -35,6 +37,7 @@ export function buildGdprExportPayload(data: {
   user: { id: string; email?: string | null; plan?: string | null };
   profile: Record<string, unknown> | null;
   toolJobs: Record<string, unknown>[];
+  customerFeedback: Record<string, unknown>[];
   payments: Record<string, unknown>[];
   subscriptions: Record<string, unknown>[];
   consentRecords: Record<string, unknown>[];
@@ -57,6 +60,7 @@ export function buildGdprExportPayload(data: {
     },
     profile: data.profile,
     tool_jobs: data.toolJobs,
+    customer_feedback: data.customerFeedback,
     payments: data.payments,
     subscriptions: data.subscriptions,
     consent_records: data.consentRecords,

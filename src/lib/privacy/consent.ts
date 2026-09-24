@@ -1,5 +1,5 @@
 export const CONSENT_VERSION = "1.0";
-export const TERMS_CONSENT_VERSION = "tos-2026-09-18";
+export const TERMS_CONSENT_VERSION = "tos-2026-09-24";
 export const CONSENT_STORAGE_KEY = "onlymypdf_cookie_consent";
 
 export type CookieConsentState = {

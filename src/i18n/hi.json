@@ -611,6 +611,7 @@
     "failed": "फेल",
     "freePlan": "फ्री",
     "myFiles": "मेरी फ़ाइलें",
+    "feedback": "फ़ीडबैक",
     "privacySettings": "प्राइवेसी और डेटा",
     "security": "सुरक्षा",
     "enterprise": "Enterprise",
@@ -726,6 +727,37 @@
       "ctaTitle": "हर PDF टूल अनलॉक करने के लिए तैयार?",
       "ctaDesc": "Published limits देखें और signing, unlimited AI summaries या priority processing चाहिए तभी Pro में upgrade करें।"
     }
+  },
+
+  "feedbackPage": {
+    "navLabel": "फ़ीडबैक",
+    "title": "सत्यापित कन्वर्ज़न फ़ीडबैक",
+    "subtitle": "साइन इन रहते हुए पूरा किए गए कन्वर्ज़न को रेट करें। फ़ाइल नाम या दस्तावेज़ सामग्री प्रकाशित किए बिना फ़ीडबैक उस जॉब से जुड़ता है।",
+    "verifiedTitle": "कन्वर्ज़न से जुड़ा प्रमाण",
+    "verifiedDescription": "आपके खाते के केवल पूरे कन्वर्ज़न योग्य हैं। समीक्षा तक सबमिशन निजी और pending रहता है; कुछ भी अपने-आप प्रकाशित नहीं होता।",
+    "loading": "योग्य कन्वर्ज़न लोड हो रहे हैं…",
+    "loadError": "फ़ीडबैक लोड नहीं हुआ। फिर कोशिश करें।",
+    "noJobsTitle": "कोई योग्य कन्वर्ज़न उपलब्ध नहीं",
+    "noJobsDescription": "साइन इन रहते हुए PDF टूल पूरा करें, या हो सकता है आपने सभी योग्य कन्वर्ज़न की समीक्षा कर दी हो।",
+    "useTool": "PDF टूल चुनें",
+    "conversionLabel": "पूरा कन्वर्ज़न",
+    "overallLabel": "कुल परिणाम",
+    "accuracyLabel": "सटीकता",
+    "speedLabel": "गति",
+    "commentLabel": "क्या अच्छा रहा या क्या सुधार चाहिए?",
+    "commentPlaceholder": "आउटपुट की सटीकता, editability, layout या processing अनुभव बताएं।",
+    "storageConsent": "मैं product-quality research के लिए OnlyMyPDF को यह फ़ीडबैक स्टोर करने और चुने गए कन्वर्ज़न से जोड़ने की सहमति देता/देती हूँ। इसे नीचे वापस लिया जा सकता है।",
+    "publishConsent": "वैकल्पिक: staff review के बाद OnlyMyPDF मेरी ईमेल, फ़ाइल नाम या दस्तावेज़ सामग्री के बिना यह comment testimonial के रूप में प्रकाशित कर सकता है।",
+    "submit": "सत्यापित फ़ीडबैक भेजें",
+    "saved": "फ़ीडबैक सेव हुआ। यह अपने-आप प्रकाशित नहीं होगा।",
+    "saveError": "फ़ीडबैक सेव नहीं हुआ।",
+    "historyTitle": "आपका जमा फ़ीडबैक",
+    "withdraw": "वापस लें",
+    "withdrawConfirm": "यह फ़ीडबैक वापस लेकर हमेशा के लिए मिटाएं?",
+    "withdrawn": "फ़ीडबैक वापस लेकर मिटा दिया गया।",
+    "withdrawError": "फ़ीडबैक वापस नहीं लिया जा सका।",
+    "publicationAllowed": "Review के बाद publication allowed है; personal account details निजी रहेंगी।",
+    "publicationPrivate": "निजी product feedback; publication allowed नहीं है।"
   },
 
   "admin": {

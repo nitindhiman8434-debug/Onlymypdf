@@ -99,7 +99,7 @@ Phase 2.2 aligns public policies and trust claims with implemented behavior. It 
 9. **The public Status page exposed deployment instructions.** It now shows customer-facing health, accurately labels the absence of public incident history, and directs blocked users to support.
 10. **AI and signature marketing copy overstated privacy and legal acceptance.** Public copy now describes actual processing and distinguishes a visual signature from certificate-based signing.
 11. **Account deletion could orphan a stored object after a storage failure.** Deletion is now fail-closed: account-linked files are removed before database rows and the account remain available for retry if any object deletion fails.
-12. **Terms acceptance did not identify the new policy revision.** New acceptance records now use `tos-2026-09-18`.
+12. **Terms acceptance did not identify the current policy revision.** New acceptance records now use `tos-2026-09-24` after the feedback privacy disclosure update.
 
 ## Phase 2.2 verification evidence
 
@@ -132,7 +132,7 @@ The confirmed values match the code defaults. No production code change is requi
 | Legal, privacy and public trust evidence | 20% | 20% | Engineering gate and operator identity complete |
 | Semantic Office output and OCR | 35% | 30% | Phase 2.3A/B OCR, 2.3C Excel and 2.3D PowerPoint semantic gates passed; measured production limits pending |
 | Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 20% | Complete for controlled local HTTP/artifact and Linux production-image runtime gates; boundaries documented |
-| Verified customer feedback | 5% | 0% | Pending real consented customer evidence |
+| Verified customer feedback | 5% | 0% | Consent, completed-job verification, export and withdrawal infrastructure complete; 0/5 remains until real consented customers submit evidence |
 | **Total** | **100%** | **88%** | **Local accessibility engineering, advanced tools and Phase 2.2/2.3A/B/C/D complete; human and external gates remain** |
 
 Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.
@@ -140,3 +140,5 @@ Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026.
 Phase 2.3E is underway. Its measured-limit, cost and public deployment gates are tracked in `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`. The next phase must not begin until these gates are resolved or explicitly scoped out.
 
 The six-tool workstream is complete for its controlled engineering gate. Implementation details, failures found during Linux-image testing and supported boundaries are recorded in `docs/PHASE_2_ADVANCED_PDF_TOOLS.md`.
+
+Verified-feedback collection is code-complete and migration `024_verified_customer_feedback.sql` is live on the OnlyMyPDF production Supabase project. It accepts feedback only for an authenticated user's completed conversion, records required storage consent separately from optional publication consent, keeps every submission pending for staff review, includes it in GDPR export, and supports withdrawal. Local or synthetic submissions are test evidence only and do not increase the 0/5 real-customer score. See `docs/PHASE_2_VERIFIED_CUSTOMER_FEEDBACK.md`.
