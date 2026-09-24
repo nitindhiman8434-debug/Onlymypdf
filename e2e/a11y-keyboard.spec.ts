@@ -156,4 +156,30 @@ test.describe("Keyboard accessibility", () => {
     await page.keyboard.press("Escape");
     await expect(dialog).toBeHidden();
   });
+
+  test("primary tool reflows at a 200 percent zoom equivalent viewport", async ({ page }) => {
+    // A 1280 px browser viewport exposes about 640 CSS px at 200% browser zoom.
+    await page.setViewportSize({ width: 640, height: 720 });
+    await gotoAndSettle(page, "/pdf-to-word");
+
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Select file", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Convert to Word", exact: true })).toBeVisible();
+
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth
+    );
+    expect(hasHorizontalOverflow).toBe(false);
+  });
+
+  test("primary tool remains usable with forced colors active", async ({ page }) => {
+    await page.emulateMedia({ forcedColors: "active" });
+    await gotoAndSettle(page, "/pdf-to-word");
+
+    expect(await page.evaluate(() => window.matchMedia("(forced-colors: active)").matches)).toBe(true);
+    const chooseButton = page.getByRole("button", { name: "Select file", exact: true });
+    await expect(chooseButton).toBeVisible();
+    await chooseButton.focus();
+    await expectFocused(chooseButton);
+  });
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useId, type ChangeEvent, type InputHTMLAttributes, type RefObject } from "react";
+import { forwardRef, useEffect, useId, useState, type ChangeEvent, type InputHTMLAttributes, type RefObject } from "react";
 import { Loader2, Download, AlertCircle, Upload, FileUp, Check, Info } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { formatFileSize } from "@/lib/utils/file";
@@ -285,6 +285,7 @@ export function ToolSuccessPanel({
   iconVariant = "download",
 }: ToolSuccessPanelProps & { iconVariant?: "download" | "success" }) {
   const { t } = useTranslation();
+  const [announcement, setAnnouncement] = useState("");
   const resolvedResetLabel = resetLabel ?? t("toolPage.processAnother");
   const showComparison =
     originalSizeBytes !== undefined &&
@@ -294,52 +295,61 @@ export function ToolSuccessPanel({
   const showSizeBadge =
     !showComparison && resultSizeBytes !== undefined && resultSizeBytes > 0;
 
+  useEffect(() => {
+    setAnnouncement([title, description].filter(Boolean).join(" "));
+  }, [description, title]);
+
   return (
-    <div className="flex w-full flex-col items-center text-center">
-      <div
-        className={cn(
-          "mb-4 flex h-14 w-14 items-center justify-center rounded-full",
-          iconVariant === "success" ? "bg-emerald-100" : "bg-pd-brand-muted"
-        )}
-      >
-        {iconVariant === "success" ? (
-          <Check className="h-7 w-7 text-emerald-600" aria-hidden />
-        ) : (
-          <Download className="h-7 w-7 text-pd-brand" aria-hidden />
-        )}
-      </div>
-      <h2 className="w-full text-lg font-bold text-pd-foreground">{title}</h2>
-      {description ? (
-        <p className="mt-2 w-full text-sm leading-relaxed text-pd-muted">{description}</p>
-      ) : null}
-
-      {showComparison ? (
-        <FileSizeComparison
-          originalSizeBytes={originalSizeBytes}
-          resultSizeBytes={resultSizeBytes}
-          savedPercent={savedPercent}
-        />
-      ) : null}
-
-      {children ? <div className="mt-4 w-full text-left">{children}</div> : null}
-
-      <div className="mt-6 flex w-full flex-col items-center gap-3">
-        {showSizeBadge ? <ToolResultSizeBadge sizeBytes={resultSizeBytes} /> : null}
-        <a href={downloadUrl} download={downloadFilename}>
-          <Button size="lg" className="h-11 min-w-[13rem] gap-2 px-8 font-semibold">
-            <Download className="h-4 w-4" />
-            {downloadLabel}
-          </Button>
-        </a>
-        <button
-          type="button"
-          onClick={onReset}
-          className="text-sm text-pd-muted transition hover:text-pd-foreground"
+    <>
+      <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </span>
+      <div className="flex w-full flex-col items-center text-center">
+        <div
+          className={cn(
+            "mb-4 flex h-14 w-14 items-center justify-center rounded-full",
+            iconVariant === "success" ? "bg-emerald-100" : "bg-pd-brand-muted"
+          )}
         >
-          {resolvedResetLabel}
-        </button>
+          {iconVariant === "success" ? (
+            <Check className="h-7 w-7 text-emerald-600" aria-hidden />
+          ) : (
+            <Download className="h-7 w-7 text-pd-brand" aria-hidden />
+          )}
+        </div>
+        <h2 className="w-full text-lg font-bold text-pd-foreground">{title}</h2>
+        {description ? (
+          <p className="mt-2 w-full text-sm leading-relaxed text-pd-muted">{description}</p>
+        ) : null}
+
+        {showComparison ? (
+          <FileSizeComparison
+            originalSizeBytes={originalSizeBytes}
+            resultSizeBytes={resultSizeBytes}
+            savedPercent={savedPercent}
+          />
+        ) : null}
+
+        {children ? <div className="mt-4 w-full text-left">{children}</div> : null}
+
+        <div className="mt-6 flex w-full flex-col items-center gap-3">
+          {showSizeBadge ? <ToolResultSizeBadge sizeBytes={resultSizeBytes} /> : null}
+          <a href={downloadUrl} download={downloadFilename}>
+            <Button size="lg" className="h-11 min-w-[13rem] gap-2 px-8 font-semibold">
+              <Download className="h-4 w-4" />
+              {downloadLabel}
+            </Button>
+          </a>
+          <button
+            type="button"
+            onClick={onReset}
+            className="text-sm text-pd-muted transition hover:text-pd-foreground"
+          >
+            {resolvedResetLabel}
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

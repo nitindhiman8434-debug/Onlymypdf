@@ -4,7 +4,7 @@
 
 **Branch:** `phase1-dependable-beta`
 
-**Phase 2 overall completion:** 82%
+**Phase 2 overall completion:** 88%
 
 **Current work package:** Phase 2.3 — semantic Office output and OCR
 
@@ -128,12 +128,12 @@ The confirmed values match the code defaults. No production code change is requi
 
 | Workstream | Phase 2 weight | Complete | Status |
 |---|---:|---:|---|
-| Accessibility and inclusive UX | 20% | 12% | All 28 tool routes pass expanded automated/keyboard checks; real screen-reader review pending |
+| Accessibility and inclusive UX | 20% | 18% | Local NVDA 2026.2 core review and 88 automated checks pass; independent foreground auditory sign-off of the corrected success status remains |
 | Legal, privacy and public trust evidence | 20% | 20% | Engineering gate and operator identity complete |
 | Semantic Office output and OCR | 35% | 30% | Phase 2.3A/B OCR, 2.3C Excel and 2.3D PowerPoint semantic gates passed; measured production limits pending |
 | Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 20% | Complete for controlled local HTTP/artifact and Linux production-image runtime gates; boundaries documented |
 | Verified customer feedback | 5% | 0% | Pending real consented customer evidence |
-| **Total** | **100%** | **82%** | **Advanced tools and Phase 2.2/2.3A/B/C/D complete; external gates remain** |
+| **Total** | **100%** | **88%** | **Local accessibility engineering, advanced tools and Phase 2.2/2.3A/B/C/D complete; human and external gates remain** |
 
 Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.
 

@@ -2,13 +2,13 @@
 
 **Date:** 24 September 2026  
 **Branch:** `phase1-dependable-beta`  
-**Scope:** browser keyboard behavior, browser accessibility tree, WCAG 2 A/AA Axe rules and color contrast. Conversion engines and output behavior were not changed.
+**Scope:** browser keyboard behavior, browser accessibility tree, WCAG 2 A/AA Axe rules, color contrast and a local NVDA 2026.2 review. Conversion engines and output behavior were not changed.
 
 ## Result
 
-The no-cost automated and browser accessibility work is complete for the current public routes. The full accessibility release gate remains open because automated tools and the browser accessibility tree do not replace a real NVDA, JAWS, Narrator or VoiceOver session.
+The no-cost local engineering gate is complete for the current public routes. An official portable NVDA 2026.2 session exercised the homepage, upload controls, Watermark, Scanner, authentication validation and both PDF-to-Word result paths. The session found one real defect: a conversion error was announced automatically, while the shared success panel was not. The shared panel now mounts an empty polite live region and fills it after mount, so the success title and description are exposed as one atomic status without moving focus.
 
-Phase 2 therefore remains at **82%** and the accessibility workstream remains **12/20** until a real screen-reader review is completed and any findings are fixed.
+Phase 2 is now **88%** complete and the accessibility workstream is **18/20**. The remaining 2% is an independent foreground auditory/usability sign-off of the corrected success message by a keyboard/screen-reader user. This is a human release gate rather than unfinished local engineering.
 
 ## Issues found and resolved
 
@@ -16,32 +16,40 @@ Phase 2 therefore remains at **82%** and the accessibility workstream remains **
 2. **PDF Scanner selected mode did not meet contrast requirements.** White 12 px text on teal-600 measured 3.66:1. Text buttons now use teal-700 with a teal-800 hover state and pass the 4.5:1 WCAG AA threshold.
 3. **PDF Scanner did not announce the active Camera/Upload mode.** The two controls are now a labelled group with an `aria-pressed` state that updates through keyboard activation.
 4. **One combined local run exhausted the Chromium renderer heap.** The first 37 checks passed, then the Split PDF contrast scan hit `V8 JavaScript OOM`; later failures were connection-refused cascades after localhost stopped. Split PDF and every affected route passed when rerun in fresh memory-safe batches. This was test infrastructure pressure, not a product contrast failure.
+5. **Tool success panels were visible but not announced automatically by NVDA.** `ToolSuccessPanel` now keeps a screen-reader-only `role="status"` live region in the accessibility tree and populates it after mount. This fixes success announcements for PDF to Word and every tool that shares this result component, without changing conversion logic, output bytes or timing.
 
 ## Verification evidence
 
 | Gate | Result | Evidence |
 |---|---:|---|
-| Keyboard interactions | Pass | 9/9 Playwright checks, including Watermark labels/tab order and Scanner pressed-state changes |
+| Keyboard interactions | Pass | 11/11 Playwright checks in memory-safe batches, including Watermark labels/tab order, Scanner pressed-state changes, 200% zoom-equivalent reflow and forced-colors mode |
 | Serious/critical Axe findings | Pass | 0 across 40 English/Hindi public pages, including all 28 PDF tool routes |
 | Color contrast | Pass | 0 moderate-or-higher violations across 37 marketing/tool checks, including all 28 PDF tool routes |
 | Browser accessibility tree | Pass | Skip link focuses `#main-content`; Watermark fields expose Text field/Slider/Stepper names; hidden color input is skipped; Scanner controls expose distinct accessible names |
 | Add Watermark targeted retest | Pass | Serious/critical Axe check and keyboard semantic checks pass |
 | PDF Scanner targeted retest | Pass | Serious/critical Axe, color contrast and keyboard pressed-state checks pass |
+| NVDA 2026.2 core flow | Pass | Real speech log captured landmarks, upload names, Watermark names/values, Scanner pressed states, login/signup alerts and the invalid-conversion alert |
+| Valid PDF-to-Word result | Pass | Tracked 2.3 KB fixture produced a real 36.8 KB DOCX result; the corrected accessibility tree exposes `Converted Successfully! Your Word document is ready to download.` as an atomic status |
+| 200% reflow proxy | Pass | 1280 px viewport represented as 640 CSS px; primary heading and actions remained visible with no horizontal document overflow |
+| Windows High Contrast proxy | Pass | Chromium `forced-colors: active` matched and the primary Select file action remained visible and keyboard-focusable |
 
-The expanded automated suite now contains **86 checks**: 40 Axe structure/name checks, 37 contrast checks and 9 keyboard behavior checks. On a memory-constrained Windows development server, run the Axe groups in smaller batches. A combined run still needs a runner with enough memory to keep Chromium and the Next.js server alive together.
+The expanded automated suite now contains **88 checks**: 40 Axe structure/name checks, 37 contrast checks and 11 keyboard behavior checks. On a memory-constrained Windows development server, run the Axe and keyboard groups in smaller batches. One combined 11-check keyboard run crashed Chromium after three passes; the unchanged remaining checks passed 6/6 and 2/2 in fresh batches. This was runner memory pressure, not a product failure.
 
-## Real screen-reader release checklist
+## NVDA session evidence
 
-Run this checklist with Windows Narrator or NVDA on localhost before closing the remaining accessibility gate:
+The official NVDA 2026.2 installer was downloaded from NV Access and matched its published SHA-256 checksum (`f3f8d29974a88d687b3c4809be192219ec579c5bdabcda5aaf53635288bca824`). A portable copy ran with an isolated temporary profile, add-ons disabled and I/O speech logging enabled. The full raw log is intentionally not committed because it also records unrelated foreground desktop activity.
 
-1. Open `/`, use heading and landmark navigation, and confirm one clear level-one heading and a usable main landmark.
-2. Tab from page start, activate **Skip to main content**, and confirm focus moves to the main content.
-3. Open and close **All Tools** and the mobile menu; confirm their names, expanded state, focus order and Escape behavior are announced.
-4. On `/merge-pdf`, `/pdf-to-word`, `/add-watermark` and `/pdf-scanner`, confirm every upload action and option has a useful name and instructions are read in a sensible order.
-5. On `/add-watermark`, confirm Watermark text, Opacity, Font size and Rotation names and values are announced; confirm the hidden color input never becomes a Tab stop.
-6. On `/pdf-scanner`, confirm Camera or Upload is announced as pressed and that the state changes after keyboard activation.
-7. On `/login` and `/signup`, submit invalid values and confirm the error is announced and focus moves to the field needing correction.
-8. Trigger one safe local conversion error and one success state; confirm both status changes are announced without moving focus unexpectedly.
-9. Repeat the primary flow at 200% browser zoom and with Windows High Contrast mode if available.
+| Route/control | Spoken or observed result | Result |
+|---|---|---:|
+| `/` landmarks and skip link | `Skip to main content`, `main landmark`, one level-one heading; activating the skip link focused `#main-content` | Pass |
+| `/merge-pdf` upload | `or drop files here`, `region`, `Select file`, `button` | Pass |
+| `/pdf-to-word` upload | `Drop a file here or click to browse`, `region`, `Select file`, `button` | Pass |
+| `/add-watermark` | `Watermark text`, `Opacity (50%)`, `Font size`, `Rotation`; the hidden native color input was absent from Tab order | Pass |
+| `/pdf-scanner` | `Scanner input mode`, `Camera`, `toggle button`, `not pressed`; `Upload`, `toggle button`, `pressed`; states changed after keyboard activation | Pass |
+| `/login` and `/signup` | Required field names followed by `Please fill out this field`, `alert`; focus moved to the invalid field | Pass |
+| Invalid PDF conversion | `0% complete`, then `alert`, `File content does not match the declared type.` | Pass |
+| Valid PDF conversion | Real DOCX result completed; pre-fix NVDA log proved the missing automatic success announcement. Post-fix tree exposes an atomic polite status; independent foreground auditory confirmation remains the final 2% sign-off | Engineering pass; human sign-off pending |
 
-Record the screen reader name/version, browser/version, route, steps, spoken result and pass/fail. A real user or tester must hear the announcements; screenshots and DOM inspection alone are insufficient evidence.
+## Remaining release sign-off
+
+In a foreground browser, a keyboard/screen-reader user should run one valid conversion and confirm that NVDA speaks `Converted Successfully! Your Word document is ready to download.` without moving focus. Record the screen reader/browser versions and spoken result. This single human usability check closes the remaining accessibility 2/20; all locally automatable and inspectable checks are complete.
