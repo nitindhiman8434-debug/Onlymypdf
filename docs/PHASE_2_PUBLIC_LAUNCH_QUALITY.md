@@ -4,7 +4,7 @@
 
 **Branch:** `phase1-dependable-beta`
 
-**Phase 2 overall completion:** 88%
+**Phase 2 overall completion:** 90%
 
 **Current work package:** Phase 2.3 — semantic Office output and OCR
 
@@ -18,7 +18,7 @@
 
 **Phase 2.3D status:** Complete for its controlled semantic gate. PDF-to-PowerPoint passed 7/7 local and Ubuntu cases with editable on-slide text for selectable PDFs, rendered visual comparison and a local HTTP artifact check. Public production behavior remains for Phase 2.3E.
 
-**Phase 2.3E status:** In progress. Production-image Office packaging passed GitHub Actions run 35651492549. No-cost localhost HTTP checks cover Word, Excel and PowerPoint with a synthetic PDF at 98.8% of the Free file cap, above-cap rejection on all three routes, a parallel pair and a simultaneous three-tool run. The last-page Word truncation defect was fixed and retested. Public-document QA subsequently found and fixed a dense-form Word image-only fallback, while recording Excel accuracy limits and local scan behavior in `docs/PHASE_2_3E_REAL_WORLD_QA.md`. Public HTTPS frontend artifacts, representative production load/retention and per-job provider cost evidence are still required. The separate advanced-tools gate has since raised overall Phase 2 completion to 82%. See `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`.
+**Phase 2.3E status:** In progress. Production-image Office packaging passed GitHub Actions run 35651492549. No-cost localhost HTTP checks cover Word, Excel and PowerPoint with a synthetic PDF at 98.8% of the Free file cap, above-cap rejection on all three routes, a parallel pair and a simultaneous three-tool run. The last-page Word truncation defect was fixed and retested. Public-document QA subsequently found and fixed a dense-form Word image-only fallback, while recording Excel accuracy limits and local scan behavior in `docs/PHASE_2_3E_REAL_WORLD_QA.md`. Public HTTPS frontend artifacts, representative production load/retention and per-job provider cost evidence are still required. Later accessibility and advanced-tools gates have raised overall Phase 2 completion to 90%. See `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`.
 
 ## Scope and safety boundary
 
@@ -61,9 +61,9 @@ Any later work that can change Word, Excel, PowerPoint or OCR output must be rev
 | Touched-file ESLint | Pass | Zero errors or warnings |
 | Production build | Pass | Next.js 16.3.5 webpack build; 154/154 static pages generated |
 
-Automated evidence is not a substitute for a manual test with NVDA, JAWS, VoiceOver or another real screen reader. That manual review remains required before the full accessibility release gate can be marked complete.
+The real-screen-reader gate is now complete. NVDA 2026.2 with Google Chrome 153.0.8010.53 announced the valid PDF-to-Word success alert without moving focus, and the foreground user confirmed hearing it.
 
-The 24 September revalidation expanded coverage to every one of the 28 tool routes: 40 serious/critical Axe checks, 37 color-contrast checks and 9 keyboard checks passed after the Watermark and Scanner fixes. A browser accessibility-tree walkthrough also confirmed the repaired names, values and Tab order. The local development run was executed in memory-safe batches after Chromium exhausted its renderer heap during one combined scan; affected routes passed on fresh reruns. Full evidence and the remaining real-screen-reader checklist are in `docs/PHASE_2_ACCESSIBILITY_REVALIDATION.md`.
+The 24 September revalidation expanded coverage to every one of the 28 tool routes: 40 serious/critical Axe checks, 37 color-contrast checks and 11 keyboard checks passed after the Watermark and Scanner fixes. A browser accessibility-tree walkthrough confirmed the repaired names, values and Tab order. A foreground NVDA run then proved the shared success alert. The local development run was executed in memory-safe batches after Chromium exhausted its renderer heap during one combined scan; affected routes passed on fresh reruns. Full evidence is in `docs/PHASE_2_ACCESSIBILITY_REVALIDATION.md`.
 
 ## Phase 2 workstream status (Phase 2.1 historical checkpoint)
 
@@ -128,12 +128,12 @@ The confirmed values match the code defaults. No production code change is requi
 
 | Workstream | Phase 2 weight | Complete | Status |
 |---|---:|---:|---|
-| Accessibility and inclusive UX | 20% | 18% | Local NVDA 2026.2 core review and 88 automated checks pass; independent foreground auditory sign-off of the corrected success status remains |
+| Accessibility and inclusive UX | 20% | 20% | 88 automated checks pass; NVDA 2026.2 and Chrome 153 foreground sign-off confirms the valid-conversion alert without moving focus |
 | Legal, privacy and public trust evidence | 20% | 20% | Engineering gate and operator identity complete |
 | Semantic Office output and OCR | 35% | 30% | Phase 2.3A/B OCR, 2.3C Excel and 2.3D PowerPoint semantic gates passed; measured production limits pending |
 | Repair/OCR/PDF-A/Redact/Crop/Compare tools | 20% | 20% | Complete for controlled local HTTP/artifact and Linux production-image runtime gates; boundaries documented |
 | Verified customer feedback | 5% | 0% | Consent, completed-job verification, export and withdrawal infrastructure complete; 0/5 remains until real consented customers submit evidence |
-| **Total** | **100%** | **88%** | **Local accessibility engineering, advanced tools and Phase 2.2/2.3A/B/C/D complete; human and external gates remain** |
+| **Total** | **100%** | **90%** | **Accessibility, advanced tools and Phase 2.2/2.3A/B/C/D complete; measured production limits and real customer evidence remain** |
 
 Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.
 

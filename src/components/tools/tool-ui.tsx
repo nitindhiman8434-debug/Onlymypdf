@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useEffect, useId, useState, type ChangeEvent, type InputHTMLAttributes, type RefObject } from "react";
+import { forwardRef, useId, type ChangeEvent, type InputHTMLAttributes, type RefObject } from "react";
 import { Loader2, Download, AlertCircle, Upload, FileUp, Check, Info } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { formatFileSize } from "@/lib/utils/file";
@@ -285,7 +285,6 @@ export function ToolSuccessPanel({
   iconVariant = "download",
 }: ToolSuccessPanelProps & { iconVariant?: "download" | "success" }) {
   const { t } = useTranslation();
-  const [announcement, setAnnouncement] = useState("");
   const resolvedResetLabel = resetLabel ?? t("toolPage.processAnother");
   const showComparison =
     originalSizeBytes !== undefined &&
@@ -295,15 +294,11 @@ export function ToolSuccessPanel({
   const showSizeBadge =
     !showComparison && resultSizeBytes !== undefined && resultSizeBytes > 0;
 
-  useEffect(() => {
-    setAnnouncement([title, description].filter(Boolean).join(" "));
-  }, [description, title]);
-
   return (
     <>
-      <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
-        {announcement}
-      </span>
+      <div role="alert" aria-live="assertive" aria-atomic="true" className="sr-only">
+        {[title, description].filter(Boolean).join(" ")}
+      </div>
       <div className="flex w-full flex-col items-center text-center">
         <div
           className={cn(

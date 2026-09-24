@@ -6,9 +6,9 @@
 
 ## Result
 
-The no-cost local engineering gate is complete for the current public routes. An official portable NVDA 2026.2 session exercised the homepage, upload controls, Watermark, Scanner, authentication validation and both PDF-to-Word result paths. The session found one real defect: a conversion error was announced automatically, while the shared success panel was not. The shared panel now mounts an empty polite live region and fills it after mount, so the success title and description are exposed as one atomic status without moving focus.
+The no-cost local engineering gate is complete for the current public routes. An official portable NVDA 2026.2 session exercised the homepage, upload controls, Watermark, Scanner, authentication validation and both PDF-to-Word result paths. The session found one real defect: a conversion error was announced automatically, while the shared success panel was not. The shared panel now mounts an atomic assertive alert containing the success title and description. NVDA announced the complete message without moving focus.
 
-Phase 2 is now **88%** complete and the accessibility workstream is **18/20**. The remaining 2% is an independent foreground auditory/usability sign-off of the corrected success message by a keyboard/screen-reader user. This is a human release gate rather than unfinished local engineering.
+Phase 2 is now **90%** complete and the accessibility workstream is **20/20**. The foreground auditory/usability sign-off was completed with NVDA 2026.2 and Google Chrome 153.0.8010.53. Phase 2 still has 10% outside accessibility: 5% measured semantic-production limits and 5% real consented customer feedback.
 
 ## Issues found and resolved
 
@@ -16,7 +16,7 @@ Phase 2 is now **88%** complete and the accessibility workstream is **18/20**. T
 2. **PDF Scanner selected mode did not meet contrast requirements.** White 12 px text on teal-600 measured 3.66:1. Text buttons now use teal-700 with a teal-800 hover state and pass the 4.5:1 WCAG AA threshold.
 3. **PDF Scanner did not announce the active Camera/Upload mode.** The two controls are now a labelled group with an `aria-pressed` state that updates through keyboard activation.
 4. **One combined local run exhausted the Chromium renderer heap.** The first 37 checks passed, then the Split PDF contrast scan hit `V8 JavaScript OOM`; later failures were connection-refused cascades after localhost stopped. Split PDF and every affected route passed when rerun in fresh memory-safe batches. This was test infrastructure pressure, not a product contrast failure.
-5. **Tool success panels were visible but not announced automatically by NVDA.** `ToolSuccessPanel` now keeps a screen-reader-only `role="status"` live region in the accessibility tree and populates it after mount. This fixes success announcements for PDF to Word and every tool that shares this result component, without changing conversion logic, output bytes or timing.
+5. **Tool success panels were visible but not announced automatically by NVDA.** `ToolSuccessPanel` now mounts a screen-reader-only atomic `role="alert"` with the complete success title and description. This fixes success announcements for PDF to Word and every tool that shares this result component, without changing conversion logic, output bytes or timing.
 
 ## Verification evidence
 
@@ -28,8 +28,10 @@ Phase 2 is now **88%** complete and the accessibility workstream is **18/20**. T
 | Browser accessibility tree | Pass | Skip link focuses `#main-content`; Watermark fields expose Text field/Slider/Stepper names; hidden color input is skipped; Scanner controls expose distinct accessible names |
 | Add Watermark targeted retest | Pass | Serious/critical Axe check and keyboard semantic checks pass |
 | PDF Scanner targeted retest | Pass | Serious/critical Axe, color contrast and keyboard pressed-state checks pass |
-| NVDA 2026.2 core flow | Pass | Real speech log captured landmarks, upload names, Watermark names/values, Scanner pressed states, login/signup alerts and the invalid-conversion alert |
-| Valid PDF-to-Word result | Pass | Tracked 2.3 KB fixture produced a real 36.8 KB DOCX result; the corrected accessibility tree exposes `Converted Successfully! Your Word document is ready to download.` as an atomic status |
+| NVDA 2026.2 core flow | Pass | Real speech log captured landmarks, upload names, Watermark names/values, Scanner pressed states, login/signup alerts, invalid-conversion alert and the valid-conversion success alert |
+| Valid PDF-to-Word result | Pass | Tracked 2.3 KB fixture produced a real 36.8 KB DOCX result; NVDA spoke `alert, Converted Successfully! Your Word document is ready to download.` and the foreground user confirmed hearing it |
+| Unit regression suite | Pass | 133 files and 653 tests passed after the live-region repair |
+| Production build | Pass | Next.js 16.3.5 webpack build generated 168/168 pages |
 | 200% reflow proxy | Pass | 1280 px viewport represented as 640 CSS px; primary heading and actions remained visible with no horizontal document overflow |
 | Windows High Contrast proxy | Pass | Chromium `forced-colors: active` matched and the primary Select file action remained visible and keyboard-focusable |
 
@@ -37,7 +39,7 @@ The expanded automated suite now contains **88 checks**: 40 Axe structure/name c
 
 ## NVDA session evidence
 
-The official NVDA 2026.2 installer was downloaded from NV Access and matched its published SHA-256 checksum (`f3f8d29974a88d687b3c4809be192219ec579c5bdabcda5aaf53635288bca824`). A portable copy ran with an isolated temporary profile, add-ons disabled and I/O speech logging enabled. The full raw log is intentionally not committed because it also records unrelated foreground desktop activity.
+The official NVDA 2026.2 installer was downloaded from NV Access and matched its published SHA-256 checksum (`f3f8d29974a88d687b3c4809be192219ec579c5bdabcda5aaf53635288bca824`). A portable copy ran with an isolated temporary profile and I/O speech logging enabled. The final foreground test used Google Chrome 153.0.8010.53. The full raw log is intentionally not committed because it also records unrelated foreground desktop activity.
 
 | Route/control | Spoken or observed result | Result |
 |---|---|---:|
@@ -48,8 +50,10 @@ The official NVDA 2026.2 installer was downloaded from NV Access and matched its
 | `/pdf-scanner` | `Scanner input mode`, `Camera`, `toggle button`, `not pressed`; `Upload`, `toggle button`, `pressed`; states changed after keyboard activation | Pass |
 | `/login` and `/signup` | Required field names followed by `Please fill out this field`, `alert`; focus moved to the invalid field | Pass |
 | Invalid PDF conversion | `0% complete`, then `alert`, `File content does not match the declared type.` | Pass |
-| Valid PDF conversion | Real DOCX result completed; pre-fix NVDA log proved the missing automatic success announcement. Post-fix tree exposes an atomic polite status; independent foreground auditory confirmation remains the final 2% sign-off | Engineering pass; human sign-off pending |
+| Valid PDF conversion | Real DOCX result completed; pre-fix NVDA log proved the missing automatic success announcement. After the assertive-alert repair, NVDA logged and spoke `Converted Successfully! Your Word document is ready to download.` without moving focus; the foreground user confirmed hearing the run | Pass |
 
-## Remaining release sign-off
+## Completed release sign-off
 
-In a foreground browser, a keyboard/screen-reader user should run one valid conversion and confirm that NVDA speaks `Converted Successfully! Your Word document is ready to download.` without moving focus. Record the screen reader/browser versions and spoken result. This single human usability check closes the remaining accessibility 2/20; all locally automatable and inspectable checks are complete.
+On 24 September 2026, a foreground user ran the tracked valid conversion with NVDA 2026.2 and Google Chrome 153.0.8010.53. NVDA's I/O log recorded `alert, Converted Successfully! Your Word document is ready to download.`, and the user confirmed the audible result. Focus remained in the existing browser flow. This closes the accessibility workstream at 20/20.
+
+The repeatable local runner is `npm run test:a11y:nvda`. It requires the localhost app on port 3001 and a foreground NVDA session; its synthetic fixture does not contain customer data.

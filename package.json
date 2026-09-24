@@ -32,6 +32,7 @@
     "phase1:retention-retry": "npx tsx scripts/phase1-retention-retry-drill.ts",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:a11y:nvda": "node scripts/nvda-pdf-to-word-check.mjs",
     "test:e2e:install": "playwright install --with-deps chromium",
     "test:e2e:smoke": "playwright test e2e/smoke.spec.ts e2e/legal.spec.ts e2e/conversion.spec.ts e2e/checkout.spec.ts e2e/tools.spec.ts",
     "test:e2e:verify": "playwright test e2e/smoke.spec.ts e2e/tools.spec.ts e2e/a11y.spec.ts e2e/cwv.spec.ts e2e/perf-budget.spec.ts",
