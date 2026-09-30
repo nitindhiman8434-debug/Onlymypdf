@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-require-imports -- This launcher is intentionally CommonJS. */
-
 const path = require("node:path");
 const { spawn } = require("node:child_process");
 

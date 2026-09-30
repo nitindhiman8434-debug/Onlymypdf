@@ -3,11 +3,39 @@
 **Started:** 22 September 2026
 
 **Status:** In progress. Production-image packaging, the no-cost local capacity/page-completeness gates and the live Supabase queue activation gate passed; public production gate is not passed.
-**Phase 2 completion:** 82%. The separate 20%-weight advanced PDF tools workstream passed after this document began; this 5%-weight deployment package remains incomplete.
+**Phase 2 completion:** 90%. Later accessibility and advanced-tools gates are complete; this 5%-weight deployment package and the separate 5%-weight real-customer evidence gate remain incomplete.
 
 Later no-cost real-document QA found and repaired omitted Excel source text, unreadable short dense Word layout and dense PowerPoint text overlap. The [quality remediation checkpoint](PHASE_2_3E_QUALITY_REMEDIATION.md) and its final nine-route HTTP report supersede the earlier public-document observations below. On 23 September, migration 023 and its Supabase PGMQ/runtime coordination paths were activated and verified; see the [Supabase queue activation checkpoint](PHASE_2_3E_SUPABASE_QUEUE_ACTIVATION.md). The updated full-image OCR smoke passes; the public HTTPS, deployed retention/load and provider-cost gates remain unverified.
 
 On 24 September, a cost-limited [Cloud Run deployment blueprint](../deploy/cloud-run/README.md) was added. It uses request-based billing, scale-to-zero, a two-instance ceiling, concurrency one, scheduled Supabase queue drains and production-safe disabled checkout. Code/build readiness does not constitute deployment: Google Cloud project `onlymypdf-prod-2026` exists, but it has no linked billing account, Cloud Run Admin API is not enabled and no paid compute resource has been created.
+
+## Final no-cost local release revalidation — 30 September 2026
+
+The local release candidate was revalidated after restoring activity on the healthy OnlyMyPDF Supabase project. This gate found and resolved four release-engineering defects without changing any PDF conversion engine or output algorithm:
+
+1. ESLint traversed the generated `.next-local-preview` tree and treated compiled bundles as source. The generated directory is now globally ignored, and intentional CommonJS runners have an explicit `.cjs` rule override.
+2. The full lint process could exhaust Node's default heap on this repository. The lint command now uses the same explicit 4 GB heap ceiling as the build command; the final run completed with zero errors and 19 existing warnings.
+3. Disabled checkout returned `503` before checking authentication, conflicting with the API's auth-first contract. The create-order route now returns `401` to unauthenticated callers before disclosing checkout availability; a regression test covers disabled billing with no user.
+4. Next.js `16.3.5` was inside the critical `next/og` ImageResponse RCE range from [GHSA-vcvr-r3jv-pc5j](https://github.com/vercel/next.js/security/advisories/GHSA-vcvr-r3jv-pc5j). The application now pins patched `16.3.6`. Production dependency audit reports zero vulnerabilities. Next's documented low-risk Webpack memory optimization and a single build worker prevent page-data OOM on this Windows machine.
+
+Current evidence:
+
+| Gate | Result |
+|---|---|
+| Unit/integration regression | 654/654 tests passed across 133 files |
+| TypeScript | `tsc --noEmit` passed |
+| ESLint | Completed with 0 errors; 19 non-blocking existing warnings |
+| Production build | Next.js 16.3.6 webpack build passed; 168/168 static pages generated |
+| Browser E2E | All 25 checkout, conversion, legal, public-smoke and tool checks passed in fresh low-memory batches |
+| PDF-to-Word HTTP artifact | 37,721-byte openable DOCX; CRC and editable fixture text passed; `pdf2docx`; output validation true |
+| PDF-to-Excel HTTP artifact | 8,707-byte openable XLSX; three worksheet parts and editable fixture text passed |
+| PDF-to-PowerPoint HTTP artifact | 33,303-byte openable PPTX; two editable slides and fixture text passed |
+| Simultaneous three-tool run | 4-page Word, Excel and PowerPoint all passed CRC and 4/4 editable page markers; Word replay returned 404 |
+| File-size boundary | 27,076,295-byte input received HTTP 400 on Word, Excel and PowerPoint as required by the 25 MiB Free cap |
+| Last-page regression | Single, in-process chunk, subprocess chunk and searchable OCR branch retained every expected page |
+| Production dependency audit | `npm audit --omit=dev --audit-level=high`: 0 vulnerabilities |
+
+The long combined Playwright run caused the Windows development server/browser worker to exit under accumulated compilation pressure. Re-running the same cases with one worker and fresh-server batches passed all 25 checks. This is recorded as a local runner constraint rather than an application failure. The public HTTPS, deployed load/retention, provider-cost and real-customer gates below remain open.
 
 ## What is established
 

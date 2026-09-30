@@ -150,6 +150,18 @@ describe("payment route handlers", () => {
     expect(createOrder).not.toHaveBeenCalled();
   });
 
+  it("requires authentication before revealing checkout availability", async () => {
+    vi.mocked(getAuthenticatedSupabaseUser).mockResolvedValue(null);
+    vi.mocked(isBillingCheckoutAvailable).mockReturnValue(false);
+
+    const response = await createOrderPOST(requestJson({ plan: "pro", duration: "monthly" }));
+    const body = await readJson(response);
+
+    expect(response.status).toBe(401);
+    expect(body.error).toBe("Authentication required");
+    expect(createOrder).not.toHaveBeenCalled();
+  });
+
   it("creates discounted yearly Razorpay orders and stores INR amount", async () => {
     vi.mocked(getCouponCode).mockResolvedValue({
       code: "HALF",

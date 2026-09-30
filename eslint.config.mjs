@@ -7,6 +7,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
   globalIgnores([
     ".next/**",
+    ".next-local-preview/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
@@ -14,6 +15,13 @@ const eslintConfig = defineConfig([
     ".snapshots/**",
     "coverage/**",
   ]),
+  {
+    files: ["**/*.cjs"],
+    rules: {
+      // These Node runner scripts intentionally use CommonJS.
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
   {
     rules: {
       // React Compiler rules flag common, valid patterns (mount fetches, hydration).

@@ -30,18 +30,18 @@ export async function POST(request: NextRequest) {
     const rate = await checkAuthRateLimit(request);
     if (!rate.allowed) return rateLimitResponse(rate.retryAfterSec);
 
-    if (!isBillingCheckoutAvailable()) {
-      return NextResponse.json(
-        { error: getCheckoutUnavailableMessage() },
-        { status: 503 }
-      );
-    }
-
     const supabase = await createClient();
     const user = await getAuthenticatedSupabaseUser(supabase);
 
     if (!user) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+
+    if (!isBillingCheckoutAvailable()) {
+      return NextResponse.json(
+        { error: getCheckoutUnavailableMessage() },
+        { status: 503 }
+      );
     }
 
     const { plan, duration, couponCode } = await request.json();

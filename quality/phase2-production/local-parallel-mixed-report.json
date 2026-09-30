@@ -1,6 +1,6 @@
 {
-  "startedAt": "2026-09-23T19:34:26.483Z",
-  "completedAt": "2026-09-23T19:34:34.085Z",
+  "startedAt": "2026-09-30T16:56:44.515Z",
+  "completedAt": "2026-09-30T16:56:51.773Z",
   "baseUrl": "http://127.0.0.1:3001",
   "caseName": "parallel-mixed",
   "fixture": "quality/phase2-production/generated/mixed-4-page.pdf",
@@ -10,9 +10,9 @@
     {
       "status": "passed",
       "tool": "pdf-to-word",
-      "elapsedMs": 7425,
+      "elapsedMs": 7245,
       "outputBytes": 16525723,
-      "sha256": "d28982206ab9927ac3d524d517189d99df601d6c5919401594987aa842f0101b",
+      "sha256": "659bbcfad125c9bcf2007ad6b28381749ff78690b893306fc453b4eda2ed17a4",
       "engine": "pdf2docx",
       "oneTimeDownloadReplayStatus": 404,
       "validation": {
@@ -24,9 +24,9 @@
     {
       "status": "passed",
       "tool": "pdf-to-excel",
-      "elapsedMs": 6773,
+      "elapsedMs": 2867,
       "outputBytes": 11060,
-      "sha256": "2d046254f6f15d76ddc0e6f2d0d22801c49fca3a664f8a9fc7ca824c5b0f0c16",
+      "sha256": "89bf8fcfe3ca928a87000c446489dc37f7b67265cb4df77d9fb4f0e7e27e94a9",
       "validation": {
         "crcPassed": true,
         "partCount": 5,
@@ -36,9 +36,9 @@
     {
       "status": "passed",
       "tool": "pdf-to-ppt",
-      "elapsedMs": 7529,
+      "elapsedMs": 4530,
       "outputBytes": 9546122,
-      "sha256": "13397ecad0de689de4b22d59ac1d2119379f11167c2c9eefcd8a6568b1a1405a",
+      "sha256": "1605c5f9adb8e2a37622c1e84fc62261bafb71bd03d704da53e0e40e025a8116",
       "validation": {
         "crcPassed": true,
         "partCount": 4,

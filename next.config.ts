@@ -64,6 +64,8 @@ const nextConfig: NextConfig = {
     root: path.join(__dirname),
   },
   experimental: {
+    cpus: 1,
+    webpackMemoryOptimizations: true,
     proxyClientMaxBodySize: `${maxBodyMb}mb`,
     optimizePackageImports: ["lucide-react", "date-fns"],
   },
