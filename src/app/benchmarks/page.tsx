@@ -13,6 +13,7 @@ import { CONVERSION_BENCHMARK } from "@/config/conversion-benchmark";
 import { APP_NAME, APP_URL } from "@/config/constants";
 import { breadcrumbJsonLd, faqPageJsonLd, JsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { DocumentCorpusResults } from "./document-corpus-results";
 
 const TITLE = "PDF Conversion Benchmark: Word, Excel and PowerPoint";
 const DESCRIPTION =
@@ -34,7 +35,7 @@ const FAQS = [
   {
     question: "Does this benchmark prove 100% PDF conversion accuracy?",
     answer:
-      "No. It proves that one controlled two-page fixture produced openable Word, Excel, and PowerPoint files with the expected editable text. Different document structures can produce different results.",
+      "No. The baseline checks one controlled two-page fixture. The separate language and document corpus reports both passing and failing checks on more varied files. Neither establishes universal conversion accuracy.",
   },
   {
     question: "What does openable output mean?",
@@ -88,7 +89,7 @@ export default function BenchmarksPage() {
       <MarketingPageShell
         title={TITLE}
         description="Reproducible evidence from a controlled release check, with the limits stated beside the results."
-        eyebrow="Phase 3 · Evidence report"
+        eyebrow="Conversion evidence"
         heroStyle="centered"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Benchmarks" }]}
       >
@@ -96,7 +97,7 @@ export default function BenchmarksPage() {
           <div className="rounded-2xl border border-pd-border bg-pd-surface p-6 shadow-sm sm:p-8">
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
               <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-800">
-                Controlled checks passed
+                Two-page baseline passed
               </span>
               <span className="rounded-full bg-pd-brand-muted px-3 py-1 text-pd-brand">
                 Measured {CONVERSION_BENCHMARK.measuredOn}
@@ -114,6 +115,9 @@ export default function BenchmarksPage() {
               regression retained every tested page. This result is reproducible local evidence;
               it is not a promise that every PDF converts perfectly.
             </p>
+            <a href="#document-corpus" className="mt-4 inline-flex min-h-11 items-center font-semibold text-pd-brand hover:underline">
+              See the expanded language and document results
+            </a>
           </div>
         </section>
 
@@ -210,6 +214,8 @@ export default function BenchmarksPage() {
           </div>
         </section>
 
+        <DocumentCorpusResults />
+
         <section className="mt-12 rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8" aria-labelledby="limits-heading">
           <div className="flex items-center gap-3">
             <TriangleAlert className="h-6 w-6 text-amber-800" aria-hidden="true" />
@@ -237,4 +243,3 @@ export default function BenchmarksPage() {
     </>
   );
 }
-

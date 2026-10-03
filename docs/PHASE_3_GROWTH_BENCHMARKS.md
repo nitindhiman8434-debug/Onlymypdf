@@ -24,3 +24,13 @@ The first Phase 3 roadmap item is to publish benchmark reports and unique educat
 - Browser review at a 514-pixel viewport found no horizontal overflow, all three result cards, valid Dataset/Breadcrumb/FAQ JSON-LD, and zero console warnings or errors.
 
 The report is ready in the local application. Publishing it on the public Internet remains part of the deferred production deployment decision.
+
+## Task 3.2A: expanded language and document evidence
+
+The next bounded diagnostic is complete locally: six synthetic PDFs across
+eighteen HTTP Office conversions, with 14 checks passing and four failing.
+The expanded results appear on `/benchmarks#document-corpus`; see
+[the detailed findings and follow-up gate](PHASE_3_2_MULTILINGUAL_CORPUS.md).
+This does not close conversion quality or Phase 2 production gates. Next is
+targeted repair of primary Excel numeric values and identifiers (3.2B), followed
+by Hindi extraction regressions.

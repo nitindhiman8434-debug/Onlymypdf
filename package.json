@@ -21,6 +21,8 @@
     "phase2.3e:http-smoke": "node scripts/phase2-production-http-smoke.mjs",
     "phase2.3e:local-capacity": "node scripts/phase2-local-capacity.mjs",
     "phase2.3e:last-page": "python scripts/phase2-last-page-regression.py",
+    "phase3.2:document-corpus": "python scripts/phase3-document-corpus.py",
+    "phase3.2:validator-tests": "python -m unittest discover -s scripts -p test_phase3_document_corpus.py",
     "worker:conversions": "npx tsx workers/conversion-worker.ts",
     "worker:watchdog": "npx tsx workers/conversion-watchdog.ts",
     "phase1:corpus": "npx tsx scripts/phase1-corpus.ts",
