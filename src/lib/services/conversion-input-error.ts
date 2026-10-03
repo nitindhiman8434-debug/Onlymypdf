@@ -5,3 +5,11 @@ export class UnsupportedConversionInputError extends Error {
     this.name = "UnsupportedConversionInputError";
   }
 }
+
+/** Conversion cannot run because its required server runtime is unavailable. */
+export class ConversionRuntimeUnavailableError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ConversionRuntimeUnavailableError";
+  }
+}

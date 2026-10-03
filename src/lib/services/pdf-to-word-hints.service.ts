@@ -4,6 +4,8 @@ export type PdfHintProfile = {
   pageCount?: number;
   pdfTextChars?: number;
   formFieldCount?: number;
+  /** True only when every page was checked and has no selectable source text. */
+  imageOnly?: boolean;
 };
 
 /** Dense interactive forms are too costly for pdf2docx's table geometry pass. */
@@ -205,6 +207,7 @@ export async function estimatePdfHintsFast(
   }
 
   let pdfTextChars: number | undefined;
+  let imageOnly: boolean | undefined;
   try {
     const { PDFParse } = await import("pdf-parse");
     const parser = new PDFParse({ data });
@@ -212,6 +215,18 @@ export async function estimatePdfHintsFast(
       (async () => {
         try {
           const text = await parser.getText({ partial: [1, 2, 3, 4, 5] });
+          // Aggregate text includes generated page labels. Inspect actual page
+          // text, and check remaining pages before classifying a whole scan.
+          if (text.pages.some((page) => page.text.trim())) {
+            imageOnly = false;
+          } else {
+            const allPages = text.pages.length === pageCount
+              ? text
+              : await parser.getText({ pageJoiner: "" });
+            if (allPages.pages.length === pageCount) {
+              imageOnly = allPages.pages.every((page) => !page.text.trim());
+            }
+          }
           const chars = text.text?.replace(/\s+/g, " ").trim().length ?? 0;
           if (pageCount && pageCount > 5 && chars > 0) {
             return Math.round(chars * (pageCount / 5) * 0.92);
@@ -230,5 +245,5 @@ export async function estimatePdfHintsFast(
     pdfTextChars = undefined;
   }
 
-  return { pageCount, pdfTextChars, formFieldCount };
+  return { pageCount, pdfTextChars, formFieldCount, imageOnly };
 }

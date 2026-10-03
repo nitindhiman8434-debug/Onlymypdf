@@ -12,6 +12,11 @@ on:
       - "scripts/pdf-to-docx-range.py"
       - "scripts/office_devanagari.py"
       - "scripts/test_office_devanagari.py"
+      - "scripts/pdf-advanced-tools.py"
+      - "scripts/test_pdf_advanced_tools.py"
+      - "scripts/local-ocr-runtime.cjs"
+      - "scripts/phase3-ocr-http-corpus.py"
+      - "scripts/test_phase3_ocr_http_corpus.py"
       - "scripts/phase2-ocr-corpus.py"
       - "scripts/run-phase2-ocr-corpus.cjs"
   workflow_dispatch:
@@ -39,6 +44,11 @@ jobs:
 
       - name: Verify editable complex-script regression cases
         run: python3 -m unittest discover -s scripts -p test_office_devanagari.py
+
+      - name: Verify searchable PDF and HTTP corpus validation contracts
+        run: |
+          python3 -m unittest discover -s scripts -p test_pdf_advanced_tools.py
+          python3 -m unittest discover -s scripts -p test_phase3_ocr_http_corpus.py
 
       - name: Verify OCR language packs
         run: |

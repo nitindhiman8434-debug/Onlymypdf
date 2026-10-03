@@ -30,7 +30,10 @@ import {
   validateAndRecordConversion,
 } from "@/lib/services/conversion-completion.service";
 import type { ConversionOutputKind } from "@/lib/services/conversion-output-validation";
-import { UnsupportedConversionInputError } from "@/lib/services/conversion-input-error";
+import {
+  ConversionRuntimeUnavailableError,
+  UnsupportedConversionInputError,
+} from "@/lib/services/conversion-input-error";
 
 interface ToolRouteOptions {
   toolSlug: string;
@@ -236,6 +239,10 @@ export function createToolRoute(options: ToolRouteOptions) {
 
       if (error instanceof UnsupportedConversionInputError) {
         return toolJsonError(request, toSafeApiError(error, "This PDF needs OCR before conversion."), 422);
+      }
+
+      if (error instanceof ConversionRuntimeUnavailableError) {
+        return toolJsonError(request, error.message, 503);
       }
 
       const message = toSafeApiError(error, "Processing failed");

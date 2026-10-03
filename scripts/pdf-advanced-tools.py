@@ -93,6 +93,13 @@ def ocr_pdf(input_path: str, output_path: str, options: dict) -> dict:
                 ) from exc
             recognized = fitz.open(stream=searchable_bytes, filetype="pdf")
             try:
+                # Existing text on another source page must not hide an OCR
+                # failure on this raster page. Save only after every page passes.
+                if not any(page.get_text("text").strip() for page in recognized):
+                    raise ValueError(
+                        f"OCR engine could not recognize readable text on page {page_number + 1}. "
+                        "Try a clearer scan or another supported language."
+                    )
                 output.insert_pdf(recognized)
             finally:
                 recognized.close()

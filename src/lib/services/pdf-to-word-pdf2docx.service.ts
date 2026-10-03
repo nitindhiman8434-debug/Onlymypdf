@@ -2,6 +2,7 @@ import { spawn } from "child_process";
 import fs from "fs/promises";
 import os from "os";
 import path from "path";
+import { pdfToWordOcrErrorFromStderr } from "@/lib/services/pdf-to-word-ocr-error";
 
 const PYTHON_CANDIDATES = ["python", "python3", "py"];
 
@@ -170,6 +171,8 @@ export async function pdfToWordPdf2docx(
 
     if (result.code !== 0) {
       const errText = result.stderr;
+      const ocrError = pdfToWordOcrErrorFromStderr(errText);
+      if (ocrError) throw ocrError;
       const errLine =
         errText.match(/^ERROR PASSWORD_REQUIRED.*/m)?.[0] ??
         errText.match(/^ERROR .+$/m)?.[0] ??

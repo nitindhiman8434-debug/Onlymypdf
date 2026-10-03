@@ -55,6 +55,7 @@ next-env.d.ts
 /.snapshots/
 
 # local test artifacts (not part of website release)
+/.local-tools/
 /test.pdf
 /protected-test.pdf
 /test-word-output.pdf

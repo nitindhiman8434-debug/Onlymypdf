@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const path = require("node:path");
 const { spawn } = require("node:child_process");
+const { localOcrEnvironment } = require("./local-ocr-runtime.cjs");
 
 // Only this child process uses the offline development profile. .env.local is
 // untouched, and Next's dotenv loader keeps these explicit process overrides.
@@ -14,6 +15,7 @@ const offlineKeys = [
   "R2_BUCKET_NAME",
   "GEMINI_API_KEY",
   "OPENAI_API_KEY",
+  "CONVERTAPI_SECRET",
   "RAZORPAY_KEY_ID",
   "RAZORPAY_KEY_SECRET",
   "NEXT_PUBLIC_RAZORPAY_KEY_ID",
@@ -23,7 +25,7 @@ const offlineKeys = [
   "CONVERSION_QUEUE_PROVIDER",
 ];
 
-const env = { ...process.env };
+const env = localOcrEnvironment(path.resolve(__dirname, ".."));
 for (const key of offlineKeys) env[key] = "";
 env.NEXT_PUBLIC_SUPABASE_URL = "your_supabase_url";
 env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "your_supabase_anon_key";
@@ -32,6 +34,10 @@ env.ONLYMYPDF_LOCAL_PREVIEW = "1";
 env.CONVERSION_QUEUE_PROVIDER = "memory";
 env.BILLING_MODE = "disabled";
 env.PDF_OCR_REQUIRED = "true";
+// Use the engine verified by the local corpus; Word COM can corrupt glyph
+// mappings on this Windows machine and must not silently replace that engine.
+env.PDF_TO_WORD_PREFER_PDF2DOCX = "1";
+env.OMP_THREAD_LIMIT = "1";
 
 const child = spawn(
   process.execPath,

@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A and scoped 3.2B complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B and local OCR task 3.2C complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -46,7 +46,24 @@ Excel 7/7 and rendered PowerPoint 8/8 corpora still passing. The full automated
 suite passes 722/722 and the production build succeeds. See
 [implementation and validation evidence](PHASE_3_2B_ENGLISH_SITE_AND_CONVERSION_FIXES.md).
 
-Next is broader script/conjunct and actual OCR evidence, followed by real-customer
-feedback and the separately deferred production launch gates. Selected fixture
+## Task 3.2C: actual local OCR and failure handling
+
+The project-local English/Hindi Tesseract runtime now supports the no-cost
+preview. The new corpus verifies image-only inputs, selected Hindi conjuncts,
+searchable PDF and editable Word outputs, existing-text preservation, and
+unreadable-scan rejection. Eight HTTP checks pass. Missing OCR infrastructure
+returns 503; confirmed unreadable input returns 422 instead of a false success.
+Small compressed scans now use explicit per-page text evidence for routing.
+
+The selectable Office corpus also passes 18/18 after explicitly pinning the
+local preview to its verified Python engine. Windows Word COM corrupted glyphs
+in an intermediate run; its underlying engine was not repaired or validated.
+See [runtime, validation evidence and limits](PHASE_3_2C_LOCAL_OCR_VERIFICATION.md).
+
+Next is **Task 3.2D: improve editable Word OCR spacing and layout**, using the
+visually verified originals as the comparison. The reviewed Hindi OCR output
+has joined word spaces despite passing selected recognition markers. Controlled
+degraded/multi-page scans follow that quality work. Real-customer feedback and
+the separately deferred production launch gates remain open. Selected fixture
 passes do not establish universal accuracy or production capacity. No paid
-deployment was made for this task.
+deployment was made for these tasks.

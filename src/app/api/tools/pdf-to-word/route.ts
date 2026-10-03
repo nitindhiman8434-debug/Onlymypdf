@@ -39,6 +39,8 @@ import { verifyPdfToWordUploadGrant } from "@/lib/server/direct-upload-grant";
 import { claimOneTimeKey } from "@/lib/server/upstash-kv";
 import { encryptJobPayloadSecret } from "@/lib/server/job-payload-secret";
 import { isUnlimitedFileSizeMB } from "@/config/constants";
+import { PdfToWordOcrError } from "@/lib/services/pdf-to-word-ocr-error";
+import { ConversionRuntimeUnavailableError } from "@/lib/services/conversion-input-error";
 
 export const maxDuration = 600;
 
@@ -338,6 +340,13 @@ export async function POST(request: NextRequest) {
     }
     if (message === "WRONG_PASSWORD") {
       return toolJsonError(request, "Incorrect password. Please try again.", 422);
+    }
+
+    if (error instanceof PdfToWordOcrError) {
+      return toolJsonError(request, message, error.status);
+    }
+    if (error instanceof ConversionRuntimeUnavailableError) {
+      return toolJsonError(request, message, 503);
     }
 
     if (message.includes("usage limit") || message.includes("limit reached")) {

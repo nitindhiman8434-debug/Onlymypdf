@@ -1,11 +1,44 @@
 import { describe, expect, it } from "vitest";
+import { PDFDocument } from "pdf-lib";
 import {
+  estimatePdfHintsFromBuffer,
   isDenseEditableForm,
   isDenseShortDocument,
   isHybridScannedPdf,
   isImageHeavyPdf,
   isTextRichManual,
 } from "@/lib/services/pdf-to-word-hints.service";
+
+async function compactRasterPdf(pages = 1, finalText?: string): Promise<Buffer> {
+  const pdf = await PDFDocument.create();
+  const image = await pdf.embedPng(Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jS1kAAAAASUVORK5CYII=", "base64"
+  ));
+  for (let index = 0; index < pages; index += 1) {
+    const page = pdf.addPage([200, 200]);
+    page.drawImage(image, { x: 0, y: 0, width: 200, height: 200 });
+    if (index === pages - 1 && finalText) page.drawText(finalText, { x: 30, y: 30, size: 12 });
+  }
+  return Buffer.from(await pdf.save());
+}
+
+describe("actual selectable-text scan evidence", () => {
+  it("recognizes a compact raster PDF below the image-size heuristic", async () => {
+    const input = await compactRasterPdf();
+    expect(input.length).toBeLessThan(150_000);
+    expect((await estimatePdfHintsFromBuffer(input)).imageOnly).toBe(true);
+  });
+
+  it("does not classify a short selectable label as an image-only scan", async () => {
+    const input = await compactRasterPdf(1, "7");
+    expect((await estimatePdfHintsFromBuffer(input)).imageOnly).toBe(false);
+  });
+
+  it("checks pages beyond the initial sample before declaring a scan", async () => {
+    expect((await estimatePdfHintsFromBuffer(await compactRasterPdf(6))).imageOnly).toBe(true);
+    expect((await estimatePdfHintsFromBuffer(await compactRasterPdf(6, "Selectable final page"))).imageOnly).toBe(false);
+  });
+});
 
 describe("isDenseEditableForm", () => {
   it("routes a short form with many fields and selectable text to the fast reference path", () => {

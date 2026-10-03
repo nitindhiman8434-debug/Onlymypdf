@@ -37,6 +37,11 @@ import {
 
 export type { PdfToWordEngine } from "@/lib/services/pdf-to-word-engine-plan";
 import type { PdfToWordEngine } from "@/lib/services/pdf-to-word-engine-plan";
+import {
+  PdfToWordOcrError,
+  unavailablePdfToWordOcr,
+} from "@/lib/services/pdf-to-word-ocr-error";
+import { ConversionRuntimeUnavailableError } from "@/lib/services/conversion-input-error";
 
 let pdf2docxReadyCache: boolean | null = null;
 
@@ -104,6 +109,7 @@ type QualityHints = {
   pdfTextChars?: number;
   byteLength?: number;
   hybridScanned?: boolean;
+  imageOnly?: boolean;
 };
 
 async function finalizeDocxResult(
@@ -238,6 +244,7 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     pdf2docxReadyCache = await isPdf2docxAvailable();
   }
   const pdf2docxReady = pdf2docxReadyCache;
+  const preferPdf2docx = process.env.PDF_TO_WORD_PREFER_PDF2DOCX === "1";
   const libreOfficeReady = isLibreOfficePdfToDocxAvailable();
   const wordComReady = await isWordComPdfImportAvailable();
 
@@ -256,13 +263,14 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
   const textRichManual = isTextRichManual(hints, byteLength);
   const denseEditableForm = isDenseEditableForm(hints);
   const denseShortDocument = isDenseShortDocument(hints);
-  const imageOnly = hints.pdfTextChars !== undefined &&
+  const imageOnly = hints.imageOnly ?? (hints.pdfTextChars !== undefined &&
     hints.pdfTextChars <= Math.max(40, (hints.pageCount ?? 1) * 20) &&
-    isImageHeavyPdf(hints, byteLength);
+    isImageHeavyPdf(hints, byteLength));
   const ocrSetting = process.env.PDF_OCR_REQUIRED?.toLowerCase();
   const ocrRequired = ocrSetting === undefined
     ? process.env.NODE_ENV === "production"
     : ["1", "true"].includes(ocrSetting);
+  let ocrFailure: PdfToWordOcrError | undefined;
   const hybridScanned = hints.hybridScanned ?? false;
   const wordComTimeoutMs = Math.min(
     officeTimeoutMs,
@@ -378,6 +386,7 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
+      if (err instanceof PdfToWordOcrError) ocrFailure = err;
       console.warn("[pdf-to-word] pdf2docx failed:", message);
       await logError({
         tool_name: "pdf-to-word",
@@ -477,6 +486,7 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
     largePdf,
     pdf2docxReady,
     wordComReady,
+    preferPdf2docx,
   });
 
   let attemptNumber = 0;
@@ -498,7 +508,15 @@ export async function pdfToWord(options: PdfToWordOptions): Promise<PdfToWordRes
   }).catch(() => {});
 
   if (ocrRequired && imageOnly) {
+    if (ocrFailure) throw ocrFailure;
+    if (!pdf2docxReady) throw unavailablePdfToWordOcr();
     throw new Error("PDF OCR could not extract editable text. Try a clearer scan or supported OCR language.");
+  }
+
+  if (preferPdf2docx && !pdf2docxReady) {
+    throw new ConversionRuntimeUnavailableError(
+      "PDF to Word processing is temporarily unavailable. Please try again later."
+    );
   }
 
   if (largePdf) {

@@ -1,0 +1,776 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.2C",
+  "generatedAt": "2026-10-03T02:10:12.124288+00:00",
+  "baseUrl": "http://127.0.0.1:3001",
+  "generateOnly": false,
+  "limitations": [
+    "Synthetic English and Hindi scans on one local machine, not arbitrary scripts, customer evidence or universal OCR accuracy.",
+    "Trusted originals are DOCX generated from literal Unicode and rendered by LibreOffice; PyMuPDF validates source ActualText before rasterization. LibreOffice Hindi glyph mappings are not portable across all PDF text extractors.",
+    "Image-only inputs must contain zero selectable text on every page. No source text or expected answers are sent to the conversion routes.",
+    "Selected text markers require exact Unicode NFC text after whitespace removal; numeric markers require complete contiguous values with numeric boundaries. There is no fuzzy matching, transliteration, dropped accents or numerical tolerance.",
+    "Selected text and amount checks do not establish complete reading order, document layout, OCR confidence calibration or accessibility semantics.",
+    "Source and output previews require human visual review; the runner does not infer visual correctness from text extraction.",
+    "Runner process OCR environment and models are recorded separately from response engine headers; they do not prove the server used the same environment.",
+    "No paid APIs, model downloads, cloud deployment, external URLs or environment HTTP proxies are used by this runner."
+  ],
+  "cases": [
+    {
+      "caseId": "clean-english",
+      "language": "eng",
+      "kind": "scan",
+      "lines": [
+        "OnlyMyPDF scan quality check",
+        "Invoice 58324",
+        "This scanned page must become searchable and editable.",
+        "Customer: Example Research Company",
+        "Total amount 1475.25",
+        "Final reference 71936"
+      ],
+      "markers": [
+        {
+          "text": "58324",
+          "expected": 1
+        },
+        {
+          "text": "searchable and editable",
+          "expected": 1
+        },
+        {
+          "text": "Example Research Company",
+          "expected": 1
+        },
+        {
+          "text": "1475.25",
+          "expected": 1
+        },
+        {
+          "text": "71936",
+          "expected": 1
+        }
+      ],
+      "tools": [
+        "ocr-pdf",
+        "pdf-to-word"
+      ],
+      "expectedStatus": 200,
+      "source": {
+        "path": "tmp/pdfs/phase3.2c-ocr/clean-english.pdf",
+        "sha256": "eac2655f0f26e1283e6adc09849f065a2865b241c81b35f1dda0447a6bf98785",
+        "bytes": 118940,
+        "pages": 1,
+        "selectableCharactersByPage": [
+          0
+        ],
+        "requiresZeroSelectableText": true,
+        "passed": true,
+        "originalDocxPath": "tmp/pdfs/phase3.2c-ocr/clean-english-original.docx",
+        "originalDocxSha256": "d2e75ef43ae936e89d5cdcf98d77eecddf8a3a76c6da4280493b968036d68a52",
+        "trustedPdfPath": "tmp/pdfs/phase3.2c-ocr/clean-english-original.pdf",
+        "trustedPdfSha256": "ba1e09a8c75bd9d487431326acd8aecef3839816380110645404c681fd1ccd3e",
+        "sourceUnicodeExact": true,
+        "sourceContainsActualText": false,
+        "sourceValidationEngine": "PyMuPDF ActualText extraction and exact original DOCX XML",
+        "fontFamilies": [
+          "Arial",
+          "Nirmala UI"
+        ],
+        "previewPaths": [
+          "tmp/pdfs/phase3.2c-ocr/clean-english-source-1.png"
+        ]
+      }
+    },
+    {
+      "caseId": "hindi-conjunct-bilingual",
+      "language": "eng+hin",
+      "kind": "scan",
+      "lines": [
+        "देवनागरी संयुक्त अक्षर परीक्षण",
+        "क्षेत्र त्रिकोण ज्ञान श्रद्धा",
+        "प्रक्रिया स्वतंत्र राष्ट्रीय दृष्टि",
+        "उत्कृष्ट विश्वविद्यालय",
+        "यह स्कैन संपादन योग्य पाठ में बदलना चाहिए।",
+        "Invoice 48219",
+        "कुल राशि 12345.67 रुपये।",
+        "Final reference 86427"
+      ],
+      "markers": [
+        {
+          "text": "क्षेत्र",
+          "expected": 1
+        },
+        {
+          "text": "त्रिकोण",
+          "expected": 1
+        },
+        {
+          "text": "ज्ञान",
+          "expected": 1
+        },
+        {
+          "text": "श्रद्धा",
+          "expected": 1
+        },
+        {
+          "text": "प्रक्रिया",
+          "expected": 1
+        },
+        {
+          "text": "स्वतंत्र",
+          "expected": 1
+        },
+        {
+          "text": "राष्ट्रीय",
+          "expected": 1
+        },
+        {
+          "text": "दृष्टि",
+          "expected": 1
+        },
+        {
+          "text": "उत्कृष्ट",
+          "expected": 1
+        },
+        {
+          "text": "विश्वविद्यालय",
+          "expected": 1
+        },
+        {
+          "text": "48219",
+          "expected": 1
+        },
+        {
+          "text": "कुल राशि",
+          "expected": 1
+        },
+        {
+          "text": "12345.67",
+          "expected": 1
+        },
+        {
+          "text": "86427",
+          "expected": 1
+        }
+      ],
+      "tools": [
+        "ocr-pdf",
+        "pdf-to-word"
+      ],
+      "expectedStatus": 200,
+      "source": {
+        "path": "tmp/pdfs/phase3.2c-ocr/hindi-conjunct-bilingual.pdf",
+        "sha256": "88a09c0c66a3bc2c8f8ce1a4e35161412239679830b51abff0a760545dd7f14f",
+        "bytes": 140557,
+        "pages": 1,
+        "selectableCharactersByPage": [
+          0
+        ],
+        "requiresZeroSelectableText": true,
+        "passed": true,
+        "originalDocxPath": "tmp/pdfs/phase3.2c-ocr/hindi-conjunct-bilingual-original.docx",
+        "originalDocxSha256": "0ff196aa2ac1cf10d9321cf85e3b4d16e3a353c8050188f4115108af21c76bd4",
+        "trustedPdfPath": "tmp/pdfs/phase3.2c-ocr/hindi-conjunct-bilingual-original.pdf",
+        "trustedPdfSha256": "f184c2bee5c86fa8cd4e69440373bbd34d27df30540d0c22a80dcd3579f97ae7",
+        "sourceUnicodeExact": true,
+        "sourceContainsActualText": true,
+        "sourceValidationEngine": "PyMuPDF ActualText extraction and exact original DOCX XML",
+        "fontFamilies": [
+          "Arial",
+          "Nirmala UI"
+        ],
+        "previewPaths": [
+          "tmp/pdfs/phase3.2c-ocr/hindi-conjunct-bilingual-source-1.png"
+        ]
+      }
+    },
+    {
+      "caseId": "existing-searchable",
+      "language": "eng",
+      "kind": "searchable",
+      "fromCase": "clean-english",
+      "markers": [
+        {
+          "text": "58324",
+          "expected": 1
+        },
+        {
+          "text": "searchable and editable",
+          "expected": 1
+        },
+        {
+          "text": "1475.25",
+          "expected": 1
+        },
+        {
+          "text": "71936",
+          "expected": 1
+        }
+      ],
+      "tools": [
+        "ocr-pdf"
+      ],
+      "expectedStatus": 200,
+      "expectedText": "OnlyMyPDF scan quality check\nInvoice 58324\nThis scanned page must become searchable and editable.\nCustomer: Example Research Company\nTotal amount 1475.25\nFinal reference 71936",
+      "source": {
+        "path": "tmp/pdfs/phase3.2c-ocr/existing-searchable.pdf",
+        "sha256": "ba1e09a8c75bd9d487431326acd8aecef3839816380110645404c681fd1ccd3e",
+        "bytes": 34215,
+        "pages": 1,
+        "selectableCharactersByPage": [
+          176
+        ],
+        "requiresZeroSelectableText": false,
+        "passed": true
+      }
+    },
+    {
+      "caseId": "unreadable-raster",
+      "language": "eng+hin",
+      "kind": "unreadable",
+      "markers": [],
+      "tools": [
+        "ocr-pdf",
+        "pdf-to-word"
+      ],
+      "expectedStatus": 422,
+      "source": {
+        "path": "tmp/pdfs/phase3.2c-ocr/unreadable-raster.pdf",
+        "sha256": "198d3f17fb5c6c3f09e11c9f62770e07454d384bfbc474b9f404cdc0cd6e9e84",
+        "bytes": 17862,
+        "pages": 1,
+        "selectableCharactersByPage": [
+          0
+        ],
+        "requiresZeroSelectableText": true,
+        "passed": true,
+        "previewPaths": [
+          "tmp/pdfs/phase3.2c-ocr/unreadable-raster-source.png"
+        ]
+      }
+    },
+    {
+      "caseId": "searchable-plus-unreadable",
+      "language": "eng+hin",
+      "kind": "mixed-unreadable",
+      "markers": [],
+      "tools": [
+        "ocr-pdf"
+      ],
+      "expectedStatus": 422,
+      "source": {
+        "path": "tmp/pdfs/phase3.2c-ocr/searchable-plus-unreadable.pdf",
+        "sha256": "4caca1e62d2af6bd4d39b2d7399e230961370f165dd53a3cd9926bafff51707c",
+        "bytes": 44530,
+        "pages": 2,
+        "selectableCharactersByPage": [
+          176,
+          0
+        ],
+        "requiresZeroSelectableText": false,
+        "passed": true
+      }
+    }
+  ],
+  "results": [
+    {
+      "caseId": "clean-english",
+      "tool": "ocr-pdf",
+      "expectedHttpStatus": 200,
+      "httpStatus": 200,
+      "mime": "application/pdf",
+      "outputBytes": 133671,
+      "responseSha256": "9fc15260609e75c5d365c8900c9b065c0713fece9e32080396ccfa7a89cd7e25",
+      "responseEngine": null,
+      "outputPath": "tmp/pdfs/phase3.2c-ocr/clean-english-ocr-pdf.pdf",
+      "checks": {
+        "validPdf": true,
+        "pages": 1,
+        "expectedPages": 1,
+        "pageCountPassed": true,
+        "searchableCharactersByPage": [
+          175
+        ],
+        "everyPageSearchable": true,
+        "previewPaths": [
+          "tmp/pdfs/phase3.2c-ocr/clean-english-ocr-pdf-page-1.png"
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "58324",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "searchable and editable",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Example Research Company",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1475.25",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "71936",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "text": "OnlyMyPDF scan quality check\nInvoice 58324\nThis scanned page must become searchable and\neditable.\nCustomer: Example Research Company\nTotal amount 1475.25\nFinal reference 71936\n",
+        "passed": true
+      },
+      "status": "passed",
+      "durationMs": 5016
+    },
+    {
+      "caseId": "clean-english",
+      "tool": "pdf-to-word",
+      "expectedHttpStatus": 200,
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 91790,
+      "responseSha256": "d9a42f93e2db2a624bb5e0a98edad913b0c932bfbd623146242dc32327a81b84",
+      "responseEngine": "pdf2docx",
+      "outputPath": "tmp/pdfs/phase3.2c-ocr/clean-english-pdf-to-word.docx",
+      "checks": {
+        "validOfficeZip": true,
+        "editableCharacters": 169,
+        "mediaItems": 1,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "58324",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "searchable and editable",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Example Research Company",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1475.25",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "71936",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "text": "\nOnlyMyPDF scan quality checkInvoice 58324This scanned page must become searchable andeditable.Customer: Example Research CompanyTotal amount 1475.25Final reference 71936",
+        "passed": true
+      },
+      "status": "passed",
+      "durationMs": 7672
+    },
+    {
+      "caseId": "hindi-conjunct-bilingual",
+      "tool": "ocr-pdf",
+      "expectedHttpStatus": 200,
+      "httpStatus": 200,
+      "mime": "application/pdf",
+      "outputBytes": 144991,
+      "responseSha256": "969c96b5f0346e38538ddb19dbc11c7f464e845239fa48e87f21a3cfc3699e13",
+      "responseEngine": null,
+      "outputPath": "tmp/pdfs/phase3.2c-ocr/hindi-conjunct-bilingual-ocr-pdf.pdf",
+      "checks": {
+        "validPdf": true,
+        "pages": 1,
+        "expectedPages": 1,
+        "pageCountPassed": true,
+        "searchableCharactersByPage": [
+          204
+        ],
+        "everyPageSearchable": true,
+        "previewPaths": [
+          "tmp/pdfs/phase3.2c-ocr/hindi-conjunct-bilingual-ocr-pdf-page-1.png"
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "क्षेत्र",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "त्रिकोण",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "ज्ञान",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "श्रद्धा",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "प्रक्रिया",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "स्वतंत्र",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "राष्ट्रीय",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "दृष्टि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "उत्कृष्ट",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "विश्वविद्यालय",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "48219",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "86427",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "text": "देवनागरीसंयुक्तअक्षरपरीक्षण\nक्षेत्रत्रिकोणज्ञानश्रद्धा\nप्रक्रियास्वतंत्रराष्ट्रीयदृष्टि\nउत्कृष्टविश्वविद्यालय\nयहस्कैनसंपादनयोग्यपाठमेंबदलनाचाहिए।\nInvoice 48219\nकुलराशि12345.67 रुपये।\nFinal reference 86427\n",
+        "passed": true
+      },
+      "status": "passed",
+      "durationMs": 1906
+    },
+    {
+      "caseId": "hindi-conjunct-bilingual",
+      "tool": "pdf-to-word",
+      "expectedHttpStatus": 200,
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 97729,
+      "responseSha256": "2d55b86d13ff3147a9ffaa3688eaeb24097f7620f4071fbecd779b644f4d7c1e",
+      "responseEngine": "pdf2docx",
+      "outputPath": "tmp/pdfs/phase3.2c-ocr/hindi-conjunct-bilingual-pdf-to-word.docx",
+      "checks": {
+        "validOfficeZip": true,
+        "editableCharacters": 197,
+        "mediaItems": 1,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "क्षेत्र",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "त्रिकोण",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "ज्ञान",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "श्रद्धा",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "प्रक्रिया",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "स्वतंत्र",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "राष्ट्रीय",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "दृष्टि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "उत्कृष्ट",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "विश्वविद्यालय",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "48219",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "86427",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "text": "\nदेवनागरीसंयुक्तअक्षरपरीक्षणक्षेत्रत्रिकोणज्ञानश्रद्धाप्रक्रियास्वतंत्रराष्ट्रीयदृष्टिउत्कृष्टविश्वविद्यालययहस्कैनसंपादनयोग्यपाठमेंबदलनाचाहिए।Invoice 48219कुलराशि12345.67 रुपये।Final reference 86427",
+        "passed": true
+      },
+      "status": "passed",
+      "durationMs": 3688
+    },
+    {
+      "caseId": "existing-searchable",
+      "tool": "ocr-pdf",
+      "expectedHttpStatus": 200,
+      "httpStatus": 200,
+      "mime": "application/pdf",
+      "outputBytes": 27117,
+      "responseSha256": "df1f4161fd30bf21911147954087b13c0b4991387cd8ff4a7b30761d2491018b",
+      "responseEngine": null,
+      "outputPath": "tmp/pdfs/phase3.2c-ocr/existing-searchable-ocr-pdf.pdf",
+      "checks": {
+        "validPdf": true,
+        "pages": 1,
+        "expectedPages": 1,
+        "pageCountPassed": true,
+        "searchableCharactersByPage": [
+          176
+        ],
+        "everyPageSearchable": true,
+        "previewPaths": [
+          "tmp/pdfs/phase3.2c-ocr/existing-searchable-ocr-pdf-page-1.png"
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "58324",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "searchable and editable",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1475.25",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "71936",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "text": "OnlyMyPDF scan quality check\nInvoice 58324\nThis scanned page must become searchable and \neditable.\nCustomer: Example Research Company\nTotal amount 1475.25\nFinal reference 71936\n",
+        "passed": true,
+        "existingTextPreservedExactly": true
+      },
+      "status": "passed",
+      "durationMs": 640
+    },
+    {
+      "caseId": "unreadable-raster",
+      "tool": "ocr-pdf",
+      "expectedHttpStatus": 422,
+      "httpStatus": 422,
+      "mime": "application/json",
+      "outputBytes": 161,
+      "responseSha256": "7b8090f6fab18d1f278fd7123320fae7bdd41694db52722f6665e0f1e93c9848",
+      "responseEngine": null,
+      "checks": {
+        "expectedHttpStatus": 422,
+        "passed": true,
+        "jsonError": true,
+        "errorMessage": "PDF OCR could not recognize readable text on page 1. Try a clearer scan or supported language.",
+        "unreadableReasonMatched": true,
+        "successArtifactReturned": false
+      },
+      "status": "passed",
+      "durationMs": 844
+    },
+    {
+      "caseId": "unreadable-raster",
+      "tool": "pdf-to-word",
+      "expectedHttpStatus": 422,
+      "httpStatus": 422,
+      "mime": "application/json",
+      "outputBytes": 160,
+      "responseSha256": "27766882b6a5e85c01412f86c3f7a0903d8f37d55143672c5a3c4c2f2c74cc21",
+      "responseEngine": null,
+      "checks": {
+        "expectedHttpStatus": 422,
+        "passed": true,
+        "jsonError": true,
+        "errorMessage": "PDF OCR could not extract enough readable text. Try a clearer scan or supported OCR language.",
+        "unreadableReasonMatched": true,
+        "successArtifactReturned": false
+      },
+      "status": "passed",
+      "durationMs": 4594
+    },
+    {
+      "caseId": "searchable-plus-unreadable",
+      "tool": "ocr-pdf",
+      "expectedHttpStatus": 422,
+      "httpStatus": 422,
+      "mime": "application/json",
+      "outputBytes": 161,
+      "responseSha256": "055055b1d001021ca6d7766c82fd352db096b60ff4474e328c9deaa504fc0b96",
+      "responseEngine": null,
+      "checks": {
+        "expectedHttpStatus": 422,
+        "passed": true,
+        "jsonError": true,
+        "errorMessage": "PDF OCR could not recognize readable text on page 2. Try a clearer scan or supported language.",
+        "unreadableReasonMatched": true,
+        "successArtifactReturned": false
+      },
+      "status": "passed",
+      "durationMs": 828
+    }
+  ],
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Windows",
+    "architecture": "AMD64",
+    "packages": {
+      "PyMuPDF": "1.27.2.3",
+      "python-docx": "1.2.0",
+      "Pillow": "12.2.0"
+    },
+    "versions": {
+      "libreoffice": [
+        "Version query unavailable"
+      ],
+      "tesseract": [
+        "tesseract v5.5.3.20260724",
+        " leptonica-1.87.0",
+        "  libgif 5.2.2 : libjpeg 8d (libjpeg-turbo 3.1.3) : libpng 1.6.58 : libtiff 4.7.2 : zlib 1.3.1 : libwebp 1.6.0 : libopenjp2 2.5.4",
+        " Found AVX512BW",
+        " Found AVX512F",
+        " Found AVX512VNNI",
+        " Found AVX2",
+        " Found AVX",
+        " Found FMA",
+        " Found SSE4.1",
+        " Found libarchive 3.8.8 zlib/1.3.2 liblzma/5.8.3 bz2lib/1.0.8 liblz4/1.10.0 libzstd/1.5.7 expat/expat_2.8.2 cng/1.0 libb2/system",
+        " Found libcurl/8.21.0 Schannel zlib/1.3.2 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.5 libssh2/1.11.1 WinLDAP"
+      ],
+      "availableLanguages": [
+        "eng",
+        "hin",
+        "osd"
+      ]
+    },
+    "runnerOcrEnvironment": {
+      "PDF_OCR_ENABLED": null,
+      "PDF_OCR_REQUIRED": null,
+      "PDF_OCR_LANGUAGES": null,
+      "PDF_OCR_DPI": null,
+      "PDF_OCR_MAX_PAGES": null,
+      "OMP_THREAD_LIMIT": null
+    },
+    "runnerModels": [
+      {
+        "language": "eng",
+        "bytes": 4113088,
+        "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+      },
+      {
+        "language": "hin",
+        "bytes": 1122751,
+        "sha256": "4c73ffc59d497c186b19d1e90f5d721d678ea6b2e277b719bee4e2af12271825"
+      },
+      {
+        "language": "osd",
+        "bytes": 10562727,
+        "sha256": "9cf5d576fcc47564f11265841e5ca839001e7e6f38ff7f7aacf46d15a96b00ff"
+      }
+    ],
+    "serverEnvironmentVerified": false
+  },
+  "summary": {
+    "cases": 5,
+    "fixturesPassed": 5,
+    "fixturesFailed": 0,
+    "routesTested": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "allPassed": true
+  }
+}

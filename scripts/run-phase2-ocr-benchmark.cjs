@@ -2,6 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const { localOcrEnvironment } = require("./local-ocr-runtime.cjs");
 
 const repo = process.cwd();
 const envPath = path.join(repo, ".env.local");
@@ -21,7 +22,7 @@ const prefix = !configured && process.platform === "win32" ? ["-3"] : [];
 const script = path.join(repo, "scripts", "phase2-ocr-benchmark.py");
 const result = spawnSync(executable, [...prefix, script, ...process.argv.slice(2)], {
   cwd: repo,
-  env: process.env,
+  env: localOcrEnvironment(repo),
   stdio: "inherit",
 });
 

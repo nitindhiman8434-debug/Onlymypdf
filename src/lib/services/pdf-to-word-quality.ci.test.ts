@@ -86,6 +86,30 @@ describe("PDF→Word quality regression (CI)", () => {
 });
 
 describe("PDF→Word engine plan (CI)", () => {
+  it("pins the opt-in local profile to verified Python conversion without COM fallback", () => {
+    const strategy = resolveConversionStrategy({
+      platform: "win32", convertApiAvailable: false, convertApiOnly: false,
+      preferPdf2docx: true, pdf2docxReady: true, wordComReady: true,
+    });
+    expect(strategy).toEqual({ engines: ["pdf2docx"], emergency: [] });
+  });
+
+  it("keeps dense selectable forms on the Python reference path in the local profile", () => {
+    const strategy = resolveConversionStrategy({
+      platform: "win32", convertApiAvailable: false, convertApiOnly: false,
+      preferPdf2docx: true, pdf2docxReady: true, denseEditableForm: true,
+    });
+    expect(strategy).toEqual({ engines: ["reference-transcript"], emergency: [] });
+  });
+
+  it("does not silently substitute COM when the pinned local Python engine is missing", () => {
+    const strategy = resolveConversionStrategy({
+      platform: "win32", convertApiAvailable: false, convertApiOnly: false,
+      preferPdf2docx: true, pdf2docxReady: false, wordComReady: true,
+    });
+    expect(strategy).toEqual({ engines: [], emergency: [] });
+  });
+
   it("keeps dense selectable forms editable when a reference conversion is available", () => {
     const strategy = resolveConversionStrategy({
       platform: "win32",
@@ -119,9 +143,26 @@ describe("PDF→Word engine plan (CI)", () => {
       imageOnly: true,
       ocrRequired: true,
       pdf2docxReady: true,
+      wordComReady: true,
     });
     expect(strategy.engines).toEqual(["pdf2docx"]);
     expect(strategy.emergency).toEqual([]);
+  });
+
+  it.each(["win32", "linux"] as const)("keeps required scan OCR on its guarded path on %s", (platform) => {
+    const strategy = resolveConversionStrategy({
+      platform, convertApiAvailable: true, convertApiOnly: true,
+      imageOnly: true, ocrRequired: true, pdf2docxReady: true, wordComReady: true,
+    });
+    expect(strategy).toEqual({ engines: ["pdf2docx"], emergency: [] });
+  });
+
+  it("does not substitute an unverified engine when required OCR is unavailable", () => {
+    const strategy = resolveConversionStrategy({
+      platform: "win32", convertApiAvailable: false, convertApiOnly: false,
+      imageOnly: true, ocrRequired: true, pdf2docxReady: false, wordComReady: true,
+    });
+    expect(strategy).toEqual({ engines: [], emergency: [] });
   });
 
   it("prefers ConvertAPI first on all platforms when configured", () => {

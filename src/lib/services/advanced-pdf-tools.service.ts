@@ -3,7 +3,10 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
-import { UnsupportedConversionInputError } from "@/lib/services/conversion-input-error";
+import {
+  ConversionRuntimeUnavailableError,
+  UnsupportedConversionInputError,
+} from "@/lib/services/conversion-input-error";
 import { resolvePdf2docxPython } from "@/lib/services/pdf-to-word-pdf2docx.service";
 
 const execFileAsync = promisify(execFile);
@@ -42,8 +45,19 @@ function cleanScriptError(stdout: string, stderr: string, fallback: string): Err
   const message = typeof parsed.error === "string" && parsed.error.trim()
     ? parsed.error.trim()
     : fallback;
+  if (/^OCR engine or requested language data is unavailable\b/i.test(message)) {
+    return new ConversionRuntimeUnavailableError(
+      "PDF OCR is temporarily unavailable. Please try again later."
+    );
+  }
+  const unreadablePage = message.match(/^OCR engine could not recognize readable text on page (\d+)\./i);
+  if (unreadablePage) {
+    return new UnsupportedConversionInputError(
+      `PDF OCR could not recognize readable text on page ${unreadablePage[1]}. Try a clearer scan or supported language.`
+    );
+  }
   if (
-    /OCR supports|OCR engine|No matching text|damaged beyond safe recovery|requires Ghostscript|contains no pages/i.test(
+    /OCR supports|No matching text|damaged beyond safe recovery|requires Ghostscript|contains no pages/i.test(
       message
     )
   ) {
@@ -60,7 +74,7 @@ export async function runAdvancedPdfTool(input: {
 }): Promise<AdvancedPdfResult> {
   const python = await resolvePdf2docxPython();
   if (!python) {
-    throw new UnsupportedConversionInputError(
+    throw new ConversionRuntimeUnavailableError(
       "PDF processing runtime is unavailable. Please try again later."
     );
   }

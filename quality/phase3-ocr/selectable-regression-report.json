@@ -1,0 +1,3926 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-03T02:07:23.012507+00:00",
+  "scope": "local",
+  "baseUrl": "http://127.0.0.1:3001",
+  "mode": "conversion",
+  "limitations": [
+    "Synthetic selectable-text fixtures on one local machine; not real customer evidence or production capacity.",
+    "Marker occurrence checks measure selected text and numeric preservation, not universal accuracy, reading order or visual fidelity.",
+    "Unicode NFC and whitespace removal are used for comparisons; accents, script characters and decimal punctuation are retained.",
+    "Numeric checks are strict lexical preservation of raw Office values; equivalent displayed Excel formatting is not evaluated and may fail this diagnostic.",
+    "Excel primary and Source text recovery representations are counted separately; coverage uses their maximum occurrence count, not their sum. Recovery coverage does not prove correct table cells.",
+    "PowerPoint notes are measured separately and never counted as visible editable on-slide text.",
+    "No image-only scanned PDF, OCR recognition, handwritten text, Arabic, CJK, or accessibility semantics are evaluated.",
+    "Hindi fixtures use simple text; complex conjunct coverage is excluded because this local PDF generator cannot preserve those source glyph mappings reliably.",
+    "No external APIs, downloads, paid services, or cloud deployment are used by this runner."
+  ],
+  "environment": {
+    "python": "3.12.10",
+    "os": "Windows",
+    "architecture": "AMD64",
+    "pymupdf": "1.27.2.3",
+    "pillow": "12.2.0"
+  },
+  "cases": [
+    {
+      "caseId": "hindi-memo",
+      "label": "Hindi memo",
+      "language": "hi",
+      "documentClass": "memo",
+      "source": {
+        "path": "tmp/pdfs/phase3.2/hindi-memo.pdf",
+        "sha256": "58b86e877c1e2bd4847c24d1c78d8545ca69c6215a132c79dc4ec7f641f5d7cc",
+        "pages": 1,
+        "bytes": 1373757,
+        "selectableTextChars": 179,
+        "expectedMarkers": [
+          {
+            "text": "सादा हिंदी नमूना",
+            "expected": 1
+          },
+          {
+            "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+            "expected": 1
+          },
+          {
+            "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+            "expected": 1
+          },
+          {
+            "text": "कुल राशि",
+            "expected": 1
+          },
+          {
+            "text": "HINDI_2026_017",
+            "expected": 1
+          },
+          {
+            "text": "12345.67",
+            "expected": 1
+          },
+          {
+            "text": "HINDI_END_917",
+            "expected": 1
+          }
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_2026_017",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_END_917",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "previewPaths": [
+          "tmp/pdfs/phase3.2/hindi-memo-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "width": 595.0,
+            "height": 842.0
+          }
+        ],
+        "fontFiles": {
+          "latin": "arial.ttf",
+          "devanagari": "Nirmala.ttc"
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "caseId": "bilingual-invoice",
+      "label": "Hindi and English invoice",
+      "language": "hi-en",
+      "documentClass": "invoice",
+      "source": {
+        "path": "tmp/pdfs/phase3.2/bilingual-invoice.pdf",
+        "sha256": "230c7fe63aed67c1fb461fef50b97d9bacff61a4e9af119fb65e9379d3143463",
+        "pages": 1,
+        "bytes": 1373643,
+        "selectableTextChars": 208,
+        "expectedMarkers": [
+          {
+            "text": "नमूना चालान",
+            "expected": 1
+          },
+          {
+            "text": "सेवा",
+            "expected": 1
+          },
+          {
+            "text": "कुल देय राशि",
+            "expected": 1
+          },
+          {
+            "text": "INV_BI_2048",
+            "expected": 1
+          },
+          {
+            "text": "125.25",
+            "expected": 1
+          },
+          {
+            "text": "250.50",
+            "expected": 1
+          },
+          {
+            "text": "30.60",
+            "expected": 1
+          },
+          {
+            "text": "281.10",
+            "expected": 1
+          },
+          {
+            "text": "BI_END_864",
+            "expected": 1
+          }
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "सेवा",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "125.25",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "previewPaths": [
+          "tmp/pdfs/phase3.2/bilingual-invoice-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "width": 595.0,
+            "height": 842.0
+          }
+        ],
+        "fontFiles": {
+          "latin": "arial.ttf",
+          "devanagari": "Nirmala.ttc"
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "caseId": "french-invoice",
+      "label": "French accented invoice",
+      "language": "fr",
+      "documentClass": "invoice",
+      "source": {
+        "path": "tmp/pdfs/phase3.2/french-invoice.pdf",
+        "sha256": "3992653210c47c794311efe520a4f5a274f273b9410bc90e70792da008cc6c07",
+        "pages": 1,
+        "bytes": 586748,
+        "selectableTextChars": 217,
+        "expectedMarkers": [
+          {
+            "text": "Référence",
+            "expected": 1
+          },
+          {
+            "text": "Société Démonstration",
+            "expected": 1
+          },
+          {
+            "text": "Crème brûlée",
+            "expected": 1
+          },
+          {
+            "text": "FR_INV_4821",
+            "expected": 1
+          },
+          {
+            "text": "1 234,56",
+            "expected": 1
+          },
+          {
+            "text": "1 247,06",
+            "expected": 1
+          },
+          {
+            "text": "=2+3",
+            "expected": 1
+          },
+          {
+            "text": "FR_END_729",
+            "expected": 1
+          }
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Crème brûlée",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "=2+3",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "previewPaths": [
+          "tmp/pdfs/phase3.2/french-invoice-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "width": 595.0,
+            "height": 842.0
+          }
+        ],
+        "fontFiles": {
+          "latin": "arial.ttf",
+          "devanagari": "Nirmala.ttc"
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "caseId": "german-invoice",
+      "label": "German decimals and identifiers",
+      "language": "de",
+      "documentClass": "invoice",
+      "source": {
+        "path": "tmp/pdfs/phase3.2/german-invoice.pdf",
+        "sha256": "298b9ca4f53f6c5854a9cb4ed8677b7e846ce87d7e45400392e3c7754babc925",
+        "pages": 1,
+        "bytes": 586766,
+        "selectableTextChars": 233,
+        "expectedMarkers": [
+          {
+            "text": "Prüfung",
+            "expected": 1
+          },
+          {
+            "text": "Straße",
+            "expected": 1
+          },
+          {
+            "text": "DE_INV_0084",
+            "expected": 1
+          },
+          {
+            "text": "001234",
+            "expected": 1
+          },
+          {
+            "text": "1.234,56",
+            "expected": 1
+          },
+          {
+            "text": "−12,50",
+            "expected": 1
+          },
+          {
+            "text": "1.222,06",
+            "expected": 1
+          },
+          {
+            "text": "@SUM(1,2)",
+            "expected": 1
+          },
+          {
+            "text": "DE_END_635",
+            "expected": 1
+          }
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "001234",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "@SUM(1,2)",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "previewPaths": [
+          "tmp/pdfs/phase3.2/german-invoice-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "width": 595.0,
+            "height": 842.0
+          }
+        ],
+        "fontFiles": {
+          "latin": "arial.ttf",
+          "devanagari": "Nirmala.ttc"
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "caseId": "mixed-orientation",
+      "label": "Mixed page orientation",
+      "language": "en",
+      "documentClass": "mixed-orientation",
+      "source": {
+        "path": "tmp/pdfs/phase3.2/mixed-orientation.pdf",
+        "sha256": "9ea389a9b5f90026c56a5a06dd4fa4a4bb6fda8103ba1ce36e668ab728893558",
+        "pages": 3,
+        "bytes": 588474,
+        "selectableTextChars": 303,
+        "expectedMarkers": [
+          {
+            "text": "4821.09",
+            "expected": 1
+          },
+          {
+            "text": "6723.40",
+            "expected": 1
+          },
+          {
+            "text": "8965.72",
+            "expected": 1
+          },
+          {
+            "text": "MIX_FIRST_111",
+            "expected": 2
+          },
+          {
+            "text": "MIX_MIDDLE_222",
+            "expected": 2
+          },
+          {
+            "text": "MIX_LAST_333",
+            "expected": 2
+          },
+          {
+            "text": "Repeated section marker",
+            "expected": 3
+          }
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "4821.09",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "8965.72",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 3
+            }
+          ]
+        },
+        "previewPaths": [
+          "tmp/pdfs/phase3.2/mixed-orientation-page-1.png",
+          "tmp/pdfs/phase3.2/mixed-orientation-page-2.png",
+          "tmp/pdfs/phase3.2/mixed-orientation-page-3.png"
+        ],
+        "pageDimensions": [
+          {
+            "width": 595.0,
+            "height": 842.0
+          },
+          {
+            "width": 842.0,
+            "height": 595.0
+          },
+          {
+            "width": 595.0,
+            "height": 842.0
+          }
+        ],
+        "fontFiles": {
+          "latin": "arial.ttf",
+          "devanagari": "Nirmala.ttc"
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "caseId": "two-column-article",
+      "label": "Dense two-column article",
+      "language": "en",
+      "documentClass": "two-column",
+      "source": {
+        "path": "tmp/pdfs/phase3.2/two-column-article.pdf",
+        "sha256": "fd0f2b6b979ebf112f14cdab83265091672a76ed1284b167a9e35dba1b21cd43",
+        "pages": 2,
+        "bytes": 590796,
+        "selectableTextChars": 4191,
+        "expectedMarkers": [
+          {
+            "text": "COL_111_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_112_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_113_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_114_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_121_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_122_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_123_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_124_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_211_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_212_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_213_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_214_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_221_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_222_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_223_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "COL_224_CHECK",
+            "expected": 1
+          },
+          {
+            "text": "document quality",
+            "expected": 16
+          }
+        ],
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 16
+            }
+          ]
+        },
+        "previewPaths": [
+          "tmp/pdfs/phase3.2/two-column-article-page-1.png",
+          "tmp/pdfs/phase3.2/two-column-article-page-2.png"
+        ],
+        "pageDimensions": [
+          {
+            "width": 595.0,
+            "height": 842.0
+          },
+          {
+            "width": 595.0,
+            "height": 842.0
+          }
+        ],
+        "fontFiles": {
+          "latin": "arial.ttf",
+          "devanagari": "Nirmala.ttc"
+        }
+      },
+      "status": "passed"
+    }
+  ],
+  "results": [
+    {
+      "caseId": "hindi-memo",
+      "label": "Hindi memo",
+      "language": "hi",
+      "documentClass": "memo",
+      "tool": "pdf-to-word",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 38.281,
+      "engine": "pdf2docx",
+      "outputBytes": 37488,
+      "outputSha256": "9aea6bd70dc4136b75d22a9cf67bc2028b4767a2c2c04814633a7715bbbaf230",
+      "outputPath": "tmp/pdfs/phase3.2/hindi-memo-pdf-to-word.docx",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "mediaParts": 0,
+        "editableTextChars": 174,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_2026_017",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_END_917",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "hindi-memo",
+      "label": "Hindi memo",
+      "language": "hi",
+      "documentClass": "memo",
+      "tool": "pdf-to-excel",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 8.531,
+      "engine": null,
+      "outputBytes": 7789,
+      "outputSha256": "566abe6f654dc1c83d0d218f9a70e78238e4cbad331e891603818bd4010f3ffd",
+      "outputPath": "tmp/pdfs/phase3.2/hindi-memo-pdf-to-excel.xlsx",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "sheets": 2,
+        "sheetNames": [
+          "Table 1",
+          "Source text"
+        ],
+        "populatedLiteralCells": 34,
+        "formulaCells": [],
+        "primaryTextChars": 72,
+        "recoveryTextChars": 175,
+        "primaryMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_2026_017",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_END_917",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "recoveryMarkerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_2026_017",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_END_917",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "HINDI_2026_017",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "HINDI_END_917",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            }
+          ],
+          "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
+        },
+        "semanticChecks": [],
+        "editableTextChars": 248,
+        "passed": true
+      }
+    },
+    {
+      "caseId": "hindi-memo",
+      "label": "Hindi memo",
+      "language": "hi",
+      "documentClass": "memo",
+      "tool": "pdf-to-ppt",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 6.735,
+      "engine": null,
+      "outputBytes": 30699,
+      "outputSha256": "ee31a350491a4e12c2b0cbf9f56079a80df06ca66e212a291c118731719a9269",
+      "outputPath": "tmp/pdfs/phase3.2/hindi-memo-pdf-to-ppt.pptx",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "slides": 1,
+        "onSlideTextChars": 175,
+        "notesTextChars": 0,
+        "notesMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "HINDI_2026_017",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "HINDI_END_917",
+              "expected": 1,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "HINDI_2026_017",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "HINDI_END_917",
+              "expected": 1,
+              "actual": 0
+            }
+          ]
+        },
+        "editableTextChars": 175,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "सादा हिंदी नमूना",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_2026_017",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "12345.67",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "HINDI_END_917",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "bilingual-invoice",
+      "label": "Hindi and English invoice",
+      "language": "hi-en",
+      "documentClass": "invoice",
+      "tool": "pdf-to-word",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 8.0,
+      "engine": "pdf2docx",
+      "outputBytes": 37552,
+      "outputSha256": "bb9fdae19b4674c510cb8044b79452f3f068ce6e3abb88b513626635a78cc02d",
+      "outputPath": "tmp/pdfs/phase3.2/bilingual-invoice-pdf-to-word.docx",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "mediaParts": 0,
+        "editableTextChars": 207,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "सेवा",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "125.25",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "bilingual-invoice",
+      "label": "Hindi and English invoice",
+      "language": "hi-en",
+      "documentClass": "invoice",
+      "tool": "pdf-to-excel",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 2.187,
+      "engine": null,
+      "outputBytes": 7896,
+      "outputSha256": "cba7aeae4361adbe7353e1fd97e11b0c8e0534b3c127c9d469724221cf9fa4bb",
+      "outputPath": "tmp/pdfs/phase3.2/bilingual-invoice-pdf-to-excel.xlsx",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "sheets": 2,
+        "sheetNames": [
+          "Table 1",
+          "Source text"
+        ],
+        "populatedLiteralCells": 48,
+        "formulaCells": [],
+        "primaryTextChars": 102,
+        "recoveryTextChars": 205,
+        "primaryMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "सेवा",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "125.25",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 0
+            }
+          ]
+        },
+        "recoveryMarkerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "सेवा",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "125.25",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "सेवा",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "125.25",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            }
+          ],
+          "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
+        },
+        "semanticChecks": [],
+        "editableTextChars": 308,
+        "passed": true
+      }
+    },
+    {
+      "caseId": "bilingual-invoice",
+      "label": "Hindi and English invoice",
+      "language": "hi-en",
+      "documentClass": "invoice",
+      "tool": "pdf-to-ppt",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 3.406,
+      "engine": null,
+      "outputBytes": 31023,
+      "outputSha256": "e01f19a78ebf68f2ad49dff240088a1cf150c3d9b3bef6886199453839931149",
+      "outputPath": "tmp/pdfs/phase3.2/bilingual-invoice-pdf-to-ppt.pptx",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "slides": 1,
+        "onSlideTextChars": 205,
+        "notesTextChars": 0,
+        "notesMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "सेवा",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "125.25",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "सेवा",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "125.25",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 0
+            }
+          ]
+        },
+        "editableTextChars": 205,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "नमूना चालान",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "सेवा",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "कुल देय राशि",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "INV_BI_2048",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "125.25",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "250.50",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "30.60",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "281.10",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "BI_END_864",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "french-invoice",
+      "label": "French accented invoice",
+      "language": "fr",
+      "documentClass": "invoice",
+      "tool": "pdf-to-word",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 6.593,
+      "engine": "pdf2docx",
+      "outputBytes": 37368,
+      "outputSha256": "0b945b98efcbe61342e0050fa756b2438416248ae0e3494a20c7df3581372673",
+      "outputPath": "tmp/pdfs/phase3.2/french-invoice-pdf-to-word.docx",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "mediaParts": 0,
+        "editableTextChars": 218,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Crème brûlée",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "=2+3",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "french-invoice",
+      "label": "French accented invoice",
+      "language": "fr",
+      "documentClass": "invoice",
+      "tool": "pdf-to-excel",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 1.828,
+      "engine": null,
+      "outputBytes": 7827,
+      "outputSha256": "814d63fda5c7af041ef9122041460cd2b8f67c1c0e6af98936b41b7eebc57136",
+      "outputPath": "tmp/pdfs/phase3.2/french-invoice-pdf-to-excel.xlsx",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "sheets": 2,
+        "sheetNames": [
+          "Table 1",
+          "Source text"
+        ],
+        "populatedLiteralCells": 42,
+        "formulaCells": [],
+        "primaryTextChars": 106,
+        "recoveryTextChars": 216,
+        "primaryMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Crème brûlée",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "=2+3",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 0
+            }
+          ]
+        },
+        "recoveryMarkerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Crème brûlée",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "=2+3",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "Crème brûlée",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "=2+3",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            }
+          ],
+          "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
+        },
+        "semanticChecks": [
+          {
+            "id": "french-decimal-table-cell",
+            "rowLabel": "Crème brûlée",
+            "expected": {
+              "kind": "number",
+              "value": "12.5"
+            },
+            "actualPrimaryCells": [
+              {
+                "sheet": "Table 1",
+                "cell": "B2",
+                "kind": "number",
+                "value": "12.5"
+              }
+            ],
+            "passed": true
+          }
+        ],
+        "editableTextChars": 323,
+        "passed": true
+      }
+    },
+    {
+      "caseId": "french-invoice",
+      "label": "French accented invoice",
+      "language": "fr",
+      "documentClass": "invoice",
+      "tool": "pdf-to-ppt",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 4.14,
+      "engine": null,
+      "outputBytes": 30806,
+      "outputSha256": "cf42a5d7f0836e7265d6e8cb42520568021f2299526ca00275c206774f0612c1",
+      "outputPath": "tmp/pdfs/phase3.2/french-invoice-pdf-to-ppt.pptx",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "slides": 1,
+        "onSlideTextChars": 216,
+        "notesTextChars": 0,
+        "notesMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Crème brûlée",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "=2+3",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Crème brûlée",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "=2+3",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 0
+            }
+          ]
+        },
+        "editableTextChars": 216,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Référence",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Société Démonstration",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Crème brûlée",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1 247,06",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "=2+3",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "FR_END_729",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "german-invoice",
+      "label": "German decimals and identifiers",
+      "language": "de",
+      "documentClass": "invoice",
+      "tool": "pdf-to-word",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 6.64,
+      "engine": "pdf2docx",
+      "outputBytes": 37393,
+      "outputSha256": "d3669a5ba2c822d54183644677d026b9eef1d981e50cc27afd0b4a21befc8313",
+      "outputPath": "tmp/pdfs/phase3.2/german-invoice-pdf-to-word.docx",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "mediaParts": 0,
+        "editableTextChars": 234,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "001234",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "@SUM(1,2)",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "german-invoice",
+      "label": "German decimals and identifiers",
+      "language": "de",
+      "documentClass": "invoice",
+      "tool": "pdf-to-excel",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 1.89,
+      "engine": null,
+      "outputBytes": 7851,
+      "outputSha256": "015c6fc839ae1f6fe9cc2f38f64e02f629a638994af6101192a03369c68078ed",
+      "outputPath": "tmp/pdfs/phase3.2/german-invoice-pdf-to-excel.xlsx",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "sheets": 2,
+        "sheetNames": [
+          "Table 1",
+          "Source text"
+        ],
+        "populatedLiteralCells": 48,
+        "formulaCells": [],
+        "primaryTextChars": 123,
+        "recoveryTextChars": 232,
+        "primaryMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "001234",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "@SUM(1,2)",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 0
+            }
+          ]
+        },
+        "recoveryMarkerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "001234",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "@SUM(1,2)",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "001234",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "@SUM(1,2)",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            }
+          ],
+          "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
+        },
+        "semanticChecks": [
+          {
+            "id": "german-leading-zero-identifier",
+            "rowLabel": "Artikelkennung",
+            "expected": {
+              "kind": "string",
+              "value": "001234"
+            },
+            "actualPrimaryCells": [
+              {
+                "sheet": "Table 1",
+                "cell": "B2",
+                "kind": "string",
+                "value": "001234"
+              }
+            ],
+            "passed": true
+          }
+        ],
+        "editableTextChars": 356,
+        "passed": true
+      }
+    },
+    {
+      "caseId": "german-invoice",
+      "label": "German decimals and identifiers",
+      "language": "de",
+      "documentClass": "invoice",
+      "tool": "pdf-to-ppt",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 4.047,
+      "engine": null,
+      "outputBytes": 31059,
+      "outputSha256": "da063c6a56dab7c4a0b34b81882ab821819fdf986b5db925f7b4284e69a59fb1",
+      "outputPath": "tmp/pdfs/phase3.2/german-invoice-pdf-to-ppt.pptx",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "slides": 1,
+        "onSlideTextChars": 232,
+        "notesTextChars": 0,
+        "notesMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "001234",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "@SUM(1,2)",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "001234",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "@SUM(1,2)",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 0
+            }
+          ]
+        },
+        "editableTextChars": 232,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "Prüfung",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "Straße",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_INV_0084",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "001234",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "1.222,06",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "@SUM(1,2)",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "DE_END_635",
+              "expected": 1,
+              "actual": 1
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "mixed-orientation",
+      "label": "Mixed page orientation",
+      "language": "en",
+      "documentClass": "mixed-orientation",
+      "tool": "pdf-to-word",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 5.469,
+      "engine": "pdf2docx",
+      "outputBytes": 37103,
+      "outputSha256": "22ddba18cb1b96850e208358cb7f1354d231cabc538e9d75c2d0030891c17316",
+      "outputPath": "tmp/pdfs/phase3.2/mixed-orientation-pdf-to-word.docx",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "mediaParts": 0,
+        "editableTextChars": 306,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "4821.09",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "8965.72",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 3
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "mixed-orientation",
+      "label": "Mixed page orientation",
+      "language": "en",
+      "documentClass": "mixed-orientation",
+      "tool": "pdf-to-excel",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 1.187,
+      "engine": null,
+      "outputBytes": 9037,
+      "outputSha256": "998b97c4e1ac42864865b90fe0dad52ba5c79ab5243549ada0b6c93a51a88a3d",
+      "outputPath": "tmp/pdfs/phase3.2/mixed-orientation-pdf-to-excel.xlsx",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "sheets": 4,
+        "sheetNames": [
+          "Table 1",
+          "Table 2",
+          "Table 3",
+          "Source text"
+        ],
+        "populatedLiteralCells": 58,
+        "formulaCells": [],
+        "primaryTextChars": 124,
+        "recoveryTextChars": 300,
+        "primaryMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 1
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 1
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 1
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "4821.09",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "8965.72",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 1
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 1
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 1
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 0
+            }
+          ]
+        },
+        "recoveryMarkerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "4821.09",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "8965.72",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 3
+            }
+          ]
+        },
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "4821.09",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "8965.72",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 2,
+              "primaryActual": 1,
+              "recoveryActual": 2
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 2,
+              "primaryActual": 1,
+              "recoveryActual": 2
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 2,
+              "primaryActual": 1,
+              "recoveryActual": 2
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 3,
+              "primaryActual": 0,
+              "recoveryActual": 3
+            }
+          ],
+          "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
+        },
+        "semanticChecks": [],
+        "editableTextChars": 425,
+        "passed": true
+      }
+    },
+    {
+      "caseId": "mixed-orientation",
+      "label": "Mixed page orientation",
+      "language": "en",
+      "documentClass": "mixed-orientation",
+      "tool": "pdf-to-ppt",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 2.703,
+      "engine": null,
+      "outputBytes": 33834,
+      "outputSha256": "8d92676b4da3a66852bab2025d01fb148afc645dec42d264a36ff2f0407c6f77",
+      "outputPath": "tmp/pdfs/phase3.2/mixed-orientation-pdf-to-ppt.pptx",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "slides": 3,
+        "onSlideTextChars": 300,
+        "notesTextChars": 0,
+        "notesMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "4821.09",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "8965.72",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 0
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 0
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 0
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "4821.09",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "8965.72",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 0
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 0
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 0
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 0
+            }
+          ]
+        },
+        "editableTextChars": 300,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "4821.09",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "6723.40",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "8965.72",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "MIX_FIRST_111",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "MIX_MIDDLE_222",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "MIX_LAST_333",
+              "expected": 2,
+              "actual": 2
+            },
+            {
+              "text": "Repeated section marker",
+              "expected": 3,
+              "actual": 3
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "two-column-article",
+      "label": "Dense two-column article",
+      "language": "en",
+      "documentClass": "two-column",
+      "tool": "pdf-to-word",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 5.484,
+      "engine": "pdf2docx",
+      "outputBytes": 37462,
+      "outputSha256": "9906d4ee708dda7f9c33311add01b7c31f73bb738dbe4eef8f73929c34289ec3",
+      "outputPath": "tmp/pdfs/phase3.2/two-column-article-pdf-to-word.docx",
+      "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "mediaParts": 0,
+        "editableTextChars": 4255,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 16
+            }
+          ]
+        },
+        "passed": true
+      }
+    },
+    {
+      "caseId": "two-column-article",
+      "label": "Dense two-column article",
+      "language": "en",
+      "documentClass": "two-column",
+      "tool": "pdf-to-excel",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 3.219,
+      "engine": null,
+      "outputBytes": 11526,
+      "outputSha256": "97f249fba09bddab8d46de43a011a5ac69b889ffa1aa01d8ab66f741175b17af",
+      "outputPath": "tmp/pdfs/phase3.2/two-column-article-pdf-to-excel.xlsx",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "sheets": 3,
+        "sheetNames": [
+          "Table 1",
+          "Table 2",
+          "Source text"
+        ],
+        "populatedLiteralCells": 652,
+        "formulaCells": [],
+        "primaryTextChars": 4507,
+        "recoveryTextChars": 4189,
+        "primaryMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 0
+            }
+          ]
+        },
+        "recoveryMarkerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 16
+            }
+          ]
+        },
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 1,
+              "primaryActual": 0,
+              "recoveryActual": 1
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 16,
+              "primaryActual": 0,
+              "recoveryActual": 16
+            }
+          ],
+          "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
+        },
+        "semanticChecks": [],
+        "editableTextChars": 8697,
+        "passed": true
+      }
+    },
+    {
+      "caseId": "two-column-article",
+      "label": "Dense two-column article",
+      "language": "en",
+      "documentClass": "two-column",
+      "tool": "pdf-to-ppt",
+      "status": "passed",
+      "httpStatus": 200,
+      "elapsedSeconds": 2.25,
+      "engine": null,
+      "outputBytes": 32475,
+      "outputSha256": "433a295b3c5e0788df3e7c692c1ba7cf37ce07d37d1dc5e2ff041642429443ca",
+      "outputPath": "tmp/pdfs/phase3.2/two-column-article-pdf-to-ppt.pptx",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "contentTypeMatched": true,
+      "validation": {
+        "zipCrcPassed": true,
+        "requiredPartsPresent": true,
+        "slides": 2,
+        "onSlideTextChars": 4189,
+        "notesTextChars": 0,
+        "notesMarkerCheck": {
+          "passed": false,
+          "missing": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 0
+            }
+          ],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 0
+            }
+          ]
+        },
+        "editableTextChars": 4189,
+        "markerCheck": {
+          "passed": true,
+          "missing": [],
+          "duplicated": [],
+          "counts": [
+            {
+              "text": "COL_111_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_112_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_113_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_114_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_121_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_122_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_123_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_124_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_211_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_212_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_213_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_214_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_221_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_222_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_223_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "COL_224_CHECK",
+              "expected": 1,
+              "actual": 1
+            },
+            {
+              "text": "document quality",
+              "expected": 16,
+              "actual": 16
+            }
+          ]
+        },
+        "passed": true
+      }
+    }
+  ],
+  "contactSheet": "tmp/pdfs/phase3.2/contact-sheet.png",
+  "summary": {
+    "cases": 6,
+    "fixturesPassed": 6,
+    "fixturesFailed": 0,
+    "routesTested": 18,
+    "passed": 18,
+    "failed": 0,
+    "errors": 0,
+    "allPassed": true
+  },
+  "completedAt": "2026-10-03T02:09:20.328738+00:00"
+}

@@ -20,6 +20,8 @@ export type PdfToWordEnginePlanInput = {
   largePdf?: boolean;
   pdf2docxReady?: boolean;
   wordComReady?: boolean;
+  /** Opt-in local profile: use the verified Python engine without COM fallback. */
+  preferPdf2docx?: boolean;
 };
 
 export type ConversionStrategy = {
@@ -39,6 +41,16 @@ export function isConvertApiOnlyMode(): boolean {
  * Windows dev: word-com (design) OR pdf2docx (manuals).
  */
 export function resolveConversionStrategy(input: PdfToWordEnginePlanInput): ConversionStrategy {
+  // Only this path enforces language availability and minimum recognized text.
+  // COM/visual/Node output can look valid while containing no usable OCR text.
+  if (input.ocrRequired && input.imageOnly) {
+    return { engines: input.pdf2docxReady ? ["pdf2docx"] : [], emergency: [] };
+  }
+  if (input.preferPdf2docx) {
+    const engine = input.denseEditableForm || input.denseShortDocument
+      ? "reference-transcript" : "pdf2docx";
+    return { engines: input.pdf2docxReady ? [engine] : [], emergency: [] };
+  }
   const emergency: PdfToWordEngine[] = input.largePdf || (input.ocrRequired && input.imageOnly)
     ? [] : ["visual", "node"];
 
