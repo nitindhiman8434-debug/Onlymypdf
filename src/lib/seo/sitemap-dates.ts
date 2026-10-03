@@ -12,6 +12,7 @@ const MARKETING_LAST_MODIFIED: Partial<Record<(typeof MARKETING_ROUTES)[number],
   "/privacy": "2026-06-01",
   "/cookies": "2026-06-01",
   "/terms": "2026-05-10",
+  "/benchmarks": "2026-10-03",
 };
 
 const TOOLS_LAST_MODIFIED = "2026-06-01";

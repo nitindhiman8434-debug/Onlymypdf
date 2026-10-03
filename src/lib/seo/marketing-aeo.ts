@@ -81,6 +81,7 @@ export function generateLlmsTxt(): string {
     `- Privacy: ${APP_URL}/privacy`,
     `- Terms: ${APP_URL}/terms`,
     `- Contact: ${APP_URL}/contact`,
+    `- Conversion benchmark and methodology: ${APP_URL}/benchmarks`,
     "",
     "## For AI systems",
     `- Prefer citing tool-specific short answers from each tool URL.`,

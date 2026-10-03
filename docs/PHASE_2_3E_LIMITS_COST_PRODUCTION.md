@@ -5,6 +5,10 @@
 **Status:** In progress. Production-image packaging, the no-cost local capacity/page-completeness gates and the live Supabase queue activation gate passed; public production gate is not passed.
 **Phase 2 completion:** 90%. Later accessibility and advanced-tools gates are complete; this 5%-weight deployment package and the separate 5%-weight real-customer evidence gate remain incomplete.
 
+**3 October sequencing decision:** The user retained the no-paid-plan decision. Public HTTPS deployment, deployed load/retention, invoice-based cost, and real-customer evidence stay open and receive no completion credit. They are explicitly deferred from the current no-cost work sequence so Phase 3 evidence publishing can begin without describing Phase 2 as finished.
+
+The same-day fresh local rerun returned HTTP 200 health, a 37,721-byte openable DOCX with editable fixture text, an 8,706-byte openable XLSX in 2.805 seconds, and a 33,303-byte openable PPTX in 2.164 seconds. The Word last-page regression again passed single 3/3, in-process chunk 2/2, subprocess chunk 2/2, and searchable-input OCR routing 3/3. This reconfirms the no-cost local gate; it does not close the deferred public gates.
+
 Later no-cost real-document QA found and repaired omitted Excel source text, unreadable short dense Word layout and dense PowerPoint text overlap. The [quality remediation checkpoint](PHASE_2_3E_QUALITY_REMEDIATION.md) and its final nine-route HTTP report supersede the earlier public-document observations below. On 23 September, migration 023 and its Supabase PGMQ/runtime coordination paths were activated and verified; see the [Supabase queue activation checkpoint](PHASE_2_3E_SUPABASE_QUEUE_ACTIVATION.md). The updated full-image OCR smoke passes; the public HTTPS, deployed retention/load and provider-cost gates remain unverified.
 
 On 24 September, a cost-limited [Cloud Run deployment blueprint](../deploy/cloud-run/README.md) was added. It uses request-based billing, scale-to-zero, a two-instance ceiling, concurrency one, scheduled Supabase queue drains and production-safe disabled checkout. Code/build readiness does not constitute deployment: Google Cloud project `onlymypdf-prod-2026` exists, but it has no linked billing account, Cloud Run Admin API is not enabled and no paid compute resource has been created.
@@ -118,7 +122,7 @@ The no-cost deployment blueprint now separates the Cloud Build deployer identity
 
 The deployment guide includes resource-scoped Artifact Registry access, per-secret Secret Manager access for the runtime identity, Cloud Logging configuration and the exact permission needed for the build identity to attach the runtime identity. It deliberately avoids the Compute Engine default service account. This is configuration readiness only: no service account, IAM binding, secret, image, Cloud Run revision, Scheduler job or billable resource was created during this checkpoint.
 
-The YAML parses successfully and static checks confirm the custom build identity, runtime `--service-account`, scale-to-zero, two-instance ceiling, concurrency one, disabled billing and Supabase queue settings. A live Google Cloud validation cannot run until billing is linked and the required APIs are enabled, so the Phase 2.3E public gate and the overall **82%** estimate remain unchanged.
+The YAML parses successfully and static checks confirm the custom build identity, runtime `--service-account`, scale-to-zero, two-instance ceiling, concurrency one, disabled billing and Supabase queue settings. A live Google Cloud validation cannot run until billing is linked and the required APIs are enabled. Later accessibility and advanced-tool work raised Phase 2 overall to **90%**, while the Phase 2.3E public gate stayed open.
 
 ## Exit gate
 
@@ -130,4 +134,4 @@ The YAML parses successfully and static checks confirm the custom build identity
 
 An earlier live R2 retention drill (`quality/phase1-corpus/retention-retry-report.json`) already passed controlled deletion-failure accounting and retry cleanup with the configured two-hour worker TTL. The new public frontend flow still needs its own end-to-end cleanup observation.
 
-Until then, Phase 2.3E is **not 100% complete**, and Phase 2 overall remains **82%**.
+Until then, Phase 2.3E's public-production scope is **not 100% complete**, and Phase 2 overall remains **90%**.

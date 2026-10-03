@@ -47,6 +47,7 @@ const companyLinks = [
   { nameKey: "footer.terms", href: "/terms" },
   { nameKey: "footer.refund", href: "/refund" },
   { nameKey: "footer.trust", href: "/trust" },
+  { nameKey: "footer.benchmarks", href: "/benchmarks" },
   { nameKey: "footer.sla", href: "/sla" },
   { nameKey: "footer.faq", href: "/faq" },
   { nameKey: "nav.pricing", href: "/pricing" },

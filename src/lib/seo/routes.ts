@@ -16,6 +16,7 @@ export const MARKETING_ROUTES = [
   "/trust",
   "/sla",
   "/status",
+  "/benchmarks",
 ] as const;
 
 export const TOOL_SLUGS = TOOLS.map((tool) => tool.slug);

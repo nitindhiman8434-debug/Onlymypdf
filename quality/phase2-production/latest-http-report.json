@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-30T16:56:33.081Z",
+  "generatedAt": "2026-10-02T23:58:38.138Z",
   "target": "local",
   "baseUrl": "http://127.0.0.1:3001",
   "fixture": "quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf",
@@ -7,10 +7,10 @@
   "conversions": [
     {
       "tool": "pdf-to-excel",
-      "elapsedMs": 2307,
+      "elapsedMs": 2805,
       "inputBytes": 2311,
-      "outputBytes": 8707,
-      "sha256": "5069db0d051d23522c638efb80c6b813c10bb2d48d0548439a3f49b795add743",
+      "outputBytes": 8706,
+      "sha256": "80b362ca935b17cb31d88243e662abf5d8bb820f597a98f894972fe342d3f220",
       "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "validation": {
         "openable": true,
@@ -20,10 +20,10 @@
     },
     {
       "tool": "pdf-to-ppt",
-      "elapsedMs": 2177,
+      "elapsedMs": 2164,
       "inputBytes": 2311,
       "outputBytes": 33303,
-      "sha256": "52a82d8efad3957ba3c3937dd479666bc097fac71e2e8e966035e17090b82a73",
+      "sha256": "5272f55b2d06f3f6b980b2075f2b682e2661ae241cfb610a50a1e0a3e4b840ae",
       "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "validation": {
         "openable": true,

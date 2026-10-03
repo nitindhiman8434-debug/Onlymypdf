@@ -137,7 +137,7 @@ The confirmed values match the code defaults. No production code change is requi
 
 Phase 2.3 PDF-to-Word and OCR output changes were approved on 18 September 2026. Its decision gate and evidence are recorded in `docs/PHASE_2_3_SEMANTIC_OFFICE_OCR.md`.
 
-Phase 2.3E is underway. Its measured-limit, cost and public deployment gates are tracked in `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`. The next phase must not begin until these gates are resolved or explicitly scoped out.
+Phase 2.3E is underway. Its measured-limit, cost and public deployment gates are tracked in `docs/PHASE_2_3E_LIMITS_COST_PRODUCTION.md`. On 3 October the user retained the no-paid-plan decision, so public HTTPS/load/retention/cost and real-customer gates were explicitly deferred from the no-cost work sequence without receiving completion credit. Phase 3 evidence publishing may proceed while Phase 2 remains honestly reported at 90%.
 
 The six-tool workstream is complete for its controlled engineering gate. Implementation details, failures found during Linux-image testing and supported boundaries are recorded in `docs/PHASE_2_ADVANCED_PDF_TOOLS.md`.
 
