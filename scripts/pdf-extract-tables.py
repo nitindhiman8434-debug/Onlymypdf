@@ -9,7 +9,9 @@ import sys
 import os
 import json
 import re
+import unicodedata
 import warnings
+from collections import Counter
 
 warnings.filterwarnings("ignore")
 os.environ["PYMUPDF_MESSAGE"] = "fd:2"
@@ -22,11 +24,20 @@ except Exception:
     pass
 
 
+def repair_combining_mark_breaks(text):
+    """A separate PDF glyph run can put a line break before a vowel/accent mark."""
+    return re.sub(
+        r"\s+(\S)",
+        lambda match: match[1] if unicodedata.category(match[1]).startswith("M") else match[0],
+        text,
+    )
+
+
 def clean_cell(value, preserve_newlines=False):
     """Clean a cell value: strip whitespace, normalize newlines."""
     if value is None:
         return ""
-    s = str(value).strip()
+    s = repair_combining_mark_breaks(str(value)).strip()
     if preserve_newlines:
         s = s.replace("\r\n", "\n").replace("\r", "\n")
         lines = []
@@ -212,11 +223,54 @@ def words_to_grid(page, x_merge=5, y_tol=3.5, min_gap=8):
 
 def rows_from_table_object(table_obj, preserve_newlines=False):
     extracted = table_obj.extract()
+    text_page = None
     rows = []
-    for row in extracted:
-        cleaned = [clean_cell(c, preserve_newlines=preserve_newlines) for c in row]
+    for row_index, row in enumerate(extracted):
+        cleaned = []
+        for col_index, cell in enumerate(row):
+            # Table.extract sorts individual glyphs geometrically. That can move
+            # Indic vowel signs before their consonants and underscores to the
+            # end of a cell. The PDF text stream retains their logical order.
+            # Ordinary numbers/Latin text must keep geometric order: PDF text
+            # can be painted right-to-left without a right-to-left reading order.
+            # Only repair these known fragment types, and only when the same
+            # characters were captured (no clipped or adjacent-cell content).
+            bounds = table_obj.rows[row_index].cells[col_index]
+            if bounds and cell and needs_logical_cell_order(cell):
+                if text_page is None:
+                    text_page = table_obj.page.get_textpage()
+                source_cell = table_obj.page.get_textbox(bounds, textpage=text_page)
+                if content_characters(source_cell) == content_characters(cell):
+                    cell = source_cell
+            cleaned.append(clean_cell(cell, preserve_newlines=preserve_newlines))
         rows.append(cleaned)
     return rows
+
+
+def needs_logical_cell_order(text):
+    indic_mark = any(
+        "\u0900" <= char <= "\u097f" and unicodedata.category(char).startswith("M")
+        for char in text
+    )
+    displaced_underscores = bool(re.search(r"\n\s*_(?:\s*_)*\s*$", text))
+    return indic_mark or displaced_underscores
+
+
+def content_characters(text):
+    return Counter(char for char in unicodedata.normalize("NFC", text) if not char.isspace())
+
+
+def content_tokens(text):
+    """Count Unicode content, retaining numeric punctuation and identifier signs."""
+    normalized = unicodedata.normalize("NFC", repair_combining_mark_breaks(text)).casefold()
+    return Counter(
+        token for token in normalized.split()
+        if any(unicodedata.category(char)[0] in "LMN" for char in token)
+    )
+
+
+def needs_source_text_backup(source_text, table_text):
+    return bool(content_tokens(source_text) - content_tokens(table_text))
 
 
 def extract_find_tables(page):
@@ -827,17 +881,9 @@ FRAGMENT_LABELS = frozenset({
 
 
 def normalize_financial_cell(value):
-    if isinstance(value, int):
-        return value
-    c = clean_cell(value)
-    if not c:
-        return ""
-    if c == "-":
-        return "-"
-    stripped = c.replace(",", "").replace("$", "")
-    if re.match(r"^[\d\-]+$", stripped) and stripped.isdigit():
-        return int(stripped)
-    return c
+    # Keep original punctuation, leading zeros and precision until the workbook
+    # writer has enough locale context to decide whether a value is numeric.
+    return clean_cell(value)
 
 
 def normalize_financial_rows(rows):
@@ -1577,7 +1623,7 @@ def extract_tables(pdf_path, output_dir):
     source_text_budget = 8_000_000
     if page_count <= 500:
         for page_idx in range(page_count):
-            text = doc[page_idx].get_text("text")
+            text = repair_combining_mark_breaks(doc[page_idx].get_text("text"))
             if not export_tables:
                 pages_text.append(text)
                 continue
@@ -1588,9 +1634,7 @@ def extract_tables(pdf_path, output_dir):
                 for row in table["rows"]
                 for cell in row
             )
-            source_tokens = set(re.findall(r"[a-z0-9]{4,}", text.lower()))
-            table_tokens = set(re.findall(r"[a-z0-9]{4,}", table_text.lower()))
-            if source_tokens and len(source_tokens & table_tokens) / len(source_tokens) < 0.98:
+            if needs_source_text_backup(text, table_text):
                 if len(text) <= source_text_budget:
                     source_text_pages.append({"page": page_idx + 1, "text": text})
                     source_text_budget -= len(text)

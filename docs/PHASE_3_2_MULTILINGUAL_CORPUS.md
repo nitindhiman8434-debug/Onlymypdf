@@ -2,7 +2,10 @@
 
 **Date:** 3 October 2026
 
-**Status:** Diagnostic and local publication complete; four conversion checks remain failing.
+**Status:** Diagnostic and local publication complete. The baseline below records
+four failures at commit `b487fe7`; these were subsequently fixed in
+[Phase 3.2B](PHASE_3_2B_ENGLISH_SITE_AND_CONVERSION_FIXES.md), whose unchanged
+eighteen-case validator passes 18/18. This document preserves the initial findings.
 
 **Scope:** A reproducible diagnostic and benchmark report; no conversion engine or routing changes.
 
@@ -29,11 +32,12 @@ Phase 2's deferred production and real-customer gates remain open.
   transport error and unverified results separated. Missing/duplicate evidence
   never becomes an automatic pass.
 
-The committed measurement is
+The current committed measurement is
 `quality/phase3-document-corpus/latest-report.json`. Raw PDFs, Office artifacts and
 previews remain under ignored `tmp/pdfs/phase3.2/`. No real user files were used.
+The original 14/18 measurement is recoverable from commit `b487fe7`.
 
-## Final local measurement
+## Initial local measurement (before Phase 3.2B)
 
 All six source fixtures passed. All eighteen conversions returned HTTP 200 with
 the expected MIME and valid Office package structure. Four artifacts failed the
@@ -49,7 +53,7 @@ selected content or typed-cell expectations; none was a transport/server error.
 This is a check count, not a conversion accuracy percentage. The runner correctly
 returned exit code 1. The unchanged Phase 3.1 baseline is still a separate report.
 
-## Confirmed findings for the next task
+## Confirmed findings that led to Phase 3.2B
 
 1. **French spreadsheet number parsing:** the source amount `12,50` in the
    `Crème brûlée` row becomes numeric `1250` in the primary table. The original
@@ -103,11 +107,15 @@ conversion and were not scored against the app. Complex conjuncts, other script
 families, real OCR recognition, handwriting, accessibility semantics and full
 layout fidelity need separate coverage. Tesseract is absent on this machine.
 
-The next bounded task is **Phase 3.2B: repair primary spreadsheet amount and
+The planned follow-up was **Phase 3.2B: repair primary spreadsheet amount and
 identifier handling**, then rerun both these cases and the existing Excel corpus.
-Hindi text extraction needs its own targeted regression work after that. These
-are conversion-output changes and should be carried out as explicitly scoped
-follow-up work, not hidden inside the benchmark publication change.
+Hindi text extraction was also marked for targeted regression work. These
+conversion-output changes were reserved for explicitly scoped follow-up work,
+rather than being included in the benchmark publication change.
+
+The user's subsequent request authorized both the spreadsheet and Hindi Office
+fixes, alongside the English-only website. Phase 3.2B contains the implementation
+and final regression evidence; the four failures below are historical.
 
 Global deployment, production capacity/cost and customer feedback are still
 separate gates under the user's no-paid-plan decision.
@@ -127,5 +135,6 @@ separate gates under the user's no-paid-plan decision.
 - All eighteen artifacts had matching MIME types and valid package structure;
   no unexpected Excel formulas were present. Word used local `pdf2docx`.
 
-This closes the diagnostic implementation only. Four content/typed-cell checks
-and the inspected visual defects are deliberately left visible for remediation.
+At the end of this diagnostic task, four content/typed-cell checks and the
+inspected visual defects were deliberately left visible for remediation. See
+Phase 3.2B for their resolution and the remaining coverage boundaries.

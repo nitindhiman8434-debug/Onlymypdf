@@ -9,7 +9,7 @@ export const cookiesLegal: Record<"en" | "hi", LegalDocument> = {
       {
         title: "How OnlyMyPDF uses browser storage",
         paragraphs: [
-          "OnlyMyPDF uses cookies and local browser storage to keep the service secure, remember your language and privacy choices, identify a guest session, and maintain sign-in state.",
+          "OnlyMyPDF uses cookies and local browser storage to keep the service secure, remember your privacy choices, identify a guest session, and maintain sign-in state.",
           "Essential storage is required for requested features. Optional analytics and marketing storage remains off unless you choose it.",
         ],
       },
@@ -17,7 +17,6 @@ export const cookiesLegal: Record<"en" | "hi", LegalDocument> = {
         title: "Essential cookies",
         bullets: [
           "pd_guest_session: identifies a guest for authorization and daily limits. It is HTTP-only and lasts up to one year.",
-          "pd_locale: remembers the selected language for up to one year.",
           "pd_consent: remembers cookie choices for up to one year. The same choice is also stored in local browser storage.",
           "Supabase authentication cookies: maintain a signed-in session and refresh it securely. Their lifetime follows the authentication session.",
           "pd_step_up: confirms recent identity verification for sensitive account actions. It is HTTP-only and expires after five minutes.",

@@ -12,6 +12,8 @@ import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from multiprocessing import cpu_count
 
+from office_devanagari import has_devanagari, normalize_devanagari_blocks, devanagari_font
+
 try:
     import fitz
 except ImportError:
@@ -23,6 +25,7 @@ try:
     from pptx.util import Inches, Pt
     from pptx.enum.text import MSO_AUTO_SIZE, MSO_ANCHOR
     from pptx.dml.color import RGBColor
+    from pptx.oxml.xmlchemy import OxmlElement
     from PIL import Image
 except ImportError:
     print(json.dumps({"error": "python-pptx and Pillow required. Run: pip install python-pptx pillow"}))
@@ -106,7 +109,7 @@ def extract_page_lines(page: fitz.Page) -> list[dict]:
         if span.get("type") in (0, 1) and span.get("opacity", 1) > 0.01
     ]
     text_blocks = sorted(
-        [b for b in data.get("blocks", []) if b.get("type") == 0],
+        [b for b in normalize_devanagari_blocks(data.get("blocks", [])) if b.get("type") == 0],
         key=lambda b: (round(b["bbox"][1], 1), round(b["bbox"][0], 1)),
     )
     for block in text_blocks:
@@ -186,6 +189,14 @@ def add_editable_lines(slide, lines: list[dict], scale: float, left: float, top:
             run.text = span["text"]
             run.font.size = Pt(max(1, span["size"] * scale))
             run.font.name = re.sub(r"^[A-Z]{6}\+", "", span["font"])
+            if has_devanagari(span["text"]):
+                font_name = devanagari_font(span["font"])
+                run.font.name = font_name
+                properties = run._r.get_or_add_rPr()
+                properties.set("lang", "hi-IN")
+                complex_font = OxmlElement("a:cs")
+                complex_font.set("typeface", font_name)
+                properties.append(complex_font)
             if span["color"] is not None:
                 color = span["color"]
                 run.font.color.rgb = RGBColor(

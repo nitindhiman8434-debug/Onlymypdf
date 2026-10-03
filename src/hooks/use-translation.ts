@@ -3,9 +3,6 @@
 import { useCallback } from "react";
 import { useAppStore } from "@/stores/app-store";
 import en from "@/i18n/en.json";
-import hi from "@/i18n/hi.json";
-
-const translations: Record<string, Record<string, unknown>> = { en, hi };
 
 function getNestedValue(obj: Record<string, unknown>, path: string): string {
   const keys = path.split(".");
@@ -26,15 +23,9 @@ export function useTranslation() {
   const t = useCallback(
     (key: string, replacements?: Record<string, string>): string => {
       let value = getNestedValue(
-        translations[language] as unknown as Record<string, unknown>,
+        en as unknown as Record<string, unknown>,
         key
       );
-      if (value === key && language !== "en") {
-        value = getNestedValue(
-          translations.en as unknown as Record<string, unknown>,
-          key
-        );
-      }
       if (replacements) {
         Object.entries(replacements).forEach(([k, v]) => {
           value = value.replace(`{{${k}}}`, v);
@@ -42,7 +33,7 @@ export function useTranslation() {
       }
       return value;
     },
-    [language]
+    []
   );
 
   return { t, language, setLanguage };

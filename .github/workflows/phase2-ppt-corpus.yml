@@ -8,6 +8,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - "scripts/pdf-to-ppt-build.py"
+      - "scripts/office_devanagari.py"
       - "scripts/pdf-to-docx.py"
       - "scripts/phase2-full-image-runtime-smoke.py"
       - "scripts/pdf-advanced-tools.py"
@@ -43,7 +44,7 @@ jobs:
         run: |
           npm ci
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libreoffice-impress fonts-dejavu-core
+          sudo apt-get install -y --no-install-recommends libreoffice-impress fonts-dejavu-core fonts-noto-core
           python -m pip install --disable-pip-version-check pymupdf==1.27.2 python-pptx==1.0.2 pillow==12.2.0
       - name: Verify editable and visual slides
         run: npm run phase2.3d:ppt-corpus

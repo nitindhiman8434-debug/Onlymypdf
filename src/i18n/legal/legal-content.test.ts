@@ -47,7 +47,7 @@ describe("public legal content", () => {
     const cookies = documentText(getLegalDocument("cookies", "en"));
 
     expect(cookies).toContain("pd_guest_session");
-    expect(cookies).toContain("pd_locale");
+    expect(cookies).not.toContain("pd_locale");
     expect(cookies).toContain("pd_consent");
     expect(cookies).toContain("pd_step_up");
     expect(cookies).toContain("does not load an analytics tag");

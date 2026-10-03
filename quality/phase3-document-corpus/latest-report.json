@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-03T00:34:33.728772+00:00",
+  "generatedAt": "2026-10-03T01:03:36.391676+00:00",
   "scope": "local",
   "baseUrl": "http://127.0.0.1:3001",
   "mode": "conversion",
@@ -30,9 +30,9 @@
       "documentClass": "memo",
       "source": {
         "path": "tmp/pdfs/phase3.2/hindi-memo.pdf",
-        "sha256": "74d62f8723855d855cb418950f71bd3c0c5d34355071a9862de5a0186a96d02c",
+        "sha256": "0347b835fdd0b0a81bb02f6a10f18bf3179c1484ab424b35128fcb20a10b045c",
         "pages": 1,
-        "bytes": 1373756,
+        "bytes": 1373766,
         "selectableTextChars": 179,
         "expectedMarkers": [
           {
@@ -129,9 +129,9 @@
       "documentClass": "invoice",
       "source": {
         "path": "tmp/pdfs/phase3.2/bilingual-invoice.pdf",
-        "sha256": "473ec45c3388818f896a331aaa022fbb140e544b7bf82cab14b5364993e0262a",
+        "sha256": "2a6532d2fc6310114fa5c0d20bd294a5955b65d9598a87099345776167b34eed",
         "pages": 1,
-        "bytes": 1373642,
+        "bytes": 1373652,
         "selectableTextChars": 208,
         "expectedMarkers": [
           {
@@ -246,7 +246,7 @@
       "documentClass": "invoice",
       "source": {
         "path": "tmp/pdfs/phase3.2/french-invoice.pdf",
-        "sha256": "86d7b9b75a87f72356905a51737a5dd94565d41c61ff9af9e1984eafd15536ab",
+        "sha256": "23913c9cb657dc57592cf3b60427426296d8553e58b09c165138342119567a5e",
         "pages": 1,
         "bytes": 586748,
         "selectableTextChars": 217,
@@ -354,7 +354,7 @@
       "documentClass": "invoice",
       "source": {
         "path": "tmp/pdfs/phase3.2/german-invoice.pdf",
-        "sha256": "064e4ad6d720b8729168935925b290b1ad68a046433fcb7bda31c9fe05f8a6ff",
+        "sha256": "6b30d9e1a21b515015b9192f41cd9a9af35fffd7ae8d8e56e6bb230547e74413",
         "pages": 1,
         "bytes": 586766,
         "selectableTextChars": 233,
@@ -471,7 +471,7 @@
       "documentClass": "mixed-orientation",
       "source": {
         "path": "tmp/pdfs/phase3.2/mixed-orientation.pdf",
-        "sha256": "2e88855546eeb84ce2675ad5fc9cdd634473b3bca610f35ab9439961a579aeed",
+        "sha256": "dd9cbc164bedb72845c809e56e48a0d8ccb94c4f3fc641a9ff16c88dffd73cf1",
         "pages": 3,
         "bytes": 588474,
         "selectableTextChars": 303,
@@ -580,7 +580,7 @@
       "documentClass": "two-column",
       "source": {
         "path": "tmp/pdfs/phase3.2/two-column-article.pdf",
-        "sha256": "28e28ceabf326cc637073e8db67c6fe66a51968ed697ee6fec707eafba39a62a",
+        "sha256": "bbf57a1d0198fb878be546de5ab96f5c14a2104cb69d67d131c30940bbf233df",
         "pages": 2,
         "bytes": 590796,
         "selectableTextChars": 4191,
@@ -775,12 +775,12 @@
       "language": "hi",
       "documentClass": "memo",
       "tool": "pdf-to-word",
-      "status": "failed",
+      "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 6.907,
+      "elapsedSeconds": 3.5,
       "engine": "pdf2docx",
-      "outputBytes": 37475,
-      "outputSha256": "5c98957c8485bc176345b7bc6681552bbd5403d75d8b120465d66b603cb3e9e1",
+      "outputBytes": 37488,
+      "outputSha256": "6cff0950853f36aa2ff9a3ede7c2f8216e44cdec48e2a39d3dbf84beeb5bf90d",
       "outputPath": "tmp/pdfs/phase3.2/hindi-memo-pdf-to-word.docx",
       "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -789,16 +789,10 @@
         "zipCrcPassed": true,
         "requiredPartsPresent": true,
         "mediaParts": 0,
-        "editableTextChars": 175,
+        "editableTextChars": 174,
         "markerCheck": {
-          "passed": false,
-          "missing": [
-            {
-              "text": "कुल राशि",
-              "expected": 1,
-              "actual": 0
-            }
-          ],
+          "passed": true,
+          "missing": [],
           "duplicated": [],
           "counts": [
             {
@@ -819,7 +813,7 @@
             {
               "text": "कुल राशि",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "HINDI_2026_017",
@@ -838,7 +832,7 @@
             }
           ]
         },
-        "passed": false
+        "passed": true
       }
     },
     {
@@ -847,12 +841,12 @@
       "language": "hi",
       "documentClass": "memo",
       "tool": "pdf-to-excel",
-      "status": "failed",
+      "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 2.704,
+      "elapsedSeconds": 1.297,
       "engine": null,
-      "outputBytes": 6588,
-      "outputSha256": "b213d02e7668925e686a815d8624e6272eb52ce193fcc03ac227959992ce693d",
+      "outputBytes": 7789,
+      "outputSha256": "663b7a33d3df8cdc929357ca8dac0f4bddb652d7044fdb77b70c3592c5fbca6a",
       "outputPath": "tmp/pdfs/phase3.2/hindi-memo-pdf-to-excel.xlsx",
       "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -860,14 +854,15 @@
       "validation": {
         "zipCrcPassed": true,
         "requiredPartsPresent": true,
-        "sheets": 1,
+        "sheets": 2,
         "sheetNames": [
-          "Table 1"
+          "Table 1",
+          "Source text"
         ],
-        "populatedLiteralCells": 8,
+        "populatedLiteralCells": 34,
         "formulaCells": [],
-        "primaryTextChars": 82,
-        "recoveryTextChars": 0,
+        "primaryTextChars": 72,
+        "recoveryTextChars": 175,
         "primaryMarkerCheck": {
           "passed": false,
           "missing": [
@@ -885,21 +880,6 @@
               "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
               "expected": 1,
               "actual": 0
-            },
-            {
-              "text": "कुल राशि",
-              "expected": 1,
-              "actual": 0
-            },
-            {
-              "text": "HINDI_2026_017",
-              "expected": 1,
-              "actual": 0
-            },
-            {
-              "text": "HINDI_END_917",
-              "expected": 1,
-              "actual": 0
             }
           ],
           "duplicated": [],
@@ -922,12 +902,12 @@
             {
               "text": "कुल राशि",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "HINDI_2026_017",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "12345.67",
@@ -937,191 +917,112 @@
             {
               "text": "HINDI_END_917",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             }
           ]
         },
         "recoveryMarkerCheck": {
-          "passed": false,
-          "missing": [
-            {
-              "text": "सादा हिंदी नमूना",
-              "expected": 1,
-              "actual": 0
-            },
-            {
-              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
-              "expected": 1,
-              "actual": 0
-            },
-            {
-              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
-              "expected": 1,
-              "actual": 0
-            },
-            {
-              "text": "कुल राशि",
-              "expected": 1,
-              "actual": 0
-            },
-            {
-              "text": "HINDI_2026_017",
-              "expected": 1,
-              "actual": 0
-            },
-            {
-              "text": "12345.67",
-              "expected": 1,
-              "actual": 0
-            },
-            {
-              "text": "HINDI_END_917",
-              "expected": 1,
-              "actual": 0
-            }
-          ],
+          "passed": true,
+          "missing": [],
           "duplicated": [],
           "counts": [
             {
               "text": "सादा हिंदी नमूना",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "कुल राशि",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "HINDI_2026_017",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "12345.67",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "HINDI_END_917",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             }
           ]
         },
         "markerCheck": {
-          "passed": false,
-          "missing": [
-            {
-              "text": "सादा हिंदी नमूना",
-              "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
-            },
-            {
-              "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
-              "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
-            },
-            {
-              "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
-              "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
-            },
-            {
-              "text": "कुल राशि",
-              "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
-            },
-            {
-              "text": "HINDI_2026_017",
-              "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
-            },
-            {
-              "text": "HINDI_END_917",
-              "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
-            }
-          ],
+          "passed": true,
+          "missing": [],
           "duplicated": [],
           "counts": [
             {
               "text": "सादा हिंदी नमूना",
               "expected": 1,
-              "actual": 0,
+              "actual": 1,
               "primaryActual": 0,
-              "recoveryActual": 0
+              "recoveryActual": 1
             },
             {
               "text": "यह नया काम है। नाम सीमा है। योजना पूरी है।",
               "expected": 1,
-              "actual": 0,
+              "actual": 1,
               "primaryActual": 0,
-              "recoveryActual": 0
+              "recoveryActual": 1
             },
             {
               "text": "सभी पेज का पाठ देखो। यह केवल एक नमूना है।",
               "expected": 1,
-              "actual": 0,
+              "actual": 1,
               "primaryActual": 0,
-              "recoveryActual": 0
+              "recoveryActual": 1
             },
             {
               "text": "कुल राशि",
               "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
             },
             {
               "text": "HINDI_2026_017",
               "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
             },
             {
               "text": "12345.67",
               "expected": 1,
               "actual": 1,
               "primaryActual": 1,
-              "recoveryActual": 0
+              "recoveryActual": 1
             },
             {
               "text": "HINDI_END_917",
               "expected": 1,
-              "actual": 0,
-              "primaryActual": 0,
-              "recoveryActual": 0
+              "actual": 1,
+              "primaryActual": 1,
+              "recoveryActual": 1
             }
           ],
           "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
         },
         "semanticChecks": [],
-        "editableTextChars": 83,
-        "passed": false
+        "editableTextChars": 248,
+        "passed": true
       }
     },
     {
@@ -1132,10 +1033,10 @@
       "tool": "pdf-to-ppt",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 2.469,
+      "elapsedSeconds": 2.063,
       "engine": null,
-      "outputBytes": 30869,
-      "outputSha256": "9e3981401ee7e1fafb1ff201ad4376b2d591b86221dd6fdae21b66d74d9a84ee",
+      "outputBytes": 30699,
+      "outputSha256": "7fd0d23283807c98898aec3ea8e12f600b2218dc7e8735b239305ca2e97e09a5",
       "outputPath": "tmp/pdfs/phase3.2/hindi-memo-pdf-to-ppt.pptx",
       "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -1144,7 +1045,7 @@
         "zipCrcPassed": true,
         "requiredPartsPresent": true,
         "slides": 1,
-        "onSlideTextChars": 222,
+        "onSlideTextChars": 175,
         "notesTextChars": 0,
         "notesMarkerCheck": {
           "passed": false,
@@ -1224,7 +1125,7 @@
             }
           ]
         },
-        "editableTextChars": 222,
+        "editableTextChars": 175,
         "markerCheck": {
           "passed": true,
           "missing": [],
@@ -1278,10 +1179,10 @@
       "tool": "pdf-to-word",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 2.688,
+      "elapsedSeconds": 2.235,
       "engine": "pdf2docx",
-      "outputBytes": 37563,
-      "outputSha256": "fffabb673fcb31c2638f696289d9d29877cb2ae6f12f8085dfa4075c89e542de",
+      "outputBytes": 37552,
+      "outputSha256": "89c93173162d70cede5212d46f5ef594d238196890778d48464660a8c08467db",
       "outputPath": "tmp/pdfs/phase3.2/bilingual-invoice-pdf-to-word.docx",
       "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -1290,7 +1191,7 @@
         "zipCrcPassed": true,
         "requiredPartsPresent": true,
         "mediaParts": 0,
-        "editableTextChars": 211,
+        "editableTextChars": 207,
         "markerCheck": {
           "passed": true,
           "missing": [],
@@ -1354,10 +1255,10 @@
       "tool": "pdf-to-excel",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 0.735,
+      "elapsedSeconds": 1.265,
       "engine": null,
-      "outputBytes": 7928,
-      "outputSha256": "585f05d2666800be335e903d4cd3f7cb9a301871d588a129ed48ab8577be4d67",
+      "outputBytes": 7896,
+      "outputSha256": "16e488b788e29ff0071d625f9efeb124b7ccdd4ab6617352f7a87bf3c6cdc525",
       "outputPath": "tmp/pdfs/phase3.2/bilingual-invoice-pdf-to-excel.xlsx",
       "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -1370,10 +1271,10 @@
           "Table 1",
           "Source text"
         ],
-        "populatedLiteralCells": 52,
+        "populatedLiteralCells": 48,
         "formulaCells": [],
         "primaryTextChars": 102,
-        "recoveryTextChars": 207,
+        "recoveryTextChars": 205,
         "primaryMarkerCheck": {
           "passed": false,
           "missing": [
@@ -1586,7 +1487,7 @@
           "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
         },
         "semanticChecks": [],
-        "editableTextChars": 310,
+        "editableTextChars": 308,
         "passed": true
       }
     },
@@ -1598,10 +1499,10 @@
       "tool": "pdf-to-ppt",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 1.188,
+      "elapsedSeconds": 1.953,
       "engine": null,
-      "outputBytes": 31121,
-      "outputSha256": "19431a196195ce2e958686930289e470e43b6f3e1d439f8ded09fce8aa4998ea",
+      "outputBytes": 31023,
+      "outputSha256": "035f5f1cd0bcd9654cb44a40b6f70bee361f05308b96e38cda2bfd46592d7292",
       "outputPath": "tmp/pdfs/phase3.2/bilingual-invoice-pdf-to-ppt.pptx",
       "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -1610,7 +1511,7 @@
         "zipCrcPassed": true,
         "requiredPartsPresent": true,
         "slides": 1,
-        "onSlideTextChars": 218,
+        "onSlideTextChars": 205,
         "notesTextChars": 0,
         "notesMarkerCheck": {
           "passed": false,
@@ -1710,7 +1611,7 @@
             }
           ]
         },
-        "editableTextChars": 218,
+        "editableTextChars": 205,
         "markerCheck": {
           "passed": true,
           "missing": [],
@@ -1774,10 +1675,10 @@
       "tool": "pdf-to-word",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 2.234,
+      "elapsedSeconds": 2.344,
       "engine": "pdf2docx",
-      "outputBytes": 37364,
-      "outputSha256": "01bda48163462680f1f834e295a753616852f6dc0f092a08c41fe1dc5dedec94",
+      "outputBytes": 37368,
+      "outputSha256": "09ce820340188611e2ae8fe365387a1c7b5d43e8377537be58eb73277b14aa1d",
       "outputPath": "tmp/pdfs/phase3.2/french-invoice-pdf-to-word.docx",
       "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -1843,12 +1744,12 @@
       "language": "fr",
       "documentClass": "invoice",
       "tool": "pdf-to-excel",
-      "status": "failed",
+      "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 0.907,
+      "elapsedSeconds": 0.844,
       "engine": null,
       "outputBytes": 7827,
-      "outputSha256": "e34f65477492590422e56700e76e628aa23211d2cc17aa221ec2848cb8cf714b",
+      "outputSha256": "42c0d5d1b9b5fb5a86bb40b404d3e226e2016bd6c81cea615a731d8b756a2109",
       "outputPath": "tmp/pdfs/phase3.2/french-invoice-pdf-to-excel.xlsx",
       "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -1863,7 +1764,7 @@
         ],
         "populatedLiteralCells": 42,
         "formulaCells": [],
-        "primaryTextChars": 108,
+        "primaryTextChars": 106,
         "recoveryTextChars": 216,
         "primaryMarkerCheck": {
           "passed": false,
@@ -1880,6 +1781,16 @@
             },
             {
               "text": "FR_INV_4821",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1 247,06",
               "expected": 1,
               "actual": 0
             },
@@ -1914,12 +1825,12 @@
             {
               "text": "1 234,56",
               "expected": 1,
-              "actual": 1
+              "actual": 0
             },
             {
               "text": "1 247,06",
               "expected": 1,
-              "actual": 1
+              "actual": 0
             },
             {
               "text": "=2+3",
@@ -2017,14 +1928,14 @@
               "text": "1 234,56",
               "expected": 1,
               "actual": 1,
-              "primaryActual": 1,
+              "primaryActual": 0,
               "recoveryActual": 1
             },
             {
               "text": "1 247,06",
               "expected": 1,
               "actual": 1,
-              "primaryActual": 1,
+              "primaryActual": 0,
               "recoveryActual": 1
             },
             {
@@ -2057,14 +1968,14 @@
                 "sheet": "Table 1",
                 "cell": "B2",
                 "kind": "number",
-                "value": "1250"
+                "value": "12.5"
               }
             ],
-            "passed": false
+            "passed": true
           }
         ],
-        "editableTextChars": 325,
-        "passed": false
+        "editableTextChars": 323,
+        "passed": true
       }
     },
     {
@@ -2075,10 +1986,10 @@
       "tool": "pdf-to-ppt",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 1.657,
+      "elapsedSeconds": 1.781,
       "engine": null,
       "outputBytes": 30806,
-      "outputSha256": "8b873bb918d7b2a2b66733cd6f9e0d70c4e0f1105133518c4ae78773083beddd",
+      "outputSha256": "c1616fd41fae01e0372b97e5099f21721b7b6bc482196d17519b2f0211b6c731",
       "outputPath": "tmp/pdfs/phase3.2/french-invoice-pdf-to-ppt.pptx",
       "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -2236,10 +2147,10 @@
       "tool": "pdf-to-word",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 2.203,
+      "elapsedSeconds": 2.234,
       "engine": "pdf2docx",
-      "outputBytes": 37394,
-      "outputSha256": "8b7e6886b81f7e8ad012e7ce8088f0edb45a7141b519293af1a89930396640e1",
+      "outputBytes": 37393,
+      "outputSha256": "e2d98b50af0c6d18a0041f9af071cb23d29ddcb8bcd0844997c074c383c70f29",
       "outputPath": "tmp/pdfs/phase3.2/german-invoice-pdf-to-word.docx",
       "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -2310,12 +2221,12 @@
       "language": "de",
       "documentClass": "invoice",
       "tool": "pdf-to-excel",
-      "status": "failed",
+      "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 0.734,
+      "elapsedSeconds": 0.594,
       "engine": null,
-      "outputBytes": 7842,
-      "outputSha256": "22f90ae16935610422bd46453ff0fdc4d8289e5bab9769f62b01dcb3a8238341",
+      "outputBytes": 7851,
+      "outputSha256": "a912ccf67fbb9d3167a3fecd10e471a953eea2c1243e53d52e6d8bbdb6db0894",
       "outputPath": "tmp/pdfs/phase3.2/german-invoice-pdf-to-excel.xlsx",
       "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -2330,7 +2241,7 @@
         ],
         "populatedLiteralCells": 48,
         "formulaCells": [],
-        "primaryTextChars": 124,
+        "primaryTextChars": 123,
         "recoveryTextChars": 232,
         "primaryMarkerCheck": {
           "passed": false,
@@ -2351,7 +2262,17 @@
               "actual": 0
             },
             {
-              "text": "001234",
+              "text": "1.234,56",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "−12,50",
+              "expected": 1,
+              "actual": 0
+            },
+            {
+              "text": "1.222,06",
               "expected": 1,
               "actual": 0
             },
@@ -2381,22 +2302,22 @@
             {
               "text": "001234",
               "expected": 1,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "1.234,56",
               "expected": 1,
-              "actual": 1
+              "actual": 0
             },
             {
               "text": "−12,50",
               "expected": 1,
-              "actual": 1
+              "actual": 0
             },
             {
               "text": "1.222,06",
               "expected": 1,
-              "actual": 1
+              "actual": 0
             },
             {
               "text": "@SUM(1,2)",
@@ -2492,28 +2413,28 @@
               "text": "001234",
               "expected": 1,
               "actual": 1,
-              "primaryActual": 0,
+              "primaryActual": 1,
               "recoveryActual": 1
             },
             {
               "text": "1.234,56",
               "expected": 1,
               "actual": 1,
-              "primaryActual": 1,
+              "primaryActual": 0,
               "recoveryActual": 1
             },
             {
               "text": "−12,50",
               "expected": 1,
               "actual": 1,
-              "primaryActual": 1,
+              "primaryActual": 0,
               "recoveryActual": 1
             },
             {
               "text": "1.222,06",
               "expected": 1,
               "actual": 1,
-              "primaryActual": 1,
+              "primaryActual": 0,
               "recoveryActual": 1
             },
             {
@@ -2545,15 +2466,15 @@
               {
                 "sheet": "Table 1",
                 "cell": "B2",
-                "kind": "number",
-                "value": "1234"
+                "kind": "string",
+                "value": "001234"
               }
             ],
-            "passed": false
+            "passed": true
           }
         ],
-        "editableTextChars": 357,
-        "passed": false
+        "editableTextChars": 356,
+        "passed": true
       }
     },
     {
@@ -2564,10 +2485,10 @@
       "tool": "pdf-to-ppt",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 1.516,
+      "elapsedSeconds": 1.547,
       "engine": null,
       "outputBytes": 31059,
-      "outputSha256": "707eb574705d748e666ee05b0da88b950e35280acd4321e98818ca041ed10499",
+      "outputSha256": "1ba83b5fca76c92c15f763754d0a3179ca9c1e9ad8cd79c39344fd1a54582bc7",
       "outputPath": "tmp/pdfs/phase3.2/german-invoice-pdf-to-ppt.pptx",
       "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -2740,10 +2661,10 @@
       "tool": "pdf-to-word",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 2.219,
+      "elapsedSeconds": 2.297,
       "engine": "pdf2docx",
       "outputBytes": 37103,
-      "outputSha256": "90c12b33384cbbf00574a4e009ba7c2b7a3cf209522d86419af0b97d29e96649",
+      "outputSha256": "43c238143f4f55dcb8eab0c8ad56d1bf6a75059cee30009af9c1f1a8c42577fe",
       "outputPath": "tmp/pdfs/phase3.2/mixed-orientation-pdf-to-word.docx",
       "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -2806,10 +2727,10 @@
       "tool": "pdf-to-excel",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 0.735,
+      "elapsedSeconds": 1.031,
       "engine": null,
-      "outputBytes": 9062,
-      "outputSha256": "ca27c26842c14805061d773889595cb34b11606ae7acb39c3601ea1193d5b298",
+      "outputBytes": 9037,
+      "outputSha256": "990e10ba72307a3c1e0992ba6475e9eee32fb4c571e5eb1a1b0e924f64dd0c32",
       "outputPath": "tmp/pdfs/phase3.2/mixed-orientation-pdf-to-excel.xlsx",
       "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -2826,7 +2747,7 @@
         ],
         "populatedLiteralCells": 58,
         "formulaCells": [],
-        "primaryTextChars": 136,
+        "primaryTextChars": 124,
         "recoveryTextChars": 300,
         "primaryMarkerCheck": {
           "passed": false,
@@ -2839,17 +2760,17 @@
             {
               "text": "MIX_FIRST_111",
               "expected": 2,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "MIX_MIDDLE_222",
               "expected": 2,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "MIX_LAST_333",
               "expected": 2,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "Repeated section marker",
@@ -2877,17 +2798,17 @@
             {
               "text": "MIX_FIRST_111",
               "expected": 2,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "MIX_MIDDLE_222",
               "expected": 2,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "MIX_LAST_333",
               "expected": 2,
-              "actual": 0
+              "actual": 1
             },
             {
               "text": "Repeated section marker",
@@ -2968,21 +2889,21 @@
               "text": "MIX_FIRST_111",
               "expected": 2,
               "actual": 2,
-              "primaryActual": 0,
+              "primaryActual": 1,
               "recoveryActual": 2
             },
             {
               "text": "MIX_MIDDLE_222",
               "expected": 2,
               "actual": 2,
-              "primaryActual": 0,
+              "primaryActual": 1,
               "recoveryActual": 2
             },
             {
               "text": "MIX_LAST_333",
               "expected": 2,
               "actual": 2,
-              "primaryActual": 0,
+              "primaryActual": 1,
               "recoveryActual": 2
             },
             {
@@ -2996,7 +2917,7 @@
           "representationRule": "max(primary occurrences, recovery text occurrences); metadata excluded"
         },
         "semanticChecks": [],
-        "editableTextChars": 437,
+        "editableTextChars": 425,
         "passed": true
       }
     },
@@ -3008,10 +2929,10 @@
       "tool": "pdf-to-ppt",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 2.047,
+      "elapsedSeconds": 1.766,
       "engine": null,
       "outputBytes": 33834,
-      "outputSha256": "018d8a5c7b85f9272c4d700715a15d79d5d4892b06d7183f960dd87c7077e824",
+      "outputSha256": "998c2a0c0fd8511b44a5b595348f61780970a385c91584e1014748e10ca1dcf2",
       "outputPath": "tmp/pdfs/phase3.2/mixed-orientation-pdf-to-ppt.pptx",
       "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -3154,10 +3075,10 @@
       "tool": "pdf-to-word",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 2.344,
+      "elapsedSeconds": 2.375,
       "engine": "pdf2docx",
       "outputBytes": 37462,
-      "outputSha256": "703d521204913159728d600efed858803dae36b64f42ac3badd8ec4dc8af5bbf",
+      "outputSha256": "386bf6aae69e66b1bc088c136655126ea29ecf9b116233970292768449a820f3",
       "outputPath": "tmp/pdfs/phase3.2/two-column-article-pdf-to-word.docx",
       "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -3270,10 +3191,10 @@
       "tool": "pdf-to-excel",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 1.156,
+      "elapsedSeconds": 1.75,
       "engine": null,
       "outputBytes": 11526,
-      "outputSha256": "b9c14a178aaea88ce4500cd89908bdcbcdc5ffaa6ae13b77453d4d1eee5c1bd0",
+      "outputSha256": "acaff61b9aef45b0a65ccc8fd44d5349e2e26d47782fefbd161cb24b80715155",
       "outputPath": "tmp/pdfs/phase3.2/two-column-article-pdf-to-excel.xlsx",
       "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -3701,10 +3622,10 @@
       "tool": "pdf-to-ppt",
       "status": "passed",
       "httpStatus": 200,
-      "elapsedSeconds": 1.406,
+      "elapsedSeconds": 1.593,
       "engine": null,
       "outputBytes": 32475,
-      "outputSha256": "97f52de245f2a0868f489d297df0ca140a66ca04264e503fb018d7e55738129b",
+      "outputSha256": "a69b80231be06cae8fdd2d53b0e8d81986b88e8144ea6229ddc9164c6060454e",
       "outputPath": "tmp/pdfs/phase3.2/two-column-article-pdf-to-ppt.pptx",
       "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "expectedContentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -3996,10 +3917,10 @@
     "fixturesPassed": 6,
     "fixturesFailed": 0,
     "routesTested": 18,
-    "passed": 14,
-    "failed": 4,
+    "passed": 18,
+    "failed": 0,
     "errors": 0,
-    "allPassed": false
+    "allPassed": true
   },
-  "completedAt": "2026-10-03T00:35:11.089358+00:00"
+  "completedAt": "2026-10-03T01:04:10.673084+00:00"
 }

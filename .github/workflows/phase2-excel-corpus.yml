@@ -8,10 +8,13 @@ on:
       - "package.json"
       - "package-lock.json"
       - "scripts/pdf-extract-tables.py"
+      - "scripts/test_pdf_extract_tables.py"
       - "scripts/phase2-excel-corpus.py"
       - "scripts/phase2-excel-corpus.ts"
       - "quality/phase2-pdf-to-excel/fixtures/phase1-table-regression.pdf"
       - "src/lib/services/pdf-to-excel.service.ts"
+      - "src/lib/services/excel-cell-number.ts"
+      - "src/lib/services/excel-cell-number.test.ts"
       - "src/lib/services/conversion-input-error.ts"
       - "src/lib/services/pdf-document-excel.service.ts"
       - "src/lib/api/tool-route.ts"
@@ -42,6 +45,10 @@ jobs:
           python -m pip install --disable-pip-version-check pymupdf==1.27.2
       - name: Run semantic workbook gate
         run: npm run phase2.3c:excel-corpus
+      - name: Verify locale numbers and logical source text
+        run: |
+          python -m unittest discover -s scripts -p test_pdf_extract_tables.py
+          npm run test -- src/lib/services/excel-cell-number.test.ts
       - name: Typecheck and source syntax
         run: |
           npm run typecheck

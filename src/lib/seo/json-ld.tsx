@@ -46,7 +46,7 @@ export function organizationJsonLd() {
       "@type": "ContactPoint",
       contactType: "customer support",
       url: `${APP_URL}/contact`,
-      availableLanguage: ["English", "Hindi"],
+      availableLanguage: ["English"],
     },
     knowsAbout: [
       "PDF merge",

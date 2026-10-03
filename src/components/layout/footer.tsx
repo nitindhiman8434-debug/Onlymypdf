@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   Shield,
   Minimize2,
@@ -22,7 +21,6 @@ import { FooterLogo } from "@/components/common/logo";
 import { FILE_LIMITS, SUPPORT_EMAIL } from "@/config/constants";
 import { TOOL_KEYS } from "@/components/marketing/home/home-shared";
 import { useTranslation } from "@/i18n";
-import { withLocalePrefix } from "@/lib/i18n/locale-path";
 import { useLocaleHref } from "@/hooks/use-locale-href";
 import { getExternalStatusPageUrl } from "@/lib/ops/status-page";
 
@@ -57,9 +55,6 @@ const companyLinks = [
 export function Footer() {
   const { t } = useTranslation();
   const localeHref = useLocaleHref();
-  const pathname = usePathname();
-  const enHref = withLocalePrefix(pathname, "en");
-  const hiHref = withLocalePrefix(pathname, "hi");
   const externalStatusUrl = getExternalStatusPageUrl();
   const statusLink = {
     nameKey: "footer.status" as const,
@@ -165,27 +160,19 @@ export function Footer() {
             </ul>
           </nav>
 
-          {/* Language + Newsletter column */}
+          {/* Language and service details */}
           <div className="lg:col-span-3">
             <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-pd-muted">
               <div className="h-1 w-4 rounded-full bg-gradient-to-r from-rose-500 to-pink-500" />
               {t("footer.language")}
             </h3>
             <div className="mt-4 flex gap-2">
-              <Link
-                href={enHref}
-                className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
+              <span
+                className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-medium text-gray-700 shadow-sm"
               >
                 <Globe className="h-3.5 w-3.5 text-blue-500" />
                 English
-              </Link>
-              <Link
-                href={hiHref}
-                className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-md"
-              >
-                <Globe className="h-3.5 w-3.5 text-orange-500" />
-                हिंदी
-              </Link>
+              </span>
             </div>
 
             {/* Quick stats */}

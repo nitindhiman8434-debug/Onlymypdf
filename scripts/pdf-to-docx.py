@@ -15,6 +15,8 @@ import time
 import zipfile
 from pathlib import Path
 
+from office_devanagari import install_pdf2docx_devanagari_support
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 _PROGRESS_PCT = 0
 _LAST_EMIT_MS = 0.0
@@ -631,6 +633,8 @@ def convert_scanned_pdf_with_ocr(
     """Create a layout-preserving searchable PDF, then convert it to editable DOCX."""
     from pdf2docx import Converter
 
+    install_pdf2docx_devanagari_support()
+
     language = language or _requested_ocr_languages()
     if not language:
         print("WARN OCR language configuration is invalid", file=sys.stderr, flush=True)
@@ -788,6 +792,8 @@ def _convert_page_range(args: tuple[str, int, int, str, bool]) -> tuple[int, int
     pdf_path, start, end, out_path, image_heavy = args
     from pdf2docx import Converter
 
+    install_pdf2docx_devanagari_support()
+
     pages = end - start + 1
     cv = Converter(pdf_path)
     try:
@@ -943,6 +949,8 @@ def convert_pdf_single(
     drawing_heavy: bool,
 ) -> None:
     from pdf2docx import Converter
+
+    install_pdf2docx_devanagari_support()
 
     end_page = page_count  # pdf2docx treats end as exclusive.
     _PROGRESS_SCOPE["base"] = 10

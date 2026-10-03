@@ -9,6 +9,9 @@ on:
       - "package.json"
       - "scripts/Dockerfile.phase2-ocr-test"
       - "scripts/pdf-to-docx.py"
+      - "scripts/pdf-to-docx-range.py"
+      - "scripts/office_devanagari.py"
+      - "scripts/test_office_devanagari.py"
       - "scripts/phase2-ocr-corpus.py"
       - "scripts/run-phase2-ocr-corpus.cjs"
   workflow_dispatch:
@@ -32,7 +35,10 @@ jobs:
             fonts-dejavu-core fonts-noto-core libreoffice-writer
 
       - name: Install Python converter dependencies
-        run: python3 -m pip install --disable-pip-version-check pdf2docx pillow
+        run: python3 -m pip install --disable-pip-version-check pdf2docx pillow python-pptx==1.0.2
+
+      - name: Verify editable complex-script regression cases
+        run: python3 -m unittest discover -s scripts -p test_office_devanagari.py
 
       - name: Verify OCR language packs
         run: |

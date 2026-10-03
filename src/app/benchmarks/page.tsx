@@ -35,7 +35,7 @@ const FAQS = [
   {
     question: "Does this benchmark prove 100% PDF conversion accuracy?",
     answer:
-      "No. The baseline checks one controlled two-page fixture. The separate language and document corpus reports both passing and failing checks on more varied files. Neither establishes universal conversion accuracy.",
+      "No. The baseline checks one controlled two-page fixture. The separate language and document corpus reports the measured outcomes on more varied files. Neither establishes universal conversion accuracy.",
   },
   {
     question: "What does openable output mean?",

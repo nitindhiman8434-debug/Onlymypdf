@@ -7,6 +7,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { logError } from "@/lib/db/queries";
 import { UnsupportedConversionInputError } from "@/lib/services/conversion-input-error";
+import { inferDecimalSeparators, parseSemanticNumber } from "@/lib/services/excel-cell-number";
 import {
   extractDocumentTablesForExcel,
   isWeakDocumentExtraction,
@@ -99,38 +100,6 @@ async function getPdfPageCount(python: string, pdfPath: string): Promise<number>
 }
 
 /* ─── helpers ─── */
-
-function parseSemanticNumber(value: string): { value: number; numFmt: string } | null {
-  const source = value.trim();
-  const negative = source.startsWith("(") && source.endsWith(")");
-  const unwrapped = negative ? source.slice(1, -1).trim() : source;
-  const currency = unwrapped.match(/^([$€£₹])\s*/)?.[1];
-  const withoutCurrency = currency ? unwrapped.replace(/^[$€£₹]\s*/, "") : unwrapped;
-  const percent = withoutCurrency.endsWith("%");
-  if (currency && percent) return null;
-  const numeric = percent ? withoutCurrency.slice(0, -1).trim() : withoutCurrency;
-  if (!/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(numeric)) return null;
-  const unsigned = numeric.replace(/^-/, "").replace(/,/g, "");
-  const integerPart = unsigned.split(".")[0];
-  if (integerPart.length > 1 && integerPart.startsWith("0")) return null;
-  const significantDigits = unsigned.replace(/^0+/, "").replace(".", "").length;
-  if (significantDigits > 15) return null;
-  const parsed = Number(numeric.replace(/,/g, ""));
-  const numericValue = (negative ? -parsed : parsed) / (percent ? 100 : 1);
-  if (!Number.isFinite(numericValue)) return null;
-  const decimals = (unsigned.split(".")[1] ?? "").length;
-  const decimalFormat = decimals ? `.${"0".repeat(Math.min(decimals, 8))}` : "";
-  const baseFormat = `#,##0${decimalFormat}`;
-  if (percent) return { value: numericValue, numFmt: `${baseFormat}%` };
-  if (currency) {
-    const currencyFormat = `"${currency}"${baseFormat}`;
-    return {
-      value: numericValue,
-      numFmt: negative ? `${currencyFormat};("${currency}"${baseFormat})` : currencyFormat,
-    };
-  }
-  return { value: numericValue, numFmt: negative ? `${baseFormat};(${baseFormat})` : baseFormat };
-}
 
 function autoFitColumns(sheet: ExcelJS.Worksheet, maxWidth = 48) {
   sheet.columns.forEach((column) => {
@@ -554,6 +523,7 @@ function writeTableToSheet(
   if (table.row_count === 0) return;
 
   const sheet = workbook.addWorksheet(sheetName);
+  const decimalSeparators = inferDecimalSeparators(table.rows);
 
   for (let rowIdx = 0; rowIdx < table.rows.length; rowIdx++) {
     const rowData = table.rows[rowIdx];
@@ -579,12 +549,7 @@ function writeTableToSheet(
         continue;
       }
 
-      if (/\d[\d,]*\s+\d/.test(text)) {
-        cell.value = text;
-        continue;
-      }
-
-      const num = parseSemanticNumber(text);
+      const num = parseSemanticNumber(text, decimalSeparators[colIdx]);
       if (num) {
         cell.value = num.value;
         cell.numFmt = num.numFmt;

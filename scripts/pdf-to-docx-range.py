@@ -30,6 +30,9 @@ def main() -> int:
         return 1
 
     from pdf2docx import Converter
+    from office_devanagari import install_pdf2docx_devanagari_support
+
+    install_pdf2docx_devanagari_support()
 
     pdf_path, docx_path, start, end = (
         sys.argv[1],

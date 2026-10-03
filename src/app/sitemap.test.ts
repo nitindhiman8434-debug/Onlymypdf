@@ -16,13 +16,19 @@ vi.mock("@/lib/seo/sitemap-dates", () => ({
 }));
 
 describe("sitemap", () => {
-  it("includes Hindi alternates for marketing and tool routes", async () => {
+  it("includes each English page once and omits retired Hindi URLs", async () => {
     const sitemap = (await import("@/app/sitemap")).default;
     const entries = sitemap();
     const urls = entries.map((e) => e.url);
 
-    expect(urls).toContain("https://onlymypdf.test/hi");
-    expect(urls).toContain("https://onlymypdf.test/hi/pricing");
-    expect(urls).toContain("https://onlymypdf.test/hi/merge-pdf");
+    expect(urls).toEqual([
+      "https://onlymypdf.test",
+      "https://onlymypdf.test/pricing",
+      "https://onlymypdf.test/merge-pdf",
+      "https://onlymypdf.test/llms.txt",
+      "https://onlymypdf.test/ai.txt",
+    ]);
+    expect(new Set(urls).size).toBe(urls.length);
+    expect(urls.some((url) => new URL(url).pathname.startsWith("/hi"))).toBe(false);
   });
 });

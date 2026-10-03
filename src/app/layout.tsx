@@ -6,7 +6,6 @@ import { Footer } from "@/components/layout/footer";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { LanguageProvider } from "@/i18n";
 import { LangSync } from "@/components/i18n/lang-sync";
-import { HindiFontLoader } from "@/components/i18n/hindi-font-loader";
 import { DesignPreviewProvider } from "@/components/design/design-preview-provider";
 import { LogoPreviewProvider } from "@/components/providers/logo-preview-provider";
 import { HeroVariantProvider } from "@/components/marketing/hero-variant-provider";
@@ -102,12 +101,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const headerList = await headers();
-  const locale = headerList.get("x-locale") === "hi" ? "hi" : "en";
   const nonce = headerList.get("x-nonce") ?? undefined;
 
   return (
     <html
-      lang={locale}
+      lang="en"
       data-brand-theme={DEFAULT_BRAND_THEME}
       data-layout-style={DEFAULT_LAYOUT_STYLE}
       className={`${inter.variable} ${plusJakarta.variable} ${LAYOUT_BODY_CLASS[DEFAULT_LAYOUT_STYLE]} h-full antialiased`}
@@ -122,7 +120,6 @@ export default async function RootLayout({
             <HeroVariantProvider>
               <LanguageProvider>
                 <LangSync />
-                <HindiFontLoader />
                 <AuthProvider>
                   <Header />
                   <main id="main-content" tabIndex={-1} className="flex-1 outline-none">

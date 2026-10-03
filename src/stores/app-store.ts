@@ -13,13 +13,7 @@ interface AppState {
 
 export const useAppStore = create<AppState>((set) => ({
   language: "en",
-  setLanguage: (lang) => {
-    set({ language: lang });
-    if (typeof window !== "undefined") {
-      localStorage.setItem("pdf-doctor-lang", lang);
-      document.documentElement.lang = lang;
-    }
-  },
+  setLanguage: () => set({ language: "en" }),
 
   showUpgradeModal: false,
   setShowUpgradeModal: (show) => set({ showUpgradeModal: show }),

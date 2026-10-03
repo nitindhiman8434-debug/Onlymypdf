@@ -1,35 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { useLanguageStore } from "@/i18n";
-import { localeFromPathname, LOCALE_COOKIE } from "@/lib/i18n/locale-path";
-
-function readLocaleCookie(): "en" | "hi" | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(?:^|; )${LOCALE_COOKIE}=([^;]*)`));
-  const value = match?.[1];
-  return value === "hi" || value === "en" ? value : null;
-}
+import { LOCALE_COOKIE } from "@/lib/i18n/locale-path";
 
 export function LangSync() {
-  const language = useLanguageStore((s) => s.language);
-  const setLanguage = useLanguageStore((s) => s.setLanguage);
-  const pathname = usePathname();
-
   useEffect(() => {
-    const fromPath = localeFromPathname(pathname);
-    const fromCookie = readLocaleCookie();
-    const resolved = fromPath === "hi" ? "hi" : fromCookie ?? language;
-    if (resolved !== language) {
-      setLanguage(resolved);
+    document.documentElement.lang = "en";
+    document.documentElement.dataset.lang = "en";
+    // Remove retired preferences without touching authentication or consent.
+    document.cookie = `${LOCALE_COOKIE}=; Max-Age=0; Path=/; SameSite=Lax`;
+    try {
+      localStorage.removeItem("pdf-doctor-language");
+      localStorage.removeItem("pdf-doctor-lang");
+    } catch {
+      // Storage may be blocked; English rendering never depends on it.
     }
-  }, [pathname, language, setLanguage]);
-
-  useEffect(() => {
-    document.documentElement.lang = language;
-    document.documentElement.dataset.lang = language;
-  }, [language]);
+  }, []);
 
   return null;
 }

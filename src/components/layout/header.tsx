@@ -35,7 +35,6 @@ import {
 import { useFocusTrap } from "@/lib/a11y/use-focus-trap";
 import { cn } from "@/lib/utils/cn";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { LanguageSwitch } from "@/components/common/language-switch";
 import { Logo } from "@/components/common/logo";
 import { useAuthContext } from "@/components/providers/auth-provider";
 import { useTranslation } from "@/i18n";
@@ -388,7 +387,6 @@ export function Header() {
         </nav>
 
         <div className="pd-header-cta hidden items-center gap-3 lg:flex">
-          <LanguageSwitch />
           <Link
             href={localeHref("/pricing")}
             className={cn(
@@ -519,9 +517,6 @@ export function Header() {
               >
                 Pricing
               </Link>
-              <div className="flex items-center gap-3">
-                <LanguageSwitch />
-              </div>
               <div className="flex gap-3 pt-2">
                 {isLoggedIn ? (
                   <>
