@@ -1,0 +1,750 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "20261003T033629510464Z",
+  "scope": "local-English-only",
+  "baseUrl": "http://127.0.0.1:3001",
+  "mode": "http-conversion",
+  "language": "eng",
+  "environment": {
+    "python": "3.12.10",
+    "pymupdf": "1.27.2.3"
+  },
+  "criteria": {
+    "dimensionTolerancePt": 0.05,
+    "inputRasterDpi": 300,
+    "comparisonDpi": 96,
+    "meanGrayErrorMaximum": 2,
+    "changedFractionOver32Maximum": 0.02,
+    "darkInkIoUMinimum": 0.8,
+    "textNormalization": "NFC; collapse whitespace runs to one space; case and punctuation retained"
+  },
+  "limitations": [
+    "Synthetic clean English only; no production, noisy scans, handwriting or other-language claim.",
+    "OCR output may normalize CropBox and Rotation; visible physical geometry must remain unchanged.",
+    "Automated raster tolerances allow antialiasing; retained PNGs require human visual review.",
+    "Existing searchable pages must additionally preserve original page box and rotation metadata."
+  ],
+  "cases": [
+    {
+      "caseId": "letter-portrait",
+      "status": "failed",
+      "fixture": {
+        "sourcePath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/letter-portrait-source.pdf",
+        "inputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/letter-portrait-input.pdf",
+        "inputBytes": 67802,
+        "inputSha256": "1075dac6a6663e4f6f59452e3ef53e0b9cb18128ed1963e824d54163502977ac",
+        "literalSourceTextValidated": true,
+        "imageOnly": true,
+        "selectableTextCharacters": 0,
+        "pages": [
+          {
+            "width": 612.0,
+            "height": 792.0,
+            "rotation": 0,
+            "mediaBox": [
+              0.0,
+              0.0,
+              612.0,
+              792.0
+            ],
+            "cropBox": [
+              0.0,
+              0.0,
+              612.0,
+              792.0
+            ],
+            "text": "Letter portrait page The garden has green trees Every page keeps its original size End of letter page"
+          }
+        ]
+      },
+      "httpStatus": 200,
+      "elapsedSeconds": 2.266,
+      "contentType": "application/pdf",
+      "outputBytes": 74466,
+      "outputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/letter-portrait-output.pdf",
+      "outputSha256": "fca5fd28bd364657ba8e668e8619eb4b83cc8742a01123748ae8aac3d8aa7fcf",
+      "contentTypeMatched": true,
+      "validation": {
+        "pdfMagic": true,
+        "readable": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountMatched": true,
+        "lastPageTextMatched": true,
+        "pages": [
+          {
+            "page": 1,
+            "expected": {
+              "width": 612.0,
+              "height": 792.0,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                612.0,
+                792.0
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                612.0,
+                792.0
+              ],
+              "text": "Letter portrait page The garden has green trees Every page keeps its original size End of letter page"
+            },
+            "actual": {
+              "width": 1402.5,
+              "height": 1815.0,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                1402.5,
+                1815.0
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                1402.5,
+                1815.0
+              ],
+              "text": "Letter portrait page The garden has green trees Every page keeps its original size End of letter page"
+            },
+            "dimensionsMatched": false,
+            "fullTextAndOrderMatched": true,
+            "wordCount": 18,
+            "wordBoxesInsideVisiblePage": true,
+            "outOfBoundsWords": [],
+            "originalPageMetadataPreserved": false,
+            "render": {
+              "beforePixels": [
+                816,
+                1056
+              ],
+              "afterPixels": [
+                1870,
+                2420
+              ],
+              "samePixelDimensions": false,
+              "passed": false
+            },
+            "beforePreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/letter-portrait-page-1-before.png",
+            "afterPreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/letter-portrait-page-1-after.png",
+            "passed": false
+          }
+        ],
+        "passed": false
+      }
+    },
+    {
+      "caseId": "a4-fractional",
+      "status": "failed",
+      "fixture": {
+        "sourcePath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/a4-fractional-source.pdf",
+        "inputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/a4-fractional-input.pdf",
+        "inputBytes": 71255,
+        "inputSha256": "7fc6dbceaf73c33c8270d36aaaab9d0cd8c1b1a2be14f998d7ec41e2dabe15b2",
+        "literalSourceTextValidated": true,
+        "imageOnly": true,
+        "selectableTextCharacters": 0,
+        "pages": [
+          {
+            "width": 595.2760009765625,
+            "height": 841.8900146484375,
+            "rotation": 0,
+            "mediaBox": [
+              0.0,
+              0.0,
+              595.2760009765625,
+              841.8900146484375
+            ],
+            "cropBox": [
+              0.0,
+              0.0,
+              595.2760009765625,
+              841.8900146484375
+            ],
+            "text": "Fractional paper page The garden has green trees Every page keeps its original size End of fractional page"
+          }
+        ]
+      },
+      "httpStatus": 200,
+      "elapsedSeconds": 1.562,
+      "contentType": "application/pdf",
+      "outputBytes": 80685,
+      "outputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/a4-fractional-output.pdf",
+      "outputSha256": "cd30866fb03ca52ca293ff0e3ad4f3abede8e4cf2be46e0ed2af6f5c93160b5f",
+      "contentTypeMatched": true,
+      "validation": {
+        "pdfMagic": true,
+        "readable": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountMatched": true,
+        "lastPageTextMatched": true,
+        "pages": [
+          {
+            "page": 1,
+            "expected": {
+              "width": 595.2760009765625,
+              "height": 841.8900146484375,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                595.2760009765625,
+                841.8900146484375
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                595.2760009765625,
+                841.8900146484375
+              ],
+              "text": "Fractional paper page The garden has green trees Every page keeps its original size End of fractional page"
+            },
+            "actual": {
+              "width": 1364.25,
+              "height": 1929.75,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                1364.25,
+                1929.75
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                1364.25,
+                1929.75
+              ],
+              "text": "Fractional paper page The garden has green trees Every page keeps its original size End of fractional page"
+            },
+            "dimensionsMatched": false,
+            "fullTextAndOrderMatched": true,
+            "wordCount": 18,
+            "wordBoxesInsideVisiblePage": true,
+            "outOfBoundsWords": [],
+            "originalPageMetadataPreserved": false,
+            "render": {
+              "beforePixels": [
+                794,
+                1123
+              ],
+              "afterPixels": [
+                1819,
+                2573
+              ],
+              "samePixelDimensions": false,
+              "passed": false
+            },
+            "beforePreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/a4-fractional-page-1-before.png",
+            "afterPreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/a4-fractional-page-1-after.png",
+            "passed": false
+          }
+        ],
+        "passed": false
+      }
+    },
+    {
+      "caseId": "landscape",
+      "status": "failed",
+      "fixture": {
+        "sourcePath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/landscape-source.pdf",
+        "inputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/landscape-input.pdf",
+        "inputBytes": 72345,
+        "inputSha256": "27c41ac21f4690783e81a656071dd151258bdd02c2fd5dbec0aa9546e261e960",
+        "literalSourceTextValidated": true,
+        "imageOnly": true,
+        "selectableTextCharacters": 0,
+        "pages": [
+          {
+            "width": 792.0,
+            "height": 612.0,
+            "rotation": 0,
+            "mediaBox": [
+              0.0,
+              0.0,
+              792.0,
+              612.0
+            ],
+            "cropBox": [
+              0.0,
+              0.0,
+              792.0,
+              612.0
+            ],
+            "text": "Landscape paper page The garden has green trees Every page keeps its original size End of landscape page"
+          }
+        ]
+      },
+      "httpStatus": 200,
+      "elapsedSeconds": 1.563,
+      "contentType": "application/pdf",
+      "outputBytes": 82883,
+      "outputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/landscape-output.pdf",
+      "outputSha256": "f4b7256351bb3972a8fecf11331e17326ef8908046afb2a60e3d56bde0a6b64e",
+      "contentTypeMatched": true,
+      "validation": {
+        "pdfMagic": true,
+        "readable": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountMatched": true,
+        "lastPageTextMatched": true,
+        "pages": [
+          {
+            "page": 1,
+            "expected": {
+              "width": 792.0,
+              "height": 612.0,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                792.0,
+                612.0
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                792.0,
+                612.0
+              ],
+              "text": "Landscape paper page The garden has green trees Every page keeps its original size End of landscape page"
+            },
+            "actual": {
+              "width": 1815.0,
+              "height": 1402.5,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                1815.0,
+                1402.5
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                1815.0,
+                1402.5
+              ],
+              "text": "Landscape paper page The garden has green trees Every page keeps its original size End of landscape page"
+            },
+            "dimensionsMatched": false,
+            "fullTextAndOrderMatched": true,
+            "wordCount": 18,
+            "wordBoxesInsideVisiblePage": true,
+            "outOfBoundsWords": [],
+            "originalPageMetadataPreserved": false,
+            "render": {
+              "beforePixels": [
+                1056,
+                816
+              ],
+              "afterPixels": [
+                2420,
+                1870
+              ],
+              "samePixelDimensions": false,
+              "passed": false
+            },
+            "beforePreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/landscape-page-1-before.png",
+            "afterPreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/landscape-page-1-after.png",
+            "passed": false
+          }
+        ],
+        "passed": false
+      }
+    },
+    {
+      "caseId": "rotated-crop-mixed",
+      "status": "failed",
+      "fixture": {
+        "sourcePath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-source.pdf",
+        "inputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-input.pdf",
+        "inputBytes": 196398,
+        "inputSha256": "77b258adb8b2cf013510e67d463fefb382fd600ec6ff8c6802262618da192d2c",
+        "literalSourceTextValidated": true,
+        "imageOnly": true,
+        "selectableTextCharacters": 0,
+        "pages": [
+          {
+            "width": 480.0,
+            "height": 640.0,
+            "rotation": 90,
+            "mediaBox": [
+              0.0,
+              0.0,
+              700.0,
+              550.0
+            ],
+            "cropBox": [
+              30.0,
+              40.0,
+              670.0,
+              520.0
+            ],
+            "text": "First rotated page The garden has green trees Every page keeps its original size End of first page"
+          },
+          {
+            "width": 720.0,
+            "height": 405.0,
+            "rotation": 0,
+            "mediaBox": [
+              0.0,
+              0.0,
+              720.0,
+              405.0
+            ],
+            "cropBox": [
+              0.0,
+              0.0,
+              720.0,
+              405.0
+            ],
+            "text": "Middle landscape page The garden has green trees Every page keeps its original size End of middle page"
+          },
+          {
+            "width": 450.0,
+            "height": 650.0,
+            "rotation": 180,
+            "mediaBox": [
+              0.0,
+              0.0,
+              500.0,
+              720.0
+            ],
+            "cropBox": [
+              20.0,
+              30.0,
+              470.0,
+              680.0
+            ],
+            "text": "Last rotated page The garden has green trees Every page keeps its original size End of final page"
+          }
+        ]
+      },
+      "httpStatus": 200,
+      "elapsedSeconds": 2.281,
+      "contentType": "application/pdf",
+      "outputBytes": 202536,
+      "outputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-output.pdf",
+      "outputSha256": "9490e16c768890579abef76ba274913c484563e1fe7113d91cbe3e7bf40e34e2",
+      "contentTypeMatched": true,
+      "validation": {
+        "pdfMagic": true,
+        "readable": true,
+        "expectedPageCount": 3,
+        "actualPageCount": 3,
+        "pageCountMatched": true,
+        "lastPageTextMatched": true,
+        "pages": [
+          {
+            "page": 1,
+            "expected": {
+              "width": 480.0,
+              "height": 640.0,
+              "rotation": 90,
+              "mediaBox": [
+                0.0,
+                0.0,
+                700.0,
+                550.0
+              ],
+              "cropBox": [
+                30.0,
+                40.0,
+                670.0,
+                520.0
+              ],
+              "text": "First rotated page The garden has green trees Every page keeps its original size End of first page"
+            },
+            "actual": {
+              "width": 1100.25,
+              "height": 1467.0,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                1100.25,
+                1467.0
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                1100.25,
+                1467.0
+              ],
+              "text": "First rotated page The garden has green trees Every page keeps its original size End of first page"
+            },
+            "dimensionsMatched": false,
+            "fullTextAndOrderMatched": true,
+            "wordCount": 18,
+            "wordBoxesInsideVisiblePage": true,
+            "outOfBoundsWords": [],
+            "originalPageMetadataPreserved": false,
+            "render": {
+              "beforePixels": [
+                640,
+                854
+              ],
+              "afterPixels": [
+                1467,
+                1956
+              ],
+              "samePixelDimensions": false,
+              "passed": false
+            },
+            "beforePreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-page-1-before.png",
+            "afterPreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-page-1-after.png",
+            "passed": false
+          },
+          {
+            "page": 2,
+            "expected": {
+              "width": 720.0,
+              "height": 405.0,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                720.0,
+                405.0
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                720.0,
+                405.0
+              ],
+              "text": "Middle landscape page The garden has green trees Every page keeps its original size End of middle page"
+            },
+            "actual": {
+              "width": 1650.0,
+              "height": 928.5,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                1650.0,
+                928.5
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                1650.0,
+                928.5
+              ],
+              "text": "Middle landscape page The garden has green trees Every page keeps its original size End of middle page"
+            },
+            "dimensionsMatched": false,
+            "fullTextAndOrderMatched": true,
+            "wordCount": 18,
+            "wordBoxesInsideVisiblePage": true,
+            "outOfBoundsWords": [],
+            "originalPageMetadataPreserved": false,
+            "render": {
+              "beforePixels": [
+                960,
+                540
+              ],
+              "afterPixels": [
+                2200,
+                1238
+              ],
+              "samePixelDimensions": false,
+              "passed": false
+            },
+            "beforePreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-page-2-before.png",
+            "afterPreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-page-2-after.png",
+            "passed": false
+          },
+          {
+            "page": 3,
+            "expected": {
+              "width": 450.0,
+              "height": 650.0,
+              "rotation": 180,
+              "mediaBox": [
+                0.0,
+                0.0,
+                500.0,
+                720.0
+              ],
+              "cropBox": [
+                20.0,
+                30.0,
+                470.0,
+                680.0
+              ],
+              "text": "Last rotated page The garden has green trees Every page keeps its original size End of final page"
+            },
+            "actual": {
+              "width": 1031.25,
+              "height": 1490.25,
+              "rotation": 0,
+              "mediaBox": [
+                0.0,
+                0.0,
+                1031.25,
+                1490.25
+              ],
+              "cropBox": [
+                0.0,
+                0.0,
+                1031.25,
+                1490.25
+              ],
+              "text": "Last rotated page The garden has green trees Every page keeps its original size End of final page"
+            },
+            "dimensionsMatched": false,
+            "fullTextAndOrderMatched": true,
+            "wordCount": 18,
+            "wordBoxesInsideVisiblePage": true,
+            "outOfBoundsWords": [],
+            "originalPageMetadataPreserved": false,
+            "render": {
+              "beforePixels": [
+                600,
+                867
+              ],
+              "afterPixels": [
+                1375,
+                1987
+              ],
+              "samePixelDimensions": false,
+              "passed": false
+            },
+            "beforePreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-page-3-before.png",
+            "afterPreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/rotated-crop-mixed-page-3-after.png",
+            "passed": false
+          }
+        ],
+        "passed": false
+      }
+    },
+    {
+      "caseId": "searchable-passthrough",
+      "status": "passed",
+      "fixture": {
+        "sourcePath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/searchable-passthrough-source.pdf",
+        "inputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/searchable-passthrough-input.pdf",
+        "inputBytes": 1429,
+        "inputSha256": "f6802906cf269362ca928d87ca5e2ac975b94f5e7b7234dbbceb9fdbc6b92f8e",
+        "literalSourceTextValidated": true,
+        "imageOnly": false,
+        "selectableTextCharacters": 109,
+        "pages": [
+          {
+            "width": 480.0,
+            "height": 640.0,
+            "rotation": 90,
+            "mediaBox": [
+              0.0,
+              0.0,
+              700.0,
+              550.0
+            ],
+            "cropBox": [
+              30.0,
+              40.0,
+              670.0,
+              520.0
+            ],
+            "text": "Searchable original page The garden has green trees Every page keeps its original size End of searchable page"
+          }
+        ]
+      },
+      "httpStatus": 200,
+      "elapsedSeconds": 0.969,
+      "contentType": "application/pdf",
+      "outputBytes": 1486,
+      "outputPath": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/searchable-passthrough-output.pdf",
+      "outputSha256": "4118271ffc45ff3bbd66096b72001fe5d267e23b3fbe4295236d3783553a2e1b",
+      "contentTypeMatched": true,
+      "validation": {
+        "pdfMagic": true,
+        "readable": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountMatched": true,
+        "lastPageTextMatched": true,
+        "pages": [
+          {
+            "page": 1,
+            "expected": {
+              "width": 480.0,
+              "height": 640.0,
+              "rotation": 90,
+              "mediaBox": [
+                0.0,
+                0.0,
+                700.0,
+                550.0
+              ],
+              "cropBox": [
+                30.0,
+                40.0,
+                670.0,
+                520.0
+              ],
+              "text": "Searchable original page The garden has green trees Every page keeps its original size End of searchable page"
+            },
+            "actual": {
+              "width": 480.0,
+              "height": 640.0,
+              "rotation": 90,
+              "mediaBox": [
+                0.0,
+                0.0,
+                700.0,
+                550.0
+              ],
+              "cropBox": [
+                30.0,
+                40.0,
+                670.0,
+                520.0
+              ],
+              "text": "Searchable original page The garden has green trees Every page keeps its original size End of searchable page"
+            },
+            "dimensionsMatched": true,
+            "fullTextAndOrderMatched": true,
+            "wordCount": 18,
+            "wordBoxesInsideVisiblePage": true,
+            "outOfBoundsWords": [],
+            "originalPageMetadataPreserved": true,
+            "render": {
+              "beforePixels": [
+                640,
+                854
+              ],
+              "afterPixels": [
+                640,
+                854
+              ],
+              "samePixelDimensions": true,
+              "meanAbsoluteGrayError": 0.0,
+              "fractionPixelsChangedOver32": 0.0,
+              "darkInkIntersectionOverUnion": 1.0,
+              "passed": true
+            },
+            "beforePreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/searchable-passthrough-page-1-before.png",
+            "afterPreview": "tmp/pdfs/phase3.2e-ocr-geometry/before-20261003T033629510464Z/searchable-passthrough-page-1-after.png",
+            "passed": true
+          }
+        ],
+        "passed": true
+      }
+    }
+  ],
+  "summary": {
+    "cases": 5,
+    "passed": 1,
+    "failed": 4,
+    "error": 0,
+    "allPassed": false
+  }
+}

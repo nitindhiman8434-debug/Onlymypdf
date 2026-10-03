@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C and scoped English Word 3.2D complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D and OCR geometry 3.2E complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -72,10 +72,18 @@ tests and existing last-page regression pass. See
 The fallback is text-only: native table cells, graphics and exact source design
 remain separate quality work.
 
-**Next bounded English task:** independently verify and fix physical page size
-in the separate OCR-to-searchable-PDF output path. An existing clean-English
-artifact measured larger than its original source; the new Word fallback already
-uses original source dimensions. Hindi pages and Hindi-specific improvements
-remain on hold. Real-customer feedback and deferred production launch gates
-remain open. Selected fixture passes do not establish universal accuracy or
-production capacity. No paid deployment was made for these tasks.
+## Task 3.2E: searchable PDF size and scanned appearance
+
+Complete locally: the unchanged English OCR geometry corpus improved from **1/5
+to 5/5**. Correct DPI metadata and exact text-layer placement preserve physical
+dimensions. Copying image-only source pages retains their original sharpness,
+crop boxes and rotation. All seven output pages have exact visible pixel matches
+under independent Poppler rendering; full text, word bounds and page order pass.
+The two unreadable-input checks and 32 focused tests also pass. See
+[the fix, evidence and limits](PHASE_3_2E_OCR_PDF_GEOMETRY.md).
+
+**Next bounded English task:** reconstruct scanned invoice rows as native editable
+Word table cells. Hindi pages and Hindi-specific improvements remain on hold.
+Real-customer feedback and deferred production launch gates remain open. Selected
+fixture passes do not establish universal accuracy or production capacity.
+No paid deployment was made for these tasks.

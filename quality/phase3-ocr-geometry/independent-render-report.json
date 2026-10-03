@@ -1,0 +1,134 @@
+{
+  "renderer": "Poppler pdftoppm",
+  "dpi": 96,
+  "cropBox": true,
+  "pages": [
+    {
+      "source": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/a4-fractional-input-1.png",
+      "output": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/a4-fractional-output-1.png",
+      "sourcePixels": [
+        794,
+        1123
+      ],
+      "outputPixels": [
+        794,
+        1123
+      ],
+      "identicalVisiblePixels": true,
+      "meanRgbError": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "source": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/landscape-input-1.png",
+      "output": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/landscape-output-1.png",
+      "sourcePixels": [
+        1056,
+        816
+      ],
+      "outputPixels": [
+        1056,
+        816
+      ],
+      "identicalVisiblePixels": true,
+      "meanRgbError": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "source": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/letter-portrait-input-1.png",
+      "output": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/letter-portrait-output-1.png",
+      "sourcePixels": [
+        816,
+        1056
+      ],
+      "outputPixels": [
+        816,
+        1056
+      ],
+      "identicalVisiblePixels": true,
+      "meanRgbError": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "source": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/rotated-crop-mixed-input-1.png",
+      "output": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/rotated-crop-mixed-output-1.png",
+      "sourcePixels": [
+        640,
+        854
+      ],
+      "outputPixels": [
+        640,
+        854
+      ],
+      "identicalVisiblePixels": true,
+      "meanRgbError": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "source": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/rotated-crop-mixed-input-2.png",
+      "output": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/rotated-crop-mixed-output-2.png",
+      "sourcePixels": [
+        960,
+        540
+      ],
+      "outputPixels": [
+        960,
+        540
+      ],
+      "identicalVisiblePixels": true,
+      "meanRgbError": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "source": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/rotated-crop-mixed-input-3.png",
+      "output": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/rotated-crop-mixed-output-3.png",
+      "sourcePixels": [
+        600,
+        867
+      ],
+      "outputPixels": [
+        600,
+        867
+      ],
+      "identicalVisiblePixels": true,
+      "meanRgbError": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "source": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/searchable-passthrough-input-1.png",
+      "output": "tmp/pdfs/phase3.2e-ocr-geometry/poppler-final/searchable-passthrough-output-1.png",
+      "sourcePixels": [
+        640,
+        854
+      ],
+      "outputPixels": [
+        640,
+        854
+      ],
+      "identicalVisiblePixels": true,
+      "meanRgbError": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "allPassed": true
+}

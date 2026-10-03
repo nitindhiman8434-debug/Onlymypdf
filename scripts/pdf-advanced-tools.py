@@ -77,14 +77,16 @@ def ocr_pdf(input_path: str, output_path: str, options: dict) -> dict:
     try:
         if source.page_count > max_pages:
             raise ValueError(f"OCR supports up to {max_pages} pages per file")
-        matrix = fitz.Matrix(dpi / 72.0, dpi / 72.0)
         for page_number in range(source.page_count):
             page = source.load_page(page_number)
-            if len(page.get_text("text").strip()) >= 20:
+            existing_text = page.get_text("text").strip()
+            if len(existing_text) >= 20:
                 output.insert_pdf(source, from_page=page_number, to_page=page_number)
                 preserved_text_pages += 1
                 continue
-            pixmap = page.get_pixmap(matrix=matrix, alpha=False, colorspace=fitz.csRGB)
+            # The OCR writer reads resolution metadata. A render matrix alone
+            # leaves 96 DPI metadata and enlarges a 220 DPI raster's print size.
+            pixmap = page.get_pixmap(dpi=dpi, alpha=False, colorspace=fitz.csRGB)
             try:
                 searchable_bytes = pixmap.pdfocr_tobytes(language=languages)
             except Exception as exc:
@@ -93,6 +95,8 @@ def ocr_pdf(input_path: str, output_path: str, options: dict) -> dict:
                 ) from exc
             recognized = fitz.open(stream=searchable_bytes, filetype="pdf")
             try:
+                if recognized.page_count != 1:
+                    raise RuntimeError("OCR recognized page count did not match the source raster")
                 # Existing text on another source page must not hide an OCR
                 # failure on this raster page. Save only after every page passes.
                 if not any(page.get_text("text").strip() for page in recognized):
@@ -100,7 +104,26 @@ def ocr_pdf(input_path: str, output_path: str, options: dict) -> dict:
                         f"OCR engine could not recognize readable text on page {page_number + 1}. "
                         "Try a clearer scan or another supported language."
                     )
-                output.insert_pdf(recognized)
+                if not existing_text:
+                    # Retain the original scan's appearance instead of replacing
+                    # it with a lower-resolution OCR raster. Import only its
+                    # searchable text; delete_image substitutes a transparent image.
+                    for xref in {image[0] for image in recognized[0].get_images(full=True)}:
+                        recognized[0].delete_image(xref)
+                    output.insert_pdf(source, from_page=page_number, to_page=page_number)
+                    target = output[-1]
+                    rotation = target.rotation
+                    target.set_rotation(0)
+                    # OCR used the already-rotated visible raster. Undo that
+                    # transform for placement, then restore original page rotation.
+                    target.show_pdf_page(target.rect, recognized, 0, rotate=rotation, keep_proportion=False)
+                    target.set_rotation(rotation)
+                else:
+                    # Sparse existing text must not be copied beside its OCR
+                    # duplicate. Keep the raster path, fitting image and text to
+                    # the exact visible size despite fractional pixel rounding.
+                    target = output.new_page(width=page.rect.width, height=page.rect.height)
+                    target.show_pdf_page(target.rect, recognized, 0, keep_proportion=False)
             finally:
                 recognized.close()
             recognized_pages += 1

@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-10-03T03:44:48.609564+00:00",
+  "scope": "English local OCR failure contracts",
+  "results": [
+    {
+      "case": "unreadable-raster",
+      "sourceSha256": "0f4761dcf062ae6778a578734a3f706169dcf14af4053f21c017216bf7cc7b15",
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "error": "PDF OCR could not recognize readable text on page 1. Try a clearer scan or supported language.",
+      "artifactReturned": false,
+      "passed": true
+    },
+    {
+      "case": "searchable-then-unreadable",
+      "sourceSha256": "58ca86856423012c0403b5c0ed25368ea6a3f2f950b72f03d8cfd2ec490332b7",
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "error": "PDF OCR could not recognize readable text on page 2. Try a clearer scan or supported language.",
+      "artifactReturned": false,
+      "passed": true
+    }
+  ],
+  "allPassed": true
+}
