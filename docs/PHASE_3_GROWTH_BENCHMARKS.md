@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A, scoped 3.2B and local OCR task 3.2C complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C and scoped English Word 3.2D complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -60,10 +60,22 @@ local preview to its verified Python engine. Windows Word COM corrupted glyphs
 in an intermediate run; its underlying engine was not repaired or validated.
 See [runtime, validation evidence and limits](PHASE_3_2C_LOCAL_OCR_VERIFICATION.md).
 
-Next is **Task 3.2D: improve editable Word OCR spacing and layout**, using the
-visually verified originals as the comparison. The reviewed Hindi OCR output
-has joined word spaces despite passing selected recognition markers. Controlled
-degraded/multi-page scans follow that quality work. Real-customer feedback and
-the separately deferred production launch gates remain open. Selected fixture
-passes do not establish universal accuracy or production capacity. No paid
-deployment was made for these tasks.
+## Task 3.2D: readable English OCR to Word
+
+Complete locally: the unchanged four-case English corpus improved from **1/4 to
+4/4**. Raw recognizer text now preserves the memo's word space and the invoice's
+three rows; the fallback writes readable full-width text with original portrait
+and landscape dimensions. All four outputs render with complete content and the
+controlled page counts. The two unreadable-input HTTP checks, 44 focused Python
+tests and existing last-page regression pass. See
+[the implementation, results and boundaries](PHASE_3_2D_ENGLISH_WORD_QUALITY.md).
+The fallback is text-only: native table cells, graphics and exact source design
+remain separate quality work.
+
+**Next bounded English task:** independently verify and fix physical page size
+in the separate OCR-to-searchable-PDF output path. An existing clean-English
+artifact measured larger than its original source; the new Word fallback already
+uses original source dimensions. Hindi pages and Hindi-specific improvements
+remain on hold. Real-customer feedback and deferred production launch gates
+remain open. Selected fixture passes do not establish universal accuracy or
+production capacity. No paid deployment was made for these tasks.

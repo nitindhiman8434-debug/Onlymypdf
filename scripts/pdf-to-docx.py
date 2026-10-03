@@ -632,6 +632,14 @@ def convert_scanned_pdf_with_ocr(
 ) -> bool:
     """Create a layout-preserving searchable PDF, then convert it to editable DOCX."""
     from pdf2docx import Converter
+    from ocr_english_docx import (
+        EmptyOcrPageError,
+        OcrRuntimeUnavailableError,
+        recognize_ocr_transcripts,
+        supports_latin_ocr,
+        validate_page_transcripts,
+        write_english_ocr_docx,
+    )
 
     install_pdf2docx_devanagari_support()
 
@@ -650,6 +658,18 @@ def convert_scanned_pdf_with_ocr(
             dpi=dpi,
         )
         minimum_chars = max(20, pages * 12)
+        latin_transcript = supports_latin_ocr(transcripts)
+        recovered_hidden_text = latin_transcript and (
+            recognized_chars < minimum_chars or any(not text.strip() for text in transcripts)
+        )
+        if recovered_hidden_text:
+            # A sparse/empty PDF text layer can still have readable OCR TXT.
+            # Recover before judging the scan, and do not accept a primary DOCX
+            # made from the incomplete hidden layer.
+            transcripts = recognize_ocr_transcripts(pdf_path, language=language, dpi=dpi)
+            validate_page_transcripts(transcripts, pages)
+            recognized_chars = sum(len(text) for text in transcripts)
+            latin_transcript = supports_latin_ocr(transcripts)
         if pages == 0 or recognized_chars < minimum_chars:
             print(
                 f"WARN OCR text below gate: chars={recognized_chars} need={minimum_chars}",
@@ -673,22 +693,44 @@ def convert_scanned_pdf_with_ocr(
         metrics = docx_metrics(docx_path) if os.path.isfile(docx_path) else {"chars": 0}
         output_chars = metrics.get("chars", 0)
         minimum_output_chars = max(minimum_chars, int(recognized_chars * 0.6))
-        ok = validate_docx(docx_path) and output_chars >= minimum_output_chars
+        ok = not recovered_hidden_text and validate_docx(docx_path) and output_chars >= minimum_output_chars
         method = "searchable-pdf"
         if not ok:
             try:
                 os.remove(docx_path)
             except OSError:
                 pass
-            ok = _build_ocr_reference_transcript_docx(
-                searchable_pdf,
-                docx_path,
-                transcripts,
-            )
+            if latin_transcript and not recovered_hidden_text:
+                # Raw recognizer TXT preserves spaces and rows which can be lost
+                # when extracting glyph positions from its hidden PDF layer.
+                transcripts = recognize_ocr_transcripts(pdf_path, language=language, dpi=dpi)
+                validate_page_transcripts(transcripts, pages)
+                recognized_chars = sum(len(text) for text in transcripts)
+                minimum_output_chars = max(minimum_chars, int(recognized_chars * 0.6))
+                latin_transcript = supports_latin_ocr(transcripts)
+                if recognized_chars < minimum_chars:
+                    print(
+                        f"WARN OCR text below gate: chars={recognized_chars} need={minimum_chars}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    return False
+            if latin_transcript:
+                # OCR intermediates may have enlarged physical page sizes.
+                # Only the original input supplies output section dimensions.
+                write_english_ocr_docx(pdf_path, docx_path, transcripts)
+                ok = validate_docx(docx_path)
+                method = "editable-latin-transcript"
+            else:
+                ok = _build_ocr_reference_transcript_docx(
+                    searchable_pdf,
+                    docx_path,
+                    transcripts,
+                )
+                method = "visual-reference-plus-editable-transcript"
             metrics = docx_metrics(docx_path) if ok else {"chars": 0}
             output_chars = metrics.get("chars", 0)
             ok = ok and output_chars >= minimum_output_chars
-            method = "visual-reference-plus-editable-transcript"
         print(
             "OCR_RESULT "
             f"method={method} pages={pages} language={language} dpi={dpi} "
@@ -698,6 +740,13 @@ def convert_scanned_pdf_with_ocr(
             flush=True,
         )
         return ok
+    except EmptyOcrPageError as exc:
+        print("WARN OCR text below gate: chars=0 need=1", file=sys.stderr, flush=True)
+        print(f"WARN {exc}", file=sys.stderr, flush=True)
+        return False
+    except OcrRuntimeUnavailableError:
+        print(f"ERROR OCR_REQUIRED Tesseract or requested language data unavailable ({language})", file=sys.stderr, flush=True)
+        return False
     except Exception as exc:
         print(f"WARN OCR conversion failed: {exc}", file=sys.stderr, flush=True)
         return False
