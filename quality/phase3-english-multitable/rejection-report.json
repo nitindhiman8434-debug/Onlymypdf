@@ -1,0 +1,25 @@
+{
+  "scope": "local English Word OCR rejection",
+  "results": [
+    {
+      "case": "unreadable-raster",
+      "sourceSha256": "e1101d46aa702224d1156dc33592ed4520ac65dd930cc43e426fda6bd432df65",
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "error": "PDF OCR could not extract enough readable text. Try a clearer scan or supported OCR language.",
+      "passed": true,
+      "artifactReturned": false
+    },
+    {
+      "case": "english-readable-plus-unreadable",
+      "sourceSha256": "fb7c38afc32bc057471394d65fa249b0959d9991ada6eedeabaa2d9a1e914ce9",
+      "httpStatus": 422,
+      "contentType": "application/json",
+      "error": "PDF OCR could not extract enough readable text. Try a clearer scan or supported OCR language.",
+      "passed": true,
+      "artifactReturned": false
+    }
+  ],
+  "passed": 2,
+  "allPassed": true
+}

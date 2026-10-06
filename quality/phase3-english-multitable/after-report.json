@@ -1,0 +1,4310 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.2G",
+  "runLabel": "after",
+  "generatedAt": "2026-10-06T20:53:10.950581+00:00",
+  "baseUrl": "http://127.0.0.1:3001",
+  "generateOnly": false,
+  "validatorSha256": "3d1e08392202b6d3f6ed5583e0a27b8dae489794be18cb579fb315d81d21c082",
+  "fixtureDefinitionsSha256": "5f365c64916d48efcb85c24de9c3de584c13e4862a141080c298bfbc5ade2ac0",
+  "tableHelperSha256": "b238d10b5df58a69a936f344b86ec1004e61b0ec047cd63d28cbdd1799a258eb",
+  "wordHelperSha256": "d0a70d00bb2ff0fc08df4a9836ac530a4a5e1b2304d1bd847865c2212d02eb6e",
+  "transportHelperSha256": "e9af5edd7f605229fda1bf04670cb97c22c5b019709fbb9c65c986e211cf4a11",
+  "limitations": [
+    "Four fixed synthetic English scans, each exactly one page; no universal document-quality claim.",
+    "Positive cases require two vertically separated, fully ruled four-column tables, each with a header and three body rows.",
+    "Exact complete native matrices and complete ordered visible text are required; whitespace normalization does not alter characters, numbers or cell boundaries.",
+    "Repeated headers and a repeated service name have distinct row identifiers and amounts; repetitions must not be silently dropped or duplicated.",
+    "The negative borderless two-group memo requires zero native tables and all prose in order.",
+    "Independent source DOCX/PDF validation and visible-grid separation checks precede image-only rasterization.",
+    "Independent LibreOffice output rendering verifies page count, dimensions and complete text; source and output PNGs need separate visual inspection.",
+    "No merged cells, side-by-side tables, broken ruling, skewed scans, arbitrary borderless invoices or language-quality claims are included.",
+    "No previous corpus is generated or run; helpers are imported without modifying their files or reports.",
+    "Only loopback HTTP is accepted; no paid services, cloud deployment, downloads or other-language fixture generation."
+  ],
+  "manualVisualQa": {
+    "status": "required",
+    "instructions": "Inspect all source/output PNGs for two separate tables, prose between them, wrapping, clipping and page completeness."
+  },
+  "cases": [
+    {
+      "caseId": "english-two-tables-portrait-scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "Planning services"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Planning invoice 004218 covers the completed work shown in the first table."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00421",
+                "Analysis package",
+                "2",
+                "240.50"
+              ],
+              [
+                "00632",
+                "Review service",
+                "3",
+                "135.30"
+              ],
+              [
+                "00874",
+                "Archive support",
+                "1",
+                "19.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Planning total is 395.75 USD. The next invoice covers a separate delivery stage."
+          },
+          {
+            "kind": "heading",
+            "text": "Delivery services"
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00235",
+                "Delivery package",
+                "2",
+                "320.50"
+              ],
+              [
+                "00456",
+                "Review service",
+                "3",
+                "145.30"
+              ],
+              [
+                "00678",
+                "Final support",
+                "1",
+                "49.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph."
+          }
+        ]
+      ],
+      "interTableParagraph": "Planning total is 395.75 USD. The next invoice covers a separate delivery stage.",
+      "inputKind": "scan",
+      "numericValues": [
+        "004218",
+        "00421",
+        "2",
+        "240.50",
+        "00632",
+        "3",
+        "135.30",
+        "00874",
+        "1",
+        "19.95",
+        "395.75",
+        "00235",
+        "2",
+        "320.50",
+        "00456",
+        "3",
+        "145.30",
+        "00678",
+        "1",
+        "49.95",
+        "515.75"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-portrait-scan.pdf",
+        "inputSha256": "ec289db2d77673954c2fa5e0b5cbfb86970d08e11e66aa484149c3b60bdbfd5f",
+        "inputBytes": 186402,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "imageCountByPage": [
+          1
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-portrait-scan-original.docx",
+        "literalDocxSha256": "d6b93bf8f3aec4813d4bbae7c792e30c668fbf372e5a914ba2b73b3786439147",
+        "literalDocxChecks": {
+          "passed": true,
+          "validZip": true,
+          "visibleEditableCharacters": 539,
+          "visibleParagraphCount": 37,
+          "content": {
+            "passed": true,
+            "fullNormalizedTextMatches": true,
+            "blockOccurrences": [
+              {
+                "text": "Planning services",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  0
+                ]
+              },
+              {
+                "text": "Planning invoice 004218 covers the completed work shown in the first table.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  18
+                ]
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "expected": 2,
+                "actual": 2,
+                "positions": [
+                  94,
+                  320
+                ]
+              },
+              {
+                "text": "00421 Analysis package 2 240.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  129
+                ]
+              },
+              {
+                "text": "00632 Review service 3 135.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  161
+                ]
+              },
+              {
+                "text": "00874 Archive support 1 19.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  191
+                ]
+              },
+              {
+                "text": "Planning total is 395.75 USD. The next invoice covers a separate delivery stage.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  221
+                ]
+              },
+              {
+                "text": "Delivery services",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  302
+                ]
+              },
+              {
+                "text": "00235 Delivery package 2 320.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  355
+                ]
+              },
+              {
+                "text": "00456 Review service 3 145.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  387
+                ]
+              },
+              {
+                "text": "00678 Final support 1 49.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  417
+                ]
+              },
+              {
+                "text": "Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  445
+                ]
+              }
+            ],
+            "orderedBlocks": [
+              {
+                "text": "Planning services",
+                "position": 0,
+                "passed": true
+              },
+              {
+                "text": "Planning invoice 004218 covers the completed work shown in the first table.",
+                "position": 18,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 94,
+                "passed": true
+              },
+              {
+                "text": "00421 Analysis package 2 240.50",
+                "position": 129,
+                "passed": true
+              },
+              {
+                "text": "00632 Review service 3 135.30",
+                "position": 161,
+                "passed": true
+              },
+              {
+                "text": "00874 Archive support 1 19.95",
+                "position": 191,
+                "passed": true
+              },
+              {
+                "text": "Planning total is 395.75 USD. The next invoice covers a separate delivery stage.",
+                "position": 221,
+                "passed": true
+              },
+              {
+                "text": "Delivery services",
+                "position": 302,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 320,
+                "passed": true
+              },
+              {
+                "text": "00235 Delivery package 2 320.50",
+                "position": 355,
+                "passed": true
+              },
+              {
+                "text": "00456 Review service 3 145.30",
+                "position": 387,
+                "passed": true
+              },
+              {
+                "text": "00678 Final support 1 49.95",
+                "position": 417,
+                "passed": true
+              },
+              {
+                "text": "Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph.",
+                "position": 445,
+                "passed": true
+              }
+            ],
+            "numericValues": [
+              {
+                "value": "004218",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00421",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "2",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "240.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00632",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "3",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "135.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00874",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "1",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "19.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "395.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00235",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "320.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00456",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "145.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00678",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "49.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "515.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              }
+            ],
+            "invoiceRowAssociation": [],
+            "visibleText": " Planning services\n Planning invoice 004218 covers the completed work shown in the first table.\nItem ID\nDescription\nQty\nLine total\n00421\nAnalysis package\n2\n240.50\n00632\nReview service\n3\n135.30\n00874\nArchive support\n1\n19.95\n Planning total is 395.75 USD. The next invoice covers a separate delivery stage.\n Delivery services\nItem ID\nDescription\nQty\nLine total\n00235\nDelivery package\n2\n320.50\n00456\nReview service\n3\n145.30\n00678\nFinal support\n1\n49.95\n Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph.",
+            "normalizedText": "Planning services Planning invoice 004218 covers the completed work shown in the first table. Item ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Planning total is 395.75 USD. The next invoice covers a separate delivery stage. Delivery services Item ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Review service 3 145.30 00678 Final support 1 49.95 Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph."
+          },
+          "layout": {
+            "passed": true,
+            "unexpectedEmbeddedImages": [],
+            "imageTextSideBySideWrappers": 0,
+            "sectionColumns": [
+              1
+            ],
+            "explicitFontSizesPt": [
+              17.0
+            ],
+            "imageGeometry": [],
+            "nativeTableRows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00421",
+                "Analysis package",
+                "2",
+                "240.50"
+              ],
+              [
+                "00632",
+                "Review service",
+                "3",
+                "135.30"
+              ],
+              [
+                "00874",
+                "Archive support",
+                "1",
+                "19.95"
+              ],
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00235",
+                "Delivery package",
+                "2",
+                "320.50"
+              ],
+              [
+                "00456",
+                "Review service",
+                "3",
+                "145.30"
+              ],
+              [
+                "00678",
+                "Final support",
+                "1",
+                "49.95"
+              ]
+            ],
+            "nativeInvoiceTableChecks": [],
+            "nativeInvoiceTableReconstructed": false,
+            "nativeTableReconstructionRequired": false
+          },
+          "nativeTables": {
+            "passed": true,
+            "expectedTableCount": 2,
+            "actualTableCount": 2,
+            "expectedMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00421",
+                  "Analysis package",
+                  "2",
+                  "240.50"
+                ],
+                [
+                  "00632",
+                  "Review service",
+                  "3",
+                  "135.30"
+                ],
+                [
+                  "00874",
+                  "Archive support",
+                  "1",
+                  "19.95"
+                ]
+              ],
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00235",
+                  "Delivery package",
+                  "2",
+                  "320.50"
+                ],
+                [
+                  "00456",
+                  "Review service",
+                  "3",
+                  "145.30"
+                ],
+                [
+                  "00678",
+                  "Final support",
+                  "1",
+                  "49.95"
+                ]
+              ]
+            ],
+            "actualMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00421",
+                  "Analysis package",
+                  "2",
+                  "240.50"
+                ],
+                [
+                  "00632",
+                  "Review service",
+                  "3",
+                  "135.30"
+                ],
+                [
+                  "00874",
+                  "Archive support",
+                  "1",
+                  "19.95"
+                ]
+              ],
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00235",
+                  "Delivery package",
+                  "2",
+                  "320.50"
+                ],
+                [
+                  "00456",
+                  "Review service",
+                  "3",
+                  "145.30"
+                ],
+                [
+                  "00678",
+                  "Final support",
+                  "1",
+                  "49.95"
+                ]
+              ]
+            ],
+            "completeMatricesMatch": true,
+            "unexpectedMergeProperties": [],
+            "nestedOrWrappedTables": false,
+            "nativeTableReconstructionRequired": true,
+            "zeroTablesRequired": false
+          }
+        },
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "Planning services Planning invoice 004218 covers the completed work shown in the first table. Item ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Planning total is 395.75 USD. The next invoice covers a separate delivery stage. Delivery services Item ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Review service 3 145.30 00678 Final support 1 49.95 Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph.",
+              "actualText": "Planning services Planning invoice 004218 covers the completed work shown in the first table. Item ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Planning total is 395.75 USD. The next invoice covers a separate delivery stage. Delivery services Item ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Review service 3 145.30 00678 Final support 1 49.95 Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2g-english-multitable/sources/original-pdfs/english-two-tables-portrait-scan-original.pdf",
+          "pdfSha256": "7d975202e2f0a1530a084142ad3334f5168a5e6bc845f5553e0debdfdcdde866",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-portrait-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        },
+        "sourceRulingAndWrapping": {
+          "passed": true,
+          "pages": [
+            {
+              "page": 1,
+              "horizontalAxes": [
+                107.6,
+                135.4,
+                163.3,
+                191.1,
+                219.0,
+                301.8,
+                329.6,
+                357.5,
+                385.3,
+                413.2
+              ],
+              "verticalAxes": [
+                49.9,
+                124.9,
+                411.1,
+                461.1,
+                561.1
+              ],
+              "expectedRuledTables": 2,
+              "passed": true
+            }
+          ],
+          "wrappedDescriptions": [],
+          "separateTableGeometry": [
+            {
+              "page": 1,
+              "expectedSeparateTableCount": 2,
+              "actualSeparateTableCount": 2,
+              "grids": [
+                {
+                  "top": 107.0999755859375,
+                  "bottom": 219.5,
+                  "verticalAxes": [
+                    49.9,
+                    124.9,
+                    411.1,
+                    461.1,
+                    561.1
+                  ],
+                  "horizontalAxes": [
+                    107.6,
+                    135.4,
+                    163.3,
+                    191.1,
+                    219.0
+                  ],
+                  "completeFourByFourGrid": true
+                },
+                {
+                  "top": 301.29998779296875,
+                  "bottom": 413.70001220703125,
+                  "verticalAxes": [
+                    49.9,
+                    124.9,
+                    411.1,
+                    461.1,
+                    561.1
+                  ],
+                  "horizontalAxes": [
+                    301.8,
+                    329.6,
+                    357.5,
+                    385.3,
+                    413.2
+                  ],
+                  "completeFourByFourGrid": true
+                }
+              ],
+              "interTableParagraphRects": [
+                [
+                  50.5,
+                  244.98997497558594,
+                  476.86004638671875,
+                  258.3819885253906
+                ]
+              ],
+              "interTableParagraphInsideGap": true,
+              "passed": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "english-two-tables-wrapped-scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "Research services"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Research invoice 005329 includes a complete description inside its first item cell."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00542",
+                "Monthly analysis and reporting package for the research team",
+                "2",
+                "280.50"
+              ],
+              [
+                "00763",
+                "Review service",
+                "3",
+                "165.30"
+              ],
+              [
+                "00985",
+                "Archive support",
+                "1",
+                "29.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Research total is 475.75 USD. The delivery invoice below belongs to the next stage."
+          },
+          {
+            "kind": "heading",
+            "text": "Project delivery services"
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00146",
+                "Final delivery service and document preparation for the project",
+                "2",
+                "420.50"
+              ],
+              [
+                "00357",
+                "Review service",
+                "3",
+                "185.30"
+              ],
+              [
+                "00579",
+                "Final support",
+                "1",
+                "59.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Delivery total is 665.75 USD. Keep each long description with its own identifier and amount."
+          }
+        ]
+      ],
+      "interTableParagraph": "Research total is 475.75 USD. The delivery invoice below belongs to the next stage.",
+      "requiredWrappedDescriptions": [
+        "Monthly analysis and reporting package for the research team",
+        "Final delivery service and document preparation for the project"
+      ],
+      "inputKind": "scan",
+      "numericValues": [
+        "005329",
+        "00542",
+        "2",
+        "280.50",
+        "00763",
+        "3",
+        "165.30",
+        "00985",
+        "1",
+        "29.95",
+        "475.75",
+        "00146",
+        "2",
+        "420.50",
+        "00357",
+        "3",
+        "185.30",
+        "00579",
+        "1",
+        "59.95",
+        "665.75"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-wrapped-scan.pdf",
+        "inputSha256": "af998e7e20f0c087322333f3b888e3edc9a5e7bde3ea704300166bf520461b91",
+        "inputBytes": 206324,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "imageCountByPage": [
+          1
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-wrapped-scan-original.docx",
+        "literalDocxSha256": "6b8486f310ca895b140ffe0896a32821a22238973d146892c5abf8365f6c4746",
+        "literalDocxChecks": {
+          "passed": true,
+          "validZip": true,
+          "visibleEditableCharacters": 651,
+          "visibleParagraphCount": 37,
+          "content": {
+            "passed": true,
+            "fullNormalizedTextMatches": true,
+            "blockOccurrences": [
+              {
+                "text": "Research services",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  0
+                ]
+              },
+              {
+                "text": "Research invoice 005329 includes a complete description inside its first item cell.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  18
+                ]
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "expected": 2,
+                "actual": 2,
+                "positions": [
+                  102,
+                  383
+                ]
+              },
+              {
+                "text": "00542 Monthly analysis and reporting package for the research team 2 280.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  137
+                ]
+              },
+              {
+                "text": "00763 Review service 3 165.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  213
+                ]
+              },
+              {
+                "text": "00985 Archive support 1 29.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  243
+                ]
+              },
+              {
+                "text": "Research total is 475.75 USD. The delivery invoice below belongs to the next stage.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  273
+                ]
+              },
+              {
+                "text": "Project delivery services",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  357
+                ]
+              },
+              {
+                "text": "00146 Final delivery service and document preparation for the project 2 420.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  418
+                ]
+              },
+              {
+                "text": "00357 Review service 3 185.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  497
+                ]
+              },
+              {
+                "text": "00579 Final support 1 59.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  527
+                ]
+              },
+              {
+                "text": "Delivery total is 665.75 USD. Keep each long description with its own identifier and amount.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  555
+                ]
+              }
+            ],
+            "orderedBlocks": [
+              {
+                "text": "Research services",
+                "position": 0,
+                "passed": true
+              },
+              {
+                "text": "Research invoice 005329 includes a complete description inside its first item cell.",
+                "position": 18,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 102,
+                "passed": true
+              },
+              {
+                "text": "00542 Monthly analysis and reporting package for the research team 2 280.50",
+                "position": 137,
+                "passed": true
+              },
+              {
+                "text": "00763 Review service 3 165.30",
+                "position": 213,
+                "passed": true
+              },
+              {
+                "text": "00985 Archive support 1 29.95",
+                "position": 243,
+                "passed": true
+              },
+              {
+                "text": "Research total is 475.75 USD. The delivery invoice below belongs to the next stage.",
+                "position": 273,
+                "passed": true
+              },
+              {
+                "text": "Project delivery services",
+                "position": 357,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 383,
+                "passed": true
+              },
+              {
+                "text": "00146 Final delivery service and document preparation for the project 2 420.50",
+                "position": 418,
+                "passed": true
+              },
+              {
+                "text": "00357 Review service 3 185.30",
+                "position": 497,
+                "passed": true
+              },
+              {
+                "text": "00579 Final support 1 59.95",
+                "position": 527,
+                "passed": true
+              },
+              {
+                "text": "Delivery total is 665.75 USD. Keep each long description with its own identifier and amount.",
+                "position": 555,
+                "passed": true
+              }
+            ],
+            "numericValues": [
+              {
+                "value": "005329",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00542",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "2",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "280.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00763",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "3",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "165.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00985",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "1",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "29.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "475.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00146",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "420.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00357",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "185.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00579",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "59.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "665.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              }
+            ],
+            "invoiceRowAssociation": [],
+            "visibleText": " Research services\n Research invoice 005329 includes a complete description inside its first item cell.\nItem ID\nDescription\nQty\nLine total\n00542\nMonthly analysis and reporting package for the research team\n2\n280.50\n00763\nReview service\n3\n165.30\n00985\nArchive support\n1\n29.95\n Research total is 475.75 USD. The delivery invoice below belongs to the next stage.\n Project delivery services\nItem ID\nDescription\nQty\nLine total\n00146\nFinal delivery service and document preparation for the project\n2\n420.50\n00357\nReview service\n3\n185.30\n00579\nFinal support\n1\n59.95\n Delivery total is 665.75 USD. Keep each long description with its own identifier and amount.",
+            "normalizedText": "Research services Research invoice 005329 includes a complete description inside its first item cell. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Review service 3 165.30 00985 Archive support 1 29.95 Research total is 475.75 USD. The delivery invoice below belongs to the next stage. Project delivery services Item ID Description Qty Line total 00146 Final delivery service and document preparation for the project 2 420.50 00357 Review service 3 185.30 00579 Final support 1 59.95 Delivery total is 665.75 USD. Keep each long description with its own identifier and amount."
+          },
+          "layout": {
+            "passed": true,
+            "unexpectedEmbeddedImages": [],
+            "imageTextSideBySideWrappers": 0,
+            "sectionColumns": [
+              1
+            ],
+            "explicitFontSizesPt": [
+              17.0
+            ],
+            "imageGeometry": [],
+            "nativeTableRows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00542",
+                "Monthly analysis and reporting package for the research team",
+                "2",
+                "280.50"
+              ],
+              [
+                "00763",
+                "Review service",
+                "3",
+                "165.30"
+              ],
+              [
+                "00985",
+                "Archive support",
+                "1",
+                "29.95"
+              ],
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00146",
+                "Final delivery service and document preparation for the project",
+                "2",
+                "420.50"
+              ],
+              [
+                "00357",
+                "Review service",
+                "3",
+                "185.30"
+              ],
+              [
+                "00579",
+                "Final support",
+                "1",
+                "59.95"
+              ]
+            ],
+            "nativeInvoiceTableChecks": [],
+            "nativeInvoiceTableReconstructed": false,
+            "nativeTableReconstructionRequired": false
+          },
+          "nativeTables": {
+            "passed": true,
+            "expectedTableCount": 2,
+            "actualTableCount": 2,
+            "expectedMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00542",
+                  "Monthly analysis and reporting package for the research team",
+                  "2",
+                  "280.50"
+                ],
+                [
+                  "00763",
+                  "Review service",
+                  "3",
+                  "165.30"
+                ],
+                [
+                  "00985",
+                  "Archive support",
+                  "1",
+                  "29.95"
+                ]
+              ],
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00146",
+                  "Final delivery service and document preparation for the project",
+                  "2",
+                  "420.50"
+                ],
+                [
+                  "00357",
+                  "Review service",
+                  "3",
+                  "185.30"
+                ],
+                [
+                  "00579",
+                  "Final support",
+                  "1",
+                  "59.95"
+                ]
+              ]
+            ],
+            "actualMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00542",
+                  "Monthly analysis and reporting package for the research team",
+                  "2",
+                  "280.50"
+                ],
+                [
+                  "00763",
+                  "Review service",
+                  "3",
+                  "165.30"
+                ],
+                [
+                  "00985",
+                  "Archive support",
+                  "1",
+                  "29.95"
+                ]
+              ],
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00146",
+                  "Final delivery service and document preparation for the project",
+                  "2",
+                  "420.50"
+                ],
+                [
+                  "00357",
+                  "Review service",
+                  "3",
+                  "185.30"
+                ],
+                [
+                  "00579",
+                  "Final support",
+                  "1",
+                  "59.95"
+                ]
+              ]
+            ],
+            "completeMatricesMatch": true,
+            "unexpectedMergeProperties": [],
+            "nestedOrWrappedTables": false,
+            "nativeTableReconstructionRequired": true,
+            "zeroTablesRequired": false
+          }
+        },
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "Research services Research invoice 005329 includes a complete description inside its first item cell. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Review service 3 165.30 00985 Archive support 1 29.95 Research total is 475.75 USD. The delivery invoice below belongs to the next stage. Project delivery services Item ID Description Qty Line total 00146 Final delivery service and document preparation for the project 2 420.50 00357 Review service 3 185.30 00579 Final support 1 59.95 Delivery total is 665.75 USD. Keep each long description with its own identifier and amount.",
+              "actualText": "Research services Research invoice 005329 includes a complete description inside its first item cell. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Review service 3 165.30 00985 Archive support 1 29.95 Research total is 475.75 USD. The delivery invoice below belongs to the next stage. Project delivery services Item ID Description Qty Line total 00146 Final delivery service and document preparation for the project 2 420.50 00357 Review service 3 185.30 00579 Final support 1 59.95 Delivery total is 665.75 USD. Keep each long description with its own identifier and amount."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2g-english-multitable/sources/original-pdfs/english-two-tables-wrapped-scan-original.pdf",
+          "pdfSha256": "03f0fb0727bd87e064400727448d5004d9755f05808199745fe2131a13216974",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-wrapped-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        },
+        "sourceRulingAndWrapping": {
+          "passed": true,
+          "pages": [
+            {
+              "page": 1,
+              "horizontalAxes": [
+                107.6,
+                135.4,
+                179.1,
+                207.0,
+                234.8,
+                317.6,
+                345.5,
+                389.2,
+                417.0,
+                444.9
+              ],
+              "verticalAxes": [
+                49.9,
+                124.9,
+                411.1,
+                461.1,
+                561.1
+              ],
+              "expectedRuledTables": 2,
+              "passed": true
+            }
+          ],
+          "wrappedDescriptions": [
+            {
+              "text": "Monthly analysis and reporting package for the research team",
+              "page": 1,
+              "lineCount": 2,
+              "passed": true
+            },
+            {
+              "text": "Final delivery service and document preparation for the project",
+              "page": 1,
+              "lineCount": 2,
+              "passed": true
+            }
+          ],
+          "separateTableGeometry": [
+            {
+              "page": 1,
+              "expectedSeparateTableCount": 2,
+              "actualSeparateTableCount": 2,
+              "grids": [
+                {
+                  "top": 107.0999755859375,
+                  "bottom": 235.29998779296875,
+                  "verticalAxes": [
+                    49.9,
+                    124.9,
+                    411.1,
+                    461.1,
+                    561.1
+                  ],
+                  "horizontalAxes": [
+                    107.6,
+                    135.4,
+                    179.1,
+                    207.0,
+                    234.8
+                  ],
+                  "completeFourByFourGrid": true
+                },
+                {
+                  "top": 317.1000061035156,
+                  "bottom": 445.3999938964844,
+                  "verticalAxes": [
+                    49.9,
+                    124.9,
+                    411.1,
+                    461.1,
+                    561.1
+                  ],
+                  "horizontalAxes": [
+                    317.6,
+                    345.5,
+                    389.2,
+                    417.0,
+                    444.9
+                  ],
+                  "completeFourByFourGrid": true
+                }
+              ],
+              "interTableParagraphRects": [
+                [
+                  50.5,
+                  260.84002685546875,
+                  496.1800537109375,
+                  274.2320251464844
+                ]
+              ],
+              "interTableParagraphInsideGap": true,
+              "passed": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "english-two-tables-landscape-scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "Landscape planning services"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Planning invoice 006431 lists the first group of completed services."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00124",
+                "Planning package",
+                "2",
+                "220.50"
+              ],
+              [
+                "00345",
+                "Review service",
+                "3",
+                "125.30"
+              ],
+              [
+                "00567",
+                "Record storage",
+                "1",
+                "39.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Planning total is 385.75 USD. The next invoice records a separate delivery stage."
+          },
+          {
+            "kind": "heading",
+            "text": "Landscape delivery services"
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00718",
+                "Delivery package",
+                "2",
+                "520.50"
+              ],
+              [
+                "00929",
+                "Review service",
+                "3",
+                "245.30"
+              ],
+              [
+                "00241",
+                "Final support",
+                "1",
+                "69.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page."
+          }
+        ]
+      ],
+      "interTableParagraph": "Planning total is 385.75 USD. The next invoice records a separate delivery stage.",
+      "pageSizesPoints": [
+        [
+          792,
+          612
+        ]
+      ],
+      "inputKind": "scan",
+      "numericValues": [
+        "006431",
+        "00124",
+        "2",
+        "220.50",
+        "00345",
+        "3",
+        "125.30",
+        "00567",
+        "1",
+        "39.95",
+        "385.75",
+        "00718",
+        "2",
+        "520.50",
+        "00929",
+        "3",
+        "245.30",
+        "00241",
+        "1",
+        "69.95",
+        "835.75"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-landscape-scan.pdf",
+        "inputSha256": "ea6fbf58168760a549fe63cc94c03823ce9e31e7fed1bba947622ace0882085e",
+        "inputBytes": 192900,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "imageCountByPage": [
+          1
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-landscape-scan-original.docx",
+        "literalDocxSha256": "062ccd10177c003a4118ae85c8dfdd919c201ef5913cc0e22cb611a441d73c67",
+        "literalDocxChecks": {
+          "passed": true,
+          "validZip": true,
+          "visibleEditableCharacters": 552,
+          "visibleParagraphCount": 37,
+          "content": {
+            "passed": true,
+            "fullNormalizedTextMatches": true,
+            "blockOccurrences": [
+              {
+                "text": "Landscape planning services",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  0
+                ]
+              },
+              {
+                "text": "Planning invoice 006431 lists the first group of completed services.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  28
+                ]
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "expected": 2,
+                "actual": 2,
+                "positions": [
+                  97,
+                  333
+                ]
+              },
+              {
+                "text": "00124 Planning package 2 220.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  132
+                ]
+              },
+              {
+                "text": "00345 Review service 3 125.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  164
+                ]
+              },
+              {
+                "text": "00567 Record storage 1 39.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  194
+                ]
+              },
+              {
+                "text": "Planning total is 385.75 USD. The next invoice records a separate delivery stage.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  223
+                ]
+              },
+              {
+                "text": "Landscape delivery services",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  305
+                ]
+              },
+              {
+                "text": "00718 Delivery package 2 520.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  368
+                ]
+              },
+              {
+                "text": "00929 Review service 3 245.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  400
+                ]
+              },
+              {
+                "text": "00241 Final support 1 69.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  430
+                ]
+              },
+              {
+                "text": "Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  458
+                ]
+              }
+            ],
+            "orderedBlocks": [
+              {
+                "text": "Landscape planning services",
+                "position": 0,
+                "passed": true
+              },
+              {
+                "text": "Planning invoice 006431 lists the first group of completed services.",
+                "position": 28,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 97,
+                "passed": true
+              },
+              {
+                "text": "00124 Planning package 2 220.50",
+                "position": 132,
+                "passed": true
+              },
+              {
+                "text": "00345 Review service 3 125.30",
+                "position": 164,
+                "passed": true
+              },
+              {
+                "text": "00567 Record storage 1 39.95",
+                "position": 194,
+                "passed": true
+              },
+              {
+                "text": "Planning total is 385.75 USD. The next invoice records a separate delivery stage.",
+                "position": 223,
+                "passed": true
+              },
+              {
+                "text": "Landscape delivery services",
+                "position": 305,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 333,
+                "passed": true
+              },
+              {
+                "text": "00718 Delivery package 2 520.50",
+                "position": 368,
+                "passed": true
+              },
+              {
+                "text": "00929 Review service 3 245.30",
+                "position": 400,
+                "passed": true
+              },
+              {
+                "text": "00241 Final support 1 69.95",
+                "position": 430,
+                "passed": true
+              },
+              {
+                "text": "Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page.",
+                "position": 458,
+                "passed": true
+              }
+            ],
+            "numericValues": [
+              {
+                "value": "006431",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00124",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "2",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "220.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00345",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "3",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "125.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00567",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "1",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "39.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "385.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00718",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "520.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00929",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "245.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00241",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "69.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "835.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              }
+            ],
+            "invoiceRowAssociation": [],
+            "visibleText": " Landscape planning services\n Planning invoice 006431 lists the first group of completed services.\nItem ID\nDescription\nQty\nLine total\n00124\nPlanning package\n2\n220.50\n00345\nReview service\n3\n125.30\n00567\nRecord storage\n1\n39.95\n Planning total is 385.75 USD. The next invoice records a separate delivery stage.\n Landscape delivery services\nItem ID\nDescription\nQty\nLine total\n00718\nDelivery package\n2\n520.50\n00929\nReview service\n3\n245.30\n00241\nFinal support\n1\n69.95\n Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page.",
+            "normalizedText": "Landscape planning services Planning invoice 006431 lists the first group of completed services. Item ID Description Qty Line total 00124 Planning package 2 220.50 00345 Review service 3 125.30 00567 Record storage 1 39.95 Planning total is 385.75 USD. The next invoice records a separate delivery stage. Landscape delivery services Item ID Description Qty Line total 00718 Delivery package 2 520.50 00929 Review service 3 245.30 00241 Final support 1 69.95 Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page."
+          },
+          "layout": {
+            "passed": true,
+            "unexpectedEmbeddedImages": [],
+            "imageTextSideBySideWrappers": 0,
+            "sectionColumns": [
+              1
+            ],
+            "explicitFontSizesPt": [
+              17.0
+            ],
+            "imageGeometry": [],
+            "nativeTableRows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00124",
+                "Planning package",
+                "2",
+                "220.50"
+              ],
+              [
+                "00345",
+                "Review service",
+                "3",
+                "125.30"
+              ],
+              [
+                "00567",
+                "Record storage",
+                "1",
+                "39.95"
+              ],
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00718",
+                "Delivery package",
+                "2",
+                "520.50"
+              ],
+              [
+                "00929",
+                "Review service",
+                "3",
+                "245.30"
+              ],
+              [
+                "00241",
+                "Final support",
+                "1",
+                "69.95"
+              ]
+            ],
+            "nativeInvoiceTableChecks": [],
+            "nativeInvoiceTableReconstructed": false,
+            "nativeTableReconstructionRequired": false
+          },
+          "nativeTables": {
+            "passed": true,
+            "expectedTableCount": 2,
+            "actualTableCount": 2,
+            "expectedMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00124",
+                  "Planning package",
+                  "2",
+                  "220.50"
+                ],
+                [
+                  "00345",
+                  "Review service",
+                  "3",
+                  "125.30"
+                ],
+                [
+                  "00567",
+                  "Record storage",
+                  "1",
+                  "39.95"
+                ]
+              ],
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00718",
+                  "Delivery package",
+                  "2",
+                  "520.50"
+                ],
+                [
+                  "00929",
+                  "Review service",
+                  "3",
+                  "245.30"
+                ],
+                [
+                  "00241",
+                  "Final support",
+                  "1",
+                  "69.95"
+                ]
+              ]
+            ],
+            "actualMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00124",
+                  "Planning package",
+                  "2",
+                  "220.50"
+                ],
+                [
+                  "00345",
+                  "Review service",
+                  "3",
+                  "125.30"
+                ],
+                [
+                  "00567",
+                  "Record storage",
+                  "1",
+                  "39.95"
+                ]
+              ],
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00718",
+                  "Delivery package",
+                  "2",
+                  "520.50"
+                ],
+                [
+                  "00929",
+                  "Review service",
+                  "3",
+                  "245.30"
+                ],
+                [
+                  "00241",
+                  "Final support",
+                  "1",
+                  "69.95"
+                ]
+              ]
+            ],
+            "completeMatricesMatch": true,
+            "unexpectedMergeProperties": [],
+            "nestedOrWrappedTables": false,
+            "nativeTableReconstructionRequired": true,
+            "zeroTablesRequired": false
+          }
+        },
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "Landscape planning services Planning invoice 006431 lists the first group of completed services. Item ID Description Qty Line total 00124 Planning package 2 220.50 00345 Review service 3 125.30 00567 Record storage 1 39.95 Planning total is 385.75 USD. The next invoice records a separate delivery stage. Landscape delivery services Item ID Description Qty Line total 00718 Delivery package 2 520.50 00929 Review service 3 245.30 00241 Final support 1 69.95 Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page.",
+              "actualText": "Landscape planning services Planning invoice 006431 lists the first group of completed services. Item ID Description Qty Line total 00124 Planning package 2 220.50 00345 Review service 3 125.30 00567 Record storage 1 39.95 Planning total is 385.75 USD. The next invoice records a separate delivery stage. Landscape delivery services Item ID Description Qty Line total 00718 Delivery package 2 520.50 00929 Review service 3 245.30 00241 Final support 1 69.95 Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 792,
+              "expectedHeightPoints": 612,
+              "actual": {
+                "widthPoints": 792.0,
+                "heightPoints": 612.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2g-english-multitable/sources/original-pdfs/english-two-tables-landscape-scan-original.pdf",
+          "pdfSha256": "e775f0ba7deaff527daa6d050b370d78881cdb7ba93a391f94083dc6bb47c1dd",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-landscape-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 792.0,
+              "heightPoints": 612.0
+            }
+          ]
+        },
+        "sourceRulingAndWrapping": {
+          "passed": true,
+          "pages": [
+            {
+              "page": 1,
+              "horizontalAxes": [
+                107.6,
+                135.4,
+                163.3,
+                191.1,
+                219.0,
+                301.8,
+                329.6,
+                357.5,
+                385.3,
+                413.2
+              ],
+              "verticalAxes": [
+                49.9,
+                124.9,
+                591.1,
+                641.1,
+                741.1
+              ],
+              "expectedRuledTables": 2,
+              "passed": true
+            }
+          ],
+          "wrappedDescriptions": [],
+          "separateTableGeometry": [
+            {
+              "page": 1,
+              "expectedSeparateTableCount": 2,
+              "actualSeparateTableCount": 2,
+              "grids": [
+                {
+                  "top": 107.10000610351562,
+                  "bottom": 219.5,
+                  "verticalAxes": [
+                    49.9,
+                    124.9,
+                    591.1,
+                    641.1,
+                    741.1
+                  ],
+                  "horizontalAxes": [
+                    107.6,
+                    135.4,
+                    163.3,
+                    191.1,
+                    219.0
+                  ],
+                  "completeFourByFourGrid": true
+                },
+                {
+                  "top": 301.29998779296875,
+                  "bottom": 413.70001220703125,
+                  "verticalAxes": [
+                    49.9,
+                    124.9,
+                    591.1,
+                    641.1,
+                    741.1
+                  ],
+                  "horizontalAxes": [
+                    301.8,
+                    329.6,
+                    357.5,
+                    385.3,
+                    413.2
+                  ],
+                  "completeFourByFourGrid": true
+                }
+              ],
+              "interTableParagraphRects": [
+                [
+                  50.5,
+                  244.99000549316406,
+                  481.4920349121094,
+                  258.38201904296875
+                ]
+              ],
+              "interTableParagraphInsideGap": true,
+              "passed": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "english-two-groups-borderless-scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "Planning reference notes"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The first group contains plain reference notes without table borders."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 006731\tApproved amount 81.25 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 008952\tApproved amount 42.60 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 003174\tApproved amount 19.95 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The first group is complete. The next group records separate delivery notes."
+          },
+          {
+            "kind": "heading",
+            "text": "Delivery reference notes"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 007842\tApproved amount 91.25 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 009163\tApproved amount 52.60 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 004285\tApproved amount 29.95 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Keep both note groups in order and retain this complete final paragraph."
+          }
+        ]
+      ],
+      "negativeControl": true,
+      "inputKind": "scan",
+      "numericValues": [
+        "006731",
+        "81.25",
+        "008952",
+        "42.60",
+        "003174",
+        "19.95",
+        "007842",
+        "91.25",
+        "009163",
+        "52.60",
+        "004285",
+        "29.95"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-groups-borderless-scan.pdf",
+        "inputSha256": "69b0256f30ad942fd0bcf775c9984cbe427bdb708f5d5b3faf23d2605cc6d455",
+        "inputBytes": 175448,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "imageCountByPage": [
+          1
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-groups-borderless-scan-original.docx",
+        "literalDocxSha256": "8cbf205e766fc2ecb39beea18d60ac011eb3024422bd63ddfaa950192545ab0a",
+        "literalDocxChecks": {
+          "passed": true,
+          "validZip": true,
+          "visibleEditableCharacters": 537,
+          "visibleParagraphCount": 11,
+          "content": {
+            "passed": true,
+            "fullNormalizedTextMatches": true,
+            "blockOccurrences": [
+              {
+                "text": "Planning reference notes",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  0
+                ]
+              },
+              {
+                "text": "The first group contains plain reference notes without table borders.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  25
+                ]
+              },
+              {
+                "text": "Reference 006731\tApproved amount 81.25 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  95
+                ]
+              },
+              {
+                "text": "Reference 008952\tApproved amount 42.60 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  138
+                ]
+              },
+              {
+                "text": "Reference 003174\tApproved amount 19.95 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  181
+                ]
+              },
+              {
+                "text": "The first group is complete. The next group records separate delivery notes.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  224
+                ]
+              },
+              {
+                "text": "Delivery reference notes",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  301
+                ]
+              },
+              {
+                "text": "Reference 007842\tApproved amount 91.25 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  326
+                ]
+              },
+              {
+                "text": "Reference 009163\tApproved amount 52.60 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  369
+                ]
+              },
+              {
+                "text": "Reference 004285\tApproved amount 29.95 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  412
+                ]
+              },
+              {
+                "text": "Keep both note groups in order and retain this complete final paragraph.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  455
+                ]
+              }
+            ],
+            "orderedBlocks": [
+              {
+                "text": "Planning reference notes",
+                "position": 0,
+                "passed": true
+              },
+              {
+                "text": "The first group contains plain reference notes without table borders.",
+                "position": 25,
+                "passed": true
+              },
+              {
+                "text": "Reference 006731\tApproved amount 81.25 USD",
+                "position": 95,
+                "passed": true
+              },
+              {
+                "text": "Reference 008952\tApproved amount 42.60 USD",
+                "position": 138,
+                "passed": true
+              },
+              {
+                "text": "Reference 003174\tApproved amount 19.95 USD",
+                "position": 181,
+                "passed": true
+              },
+              {
+                "text": "The first group is complete. The next group records separate delivery notes.",
+                "position": 224,
+                "passed": true
+              },
+              {
+                "text": "Delivery reference notes",
+                "position": 301,
+                "passed": true
+              },
+              {
+                "text": "Reference 007842\tApproved amount 91.25 USD",
+                "position": 326,
+                "passed": true
+              },
+              {
+                "text": "Reference 009163\tApproved amount 52.60 USD",
+                "position": 369,
+                "passed": true
+              },
+              {
+                "text": "Reference 004285\tApproved amount 29.95 USD",
+                "position": 412,
+                "passed": true
+              },
+              {
+                "text": "Keep both note groups in order and retain this complete final paragraph.",
+                "position": 455,
+                "passed": true
+              }
+            ],
+            "numericValues": [
+              {
+                "value": "006731",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "81.25",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "008952",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "42.60",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "003174",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "19.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "007842",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "91.25",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "009163",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "52.60",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "004285",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "29.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              }
+            ],
+            "invoiceRowAssociation": [],
+            "visibleText": " Planning reference notes\n The first group contains plain reference notes without table borders.\n Reference 006731 Approved amount 81.25 USD\n Reference 008952 Approved amount 42.60 USD\n Reference 003174 Approved amount 19.95 USD\n The first group is complete. The next group records separate delivery notes.\n Delivery reference notes\n Reference 007842 Approved amount 91.25 USD\n Reference 009163 Approved amount 52.60 USD\n Reference 004285 Approved amount 29.95 USD\n Keep both note groups in order and retain this complete final paragraph.",
+            "normalizedText": "Planning reference notes The first group contains plain reference notes without table borders. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD The first group is complete. The next group records separate delivery notes. Delivery reference notes Reference 007842 Approved amount 91.25 USD Reference 009163 Approved amount 52.60 USD Reference 004285 Approved amount 29.95 USD Keep both note groups in order and retain this complete final paragraph."
+          },
+          "layout": {
+            "passed": true,
+            "unexpectedEmbeddedImages": [],
+            "imageTextSideBySideWrappers": 0,
+            "sectionColumns": [
+              1
+            ],
+            "explicitFontSizesPt": [
+              17.0
+            ],
+            "imageGeometry": [],
+            "nativeTableRows": [],
+            "nativeInvoiceTableChecks": [],
+            "nativeInvoiceTableReconstructed": false,
+            "nativeTableReconstructionRequired": false
+          },
+          "nativeTables": {
+            "passed": true,
+            "expectedTableCount": 0,
+            "actualTableCount": 0,
+            "expectedMatrices": [],
+            "actualMatrices": [],
+            "completeMatricesMatch": true,
+            "unexpectedMergeProperties": [],
+            "nestedOrWrappedTables": false,
+            "nativeTableReconstructionRequired": false,
+            "zeroTablesRequired": true
+          }
+        },
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "Planning reference notes The first group contains plain reference notes without table borders. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD The first group is complete. The next group records separate delivery notes. Delivery reference notes Reference 007842 Approved amount 91.25 USD Reference 009163 Approved amount 52.60 USD Reference 004285 Approved amount 29.95 USD Keep both note groups in order and retain this complete final paragraph.",
+              "actualText": "Planning reference notes The first group contains plain reference notes without table borders. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD The first group is complete. The next group records separate delivery notes. Delivery reference notes Reference 007842 Approved amount 91.25 USD Reference 009163 Approved amount 52.60 USD Reference 004285 Approved amount 29.95 USD Keep both note groups in order and retain this complete final paragraph."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2g-english-multitable/sources/original-pdfs/english-two-groups-borderless-scan-original.pdf",
+          "pdfSha256": "b4909fd9aaa95a6d3d02fdaacd61bea6c29d19e5e75259d9bd87bf0e70768dfd",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-groups-borderless-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        },
+        "sourceRulingAndWrapping": {
+          "passed": true,
+          "pages": [
+            {
+              "page": 1,
+              "horizontalAxes": [],
+              "verticalAxes": [],
+              "expectedRuledTables": 0,
+              "passed": true
+            }
+          ],
+          "wrappedDescriptions": [],
+          "separateTableGeometry": [
+            {
+              "page": 1,
+              "expectedSeparateTableCount": 0,
+              "actualSeparateTableCount": 0,
+              "grids": [],
+              "interTableParagraphRects": [],
+              "interTableParagraphInsideGap": true,
+              "passed": true
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "results": [
+    {
+      "caseId": "english-two-tables-portrait-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 36933,
+      "responseSha256": "775f1dfe0f5d232b9cbe65d45bfa177903043f226a180af1837c7c5d20d7113e",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 3312,
+      "outputPath": "tmp/pdfs/phase3.2g-english-multitable/after/english-two-tables-portrait-scan-result.docx",
+      "document": {
+        "passed": false,
+        "validZip": true,
+        "visibleEditableCharacters": 543,
+        "visibleParagraphCount": 13,
+        "content": {
+          "passed": false,
+          "fullNormalizedTextMatches": false,
+          "blockOccurrences": [
+            {
+              "text": "Planning services",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Planning invoice 004218 covers the completed work shown in the first table.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                18
+              ]
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "expected": 2,
+              "actual": 0,
+              "positions": []
+            },
+            {
+              "text": "00421 Analysis package 2 240.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                134
+              ]
+            },
+            {
+              "text": "00632 Review service 3 135.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                166
+              ]
+            },
+            {
+              "text": "00874 Archive support 1 19.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                196
+              ]
+            },
+            {
+              "text": "Planning total is 395.75 USD. The next invoice covers a separate delivery stage.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                226
+              ]
+            },
+            {
+              "text": "Delivery services",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                307
+              ]
+            },
+            {
+              "text": "00235 Delivery package 2 320.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                363
+              ]
+            },
+            {
+              "text": "00456 Review service 3 145.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                395
+              ]
+            },
+            {
+              "text": "00678 Final support 1 49.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                425
+              ]
+            },
+            {
+              "text": "Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                453
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "Planning services",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Planning invoice 004218 covers the completed work shown in the first table.",
+              "position": 18,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00421 Analysis package 2 240.50",
+              "position": 134,
+              "passed": true
+            },
+            {
+              "text": "00632 Review service 3 135.30",
+              "position": 166,
+              "passed": true
+            },
+            {
+              "text": "00874 Archive support 1 19.95",
+              "position": 196,
+              "passed": true
+            },
+            {
+              "text": "Planning total is 395.75 USD. The next invoice covers a separate delivery stage.",
+              "position": 226,
+              "passed": true
+            },
+            {
+              "text": "Delivery services",
+              "position": 307,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00235 Delivery package 2 320.50",
+              "position": 363,
+              "passed": true
+            },
+            {
+              "text": "00456 Review service 3 145.30",
+              "position": 395,
+              "passed": true
+            },
+            {
+              "text": "00678 Final support 1 49.95",
+              "position": 425,
+              "passed": true
+            },
+            {
+              "text": "Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph.",
+              "position": 453,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "004218",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00421",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "2",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "240.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00632",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "3",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "135.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00874",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "1",
+              "expected": 2,
+              "actual": 3,
+              "passed": false
+            },
+            {
+              "value": "19.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "395.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00235",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "320.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00456",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "145.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00678",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "49.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "515.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "Planning services\nPlanning invoice 004218 covers the completed work shown in the first table.\nitem 1D | ID Description Qty Line total\n00421 Analysis package 2 240.50\n00632 Review service 3 135.30\n00874 Archive support 1 19.95\nPlanning total is 395.75 USD. The next invoice covers a separate delivery stage.\nDelivery services\nItem ID ID Description Qty Line total\n00235 Delivery package 2 320.50\n00456 Review service 3 145.30\n00678 Final support 1 49.95\nDelivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph.",
+          "normalizedText": "Planning services Planning invoice 004218 covers the completed work shown in the first table. item 1D | ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Planning total is 395.75 USD. The next invoice covers a separate delivery stage. Delivery services Item ID ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Review service 3 145.30 00678 Final support 1 49.95 Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        },
+        "nativeTables": {
+          "passed": false,
+          "expectedTableCount": 2,
+          "actualTableCount": 0,
+          "expectedMatrices": [
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00421",
+                "Analysis package",
+                "2",
+                "240.50"
+              ],
+              [
+                "00632",
+                "Review service",
+                "3",
+                "135.30"
+              ],
+              [
+                "00874",
+                "Archive support",
+                "1",
+                "19.95"
+              ]
+            ],
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00235",
+                "Delivery package",
+                "2",
+                "320.50"
+              ],
+              [
+                "00456",
+                "Review service",
+                "3",
+                "145.30"
+              ],
+              [
+                "00678",
+                "Final support",
+                "1",
+                "49.95"
+              ]
+            ]
+          ],
+          "actualMatrices": [],
+          "completeMatricesMatch": false,
+          "unexpectedMergeProperties": [],
+          "nestedOrWrappedTables": false,
+          "nativeTableReconstructionRequired": true,
+          "zeroTablesRequired": false
+        }
+      },
+      "rendered": {
+        "passed": false,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": false,
+            "expectedText": "Planning services Planning invoice 004218 covers the completed work shown in the first table. Item ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Planning total is 395.75 USD. The next invoice covers a separate delivery stage. Delivery services Item ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Review service 3 145.30 00678 Final support 1 49.95 Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph.",
+            "actualText": "Planning services Planning invoice 004218 covers the completed work shown in the first table. item 1D | ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Planning total is 395.75 USD. The next invoice covers a separate delivery stage. Delivery services Item ID ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Review service 3 145.30 00678 Final support 1 49.95 Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2g-english-multitable/after/rendered-outputs/english-two-tables-portrait-scan-result.pdf",
+        "pdfSha256": "71adb9d10ba744bc7fdab219651b42c1fbc829bd9ba3f194bd84daa682dcd5ed",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2g-english-multitable/after/english-two-tables-portrait-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "failed",
+      "totalDurationMs": 4859
+    },
+    {
+      "caseId": "english-two-tables-wrapped-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 37268,
+      "responseSha256": "60d2a3dfd841a768e43737d556e067bd0cf72219660424d1762857ac2ac1dc67",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 3562,
+      "outputPath": "tmp/pdfs/phase3.2g-english-multitable/after/english-two-tables-wrapped-scan-result.docx",
+      "document": {
+        "passed": true,
+        "validZip": true,
+        "visibleEditableCharacters": 647,
+        "visibleParagraphCount": 37,
+        "content": {
+          "passed": true,
+          "fullNormalizedTextMatches": true,
+          "blockOccurrences": [
+            {
+              "text": "Research services",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Research invoice 005329 includes a complete description inside its first item cell.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                18
+              ]
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "expected": 2,
+              "actual": 2,
+              "positions": [
+                102,
+                383
+              ]
+            },
+            {
+              "text": "00542 Monthly analysis and reporting package for the research team 2 280.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                137
+              ]
+            },
+            {
+              "text": "00763 Review service 3 165.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                213
+              ]
+            },
+            {
+              "text": "00985 Archive support 1 29.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                243
+              ]
+            },
+            {
+              "text": "Research total is 475.75 USD. The delivery invoice below belongs to the next stage.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                273
+              ]
+            },
+            {
+              "text": "Project delivery services",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                357
+              ]
+            },
+            {
+              "text": "00146 Final delivery service and document preparation for the project 2 420.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                418
+              ]
+            },
+            {
+              "text": "00357 Review service 3 185.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                497
+              ]
+            },
+            {
+              "text": "00579 Final support 1 59.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                527
+              ]
+            },
+            {
+              "text": "Delivery total is 665.75 USD. Keep each long description with its own identifier and amount.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                555
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "Research services",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Research invoice 005329 includes a complete description inside its first item cell.",
+              "position": 18,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": 102,
+              "passed": true
+            },
+            {
+              "text": "00542 Monthly analysis and reporting package for the research team 2 280.50",
+              "position": 137,
+              "passed": true
+            },
+            {
+              "text": "00763 Review service 3 165.30",
+              "position": 213,
+              "passed": true
+            },
+            {
+              "text": "00985 Archive support 1 29.95",
+              "position": 243,
+              "passed": true
+            },
+            {
+              "text": "Research total is 475.75 USD. The delivery invoice below belongs to the next stage.",
+              "position": 273,
+              "passed": true
+            },
+            {
+              "text": "Project delivery services",
+              "position": 357,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": 383,
+              "passed": true
+            },
+            {
+              "text": "00146 Final delivery service and document preparation for the project 2 420.50",
+              "position": 418,
+              "passed": true
+            },
+            {
+              "text": "00357 Review service 3 185.30",
+              "position": 497,
+              "passed": true
+            },
+            {
+              "text": "00579 Final support 1 59.95",
+              "position": 527,
+              "passed": true
+            },
+            {
+              "text": "Delivery total is 665.75 USD. Keep each long description with its own identifier and amount.",
+              "position": 555,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "005329",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00542",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "2",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "280.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00763",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "3",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "165.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00985",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "1",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "29.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "475.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00146",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "420.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00357",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "185.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00579",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "59.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "665.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "Research services\nResearch invoice 005329 includes a complete description inside its first item cell.\nItem ID\nDescription\nQty\nLine total\n00542\nMonthly analysis and reporting package for the research team\n2\n280.50\n00763\nReview service\n3\n165.30\n00985\nArchive support\n1\n29.95\nResearch total is 475.75 USD. The delivery invoice below belongs to the next stage.\nProject delivery services\nItem ID\nDescription\nQty\nLine total\n00146\nFinal delivery service and document preparation for the project\n2\n420.50\n00357\nReview service\n3\n185.30\n00579\nFinal support\n1\n59.95\nDelivery total is 665.75 USD. Keep each long description with its own identifier and amount.",
+          "normalizedText": "Research services Research invoice 005329 includes a complete description inside its first item cell. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Review service 3 165.30 00985 Archive support 1 29.95 Research total is 475.75 USD. The delivery invoice below belongs to the next stage. Project delivery services Item ID Description Qty Line total 00146 Final delivery service and document preparation for the project 2 420.50 00357 Review service 3 185.30 00579 Final support 1 59.95 Delivery total is 665.75 USD. Keep each long description with its own identifier and amount."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [
+            [
+              "Item ID",
+              "Description",
+              "Qty",
+              "Line total"
+            ],
+            [
+              "00542",
+              "Monthly analysis and reporting package for the research team",
+              "2",
+              "280.50"
+            ],
+            [
+              "00763",
+              "Review service",
+              "3",
+              "165.30"
+            ],
+            [
+              "00985",
+              "Archive support",
+              "1",
+              "29.95"
+            ],
+            [
+              "Item ID",
+              "Description",
+              "Qty",
+              "Line total"
+            ],
+            [
+              "00146",
+              "Final delivery service and document preparation for the project",
+              "2",
+              "420.50"
+            ],
+            [
+              "00357",
+              "Review service",
+              "3",
+              "185.30"
+            ],
+            [
+              "00579",
+              "Final support",
+              "1",
+              "59.95"
+            ]
+          ],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        },
+        "nativeTables": {
+          "passed": true,
+          "expectedTableCount": 2,
+          "actualTableCount": 2,
+          "expectedMatrices": [
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00542",
+                "Monthly analysis and reporting package for the research team",
+                "2",
+                "280.50"
+              ],
+              [
+                "00763",
+                "Review service",
+                "3",
+                "165.30"
+              ],
+              [
+                "00985",
+                "Archive support",
+                "1",
+                "29.95"
+              ]
+            ],
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00146",
+                "Final delivery service and document preparation for the project",
+                "2",
+                "420.50"
+              ],
+              [
+                "00357",
+                "Review service",
+                "3",
+                "185.30"
+              ],
+              [
+                "00579",
+                "Final support",
+                "1",
+                "59.95"
+              ]
+            ]
+          ],
+          "actualMatrices": [
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00542",
+                "Monthly analysis and reporting package for the research team",
+                "2",
+                "280.50"
+              ],
+              [
+                "00763",
+                "Review service",
+                "3",
+                "165.30"
+              ],
+              [
+                "00985",
+                "Archive support",
+                "1",
+                "29.95"
+              ]
+            ],
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00146",
+                "Final delivery service and document preparation for the project",
+                "2",
+                "420.50"
+              ],
+              [
+                "00357",
+                "Review service",
+                "3",
+                "185.30"
+              ],
+              [
+                "00579",
+                "Final support",
+                "1",
+                "59.95"
+              ]
+            ]
+          ],
+          "completeMatricesMatch": true,
+          "unexpectedMergeProperties": [],
+          "nestedOrWrappedTables": false,
+          "nativeTableReconstructionRequired": true,
+          "zeroTablesRequired": false
+        }
+      },
+      "rendered": {
+        "passed": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": true,
+            "expectedText": "Research services Research invoice 005329 includes a complete description inside its first item cell. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Review service 3 165.30 00985 Archive support 1 29.95 Research total is 475.75 USD. The delivery invoice below belongs to the next stage. Project delivery services Item ID Description Qty Line total 00146 Final delivery service and document preparation for the project 2 420.50 00357 Review service 3 185.30 00579 Final support 1 59.95 Delivery total is 665.75 USD. Keep each long description with its own identifier and amount.",
+            "actualText": "Research services Research invoice 005329 includes a complete description inside its first item cell. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Review service 3 165.30 00985 Archive support 1 29.95 Research total is 475.75 USD. The delivery invoice below belongs to the next stage. Project delivery services Item ID Description Qty Line total 00146 Final delivery service and document preparation for the project 2 420.50 00357 Review service 3 185.30 00579 Final support 1 59.95 Delivery total is 665.75 USD. Keep each long description with its own identifier and amount."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2g-english-multitable/after/rendered-outputs/english-two-tables-wrapped-scan-result.pdf",
+        "pdfSha256": "ba25e5b4d0d4dbbe1866d2d81eff3fe45cd0193d17752dc2cc21ced66b2368fd",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2g-english-multitable/after/english-two-tables-wrapped-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "passed",
+      "totalDurationMs": 4750
+    },
+    {
+      "caseId": "english-two-tables-landscape-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 36951,
+      "responseSha256": "48b7024bc07a581d6c0b99b202424aa044cf719d4cab78b1b9387440550cf6fc",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 5859,
+      "outputPath": "tmp/pdfs/phase3.2g-english-multitable/after/english-two-tables-landscape-scan-result.docx",
+      "document": {
+        "passed": false,
+        "validZip": true,
+        "visibleEditableCharacters": 556,
+        "visibleParagraphCount": 13,
+        "content": {
+          "passed": false,
+          "fullNormalizedTextMatches": false,
+          "blockOccurrences": [
+            {
+              "text": "Landscape planning services",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Planning invoice 006431 lists the first group of completed services.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                28
+              ]
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "expected": 2,
+              "actual": 0,
+              "positions": []
+            },
+            {
+              "text": "00124 Planning package 2 220.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                137
+              ]
+            },
+            {
+              "text": "00345 Review service 3 125.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                169
+              ]
+            },
+            {
+              "text": "00567 Record storage 1 39.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                199
+              ]
+            },
+            {
+              "text": "Planning total is 385.75 USD. The next invoice records a separate delivery stage.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                228
+              ]
+            },
+            {
+              "text": "Landscape delivery services",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                310
+              ]
+            },
+            {
+              "text": "00718 Delivery package 2 520.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                376
+              ]
+            },
+            {
+              "text": "00929 Review service 3 245.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                408
+              ]
+            },
+            {
+              "text": "00241 Final support 1 69.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                438
+              ]
+            },
+            {
+              "text": "Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                466
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "Landscape planning services",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Planning invoice 006431 lists the first group of completed services.",
+              "position": 28,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00124 Planning package 2 220.50",
+              "position": 137,
+              "passed": true
+            },
+            {
+              "text": "00345 Review service 3 125.30",
+              "position": 169,
+              "passed": true
+            },
+            {
+              "text": "00567 Record storage 1 39.95",
+              "position": 199,
+              "passed": true
+            },
+            {
+              "text": "Planning total is 385.75 USD. The next invoice records a separate delivery stage.",
+              "position": 228,
+              "passed": true
+            },
+            {
+              "text": "Landscape delivery services",
+              "position": 310,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00718 Delivery package 2 520.50",
+              "position": 376,
+              "passed": true
+            },
+            {
+              "text": "00929 Review service 3 245.30",
+              "position": 408,
+              "passed": true
+            },
+            {
+              "text": "00241 Final support 1 69.95",
+              "position": 438,
+              "passed": true
+            },
+            {
+              "text": "Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page.",
+              "position": 466,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "006431",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00124",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "2",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "220.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00345",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "3",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "125.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00567",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "1",
+              "expected": 2,
+              "actual": 3,
+              "passed": false
+            },
+            {
+              "value": "39.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "385.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00718",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "520.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00929",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "245.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00241",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "69.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "835.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "Landscape planning services\nPlanning invoice 006431 lists the first group of completed services.\nitem 1D | ID Description Qty Line total\n00124 Planning package 2 220.50\n00345 Review service 3 125.30\n00567 Record storage 1 39.95\nPlanning total is 385.75 USD. The next invoice records a separate delivery stage.\nLandscape delivery services\nItem ID ID Description Qty Line total\n00718 Delivery package 2 520.50\n00929 Review service 3 245.30\n00241 Final support 1 69.95\nDelivery total is 835.75 USD. This final paragraph belongs after both tables on this page.",
+          "normalizedText": "Landscape planning services Planning invoice 006431 lists the first group of completed services. item 1D | ID Description Qty Line total 00124 Planning package 2 220.50 00345 Review service 3 125.30 00567 Record storage 1 39.95 Planning total is 385.75 USD. The next invoice records a separate delivery stage. Landscape delivery services Item ID ID Description Qty Line total 00718 Delivery package 2 520.50 00929 Review service 3 245.30 00241 Final support 1 69.95 Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        },
+        "nativeTables": {
+          "passed": false,
+          "expectedTableCount": 2,
+          "actualTableCount": 0,
+          "expectedMatrices": [
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00124",
+                "Planning package",
+                "2",
+                "220.50"
+              ],
+              [
+                "00345",
+                "Review service",
+                "3",
+                "125.30"
+              ],
+              [
+                "00567",
+                "Record storage",
+                "1",
+                "39.95"
+              ]
+            ],
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00718",
+                "Delivery package",
+                "2",
+                "520.50"
+              ],
+              [
+                "00929",
+                "Review service",
+                "3",
+                "245.30"
+              ],
+              [
+                "00241",
+                "Final support",
+                "1",
+                "69.95"
+              ]
+            ]
+          ],
+          "actualMatrices": [],
+          "completeMatricesMatch": false,
+          "unexpectedMergeProperties": [],
+          "nestedOrWrappedTables": false,
+          "nativeTableReconstructionRequired": true,
+          "zeroTablesRequired": false
+        }
+      },
+      "rendered": {
+        "passed": false,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": false,
+            "expectedText": "Landscape planning services Planning invoice 006431 lists the first group of completed services. Item ID Description Qty Line total 00124 Planning package 2 220.50 00345 Review service 3 125.30 00567 Record storage 1 39.95 Planning total is 385.75 USD. The next invoice records a separate delivery stage. Landscape delivery services Item ID Description Qty Line total 00718 Delivery package 2 520.50 00929 Review service 3 245.30 00241 Final support 1 69.95 Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page.",
+            "actualText": "Landscape planning services Planning invoice 006431 lists the first group of completed services. item 1D | ID Description Qty Line total 00124 Planning package 2 220.50 00345 Review service 3 125.30 00567 Record storage 1 39.95 Planning total is 385.75 USD. The next invoice records a separate delivery stage. Landscape delivery services Item ID ID Description Qty Line total 00718 Delivery package 2 520.50 00929 Review service 3 245.30 00241 Final support 1 69.95 Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 792,
+            "expectedHeightPoints": 612,
+            "actual": {
+              "widthPoints": 792.0,
+              "heightPoints": 612.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2g-english-multitable/after/rendered-outputs/english-two-tables-landscape-scan-result.pdf",
+        "pdfSha256": "991de232e81a19c818b9f1a5c6b4dc020a6ed79553273ef4767be5655ea07541",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2g-english-multitable/after/english-two-tables-landscape-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 792.0,
+            "heightPoints": 612.0
+          }
+        ]
+      },
+      "status": "failed",
+      "totalDurationMs": 7046
+    },
+    {
+      "caseId": "english-two-groups-borderless-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 36871,
+      "responseSha256": "123c23c02383b8ada1b557e4cfb10a0d37f623c0bfb5332f4514d51eea528d01",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 3235,
+      "outputPath": "tmp/pdfs/phase3.2g-english-multitable/after/english-two-groups-borderless-scan-result.docx",
+      "document": {
+        "passed": true,
+        "validZip": true,
+        "visibleEditableCharacters": 527,
+        "visibleParagraphCount": 11,
+        "content": {
+          "passed": true,
+          "fullNormalizedTextMatches": true,
+          "blockOccurrences": [
+            {
+              "text": "Planning reference notes",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "The first group contains plain reference notes without table borders.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                25
+              ]
+            },
+            {
+              "text": "Reference 006731\tApproved amount 81.25 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                95
+              ]
+            },
+            {
+              "text": "Reference 008952\tApproved amount 42.60 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                138
+              ]
+            },
+            {
+              "text": "Reference 003174\tApproved amount 19.95 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                181
+              ]
+            },
+            {
+              "text": "The first group is complete. The next group records separate delivery notes.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                224
+              ]
+            },
+            {
+              "text": "Delivery reference notes",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                301
+              ]
+            },
+            {
+              "text": "Reference 007842\tApproved amount 91.25 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                326
+              ]
+            },
+            {
+              "text": "Reference 009163\tApproved amount 52.60 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                369
+              ]
+            },
+            {
+              "text": "Reference 004285\tApproved amount 29.95 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                412
+              ]
+            },
+            {
+              "text": "Keep both note groups in order and retain this complete final paragraph.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                455
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "Planning reference notes",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "The first group contains plain reference notes without table borders.",
+              "position": 25,
+              "passed": true
+            },
+            {
+              "text": "Reference 006731\tApproved amount 81.25 USD",
+              "position": 95,
+              "passed": true
+            },
+            {
+              "text": "Reference 008952\tApproved amount 42.60 USD",
+              "position": 138,
+              "passed": true
+            },
+            {
+              "text": "Reference 003174\tApproved amount 19.95 USD",
+              "position": 181,
+              "passed": true
+            },
+            {
+              "text": "The first group is complete. The next group records separate delivery notes.",
+              "position": 224,
+              "passed": true
+            },
+            {
+              "text": "Delivery reference notes",
+              "position": 301,
+              "passed": true
+            },
+            {
+              "text": "Reference 007842\tApproved amount 91.25 USD",
+              "position": 326,
+              "passed": true
+            },
+            {
+              "text": "Reference 009163\tApproved amount 52.60 USD",
+              "position": 369,
+              "passed": true
+            },
+            {
+              "text": "Reference 004285\tApproved amount 29.95 USD",
+              "position": 412,
+              "passed": true
+            },
+            {
+              "text": "Keep both note groups in order and retain this complete final paragraph.",
+              "position": 455,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "006731",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "81.25",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "008952",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "42.60",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "003174",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "19.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "007842",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "91.25",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "009163",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "52.60",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "004285",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "29.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "Planning reference notes\nThe first group contains plain reference notes without table borders.\nReference 006731 Approved amount 81.25 USD\nReference 008952 Approved amount 42.60 USD\nReference 003174 Approved amount 19.95 USD\nThe first group is complete. The next group records separate delivery notes.\nDelivery reference notes\nReference 007842 Approved amount 91.25 USD\nReference 009163 Approved amount 52.60 USD\nReference 004285 Approved amount 29.95 USD\nKeep both note groups in order and retain this complete final paragraph.",
+          "normalizedText": "Planning reference notes The first group contains plain reference notes without table borders. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD The first group is complete. The next group records separate delivery notes. Delivery reference notes Reference 007842 Approved amount 91.25 USD Reference 009163 Approved amount 52.60 USD Reference 004285 Approved amount 29.95 USD Keep both note groups in order and retain this complete final paragraph."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        },
+        "nativeTables": {
+          "passed": true,
+          "expectedTableCount": 0,
+          "actualTableCount": 0,
+          "expectedMatrices": [],
+          "actualMatrices": [],
+          "completeMatricesMatch": true,
+          "unexpectedMergeProperties": [],
+          "nestedOrWrappedTables": false,
+          "nativeTableReconstructionRequired": false,
+          "zeroTablesRequired": true
+        }
+      },
+      "rendered": {
+        "passed": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": true,
+            "expectedText": "Planning reference notes The first group contains plain reference notes without table borders. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD The first group is complete. The next group records separate delivery notes. Delivery reference notes Reference 007842 Approved amount 91.25 USD Reference 009163 Approved amount 52.60 USD Reference 004285 Approved amount 29.95 USD Keep both note groups in order and retain this complete final paragraph.",
+            "actualText": "Planning reference notes The first group contains plain reference notes without table borders. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD The first group is complete. The next group records separate delivery notes. Delivery reference notes Reference 007842 Approved amount 91.25 USD Reference 009163 Approved amount 52.60 USD Reference 004285 Approved amount 29.95 USD Keep both note groups in order and retain this complete final paragraph."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2g-english-multitable/after/rendered-outputs/english-two-groups-borderless-scan-result.pdf",
+        "pdfSha256": "0594a69bdace47dbd6b38078549b5cf323708de37715e7d909a2fe1f196abcae",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2g-english-multitable/after/english-two-groups-borderless-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "passed",
+      "totalDurationMs": 4172
+    }
+  ],
+  "reusedSourceReport": {
+    "path": "tmp\\pdfs\\phase3.2g-english-multitable\\sources-report.json",
+    "sha256": "7928a10f3f516110def0e785d543719a6e69f7847410148788fa1993721d590b"
+  },
+  "summary": {
+    "casesSelected": 4,
+    "fixturesValidated": 4,
+    "fixturesFailed": 0,
+    "routesTested": 4,
+    "passed": 2,
+    "failed": 2,
+    "errors": 0,
+    "allPassed": false
+  }
+}

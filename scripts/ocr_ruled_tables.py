@@ -1,4 +1,4 @@
-"""Conservative geometry for one fully ruled table from an existing OCR pass.
+"""Conservative geometry for bounded ruled tables from an existing OCR pass.
 
 This module never recognizes or corrects text. A successful result only moves
 the same TSV words into cells whose complete borders exist in the source image.
@@ -17,6 +17,7 @@ _MAX_COLUMNS = 8
 _MAX_ROWS = 40
 _MAX_PIXELS = 30_000_000
 _MAX_WORDS = 10_000
+_MIN_TABLE_GAP = 16
 _TSV_FIELDS = (
     "level", "page_num", "block_num", "par_num", "line_num", "word_num",
     "left", "top", "width", "height", "conf", "text",
@@ -225,7 +226,7 @@ def _pixmap_pixels(pixmap, np):
     return pixels
 
 
-def _detect_grid(pixels, cv2, np):
+def _detect_grids(pixels, cv2, np, *, max_tables: int):
     gray = pixels[:, :, 0] if pixels.shape[2] == 1 else cv2.cvtColor(pixels[:, :, :3], cv2.COLOR_RGB2GRAY)
     binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
     # Short seed rules locate connected candidates. Full-grid validation below
@@ -238,29 +239,52 @@ def _detect_grid(pixels, cv2, np):
     candidates = []
     for label in range(1, count):
         left, top, candidate_width, candidate_height, area = map(int, stats[label])
-        if candidate_width < 40 or candidate_height < 30 or area < 2 * (candidate_width + candidate_height):
+        # The page API also screens sparse partial second/third grids. Preserve
+        # the established single-table candidate floor for its compatibility API.
+        minimum_area = (2 if max_tables == 1 else 1) * (candidate_width + candidate_height)
+        if candidate_width < 40 or candidate_height < 30 or area < minimum_area:
             continue
         component = np.where(labels[top:top + candidate_height, left:left + candidate_width] == label,
                              255, 0).astype(np.uint8)
         # Any substantial connected rule structure is ambiguous until validated.
-        # Two grids, or a grid plus a second partial grid, must not become one.
+        # A grid plus a partial grid must not become one complete layout.
         local_horizontal = horizontal[top:top + candidate_height, left:left + candidate_width] & component
         local_vertical = vertical[top:top + candidate_height, left:left + candidate_width] & component
         if len(_bands(local_horizontal, 1, np)) < 2 or len(_bands(local_vertical, 0, np)) < 2:
             continue
+        if max_tables > 1 and (
+                np.count_nonzero(local_horizontal, axis=1).max() < candidate_width * 0.8
+                or np.count_nonzero(local_vertical, axis=0).max() < candidate_height * 0.8):
+            # Connected glyph strokes can have several axis bands. A grid seed
+            # also needs a substantial straight rule in both directions.
+            continue
         candidates.append((left, top, component, label))
-        if len(candidates) > 1:
+        if len(candidates) > max_tables:
             return None
-    if len(candidates) != 1:
+    if not candidates:
         return None
-    left, top, component, label = candidates[0]
-    grid = _grid(component, cv2, np)
-    if grid is None:
-        return None
-    xs = [left + position for position in grid[0]]
-    ys = [top + position for position in grid[1]]
-    rule_mask = labels == label
-    return xs, ys, rule_mask, rule_mask & (vertical != 0), rule_mask & (horizontal != 0), binary
+    candidates.sort(key=lambda candidate: candidate[1])
+    for first, second in zip(candidates, candidates[1:]):
+        # Require a clear horizontal band. Side-by-side, nested and overlapping
+        # structures are not an unambiguous top-to-bottom document flow.
+        if second[1] - (first[1] + first[2].shape[0]) < _MIN_TABLE_GAP:
+            return None
+    detected = []
+    for left, top, component, label in candidates:
+        grid = _grid(component, cv2, np)
+        if grid is None:
+            return None
+        xs = [left + position for position in grid[0]]
+        ys = [top + position for position in grid[1]]
+        rule_mask = labels == label
+        detected.append((xs, ys, rule_mask, rule_mask & (vertical != 0),
+                         rule_mask & (horizontal != 0), binary))
+    return detected
+
+
+def _detect_grid(pixels, cv2, np):
+    detected = _detect_grids(pixels, cv2, np, max_tables=1)
+    return detected[0] if detected is not None else None
 
 
 def prepare_ruled_table_ocr_image(pixmap) -> bytes | None:
@@ -271,17 +295,16 @@ def prepare_ruled_table_ocr_image(pixmap) -> bytes | None:
     whitened. Adjacent non-rule ink rejects preparation; the source is unchanged.
     The caller must keep the original pixmap for later cell reconstruction.
     """
-    try:
-        import cv2
-        import numpy as np
-    except ImportError:
-        return None
-    pixels = _pixmap_pixels(pixmap, np)
-    if pixels is None:
-        return None
-    detected = _detect_grid(pixels, cv2, np)
-    if detected is None:
-        return None
+    return _prepare_ruled_ocr_image(pixmap, max_tables=1)
+
+
+def prepare_ruled_page_ocr_image(pixmap) -> bytes | None:
+    """Prepare one or two vertically separated grids; reject the whole page if unsafe."""
+    return _prepare_ruled_ocr_image(pixmap, max_tables=2)
+
+
+def _safe_rule_erase_mask(pixels, detected, cv2, np, *, preserve_intersection_fringe: bool = False):
+    """Validate one grid independently, including its own rule widths and height."""
     _, _, rule_mask, vertical_mask, horizontal_mask, binary = detected
     fringe = np.ones((3, 3), dtype=np.uint8)
     erase = cv2.dilate(vertical_mask.astype(np.uint8), fringe) != 0
@@ -301,8 +324,17 @@ def prepare_ruled_table_ocr_image(pixmap) -> bytes | None:
     # Short marks disappear during morphology. They are not rule pixels merely
     # because they happen to lie inside the expanded rule mask.
     explained_ink = vertical_ink | (horizontal_ink & horizontal_fringe)
-    if np.any(erase & ink & ~explained_ink):
-        return None
+    unexplained = erase & ink & ~explained_ink
+    if np.any(unexplained):
+        if not preserve_intersection_fringe:
+            return None
+        # Scan resampling can leave isolated pixels at actual rule junctions.
+        # Preserve them byte-for-byte, including possible punctuation; never
+        # reclassify unexplained ink as a rule merely because it is near one.
+        junctions = cv2.dilate(horizontal_mask.astype(np.uint8), np.ones((7, 3), dtype=np.uint8)) != 0
+        if np.any(unexplained & ~junctions):
+            return None
+        erase &= ~unexplained
     # A touching glyph can join the rule component before morphological opening.
     # Reject local widening instead of treating such text as part of the rule.
     for x in detected[0]:
@@ -313,6 +345,28 @@ def prepare_ruled_table_ocr_image(pixmap) -> bytes | None:
         occupied = widths[on_rule & ~at_horizontal_rule]
         if occupied.size == 0 or int(occupied.max()) > int(np.median(occupied)):
             return None
+    return erase
+
+
+def _prepare_ruled_ocr_image(pixmap, *, max_tables: int) -> bytes | None:
+    try:
+        import cv2
+        import numpy as np
+    except ImportError:
+        return None
+    pixels = _pixmap_pixels(pixmap, np)
+    if pixels is None:
+        return None
+    detected = _detect_grids(pixels, cv2, np, max_tables=max_tables)
+    if detected is None:
+        return None
+    erase = np.zeros(pixels.shape[:2], dtype=bool)
+    for grid in detected:
+        grid_erase = _safe_rule_erase_mask(pixels, grid, cv2, np,
+                                         preserve_intersection_fringe=max_tables > 1)
+        if grid_erase is None:
+            return None
+        erase |= grid_erase
     cleaned = pixels.copy()
     cleaned[erase, :min(3, pixels.shape[2])] = 255
     if pixels.shape[2] == 3:
@@ -383,3 +437,129 @@ def build_ruled_table_layout(pixmap, tsv_text: str, transcript: str) -> dict | N
     if Counter(" ".join(emitted).split()) != Counter(transcript.split()):
         return None
     return result
+
+
+def _page_prose_lines(transcript: str, regions: list[list[_Word]]) -> list[list[str]] | None:
+    """Map ordered regions to exact raw prose spans; reorder only table words."""
+    transcript = transcript.replace("\r\n", "\n").replace("\r", "\n")
+    tokens = list(re.finditer(r"\S+", transcript))
+    table_spans = []
+    offset = 0
+    for index, words in enumerate(regions):
+        chunk = tokens[offset:offset + len(words)]
+        actual = [token.group() for token in chunk]
+        expected = [word.text for word in words]
+        if index % 2 == 0:
+            if actual != expected:
+                return None
+        else:
+            if not chunk or Counter(actual) != Counter(expected):
+                return None
+            first_line_start = transcript.rfind("\n", 0, chunk[0].start()) + 1
+            last_line_end = transcript.find("\n", chunk[-1].end())
+            if last_line_end == -1:
+                last_line_end = len(transcript)
+            if (transcript[first_line_start:chunk[0].start()].strip()
+                    or transcript[chunk[-1].end():last_line_end].strip()):
+                return None
+            if table_spans and first_line_start <= table_spans[-1][1]:
+                return None
+            table_spans.append((first_line_start, last_line_end))
+        offset += len(words)
+    if offset != len(tokens):
+        return None
+    result = []
+    start = 0
+    for first, last in table_spans:
+        result.append(transcript[start:first].splitlines())
+        start = last + 1
+    result.append(transcript[start:].splitlines())
+    if len(result) != (len(regions) + 1) // 2:
+        return None
+    for index, lines in enumerate(result):
+        if " ".join(lines).split() != [word.text for word in regions[index * 2]]:
+            return None
+    return result
+
+
+def build_ruled_page_layout(pixmap, tsv_text: str, transcript: str) -> dict | None:
+    """Return exact prose and one or two clean grids in source reading order.
+
+    Paragraph blocks, including empty ones, alternate with native table data.
+    This is all-or-nothing: every word must belong to one ordered region, every
+    grid must validate, and every output token must occur in the same OCR pass.
+    """
+    try:
+        import cv2
+        import numpy as np
+    except ImportError:
+        return None
+    pixels = _pixmap_pixels(pixmap, np)
+    if pixels is None:
+        return None
+    words = _parse_words(tsv_text, transcript, pixels.shape[1], pixels.shape[0])
+    if words is None:
+        return None
+    grids = _detect_grids(pixels, cv2, np, max_tables=2)
+    if grids is None:
+        return None
+    cells = [[[[] for _ in range(len(grid[0]) - 1)] for _ in range(len(grid[1]) - 1)]
+             for grid in grids]
+    regions: list[list[_Word]] = [[] for _ in range(2 * len(grids) + 1)]
+    prose_limits = [(0, grids[0][1][0] - 2)]
+    prose_limits.extend((first[1][-1] + 2, second[1][0] - 2)
+                        for first, second in zip(grids, grids[1:]))
+    prose_limits.append((grids[-1][1][-1] + 2, pixels.shape[0]))
+    previous_region = 0
+    for word in words:
+        prose_matches = [index for index, (top, bottom) in enumerate(prose_limits)
+                         if word.top >= top and word.bottom <= bottom]
+        if len(prose_matches) == 1:
+            region = prose_matches[0] * 2
+        else:
+            matches = []
+            for index, grid in enumerate(grids):
+                xs, ys = grid[:2]
+                columns = [column for column in range(len(xs) - 1)
+                           if word.left >= xs[column] - 2 and word.right <= xs[column + 1] + 2]
+                rows = [row for row in range(len(ys) - 1)
+                        if word.top >= ys[row] - 2 and word.bottom <= ys[row + 1] + 2]
+                if len(columns) == 1 and len(rows) == 1:
+                    matches.append((index, rows[0], columns[0]))
+            if len(matches) != 1:
+                return None
+            table, row, column = matches[0]
+            cells[table][row][column].append(word)
+            region = table * 2 + 1
+        # A recognized block cannot jump back above a later table or paragraph.
+        # Within one table, column-major TSV ordering is allowed and repaired.
+        if region < previous_region:
+            return None
+        previous_region = region
+        regions[region].append(word)
+    if any(not regions[index * 2 + 1] for index in range(len(grids))):
+        return None
+    prose = _page_prose_lines(transcript, regions)
+    if prose is None:
+        return None
+    blocks = []
+    emitted = []
+    for index, grid in enumerate(grids):
+        lines = prose[index]
+        blocks.append({"kind": "paragraphs", "lines": lines})
+        emitted.extend(lines)
+        rows = [[_cell_text(cell) for cell in row] for row in cells[index]]
+        if any(cell is None for row in rows for cell in row):
+            return None
+        xs = grid[0]
+        blocks.append({
+            "kind": "table",
+            "rows": rows,
+            "columnWidths": [(second - first) / (xs[-1] - xs[0]) for first, second in zip(xs, xs[1:])],
+        })
+        emitted.extend(cell for row in rows for cell in row)
+    blocks.append({"kind": "paragraphs", "lines": prose[-1]})
+    emitted.extend(prose[-1])
+    if Counter(" ".join(emitted).split()) != Counter(transcript.split()):
+        return None
+    return {"blocks": blocks}

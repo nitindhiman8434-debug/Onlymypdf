@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E and English Word tables 3.2F complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F and two-table pages 3.2G complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -93,9 +93,24 @@ render and visual checks. The 97 focused automated tests, four existing English
 HTTP conversions and two unreadable-input checks pass. See
 [the implementation, evidence and boundaries](PHASE_3_2F_ENGLISH_WORD_TABLES.md).
 
-**Next bounded English task:** support two separate clean ruled tables on one
-page with paragraphs before, between and after them. Hindi pages and
-Hindi-specific improvements remain on hold.
+## Task 3.2G: two separate native tables on one scanned page
+
+Complete locally: the frozen four-case corpus improved from **1/4 to 4/4**.
+Two complete vertically separated grids become separate editable Word tables;
+full prose before, between and after them retains its order. The portrait,
+wrapped-description and landscape cases pass exact table matrices, identifiers,
+amounts and independently rendered page checks. The borderless control invents
+no tables. All four final pages pass visual review; source typography and exact
+spacing are not claimed. The 139 focused tests, eight existing HTTP conversions,
+two unreadable-input rejections and last-page regression pass. See
+[the implementation, evidence and limits](PHASE_3_2G_ENGLISH_MULTITABLE_WORD.md).
+
+**Next bounded English task (3.2H):** add the verified 3.2D–G OCR results to the
+local English `/benchmarks` page, preserving the historical baseline and stating
+each report's dates, controlled fixture counts and unsupported-layout limits.
+Include data-contract, structured-data, responsive and build checks. This is
+evidence presentation, with no conversion-engine change or public deployment.
+Hindi pages and Hindi-specific improvements remain on hold.
 Real-customer feedback and deferred production launch gates remain open. Selected
 fixture passes do not establish universal accuracy or production capacity.
 No paid deployment was made for these tasks.

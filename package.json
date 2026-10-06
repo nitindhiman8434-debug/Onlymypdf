@@ -34,6 +34,8 @@
     "phase3.2f:english-table": "python scripts/phase3-english-table-corpus.py",
     "phase3.2f:table-tests": "python -m unittest discover -s scripts -p test_ocr*table*.py",
     "phase3.2f:validator-tests": "python -m unittest discover -s scripts -p test_phase3_english_table_corpus.py",
+    "phase3.2g:english-multitable": "python scripts/phase3-english-multitable-corpus.py",
+    "phase3.2g:validator-tests": "python -m unittest discover -s scripts -p test_phase3_english_multitable_corpus.py",
     "worker:conversions": "npx tsx workers/conversion-worker.ts",
     "worker:watchdog": "npx tsx workers/conversion-watchdog.ts",
     "phase1:corpus": "npx tsx scripts/phase1-corpus.ts",

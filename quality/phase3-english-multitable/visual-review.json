@@ -1,0 +1,534 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.2G",
+  "title": "Final two-table English document visual and body-order review",
+  "agent": "/root/english_table_corpus",
+  "reviewedAtUtc": "2026-10-06T21:00:41.106456+00:00",
+  "status": "passed",
+  "reviewMethod": "Agent direct view_image inspection of all four final output PNG pages against the four source PNG pages previously inspected in this session, plus independent raw word/document.xml parsing of direct body paragraphs and tables. This is not human sign-off.",
+  "pagesInspected": 4,
+  "sourcePagesCompared": 4,
+  "reports": {
+    "final": {
+      "path": "quality/phase3-english-multitable/final-report.json",
+      "sha256": "4aa5be261180688addee93136224d3e9b737de2593ce128363c186213bd53785"
+    },
+    "sources": {
+      "path": "quality/phase3-english-multitable/sources-report.json",
+      "sha256": "7928a10f3f516110def0e785d543719a6e69f7847410148788fa1993721d590b"
+    },
+    "sourceVisualReview": {
+      "path": "quality/phase3-english-multitable/source-visual-review.json",
+      "sha256": "b87defb37b8d6d93b54b288b6f5f38ea4b7c1cf9f44b3f316d777e844e91ed51"
+    },
+    "baseline": {
+      "path": "quality/phase3-english-multitable/baseline-report.json",
+      "sha256": "b0cd4e55dc6a4e3824e3d8127e68bbd14b03afe7a3666bf0e449d7e71f913e57"
+    }
+  },
+  "automatedFinalSummary": {
+    "casesSelected": 4,
+    "fixturesValidated": 4,
+    "fixturesFailed": 0,
+    "routesTested": 4,
+    "passed": 4,
+    "failed": 0,
+    "errors": 0,
+    "allPassed": true
+  },
+  "blockingFindings": [],
+  "nonblockingDifferences": [
+    "Headings and column headers use smaller regular-weight text instead of the source bold styling.",
+    "Rule weights, row heights, margins and paragraph spacing differ from the source while content remains readable and complete. The landscape inter-table prose is more tightly spaced.",
+    "Wrapped-description line-break locations differ; both descriptions remain entirely within their respective table cells.",
+    "The negative memo tab-aligned amount columns become inline prose; exact source tab positioning is outside the gate."
+  ],
+  "cases": [
+    {
+      "caseId": "english-two-tables-portrait-scan",
+      "status": "passed",
+      "sourcePreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-portrait-scan-source-preview-page-1.png"
+      ],
+      "outputPreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/final/english-two-tables-portrait-scan-output-preview-page-1.png"
+      ],
+      "outputDocxPath": "tmp/pdfs/phase3.2g-english-multitable/final/english-two-tables-portrait-scan-result.docx",
+      "outputDocxSha256": "fdeb909877c2fbdc6c81c91645d66e9271b6f319a15b06bc62b6cdd41c6615b7",
+      "renderedPdfPath": "tmp/pdfs/phase3.2g-english-multitable/final/rendered-outputs/english-two-tables-portrait-scan-result.pdf",
+      "renderedPdfSha256": "73d7d54f18393d766a4212c81a5a0471a52fe64fc981e295a2028c1484f8b401",
+      "pagesVisuallyInspected": 1,
+      "visualFindings": [
+        "Two visibly separate four-column tables remain on one portrait page, each with the complete header and three item rows.",
+        "The Planning opening paragraph precedes the first table; its complete total/separating paragraph and Delivery heading lie between the two tables; the final Delivery paragraph follows the second table.",
+        "The repeated Review service entries remain distinct: 00632 is associated with 135.30 in the first table, and 00456 with 145.30 in the second.",
+        "Leading-zero IDs, quantities and decimal amounts are readable without clipping, cell overlap, duplicated table content or an extra page."
+      ],
+      "independentRawXmlEvidence": {
+        "documentXmlSha256": "9e556b787bd773125ef1f6010341d17eb57f9953f57939f097a5697f4ae6242b",
+        "directBodyTableCount": 2,
+        "nonemptyBodyBlockKinds": [
+          "paragraph",
+          "paragraph",
+          "table",
+          "paragraph",
+          "paragraph",
+          "table",
+          "paragraph"
+        ],
+        "completeBodyBlocksMatchLiteralSource": true,
+        "blocks": [
+          {
+            "kind": "paragraph",
+            "text": "Planning services"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Planning invoice 004218 covers the completed work shown in the first table."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00421",
+                "Analysis package",
+                "2",
+                "240.50"
+              ],
+              [
+                "00632",
+                "Review service",
+                "3",
+                "135.30"
+              ],
+              [
+                "00874",
+                "Archive support",
+                "1",
+                "19.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Planning total is 395.75 USD. The next invoice covers a separate delivery stage."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Delivery services"
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00235",
+                "Delivery package",
+                "2",
+                "320.50"
+              ],
+              [
+                "00456",
+                "Review service",
+                "3",
+                "145.30"
+              ],
+              [
+                "00678",
+                "Final support",
+                "1",
+                "49.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Delivery total is 515.75 USD. Keep both invoices in order and retain this final paragraph."
+          }
+        ]
+      },
+      "automatedPageGeometry": [
+        {
+          "page": 1,
+          "expectedWidthPoints": 612,
+          "expectedHeightPoints": 792,
+          "actual": {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          },
+          "tolerancePoints": 1,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "caseId": "english-two-tables-wrapped-scan",
+      "status": "passed",
+      "sourcePreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-wrapped-scan-source-preview-page-1.png"
+      ],
+      "outputPreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/final/english-two-tables-wrapped-scan-output-preview-page-1.png"
+      ],
+      "outputDocxPath": "tmp/pdfs/phase3.2g-english-multitable/final/english-two-tables-wrapped-scan-result.docx",
+      "outputDocxSha256": "49ddb16f4212cf678f3e9a1f93bd41848e07cbf2e52f3d8b00f274d4c3be463c",
+      "renderedPdfPath": "tmp/pdfs/phase3.2g-english-multitable/final/rendered-outputs/english-two-tables-wrapped-scan-result.pdf",
+      "renderedPdfSha256": "b3b23059fe796edbac680088660266275fe4cdd80dad8877ea448a4c5fbe7bcc",
+      "pagesVisuallyInspected": 1,
+      "visualFindings": [
+        "Two separate tables remain on one portrait page with the complete Research separating paragraph and Project delivery heading visibly between them.",
+        "The first-table research description wraps across two lines inside the 00542 row with quantity 2 and 280.50; the second-table delivery description wraps across two lines inside the 00146 row with quantity 2 and 420.50.",
+        "Continuation lines remain inside their description cells, above their own row border, without spilling into amount cells or a different table.",
+        "The two Review service rows retain their distinct IDs and amounts; the complete final 665.75 paragraph remains below the second table. No clipping or overlap is visible."
+      ],
+      "independentRawXmlEvidence": {
+        "documentXmlSha256": "648366330cc507dfd0afe8bb6006dccf42541ce05360964717bf4de7c78d3f4b",
+        "directBodyTableCount": 2,
+        "nonemptyBodyBlockKinds": [
+          "paragraph",
+          "paragraph",
+          "table",
+          "paragraph",
+          "paragraph",
+          "table",
+          "paragraph"
+        ],
+        "completeBodyBlocksMatchLiteralSource": true,
+        "blocks": [
+          {
+            "kind": "paragraph",
+            "text": "Research services"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Research invoice 005329 includes a complete description inside its first item cell."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00542",
+                "Monthly analysis and reporting package for the research team",
+                "2",
+                "280.50"
+              ],
+              [
+                "00763",
+                "Review service",
+                "3",
+                "165.30"
+              ],
+              [
+                "00985",
+                "Archive support",
+                "1",
+                "29.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Research total is 475.75 USD. The delivery invoice below belongs to the next stage."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Project delivery services"
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00146",
+                "Final delivery service and document preparation for the project",
+                "2",
+                "420.50"
+              ],
+              [
+                "00357",
+                "Review service",
+                "3",
+                "185.30"
+              ],
+              [
+                "00579",
+                "Final support",
+                "1",
+                "59.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Delivery total is 665.75 USD. Keep each long description with its own identifier and amount."
+          }
+        ]
+      },
+      "automatedPageGeometry": [
+        {
+          "page": 1,
+          "expectedWidthPoints": 612,
+          "expectedHeightPoints": 792,
+          "actual": {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          },
+          "tolerancePoints": 1,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "caseId": "english-two-tables-landscape-scan",
+      "status": "passed",
+      "sourcePreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-landscape-scan-source-preview-page-1.png"
+      ],
+      "outputPreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/final/english-two-tables-landscape-scan-output-preview-page-1.png"
+      ],
+      "outputDocxPath": "tmp/pdfs/phase3.2g-english-multitable/final/english-two-tables-landscape-scan-result.docx",
+      "outputDocxSha256": "4160dffd0fe19a381bd5022cc8e5675353114f1bd55ddee984bcec082ab3d27c",
+      "renderedPdfPath": "tmp/pdfs/phase3.2g-english-multitable/final/rendered-outputs/english-two-tables-landscape-scan-result.pdf",
+      "renderedPdfSha256": "9022d07f16b7efffd6b96c6acf8a5b1f63e119f9d0ec7cf917abee78f50bb210",
+      "pagesVisuallyInspected": 1,
+      "visualFindings": [
+        "Both ruled four-column tables remain on one landscape page with complete header-plus-three-row content.",
+        "The full 385.75 separating paragraph and Landscape delivery heading remain between the two tables; the 835.75 final paragraph is below the second table.",
+        "The space directly after the first table is tighter than the source but its following paragraph remains readable and does not overlap the table rule.",
+        "IDs, amounts and row associations remain clear. The final paragraph is complete with substantial blank page space below; no extra page, clipping or overlap is visible."
+      ],
+      "independentRawXmlEvidence": {
+        "documentXmlSha256": "34e86ea9ab30d564d42d5b2c3f82e5d0c5f0b092054d32f4bd864255e42eb063",
+        "directBodyTableCount": 2,
+        "nonemptyBodyBlockKinds": [
+          "paragraph",
+          "paragraph",
+          "table",
+          "paragraph",
+          "paragraph",
+          "table",
+          "paragraph"
+        ],
+        "completeBodyBlocksMatchLiteralSource": true,
+        "blocks": [
+          {
+            "kind": "paragraph",
+            "text": "Landscape planning services"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Planning invoice 006431 lists the first group of completed services."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00124",
+                "Planning package",
+                "2",
+                "220.50"
+              ],
+              [
+                "00345",
+                "Review service",
+                "3",
+                "125.30"
+              ],
+              [
+                "00567",
+                "Record storage",
+                "1",
+                "39.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Planning total is 385.75 USD. The next invoice records a separate delivery stage."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Landscape delivery services"
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00718",
+                "Delivery package",
+                "2",
+                "520.50"
+              ],
+              [
+                "00929",
+                "Review service",
+                "3",
+                "245.30"
+              ],
+              [
+                "00241",
+                "Final support",
+                "1",
+                "69.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Delivery total is 835.75 USD. This final paragraph belongs after both tables on this page."
+          }
+        ]
+      },
+      "automatedPageGeometry": [
+        {
+          "page": 1,
+          "expectedWidthPoints": 792,
+          "expectedHeightPoints": 612,
+          "actual": {
+            "widthPoints": 792.0,
+            "heightPoints": 612.0
+          },
+          "tolerancePoints": 1,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "caseId": "english-two-groups-borderless-scan",
+      "status": "passed",
+      "sourcePreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-groups-borderless-scan-source-preview-page-1.png"
+      ],
+      "outputPreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/final/english-two-groups-borderless-scan-output-preview-page-1.png"
+      ],
+      "outputDocxPath": "tmp/pdfs/phase3.2g-english-multitable/final/english-two-groups-borderless-scan-result.docx",
+      "outputDocxSha256": "4cb592d966b7db8cf0ab5fbea132eb50ca4c34fc5825325d35fbf2ae09cd5258",
+      "renderedPdfPath": "tmp/pdfs/phase3.2g-english-multitable/final/rendered-outputs/english-two-groups-borderless-scan-result.pdf",
+      "renderedPdfSha256": "bdec82f64234a2a98265f1ff64f9fb307a08e02783e8e6bc7ae922e51cedde43",
+      "pagesVisuallyInspected": 1,
+      "visualFindings": [
+        "Both reference-note groups remain borderless prose with no visible invented table or rule.",
+        "The complete separating paragraph and Delivery reference heading preserve the two-group order; all six reference/amount pairs remain readable in their own lines.",
+        "The initial explanatory paragraph and complete final paragraph appear once. No clipping, overlap, duplicate group or extra page is visible."
+      ],
+      "independentRawXmlEvidence": {
+        "documentXmlSha256": "c57d4527c39d3f6e5b195a2192b6f22f9f423dd0bfa188717046bb4af8eb7f9e",
+        "directBodyTableCount": 0,
+        "nonemptyBodyBlockKinds": [
+          "paragraph",
+          "paragraph",
+          "paragraph",
+          "paragraph",
+          "paragraph",
+          "paragraph",
+          "paragraph",
+          "paragraph",
+          "paragraph",
+          "paragraph",
+          "paragraph"
+        ],
+        "completeBodyBlocksMatchLiteralSource": true,
+        "blocks": [
+          {
+            "kind": "paragraph",
+            "text": "Planning reference notes"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The first group contains plain reference notes without table borders."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 006731 Approved amount 81.25 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 008952 Approved amount 42.60 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 003174 Approved amount 19.95 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The first group is complete. The next group records separate delivery notes."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Delivery reference notes"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 007842 Approved amount 91.25 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 009163 Approved amount 52.60 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 004285 Approved amount 29.95 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Keep both note groups in order and retain this complete final paragraph."
+          }
+        ]
+      },
+      "automatedPageGeometry": [
+        {
+          "page": 1,
+          "expectedWidthPoints": 612,
+          "expectedHeightPoints": 792,
+          "actual": {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          },
+          "tolerancePoints": 1,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Only the four referenced synthetic English one-page artifacts were reviewed.",
+    "No pixel-identical typography, arbitrary messy-scan quality, merged-cell, side-by-side-table, borderless-invoice or other-language support is claimed.",
+    "Native editability is supported by independent XML checks; page dimensions are supported by LibreOffice PDF geometry checks rather than inferred from image appearance alone."
+  ]
+}

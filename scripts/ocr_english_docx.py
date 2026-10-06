@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import unicodedata
 import os
+import math
+from collections import Counter
 from pathlib import Path
 import shutil
 import subprocess
@@ -51,8 +53,8 @@ def recognize_ocr_transcripts(source_pdf: str, *, language: str, dpi: int,
             pixmap = page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB, alpha=False)
             prepared_image = None
             if page_layouts is not None:
-                from ocr_ruled_tables import prepare_ruled_table_ocr_image
-                prepared_image = prepare_ruled_table_ocr_image(pixmap)
+                from ocr_ruled_tables import prepare_ruled_page_ocr_image
+                prepared_image = prepare_ruled_page_ocr_image(pixmap)
             if prepared_image is None:
                 pixmap.save(image_path)
             else:
@@ -84,12 +86,12 @@ def recognize_ocr_transcripts(source_pdf: str, *, language: str, dpi: int,
             if page_layouts is not None:
                 layout = None
                 if output_tsv.is_file() and supports_latin_ocr([transcript]):
-                    from ocr_ruled_tables import build_ruled_table_layout
+                    from ocr_ruled_tables import build_ruled_page_layout
                     try:
                         tsv_text = output_tsv.read_text(encoding="utf-8")
                     except UnicodeError:
                         tsv_text = ""  # Invalid optional geometry must not discard valid TXT.
-                    layout = build_ruled_table_layout(pixmap, tsv_text, transcript)
+                    layout = build_ruled_page_layout(pixmap, tsv_text, transcript)
                 page_layouts.append(layout)
     return transcripts
 
@@ -106,6 +108,47 @@ def validate_page_transcripts(transcripts: list[str], page_count: int) -> None:
     for page_number, text in enumerate(transcripts, 1):
         if not text.strip():
             raise EmptyOcrPageError(page_number)
+
+
+def _validated_layout_blocks(layout: dict | None, transcript: str) -> list[dict] | None:
+    """Validate all blocks before writing; keep the earlier one-table contract."""
+    if layout is None:
+        return None
+    blocks = layout.get("blocks") if "blocks" in layout else [
+        {"kind": "paragraphs", "lines": layout.get("before")},
+        {"kind": "table", "rows": layout.get("rows"), "columnWidths": layout.get("columnWidths")},
+        {"kind": "paragraphs", "lines": layout.get("after")},
+    ]
+    if not isinstance(blocks, list) or not blocks:
+        raise ValueError("OCR table layout requires ordered blocks")
+    texts, tables = [], 0
+    for block in blocks:
+        if not isinstance(block, dict):
+            raise ValueError("Invalid OCR layout block")
+        if block.get("kind") == "paragraphs":
+            lines = block.get("lines")
+            if not isinstance(lines, list) or not all(isinstance(line, str) for line in lines):
+                raise ValueError("Invalid OCR paragraph block")
+            texts.extend(lines)
+        elif block.get("kind") == "table":
+            rows, widths = block.get("rows"), block.get("columnWidths")
+            if (not isinstance(rows, list) or not 2 <= len(rows) <= 40
+                    or not isinstance(widths, list) or not 2 <= len(widths) <= 8
+                    or any(not isinstance(row, list) or len(row) != len(widths)
+                           or not all(isinstance(cell, str) for cell in row) for row in rows)
+                    or any(not isinstance(width, (float, int)) or not math.isfinite(width)
+                           or width <= 0 for width in widths)
+                    or not math.isclose(sum(widths), 1, abs_tol=1e-6)):
+                raise ValueError("Invalid OCR table matrix or column widths")
+            texts.extend(cell for row in rows for cell in row)
+            tables += 1
+        else:
+            raise ValueError("Unknown OCR layout block kind")
+    if not 1 <= tables <= 2:
+        raise ValueError("OCR layout must contain one or two tables")
+    if Counter(" ".join(texts).split()) != Counter(transcript.split()):
+        raise ValueError("OCR layout must preserve every recognized word")
+    return blocks
 
 
 def write_english_ocr_docx(source_pdf: str, output_path: str, transcripts: list[str], *,
@@ -129,6 +172,8 @@ def write_english_ocr_docx(source_pdf: str, output_path: str, transcripts: list[
             raise ValueError("The readable English OCR fallback requires Latin-script text")
         if page_layouts and len(page_layouts) != len(transcripts):
             raise ValueError("OCR table layout count does not match the source page count")
+        blocks_by_page = [_validated_layout_blocks(layout, transcript)
+                          for layout, transcript in zip(page_layouts, transcripts)] if page_layouts else [None] * len(transcripts)
 
         word = Document()
         normal = word.styles["Normal"]
@@ -152,15 +197,13 @@ def write_english_ocr_docx(source_pdf: str, output_path: str, transcripts: list[
                     paragraph.paragraph_format.keep_with_next = False
                     paragraph.paragraph_format.widow_control = True
 
-            layout = page_layouts[page_index] if page_layouts else None
-            if layout:
-                add_lines(layout["before"])
-                rows = layout["rows"]
+            def add_table(block):
+                rows = block["rows"]
                 table = word.add_table(rows=len(rows), cols=len(rows[0]))
                 table.style = "Table Grid"
                 table.autofit = False
                 usable_width = section.page_width.pt - section.left_margin.pt - section.right_margin.pt
-                for index, fraction in enumerate(layout["columnWidths"]):
+                for index, fraction in enumerate(block["columnWidths"]):
                     table.columns[index].width = Pt(usable_width * fraction)
                     for cell in table.columns[index].cells:
                         cell.width = Pt(usable_width * fraction)
@@ -172,7 +215,21 @@ def write_english_ocr_docx(source_pdf: str, output_path: str, transcripts: list[
                         for paragraph in cell.paragraphs:
                             paragraph.paragraph_format.space_after = Pt(2)
                             paragraph.paragraph_format.keep_with_next = False
-                add_lines(layout["after"])
+
+            blocks = blocks_by_page[page_index]
+            if blocks:
+                previous_was_table = False
+                for block in blocks:
+                    if block["kind"] == "paragraphs":
+                        add_lines(block["lines"])
+                        if block["lines"]:
+                            previous_was_table = False
+                    else:
+                        # Word can coalesce consecutive tables without a separator.
+                        if previous_was_table:
+                            word.add_paragraph()
+                        add_table(block)
+                        previous_was_table = True
                 continue
 
             # Keep the exact original lines when no confident ruled table exists.

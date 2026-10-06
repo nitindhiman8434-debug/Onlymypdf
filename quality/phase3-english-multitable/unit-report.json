@@ -1,0 +1,49 @@
+{
+  "phase": "3.2G",
+  "verifiedAtUtc": "2026-10-06T20:59:01.242074+00:00",
+  "results": [
+    {
+      "pattern": "test_ocr_ruled_tables.py",
+      "tests": 49,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_ocr_table_integration.py",
+      "tests": 8,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_ocr_english_docx.py",
+      "tests": 22,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_phase3_english_multitable_corpus.py",
+      "tests": 17,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_phase3_english_table_corpus.py",
+      "tests": 19,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_phase3_english_word_corpus.py",
+      "tests": 24,
+      "passed": true,
+      "exitCode": 0
+    }
+  ],
+  "tests": 139,
+  "allPassed": true,
+  "productionSha256": {
+    "ocr_ruled_tables.py": "f7120a137c98b67000eabc3b25057cf90fa8a4d4eec6334c31862c5ef8922112",
+    "ocr_english_docx.py": "6196752efa447241448ba24a600725a5b8f7b86e49a4abebb5bb3d3824f94aee",
+    "pdf-to-docx.py": "47ed3b59349edf769cbf6bcd7081a5ff2f9ae94a33c1e03c92d597c1874a461f"
+  }
+}

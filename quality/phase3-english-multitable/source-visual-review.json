@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.2G",
+  "title": "Frozen multitable source visual inspection",
+  "agent": "/root/english_table_corpus",
+  "reviewedAtUtc": "2026-10-06T20:51:35.538985+00:00",
+  "status": "passed",
+  "reviewMethod": "Agent direct inspection of every source preview PNG through view_image; no HTTP conversion was run.",
+  "sourceReport": {
+    "path": "tmp/pdfs/phase3.2g-english-multitable/sources-report.json",
+    "sha256": "7928a10f3f516110def0e785d543719a6e69f7847410148788fa1993721d590b"
+  },
+  "pagesInspected": 4,
+  "blockingFindings": [],
+  "cases": [
+    {
+      "caseId": "english-two-tables-portrait-scan",
+      "status": "passed",
+      "sourcePreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-portrait-scan-source-preview-page-1.png"
+      ],
+      "findings": [
+        "Two separate ruled header-plus-three-row tables remain on one portrait page.",
+        "Planning and Delivery headings distinguish the tables; complete prose is visible before, between and after both.",
+        "Repeated Review service descriptions retain distinct row IDs and amounts. No clipping or overlap is visible."
+      ]
+    },
+    {
+      "caseId": "english-two-tables-wrapped-scan",
+      "status": "passed",
+      "sourcePreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-wrapped-scan-source-preview-page-1.png"
+      ],
+      "findings": [
+        "Two separate ruled tables remain on one portrait page.",
+        "The long research description wraps inside the first table and the long delivery description wraps inside the second; each remains with its own ID, quantity and amount.",
+        "The complete separating paragraph and final paragraph are readable; rules do not touch or clip text."
+      ]
+    },
+    {
+      "caseId": "english-two-tables-landscape-scan",
+      "status": "passed",
+      "sourcePreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-tables-landscape-scan-source-preview-page-1.png"
+      ],
+      "findings": [
+        "Both distinct ruled tables fit on one landscape page with ample whitespace below the final paragraph.",
+        "The full inter-table paragraph lies in a substantial open gap; IDs and amounts remain clearly associated with each row.",
+        "No clipping, table spillover or extra page is visible."
+      ]
+    },
+    {
+      "caseId": "english-two-groups-borderless-scan",
+      "status": "passed",
+      "sourcePreviewPaths": [
+        "tmp/pdfs/phase3.2g-english-multitable/sources/english-two-groups-borderless-scan-source-preview-page-1.png"
+      ],
+      "findings": [
+        "Two titled reference-note groups are visibly borderless, with tab-aligned amounts and no table ruling.",
+        "The complete paragraph between note groups is visible, as are the opening and final paragraphs.",
+        "All six reference/amount lines are readable in the intended group order."
+      ]
+    }
+  ],
+  "limitations": [
+    "Source validity does not establish conversion quality.",
+    "This is agent visual inspection, not human sign-off."
+  ]
+}

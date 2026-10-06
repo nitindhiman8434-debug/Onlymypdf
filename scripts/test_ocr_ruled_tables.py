@@ -11,7 +11,12 @@ from unittest.mock import patch
 import cv2
 import numpy as np
 
-from ocr_ruled_tables import build_ruled_table_layout, prepare_ruled_table_ocr_image
+from ocr_ruled_tables import (
+    build_ruled_page_layout,
+    build_ruled_table_layout,
+    prepare_ruled_page_ocr_image,
+    prepare_ruled_table_ocr_image,
+)
 
 
 HEADER = "level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext"
@@ -278,6 +283,238 @@ class RuledTableLayoutTests(unittest.TestCase):
         self.image[:] = 255
         cv2.putText(self.image, "Plain paragraph", (80, 200), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
         self.assertIsNone(self.prepare())
+
+
+class RuledPageLayoutTests(unittest.TestCase):
+    word = staticmethod(RuledTableLayoutTests.word)
+    draw_grid = RuledTableLayoutTests.draw_grid
+
+    def setUp(self) -> None:
+        self.image = np.full((1000, 800, 3), 255, dtype=np.uint8)
+        self.first_xs, self.first_ys = [80, 240, 560], [150, 220, 290, 360]
+        self.second_xs, self.second_ys = [100, 300, 640], [580, 650, 740]
+        self.draw_grid(self.first_xs, self.first_ys)
+        self.draw_grid(self.second_xs, self.second_ys)
+        self.words = [
+            self.word("Opening", 80, 60, 85, line=1),
+            self.word("Code", 92, 170, 45, line=2),
+            self.word("0019", 92, 235, 45, line=3),
+            self.word("Amount", 258, 170, 70, line=4),
+            self.word("14.25", 258, 235, 55, line=5),
+            self.word("14.25", 258, 305, 55, line=6),
+            self.word("Between", 100, 450, 75, line=7),
+            self.word("tables", 190, 450, 60, line=7, number=2),
+            self.word("Service", 115, 595, 70, line=8),
+            self.word("Long", 115, 665, 45, line=9),
+            self.word("service", 115, 690, 65, line=10),
+            self.word("Amount", 320, 595, 70, line=11),
+            self.word("14.25", 320, 665, 55, line=12),
+            self.word("Complete", 80, 810, 90, line=13),
+            self.word("0019", 190, 810, 45, line=13, number=2),
+        ]
+
+    def pixmap(self):
+        return SimpleNamespace(width=self.image.shape[1], height=self.image.shape[0],
+                               n=self.image.shape[2], samples=self.image.tobytes())
+
+    def inputs(self, *, words=None, transcript=None):
+        records = self.words if words is None else words
+        tsv = HEADER + "\n" + "\n".join("\t".join(map(str, row)) for row in records)
+        if transcript is None:
+            lines = {}
+            for row in records:
+                lines.setdefault(tuple(row[1:5]), []).append(row[-1])
+            transcript = "\n".join(" ".join(line) for line in lines.values())
+        return tsv, transcript
+
+    def recognize(self, **options):
+        return build_ruled_page_layout(self.pixmap(), *self.inputs(**options))
+
+    def test_two_grids_keep_independent_widths_repeats_empty_cells_and_wrapping(self) -> None:
+        layout = self.recognize()
+        self.assertIsNotNone(layout)
+        blocks = layout["blocks"]
+        self.assertEqual([block["kind"] for block in blocks],
+                         ["paragraphs", "table", "paragraphs", "table", "paragraphs"])
+        self.assertEqual(blocks[0]["lines"], ["Opening"])
+        self.assertEqual(blocks[1]["rows"], [["Code", "Amount"], ["0019", "14.25"], ["", "14.25"]])
+        self.assertEqual(blocks[2]["lines"], ["Between tables"])
+        self.assertEqual(blocks[3]["rows"], [["Service", "Amount"], ["Long service", "14.25"]])
+        self.assertEqual(blocks[4]["lines"], ["Complete 0019"])
+        self.assertAlmostEqual(blocks[1]["columnWidths"][0], 1 / 3)
+        self.assertAlmostEqual(blocks[3]["columnWidths"][0], 10 / 27)
+        emitted = []
+        for block in blocks:
+            emitted.extend(block["lines"] if block["kind"] == "paragraphs"
+                           else [cell for row in block["rows"] for cell in row])
+        self.assertEqual(Counter(" ".join(emitted).split()), Counter(row[-1] for row in self.words))
+
+    def test_raw_prose_before_between_after_is_exact_when_table_tokens_reorder(self) -> None:
+        transcript = ("  Opening   \r\n\r\nCode Amount\r\n0019 14.25\r\n14.25\r\n"
+                      "\r\n Between   tables  \r\n\r\nService Amount\r\nLong 14.25\r\nservice\r\n"
+                      "\r\nComplete   0019  \r\n\r\n")
+        layout = self.recognize(transcript=transcript)
+        self.assertIsNotNone(layout)
+        self.assertEqual(layout["blocks"][0]["lines"], ["  Opening   ", ""])
+        self.assertEqual(layout["blocks"][2]["lines"], ["", " Between   tables  ", ""])
+        self.assertEqual(layout["blocks"][4]["lines"], ["", "Complete   0019  ", ""])
+
+    def test_old_apis_still_reject_a_page_with_two_grids(self) -> None:
+        self.assertIsNone(build_ruled_table_layout(self.pixmap(), *self.inputs()))
+        self.assertIsNone(prepare_ruled_table_ocr_image(self.pixmap()))
+
+    def test_new_page_api_preserves_the_single_grid_layout(self) -> None:
+        single = RuledTableLayoutTests()
+        single.setUp()
+        pixmap = SimpleNamespace(width=720, height=900, n=3, samples=single.image.tobytes())
+        tsv, transcript = self.inputs(words=single.words)
+        old = build_ruled_table_layout(pixmap, tsv, transcript)
+        new = build_ruled_page_layout(pixmap, tsv, transcript)
+        self.assertIsNotNone(old)
+        self.assertEqual(new["blocks"], [
+            {"kind": "paragraphs", "lines": old["before"]},
+            {"kind": "table", "rows": old["rows"], "columnWidths": old["columnWidths"]},
+            {"kind": "paragraphs", "lines": old["after"]},
+        ])
+        self.assertEqual(prepare_ruled_page_ocr_image(pixmap), prepare_ruled_table_ocr_image(pixmap))
+
+    def test_middle_prose_in_wrong_txt_position_or_word_order_falls_back(self) -> None:
+        _, transcript = self.inputs()
+        variants = [transcript.replace("Between tables\n", "") + "\nBetween tables",
+                    transcript.replace("Between tables", "tables Between")]
+        for changed in variants:
+            with self.subTest(transcript=changed):
+                self.assertIsNone(self.recognize(transcript=changed))
+
+    def test_tsv_region_order_cannot_move_middle_prose_past_the_second_table(self) -> None:
+        records = self.words[:6] + self.words[8:13] + self.words[6:8] + self.words[13:]
+        self.assertIsNone(self.recognize(words=records))
+
+    def test_table_words_cannot_move_between_tables_or_disappear_as_repeats(self) -> None:
+        _, transcript = self.inputs()
+        for changed in (transcript.replace("14.25", "", 1),
+                        transcript.replace("0019", "swap", 1).replace("Service", "0019", 1).replace("swap", "Service", 1)):
+            with self.subTest(transcript=changed):
+                self.assertIsNone(self.recognize(transcript=changed))
+
+    def test_middle_prose_cannot_share_a_txt_line_with_either_table(self) -> None:
+        _, transcript = self.inputs()
+        for changed in (transcript.replace("14.25\nBetween", "14.25 Between", 1),
+                        transcript.replace("tables\nService", "tables Service", 1)):
+            with self.subTest(transcript=changed):
+                self.assertIsNone(self.recognize(transcript=changed))
+
+    def test_empty_middle_prose_region_is_retained_without_invented_words(self) -> None:
+        layout = self.recognize(words=self.words[:6] + self.words[8:])
+        self.assertIsNotNone(layout)
+        self.assertEqual(layout["blocks"][2], {"kind": "paragraphs", "lines": []})
+
+    def test_words_beside_or_straddling_the_second_grid_fall_back(self) -> None:
+        for x, y, width, height in ((680, 670, 50, 16), (280, 670, 50, 16), (320, 642, 55, 20)):
+            with self.subTest(box=(x, y, width, height)):
+                records = [row.copy() for row in self.words]
+                records[12][6:10] = [x, y, width, height]
+                self.assertIsNone(self.recognize(words=records))
+
+    def test_second_grid_must_contain_recognized_words(self) -> None:
+        self.assertIsNone(self.recognize(words=self.words[:8] + self.words[13:]))
+
+    def test_partial_or_merged_second_grid_rejects_both_layout_and_preparation(self) -> None:
+        for kind in ("merged", "open"):
+            with self.subTest(kind=kind):
+                self.setUp()
+                if kind == "merged":
+                    self.image[654:737, 298:303] = 255
+                else:
+                    self.image[738:743, 104:637] = 255
+                self.assertIsNone(self.recognize())
+                self.assertIsNone(prepare_ruled_page_ocr_image(self.pixmap()))
+
+    def test_a_third_grid_is_an_all_or_nothing_fallback(self) -> None:
+        self.draw_grid([100, 300, 640], [870, 915, 965])
+        self.assertIsNone(self.recognize())
+        self.assertIsNone(prepare_ruled_page_ocr_image(self.pixmap()))
+
+    def test_sparse_partial_second_or_third_grid_is_not_silently_ignored(self) -> None:
+        for top, bottom in ((580, 740), (870, 965)):
+            with self.subTest(top=top):
+                self.setUp()
+                if top == 580:
+                    self.image[570:750] = 255
+                # Two thin horizontal rules, a left border, and only a short
+                # right border form a substantial connected but incomplete box.
+                for y in (top, bottom):
+                    cv2.line(self.image, (100, y), (640, y), (0, 0, 0), 1)
+                cv2.line(self.image, (100, top), (100, bottom), (0, 0, 0), 1)
+                cv2.line(self.image, (640, top), (640, top + 20), (0, 0, 0), 1)
+                self.assertIsNone(self.recognize())
+                self.assertIsNone(prepare_ruled_page_ocr_image(self.pixmap()))
+
+    def test_connected_glyph_strokes_without_long_rules_are_not_a_third_grid(self) -> None:
+        # This connected letter-like shape has three horizontal stroke bands
+        # and two vertical bands, but neither stem spans its complete height.
+        glyph = self.image[425:462, 420:460]
+        glyph[0:27, 0:7] = 0
+        glyph[10:37, 21:40] = 0
+        glyph[0:6, 0:17] = 0
+        glyph[18:21, 0:25] = 0
+        glyph[32:34, 21:38] = 0
+        self.assertIsNotNone(self.recognize())
+        self.assertIsNotNone(prepare_ruled_page_ocr_image(self.pixmap()))
+
+    def test_side_by_side_overlapping_nested_and_too_close_grids_are_rejected(self) -> None:
+        cases = [([600, 690, 780], [200, 280, 360]),
+                 ([100, 300, 640], [300, 380, 460]),
+                 ([100, 130, 160], [165, 185, 205]),
+                 ([100, 300, 640], [370, 450, 530])]
+        for xs, ys in cases:
+            with self.subTest(xs=xs, ys=ys):
+                self.image[:] = 255
+                self.draw_grid(self.first_xs, self.first_ys)
+                self.draw_grid(xs, ys)
+                self.assertIsNone(self.recognize())
+                self.assertIsNone(prepare_ruled_page_ocr_image(self.pixmap()))
+
+    def test_preparation_preserves_middle_text_and_removes_both_vertical_rule_masks(self) -> None:
+        cv2.putText(self.image, "Between tables", (100, 460), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1)
+        original = self.image.copy()
+        prepared = prepare_ruled_page_ocr_image(self.pixmap())
+        self.assertIsNotNone(prepared)
+        cleaned = cv2.imdecode(np.frombuffer(prepared, dtype=np.uint8), cv2.IMREAD_COLOR)
+        np.testing.assert_array_equal(self.image, original)
+        np.testing.assert_array_equal(cleaned[400:500], original[400:500])
+        self.assertTrue(np.all(cleaned[235:250, 238:243] == 255))
+        self.assertTrue(np.all(cleaned[670:690, 298:303] == 255))
+
+    def test_shared_x_axes_keep_independent_rule_widths_for_each_height(self) -> None:
+        self.image[:] = 255
+        self.draw_grid(self.first_xs, self.first_ys, thickness=2)
+        self.draw_grid(self.first_xs, self.second_ys, thickness=5)
+        self.assertIsNotNone(prepare_ruled_page_ocr_image(self.pixmap()))
+
+    def test_second_grid_thin_fringe_strokes_reject_the_whole_preparation(self) -> None:
+        for length in (1, 5, 13, 20):
+            for shade in (0, 220, 254):
+                with self.subTest(length=length, shade=shade):
+                    self.setUp()
+                    self.image[675:675 + length, 302] = shade
+                    original = self.image.copy()
+                    self.assertIsNone(prepare_ruled_page_ocr_image(self.pixmap()))
+                    np.testing.assert_array_equal(self.image, original)
+
+    def test_unexplained_dark_and_gray_pixels_at_junctions_are_never_erased(self) -> None:
+        for shade in (0, 80, 220, 254):
+            with self.subTest(shade=shade):
+                self.setUp()
+                self.image[223, 242] = shade
+                self.image[653, 302] = shade
+                original = self.image.copy()
+                prepared = prepare_ruled_page_ocr_image(self.pixmap())
+                self.assertIsNotNone(prepared)
+                cleaned = cv2.imdecode(np.frombuffer(prepared, dtype=np.uint8), cv2.IMREAD_COLOR)
+                np.testing.assert_array_equal(cleaned[223, 242], original[223, 242])
+                np.testing.assert_array_equal(cleaned[653, 302], original[653, 302])
+                np.testing.assert_array_equal(self.image, original)
 
 
 if __name__ == "__main__":

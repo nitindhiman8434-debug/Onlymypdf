@@ -15,6 +15,8 @@ on:
       - "scripts/test_ocr_table_integration.py"
       - "scripts/phase3-english-table-corpus.py"
       - "scripts/test_phase3_english_table_corpus.py"
+      - "scripts/phase3-english-multitable-corpus.py"
+      - "scripts/test_phase3_english_multitable_corpus.py"
   workflow_dispatch:
 
 permissions:
@@ -38,3 +40,4 @@ jobs:
           python -m unittest discover -s scripts -p test_ocr_ruled_tables.py
           python -m unittest discover -s scripts -p test_ocr_table_integration.py
           python -m unittest discover -s scripts -p test_phase3_english_table_corpus.py
+          python -m unittest discover -s scripts -p test_phase3_english_multitable_corpus.py

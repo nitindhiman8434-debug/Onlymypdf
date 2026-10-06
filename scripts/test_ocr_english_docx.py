@@ -201,6 +201,36 @@ class EnglishOcrDocxTests(unittest.TestCase):
         fallback.assert_not_called()
         recognition.assert_not_called()
 
+    def test_actual_fallback_keeps_two_native_tables_and_middle_prose(self) -> None:
+        self.source_pages((612, 792), (792, 612))
+        raw = ["Invoice 001234 Item Amount Service 24.50 Credits follow Code Value 0007 12.25 End of invoice",
+               "Last page retains the complete English reference paragraph"]
+        layout = {"blocks": [
+            {"kind": "paragraphs", "lines": ["Invoice 001234"]},
+            {"kind": "table", "rows": [["Item", "Amount"], ["Service", "24.50"]], "columnWidths": [0.7, 0.3]},
+            {"kind": "paragraphs", "lines": ["Credits follow"]},
+            {"kind": "table", "rows": [["Code", "Value"], ["0007", "12.25"]], "columnWidths": [0.5, 0.5]},
+            {"kind": "paragraphs", "lines": ["End of invoice"]},
+        ]}
+
+        def recognize(_source, *, language, dpi, page_layouts):
+            page_layouts.extend([layout, None])
+            return raw
+
+        with patch.object(converter, "_build_searchable_ocr_pdf", side_effect=self.prepared_ocr(raw)), \
+             patch.object(converter, "install_pdf2docx_devanagari_support"), \
+             patch("pdf2docx.Converter", self.incomplete_converter()), \
+             patch("ocr_english_docx.recognize_ocr_transcripts", side_effect=recognize), \
+             contextlib.redirect_stderr(io.StringIO()) as diagnostics:
+            self.assertTrue(converter.convert_scanned_pdf_with_ocr(str(self.source), str(self.output), language="eng"))
+        document = Document(self.output)
+        self.assertEqual(len(document.tables), 2)
+        self.assertEqual(document.tables[1].cell(1, 0).text, "0007")
+        body = [(node.tag.rsplit("}", 1)[-1], " ".join(node.xpath(".//w:t/text()"))) for node in document.element.body]
+        self.assertEqual([text for _, text in body if text], ["Invoice 001234", "Item Amount Service 24.50",
+                         "Credits follow", "Code Value 0007 12.25", "End of invoice", raw[1]])
+        self.assertIn("method=editable-latin-table", diagnostics.getvalue())
+
     def test_raw_recognizer_text_keeps_spaces_and_repeated_rows_in_actual_branch(self) -> None:
         self.source_pages((612, 792), (612, 792))
         hidden = ["Each paragraph hasa different purpose.", "Reference only 71936"]
