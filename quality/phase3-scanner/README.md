@@ -8,9 +8,11 @@ This report does not itself claim visual sign-off.
 `visual-review.json` records the separate 14-page visual inspection and browser
 boundary checks. `unit-report.json` retains the 66 passing focused tests.
 `verification-report.json` records final source hashes, the successful webpack
-build and open gates. The saved-browser-download check is still unverified:
-the in-app browser shows the ready PDF and valid link, but no saved file has
-been confirmed. The phase must not be labelled 100% complete on that evidence.
+build and scope limits. On 7 October 2026 the user explicitly confirmed clicking
+Download PDF and saving the file, closing the last manual browser gate. The
+automation download timeout is retained as a tooling limitation. The user's
+saved file was not independently inspected; the HTTP artifacts have their own
+separate byte, geometry and pixel checks.
 
 ## What the checks establish
 

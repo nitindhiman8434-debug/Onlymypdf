@@ -2,7 +2,7 @@
 
 **Date:** 7 October 2026
 
-**Status:** Implementation and local automated checks complete. Saved-browser-download verification remains open; do not count this phase as 100% complete yet.
+**Status:** Scoped local phase complete. On 7 October 2026 the user confirmed clicking Download PDF and saving the file, closing the last browser gate.
 
 ## Result
 
@@ -80,8 +80,10 @@ were not changed.
   tab. No cloud service was needed for the preview or conversions.
 
 Final verification is recorded in
-`quality/phase3-scanner/verification-report.json`. Browser success text alone
-does not close the saved-download gate.
+`quality/phase3-scanner/verification-report.json`. The saved-download gate is
+closed by the user's explicit confirmation: "i clicked on download pdf and
+saved". This is manual file-save evidence; independent artifact checks remain
+the separate HTTP corpus. It is not a new inspection of the user's saved file.
 
 ## Issues found during final checks
 
@@ -91,8 +93,9 @@ That unreachable cleanup was removed. Browser testing also failed to produce
 a saved download from the old detached anchor with immediate URL revocation;
 the result now uses a stable rendered download link. The in-app browser's
 click and documented download API still timed out with that valid link, and
-no new file appeared in the normal Downloads folder. The saved-browser-file
-check therefore remains unverified, rather than being counted as passed.
+no new file appeared in the normal Downloads folder during automation. The
+user then confirmed saving the file manually. Automation download capture
+remains unreliable in this environment; the manual file-save gate is closed.
 
 Independent review found that closing the camera or starting export while
 `canvas.toBlob` was pending could discard the last requested photo. Pending
@@ -124,5 +127,5 @@ maximum-size images fit every runtime's memory or request limit. Existing
 25 MB Free and 200 MB Pro per-file policy is separate from that capacity gate.
 
 No cloud settings, paid services, public deployment or `.env.local` values were
-changed. Phase 2 public HTTPS/load/retention/cost gates remain deferred. Stop at
-this phase boundary before starting another task.
+changed. Phase 2 public HTTPS/load/retention/cost gates remain deferred. The user
+approved starting the next task after confirming the saved download.

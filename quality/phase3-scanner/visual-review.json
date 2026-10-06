@@ -38,11 +38,18 @@
       "Preview restored after build; HTTP 200 and fresh hydrated browser tab."
     ],
     "consoleWarningsOrErrorsBeforeBuild": [],
-    "savedDownload": "unverified",
-    "downloadEvidence": "Download click and documented download API timed out. Stable blob link remained present; no newly saved PDF found in normal Downloads. Fresh-tab retry also timed out. User first saw the temporary build shutdown; a second manual check is pending after preview restoration.",
+    "savedDownload": "passed-user-confirmed",
+    "downloadEvidence": "Download click and documented download API timed out. Stable blob link remained present; no newly saved PDF found in normal Downloads. Fresh-tab retry also timed out. User first saw the temporary build shutdown; a second manual check is pending after preview restoration. On 7 October 2026 the user explicitly confirmed clicking Download PDF and saving the file, closing the manual gate.",
     "temporaryViewportReset": true,
     "resultTabLeftOpen": true,
     "physicalCamera": "not exercised; lifecycle and pending-capture guards independently code reviewed",
-    "screenshots": "Inspected inline in the task; no browser screenshot file archived."
+    "screenshots": "Inspected inline in the task; no browser screenshot file archived.",
+    "manualDownloadConfirmation": {
+      "date": "2026-10-07",
+      "timezone": "Asia/Calcutta",
+      "source": "direct user message",
+      "statement": "i clicked on download pdf and saved",
+      "scope": "Manual save only; no claim to have independently opened that saved file."
+    }
   }
 }

@@ -1,8 +1,8 @@
 {
   "phase": "3.4",
   "recordedAt": "2026-10-06T22:28:05.245525+00:00",
-  "status": "implementation complete; saved-browser-download gate open",
-  "phaseComplete": false,
+  "status": "scoped local phase complete; final saved-download gate passed by user confirmation",
+  "phaseComplete": true,
   "scope": "Scanner-only output preprocessing, ten-image limits, interaction safety and truthful English content.",
   "sourceHashes": {
     "src/config/pdf-scanner.ts": "5604c8020db07cb803b6f4fb66641852dc41b42e4dccc7bad146e4d9f91a05ed",
@@ -33,7 +33,7 @@
   },
   "visualReview": {
     "report": "quality/phase3-scanner/visual-review.json",
-    "sha256": "41d05ce0ebf8a45782300591538dfd7176c598e835b3c0488ad113dcfbde08af"
+    "sha256": "062a5d934b7768e0fb518d91bfe288378c3088994dc8284087086c6fc0fdff61"
   },
   "lint": {
     "status": "passed",
@@ -65,7 +65,7 @@
     },
     {
       "issue": "Immediate URL revocation and unconfirmed saved download.",
-      "resolution": "Stable rendered result link and cleanup on reset/unmount implemented. Saved-browser-file gate remains open."
+      "resolution": "Stable rendered result link and cleanup on reset/unmount implemented. User confirmed file save on 7 October 2026; automation download capture remains unreliable."
     },
     {
       "issue": "Host out of memory during second build.",
@@ -77,6 +77,14 @@
     "Synthetic static image corpus does not establish arbitrary-file accuracy, large-image capacity or production readiness.",
     "CSS filter preview is approximate; exported pixels have independent checks.",
     "No Hindi-specific edits, paid deployment, cloud configuration or .env.local changes.",
-    "Await user-visible file-save confirmation before marking phase 100% complete."
-  ]
+    "Manual confirmation establishes file save, not independent inspection of the user-saved bytes; HTTP artifacts were verified separately."
+  ],
+  "closureDate": "2026-10-07",
+  "closureEvidence": {
+    "date": "2026-10-07",
+    "timezone": "Asia/Calcutta",
+    "source": "direct user message",
+    "statement": "i clicked on download pdf and saved",
+    "scope": "Manual save only; no claim to have independently opened that saved file."
+  }
 }
