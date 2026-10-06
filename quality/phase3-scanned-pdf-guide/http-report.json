@@ -1,0 +1,266 @@
+{
+  "phase": "3.3",
+  "checkedAt": "2026-10-06T21:55:09.854Z",
+  "baseUrl": "http://127.0.0.1:3002",
+  "guidePath": "/guides/scanned-pdf-to-word",
+  "method": "Read-only loopback HTTP checks against a production build. Guide and benchmark structure use actual server HTML, resolving main's Suspense templates through parsed top-level literal React transfer calls and balanced hidden HTML segments. An additional ordinary guide response is checked for private artifacts. No conversion requests or response-script execution.",
+  "responseStrategy": {
+    "crawlerUserAgent": "Twitterbot/1.0",
+    "ordinaryUserAgent": "Mozilla/5.0 OnlyMyPDFLocalGuideVerifier/1.0",
+    "structuralScope": "Actual main HTML plus explicitly linked server HTML segments. TypeScript AST inspection accepts only top-level $RC calls with two string-literal arguments; scripts, styles and ordinary HTML comments are removed before segment extraction. Crawler metadata can block while the body still streams. RSC/JSON text cannot satisfy visible-content checks.",
+    "ordinaryScope": "HTTP status, content type and full raw-response privacy check"
+  },
+  "limitations": [
+    "Does not measure conversion accuracy, public hosting, search ranking or visual browser behavior; hydrated browser checks are separate evidence.",
+    "The raw-path check is intended for a production build; development debug payloads are not supported.",
+    "Frozen Phase 3.3 publication contract: 7 October 2026 guide, five FAQs and two 4/4 table snapshots dated 6 October 2026 UTC. Future publication changes require an intentional contract review."
+  ],
+  "responses": [
+    {
+      "route": "/guides/scanned-pdf-to-word",
+      "audience": "html-limited-crawler",
+      "userAgent": "Twitterbot/1.0",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 94508,
+      "sha256": "b2bd4d5bb39d5cb975565c7f9f70e89ef907d9c961ce2025b53b8f92c2670f96"
+    },
+    {
+      "route": "/guides/scanned-pdf-to-word",
+      "audience": "ordinary",
+      "userAgent": "Mozilla/5.0 OnlyMyPDFLocalGuideVerifier/1.0",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 94772,
+      "sha256": "233b811318e7e9d8819a17145dcefc0d0e2001614b278d587cc3884b72dc7c58"
+    },
+    {
+      "route": "/sitemap.xml",
+      "audience": "ordinary",
+      "userAgent": "Mozilla/5.0 OnlyMyPDFLocalGuideVerifier/1.0",
+      "status": 200,
+      "contentType": "application/xml",
+      "bytes": 7310,
+      "sha256": "d9b01bcb38679848e2d33ca19be4c6d49e0839b35d17f97ffeb7eaaccf59c556"
+    },
+    {
+      "route": "/llms.txt",
+      "audience": "ordinary",
+      "userAgent": "Mozilla/5.0 OnlyMyPDFLocalGuideVerifier/1.0",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 10066,
+      "sha256": "5e9d0b34453f208e495dd3a7c95e9a2e81261391e295d1a7d49ea28b23b2f04f"
+    },
+    {
+      "route": "/ai.txt",
+      "audience": "ordinary",
+      "userAgent": "Mozilla/5.0 OnlyMyPDFLocalGuideVerifier/1.0",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 10112,
+      "sha256": "70cf6a122586c2b56cd2ac07cdcb50690fa3d2ab0ef44d91826962910b427e15"
+    },
+    {
+      "route": "/benchmarks",
+      "audience": "html-limited-crawler",
+      "userAgent": "Twitterbot/1.0",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 136869,
+      "sha256": "8e4f0b23cb0a12c6df6111d8eb8f97f7a6ccc8f916557fc017b7b7fa2f276ef3"
+    },
+    {
+      "route": "/pdf-to-word",
+      "audience": "ordinary",
+      "userAgent": "Mozilla/5.0 OnlyMyPDFLocalGuideVerifier/1.0",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 79432,
+      "sha256": "65414f550a5e08d7c3ee1dd7bacb1873e820b2e271ae13704ab9105879c8a223"
+    },
+    {
+      "route": "/ocr-pdf",
+      "audience": "ordinary",
+      "userAgent": "Mozilla/5.0 OnlyMyPDFLocalGuideVerifier/1.0",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76526,
+      "sha256": "5082e4012f3448078aa1eb3d5285f15e3203f19da57afc8c122dd06b4c9eb551"
+    },
+    {
+      "route": "/pdf-scanner",
+      "audience": "ordinary",
+      "userAgent": "Mozilla/5.0 OnlyMyPDFLocalGuideVerifier/1.0",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 73798,
+      "sha256": "65065c71cc56d45d6f8e0fc23de3c36267e042edcba50d0769a9604ae2d24c47"
+    }
+  ],
+  "streamResolutions": [
+    {
+      "route": "/guides/scanned-pdf-to-word",
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/benchmarks",
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "/guides/scanned-pdf-to-word (html-limited-crawler): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Guide returns rendered English HTML",
+      "passed": true
+    },
+    {
+      "name": "One canonical English guide URL",
+      "passed": true
+    },
+    {
+      "name": "JSON-LD parses without duplicate Article or FAQ records",
+      "passed": true
+    },
+    {
+      "name": "Article identity, language and publication date match the canonical",
+      "passed": true
+    },
+    {
+      "name": "Visible title and publication date match Article metadata",
+      "passed": true
+    },
+    {
+      "name": "Breadcrumb ends at the guide without inventing a guides index",
+      "passed": true
+    },
+    {
+      "name": "Every visible FAQ question and answer matches its structured record exactly",
+      "passed": true
+    },
+    {
+      "name": "Guide navigation links point to unique visible sections",
+      "passed": true
+    },
+    {
+      "name": "Editable Word steps name the available workflow controls",
+      "passed": true
+    },
+    {
+      "name": "Searchable PDF steps name language and download controls",
+      "passed": true
+    },
+    {
+      "name": "Scanner remains an image-based PDF step, not an OCR claim",
+      "passed": true
+    },
+    {
+      "name": "Review guidance covers every page, editability and exact values",
+      "passed": true
+    },
+    {
+      "name": "Both dated table results retain case counts and direct evidence links",
+      "passed": true
+    },
+    {
+      "name": "Measured table support is bounded by controls and limitations",
+      "passed": true
+    },
+    {
+      "name": "Preparation advice links its official source without promising a result",
+      "passed": true
+    },
+    {
+      "name": "Guide HTML and streamed payload do not expose local report artifacts",
+      "passed": true
+    },
+    {
+      "name": "Guide offers the three existing English tool destinations",
+      "passed": true
+    },
+    {
+      "name": "Footer exposes one canonical English guide link",
+      "passed": true
+    },
+    {
+      "name": "/guides/scanned-pdf-to-word (ordinary): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Ordinary streamed guide response does not expose local report artifacts",
+      "passed": true
+    },
+    {
+      "name": "/sitemap.xml (ordinary): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Sitemap lists one canonical guide with its actual publication date",
+      "passed": true
+    },
+    {
+      "name": "/llms.txt (ordinary): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/llms.txt: canonical guide discovery",
+      "passed": true
+    },
+    {
+      "name": "/ai.txt (ordinary): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/ai.txt: canonical guide discovery",
+      "passed": true
+    },
+    {
+      "name": "/benchmarks (html-limited-crawler): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Benchmarks links back to the guide in its main content",
+      "passed": true
+    },
+    {
+      "name": "/pdf-to-word (ordinary): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/pdf-to-word: destination renders as a page",
+      "passed": true
+    },
+    {
+      "name": "/ocr-pdf (ordinary): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/ocr-pdf: destination renders as a page",
+      "passed": true
+    },
+    {
+      "name": "/pdf-scanner (ordinary): HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/pdf-scanner: destination renders as a page",
+      "passed": true
+    }
+  ],
+  "passed": 35,
+  "total": 35,
+  "allPassed": true
+}

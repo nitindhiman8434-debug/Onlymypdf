@@ -69,6 +69,9 @@ export function generateLlmsTxt(): string {
 
   lines.push(
     "",
+    "## Guides",
+    `- Scanned PDF to Word: OCR Guide — ${APP_URL}/guides/scanned-pdf-to-word — How OCR makes scanned text editable, when to use a searchable PDF instead, and what to check in the result.`,
+    "",
     "## Pricing",
     PRICING_AEO.shortAnswer,
     "",

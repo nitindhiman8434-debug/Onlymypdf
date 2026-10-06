@@ -98,9 +98,10 @@ was not edited.
 
 ## Next phase gate
 
-The next proposed bounded task is **3.3: an English scanned-PDF guide**, using
-these measured results to explain when to use searchable PDF versus editable
-Word, what clean ruled tables preserve and which layouts still need review.
-It belongs to the roadmap's educational-content work. It has not started.
+The subsequent bounded task **3.3: an English scanned-PDF guide** was completed
+locally on 7 October 2026. It uses these measured results to explain when to
+use searchable PDF versus editable Word, what clean ruled tables preserve and
+which layouts still need review. See
+[the guide phase record](PHASE_3_3_SCANNED_PDF_GUIDE.md).
 Real-customer evidence, public HTTPS/load/retention/cost measurements and public
 launch remain separate open gates.

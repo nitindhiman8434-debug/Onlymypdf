@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F, two-table pages 3.2G and English OCR evidence publication 3.2H complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F, two-table pages 3.2G, English OCR evidence publication 3.2H and scanned-PDF guide 3.3 complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -116,10 +116,22 @@ production build and 11 built-page HTTP checks pass. Browser checks at 390,
 or public deployment was made. See
 [the implementation and verification record](PHASE_3_2H_ENGLISH_OCR_BENCHMARKS.md).
 
-**Next proposed bounded English task (3.3):** create an evidence-based guide to
-scanned PDF conversion: searchable PDF versus editable Word, demonstrated table
-support, and layouts that need review. This continues the educational-content
-roadmap item. The task has not started.
+## Task 3.3: English scanned-PDF guide
+
+Complete locally: `/guides/scanned-pdf-to-word` explains searchable PDF versus
+editable Word, actual conversion steps, demonstrated table support and how to
+review the download. The guide has Article/FAQ metadata, sitemap and text
+discovery entries, plus footer and benchmark links. Its table cards reuse the
+retained measured evidence with explicit limitations. An older English
+PDF-to-Word OCR instruction was aligned with the existing automatic workflow.
+All 63 focused tests, ESLint, webpack build (170/170 entries), 35 built-page HTTP
+checks and browser review at 390, 768 and 1280 pixels passed. See
+[the implementation and verification record](PHASE_3_3_SCANNED_PDF_GUIDE.md).
+
+**Next proposed bounded task (3.4):** align PDF Scanner filters with downloaded
+output, disclose/enforce its 10-image limit consistently and correct unsupported
+English scanner claims. Verify actual output pixels. These pre-existing gaps
+were identified during guide review; the task has not started.
 Hindi pages and Hindi-specific improvements remain on hold.
 Real-customer feedback and deferred production launch gates remain open. Selected
 fixture passes do not establish universal accuracy or production capacity.

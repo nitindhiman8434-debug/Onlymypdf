@@ -1,0 +1,218 @@
+{
+  "phase": "3.3",
+  "checkedAt": "2026-10-06T21:45:32.599Z",
+  "baseUrl": "http://127.0.0.1:3002",
+  "guidePath": "/guides/scanned-pdf-to-word",
+  "method": "Read-only loopback HTTP checks against a production build: rendered English HTML, JSON-LD, discovery and destination routes; no conversion requests",
+  "limitations": [
+    "Does not measure conversion accuracy, public hosting, search ranking or visual browser behavior.",
+    "The raw-path check is intended for a production build; development debug payloads are not supported."
+  ],
+  "responses": [
+    {
+      "route": "/guides/scanned-pdf-to-word",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 94772,
+      "sha256": "3c8ff3aff7865396a86c6b67a067573973b924eedd159b09cb745a37e5dfe85d"
+    },
+    {
+      "route": "/sitemap.xml",
+      "status": 200,
+      "contentType": "application/xml",
+      "bytes": 7310,
+      "sha256": "d9b01bcb38679848e2d33ca19be4c6d49e0839b35d17f97ffeb7eaaccf59c556"
+    },
+    {
+      "route": "/llms.txt",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 10066,
+      "sha256": "5e9d0b34453f208e495dd3a7c95e9a2e81261391e295d1a7d49ea28b23b2f04f"
+    },
+    {
+      "route": "/ai.txt",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 10112,
+      "sha256": "70cf6a122586c2b56cd2ac07cdcb50690fa3d2ab0ef44d91826962910b427e15"
+    },
+    {
+      "route": "/benchmarks",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 137133,
+      "sha256": "5c86ba33bb7b9ade05cd27708a5ac348d1e241a453b0fddd4d29d652a20c2d3c"
+    },
+    {
+      "route": "/pdf-to-word",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 79432,
+      "sha256": "8c57459752f1bc7ba15e66b411ff5d875fa43a2a2a2f0254b19d820776c17bcb"
+    },
+    {
+      "route": "/ocr-pdf",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76526,
+      "sha256": "3b8ad657f58bbc6728697fea9e3e3838b0be526a67855a74576f8250f63515fb"
+    },
+    {
+      "route": "/pdf-scanner",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 73798,
+      "sha256": "e4f116695e54ce8e8b1afa216463f560abda6fd32c60d07742741ab9c0f5cda2"
+    }
+  ],
+  "checks": [
+    {
+      "name": "/guides/scanned-pdf-to-word: HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Guide returns rendered English HTML",
+      "passed": true
+    },
+    {
+      "name": "One canonical English guide URL",
+      "passed": true
+    },
+    {
+      "name": "JSON-LD parses without duplicate Article or FAQ records",
+      "passed": true
+    },
+    {
+      "name": "Article identity, language and publication date match the canonical",
+      "passed": true
+    },
+    {
+      "name": "Visible title and publication date match Article metadata",
+      "passed": false,
+      "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'Scanned PDF to Word: OCR Guide'\n- ]\n"
+    },
+    {
+      "name": "Breadcrumb ends at the guide without inventing a guides index",
+      "passed": true
+    },
+    {
+      "name": "Every visible FAQ question and answer matches its structured record exactly",
+      "passed": false,
+      "message": "Expected values to be strictly equal:\n\n0 !== 5\n"
+    },
+    {
+      "name": "Guide navigation links point to unique visible sections",
+      "passed": false,
+      "message": "Missing section choose-output"
+    },
+    {
+      "name": "Editable Word steps name the available workflow controls",
+      "passed": false,
+      "message": "Missing Word workflow detail: Select file"
+    },
+    {
+      "name": "Searchable PDF steps name language and download controls",
+      "passed": false,
+      "message": "Missing OCR workflow detail: English under Document language"
+    },
+    {
+      "name": "Scanner remains an image-based PDF step, not an OCR claim",
+      "passed": false,
+      "message": "The expression evaluated to a falsy value:\n\n  assert(choice.includes(\"image-based PDF\"))\n"
+    },
+    {
+      "name": "Review guidance covers every page, editability and exact values",
+      "passed": false,
+      "message": "Missing output review detail: Inspect every page"
+    },
+    {
+      "name": "Both dated table results retain case counts and direct evidence links",
+      "passed": false,
+      "message": "Expected values to be strictly equal:\n\n0 !== 2\n"
+    },
+    {
+      "name": "Measured table support is bounded by controls and limitations",
+      "passed": false,
+      "message": "Missing table limitation: four-column grids"
+    },
+    {
+      "name": "Preparation advice links its official source without promising a result",
+      "passed": false,
+      "message": "The expression evaluated to a falsy value:\n\n  assert(links(main).some((link) => link.href === sourceUrl))\n"
+    },
+    {
+      "name": "Guide HTML and streamed payload do not expose local report artifacts",
+      "passed": true
+    },
+    {
+      "name": "Guide offers the three existing English tool destinations",
+      "passed": false,
+      "message": "The expression evaluated to a falsy value:\n\n  assert(hrefs.includes(destination))\n"
+    },
+    {
+      "name": "Footer exposes one canonical English guide link",
+      "passed": true
+    },
+    {
+      "name": "/sitemap.xml: HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Sitemap lists one canonical guide with its actual publication date",
+      "passed": true
+    },
+    {
+      "name": "/llms.txt: HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/llms.txt: canonical guide discovery",
+      "passed": true
+    },
+    {
+      "name": "/ai.txt: HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/ai.txt: canonical guide discovery",
+      "passed": true
+    },
+    {
+      "name": "/benchmarks: HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Benchmarks links back to the guide in its main content",
+      "passed": false,
+      "message": "The expression evaluated to a falsy value:\n\n  assert(links(body).some((link) => link.href === guidePath))\n"
+    },
+    {
+      "name": "/pdf-to-word: HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/pdf-to-word: destination renders as a page",
+      "passed": true
+    },
+    {
+      "name": "/ocr-pdf: HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/ocr-pdf: destination renders as a page",
+      "passed": true
+    },
+    {
+      "name": "/pdf-scanner: HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "/pdf-scanner: destination renders as a page",
+      "passed": true
+    }
+  ],
+  "passed": 21,
+  "total": 33,
+  "allPassed": false
+}

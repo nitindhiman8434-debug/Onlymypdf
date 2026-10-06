@@ -87,6 +87,9 @@ export function OcrBenchmarkResults() {
         exact source typography, real-customer acceptance or production speed and capacity.
         Re-running a test set is regression evidence, not a new set of unique documents.
       </p>
+      <Link href="/guides/scanned-pdf-to-word" className="mt-2 inline-flex min-h-11 items-center font-semibold text-pd-brand hover:underline">
+        Read the scanned PDF to Word guide
+      </Link>
     </section>
   );
 }

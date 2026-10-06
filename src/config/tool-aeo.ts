@@ -79,7 +79,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Convert", text: "Start conversion; processing runs securely on OnlyMyPDF servers." },
       { name: "Download DOCX", text: "Download the .docx file and open it in Microsoft Word, Google Docs, or LibreOffice." },
     ],
-    ["Outputs .docx format", "Preserves tables and headings when possible", "Scanned PDFs may need OCR first", "Plan file-size limits apply", "Free tier available"]
+    ["Outputs .docx format", "Preserves tables and headings when possible", "Readable scans can use OCR automatically", "Plan file-size limits apply", "Free tier available"]
   ),
   "word-to-pdf": aeo(
     "OnlyMyPDF Word to PDF converts .doc and .docx files to PDF online while preserving fonts, images, tables, and layout.",

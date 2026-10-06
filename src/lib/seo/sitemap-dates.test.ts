@@ -17,4 +17,13 @@ describe("sitemapLastModified", () => {
     expect(sitemapLastModifiedForTools().getFullYear()).toBeGreaterThanOrEqual(2026);
     expect(sitemapLastModifiedForAeo().getFullYear()).toBeGreaterThanOrEqual(2026);
   });
+
+  it("dates the English guide and updated machine-readable discovery content explicitly", () => {
+    expect(sitemapLastModifiedForMarketing("/guides/scanned-pdf-to-word").toISOString())
+      .toBe("2026-10-07T00:00:00.000Z");
+    expect(sitemapLastModifiedForAeo().toISOString()).toBe("2026-10-07T00:00:00.000Z");
+    expect(sitemapLastModifiedForMarketing("/benchmarks").toISOString())
+      .toBe("2026-10-07T00:00:00.000Z");
+    expect(sitemapLastModifiedForTools().toISOString()).toBe("2026-06-01T00:00:00.000Z");
+  });
 });

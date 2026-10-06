@@ -1,0 +1,68 @@
+{
+  "phase": "3.3",
+  "verifiedAtUtc": "2026-10-06T21:55:21.115Z",
+  "scope": "Local English scanned-PDF guide",
+  "unitTests": {
+    "total": 63,
+    "passed": 63
+  },
+  "lint": {
+    "typescriptFiles": 12,
+    "verifierScripts": 1,
+    "passed": true
+  },
+  "build": {
+    "engine": "Next.js 16.3.6 webpack",
+    "passed": true,
+    "typecheckPassed": true,
+    "generatedRouteEntries": 170,
+    "logSha256": "96aa56c9446a1b4f4cf29e8c8b2a3932af4412138744b63322576b65a720e06e",
+    "cloudCredentials": "blank or placeholders in child environment"
+  },
+  "http": {
+    "passed": 35,
+    "total": 35,
+    "mode": "Built application on temporary loopback port 3002",
+    "report": "quality/phase3-scanned-pdf-guide/http-report.json",
+    "publicDeployment": false
+  },
+  "browser": {
+    "passed": true,
+    "widths": [
+      390,
+      768,
+      1280
+    ],
+    "report": "quality/phase3-scanned-pdf-guide/visual-review.json"
+  },
+  "review": {
+    "reviewer": "/root/ocr_evidence_audit",
+    "blockingFindings": 0,
+    "everyPageWordingCorrected": true
+  },
+  "conversionCodeChanged": false,
+  "hindiPagesChanged": false,
+  "paidServicesUsed": false,
+  "sourceSha256": {
+    "src/app/guides/scanned-pdf-to-word/page.tsx": "4e0abb3da26bc6c973b785498e99cc33318905eb5130e7279980b0dff6cfacc5",
+    "src/app/guides/scanned-pdf-to-word/page.test.ts": "5196563768107d61cb3956f551b94702607b9faddd05378e32b8469450241dee",
+    "src/config/scanned-pdf-guide.ts": "d1cd36c8582f5b5eb245dc41a131863eb4157e9af1697933976e0d9cb7c800ce",
+    "src/config/tool-aeo.ts": "1a70f18d89b1615b6420e47429f01946970d639e3ecb35a87e038f3f024b69d8",
+    "src/app/benchmarks/ocr-results.tsx": "83eac2fd738719d90797c9f946556cc21237de4ee53f2d628ac9c016e88a6e3d",
+    "src/components/layout/footer.tsx": "af84044d43eb88fc0108c5a1e5602d3e1b134149e13b2cb7e9c7770ec90b5bed",
+    "src/lib/seo/marketing-aeo.ts": "a82524a537a26be2e5ed8aec81f6a3ad8b4156e76763b40c59636409dcb66984",
+    "src/lib/seo/marketing-aeo.test.ts": "1007d1e6e86f429a1ce51240050574419056d6ddc354c554422232814edc4c17",
+    "src/lib/seo/routes.ts": "6f11d8c1b7051859f353b85d9c2913ce48f541876210035812de4804688a2f40",
+    "src/lib/seo/routes.test.ts": "6bb390af88664ecf7282d3c41a4af148c463415503291c0fb5c37ca2af4131aa",
+    "src/lib/seo/sitemap-dates.ts": "4ddd96bb14541925c7e7d42672842a6663732ce6fef3a72a0f7e8d8ca876eec8",
+    "src/lib/seo/sitemap-dates.test.ts": "8fd4d82a41d56b6cc0cd588b3d83e53342199cf6c6fb7834f5296e7c8b8ac968",
+    "scripts/phase3-scanned-pdf-guide-check.mjs": "dd61f7d7bb157d44cc5567ef353445e18ab6ec02d8d79f31e3c577949956fce3"
+  },
+  "reportSha256": {
+    "unit-report.json": "08bdd6b09db735a0d2caff0dd7df9d15dc492819821f508902c64c80022748d9",
+    "http-report.json": "7a9fac831e3f4d6f32b6f3568d7e9488382293b675fd5c37e4f50c37d4be2f96",
+    "visual-review.json": "5ae53520d229f352d9ecc8c78bb93815770a682cc215a25ff1a768185d148cac",
+    "initial-streaming-http-report.json": "c64e62a1025b1938b9490dba9b28947c2ddbaf25314dfbc036b570987b43373a",
+    "crawler-streaming-http-report.json": "0c1d17430dcd1cab46d0feb7b87345659326a962bb5ff22a725a35aa5803d315"
+  }
+}

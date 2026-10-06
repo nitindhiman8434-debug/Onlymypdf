@@ -1,0 +1,24 @@
+{
+  "phase": "3.3",
+  "reviewedOn": "2026-10-07",
+  "status": "passed",
+  "method": "CUA in-app browser DOM geometry, screenshots and direct link navigation. Agent review, not customer sign-off.",
+  "url": "http://127.0.0.1:3001/guides/scanned-pdf-to-word",
+  "viewports": [
+    {"width": 390, "height": 844, "documentScrollWidth": 382, "layout": "one column", "horizontalOverflow": false},
+    {"width": 768, "height": 1024, "documentScrollWidth": 760, "layout": "two columns", "horizontalOverflow": false},
+    {"width": 1280, "height": 900, "documentScrollWidth": 1272, "layout": "two columns", "horizontalOverflow": false}
+  ],
+  "observations": [
+    "Mobile introduction and conversion steps, tablet evidence cards and desktop introduction were inspected visually. Text and cards remained within the viewport.",
+    "Steps and table-support jump links resolved to their intended visible sections.",
+    "The two-table evidence link reached the matching benchmark section; its reciprocal guide link returned successfully.",
+    "PDF to Word and OCR PDF opened with their upload controls. The corrected automatic-OCR wording and Document language label were visible respectively.",
+    "PDF Scanner navigation initially waited for development compilation, then loaded its heading and image-upload controls without browser errors.",
+    "The footer guide link returned from the tool pages. No warning/error entries appeared in the inspected browser console.",
+    "The temporary viewport override was reset and the guide was marked as the browser deliverable."
+  ],
+  "blockingFindings": [],
+  "screenshots": "Displayed and inspected in the task; no screenshot files archived.",
+  "scope": "Guide presentation and navigation. No conversions, cloud changes or public deployment performed."
+}

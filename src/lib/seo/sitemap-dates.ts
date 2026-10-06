@@ -13,10 +13,11 @@ const MARKETING_LAST_MODIFIED: Partial<Record<(typeof MARKETING_ROUTES)[number],
   "/cookies": "2026-06-01",
   "/terms": "2026-05-10",
   "/benchmarks": "2026-10-07",
+  "/guides/scanned-pdf-to-word": "2026-10-07",
 };
 
 const TOOLS_LAST_MODIFIED = "2026-06-01";
-const AEO_LAST_MODIFIED = "2026-06-01";
+const AEO_LAST_MODIFIED = "2026-10-07";
 
 function resolveBuildFallback(): string {
   return (

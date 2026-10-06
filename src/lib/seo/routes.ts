@@ -17,6 +17,7 @@ export const MARKETING_ROUTES = [
   "/sla",
   "/status",
   "/benchmarks",
+  "/guides/scanned-pdf-to-word",
 ] as const;
 
 export const TOOL_SLUGS = TOOLS.map((tool) => tool.slug);

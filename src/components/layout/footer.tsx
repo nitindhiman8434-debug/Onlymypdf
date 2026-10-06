@@ -157,6 +157,15 @@ export function Footer() {
                   )}
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/guides/scanned-pdf-to-word"
+                  className="group/link flex items-center gap-2 rounded-md px-1.5 py-1 text-[13px] text-gray-600 transition-colors hover:bg-gray-100/80 hover:text-gray-900"
+                >
+                  <span>Scanned PDF guide</span>
+                  <ArrowUpRight className="ml-auto h-3 w-3 text-gray-300 opacity-0 transition-opacity group-hover/link:opacity-100" />
+                </Link>
+              </li>
             </ul>
           </nav>
 
