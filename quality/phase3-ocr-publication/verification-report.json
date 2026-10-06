@@ -1,0 +1,52 @@
+{
+  "phase": "3.2H",
+  "verifiedAtUtc": "2026-10-06T21:30:44.8511663Z",
+  "scope": "Local English benchmark evidence publication",
+  "unitTests": {
+    "total": 52,
+    "passed": 52
+  },
+  "lint": {
+    "files": 6,
+    "passed": true
+  },
+  "build": {
+    "generatedRouteEntries": 169,
+    "cloudCredentials": "blank or placeholders in child environment",
+    "typecheckPassed": true,
+    "engine": "Next.js 16.3.6 webpack",
+    "passed": true,
+    "logSha256": "ce4f7da2763a15a1f518466fd0727753f17937eacec966faa38efcbde062eddb"
+  },
+  "http": {
+    "passed": 11,
+    "publicDeployment": false,
+    "total": 11,
+    "mode": "built application on temporary loopback port 3002"
+  },
+  "browser": {
+    "passed": true,
+    "widths": [
+      390,
+      768,
+      1280
+    ],
+    "report": "quality/phase3-ocr-publication/visual-review.json"
+  },
+  "review": {
+    "reviewer": "/root/ocr_evidence_audit",
+    "blockingFindings": 0
+  },
+  "conversionCodeChanged": false,
+  "hindiPagesChanged": false,
+  "paidServicesUsed": false,
+  "sourceSha256": {
+    "src/config/ocr-benchmark.ts": "810b4bd4454059b32944176a58fc57db5fd69148091fc7bc167797bc30a2e374",
+    "src/config/ocr-benchmark.test.ts": "5c01512aab25ece4f4ebddaaf584664f3228398bda264d278aa590742f3c65e0",
+    "src/app/benchmarks/ocr-results.tsx": "e7fc9ed732d970f4174bc40aaca5592b50f4ce14d4c5d8ef118b80e17b414169",
+    "src/app/benchmarks/ocr-results.test.ts": "1eb87a029e2b8a6fd76f5dc351f91a309f2d383714a04ba05201ef1c7ba81402",
+    "src/app/benchmarks/page.tsx": "f803618a636bf8a42ac76a312195575a7f619e92572ee1bff410763f295139e8",
+    "src/lib/seo/sitemap-dates.ts": "2233d7c33078eece2e6e8f1d56995f0448ece0002795947e005ef9151ccc7035",
+    "scripts/phase3-ocr-publication-check.mjs": "f71f9cf4394828136489264f00f25904709a064c190312e16ac8096adb5aeb69"
+  }
+}

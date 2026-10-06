@@ -14,10 +14,11 @@ import { APP_NAME, APP_URL } from "@/config/constants";
 import { breadcrumbJsonLd, faqPageJsonLd, JsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { DocumentCorpusResults } from "./document-corpus-results";
+import { OcrBenchmarkResults, ocrBenchmarkDatasets } from "./ocr-results";
 
-const TITLE = "PDF Conversion Benchmark: Word, Excel and PowerPoint";
+const TITLE = "PDF Conversion Benchmarks: Office and OCR";
 const DESCRIPTION =
-  "See OnlyMyPDF's reproducible local PDF-to-Office benchmark, artifact checks, page-completeness results, test method, and honest limitations.";
+  "Explore OnlyMyPDF's local PDF-to-Office and English OCR results, including editable tables, searchable page checks, test dates and measured limitations.";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `${TITLE} | ${APP_NAME}`,
@@ -35,12 +36,17 @@ const FAQS = [
   {
     question: "Does this benchmark prove 100% PDF conversion accuracy?",
     answer:
-      "No. The baseline checks one controlled two-page fixture. The separate language and document corpus reports the measured outcomes on more varied files. Neither establishes universal conversion accuracy.",
+      "No. The baseline checks one controlled two-page fixture. Separate document and English OCR test sets report their own measured outcomes, including control files. These fixture pass counts do not establish universal conversion accuracy.",
   },
   {
     question: "What does openable output mean?",
     answer:
       "The downloaded Office package passed ZIP integrity checks and contained the expected format parts. The benchmark also searched the output for known editable fixture text.",
+  },
+  {
+    question: "Were scanned PDFs and editable Word tables tested?",
+    answer:
+      "Yes. The English OCR results include actual recognition of synthetic scanned documents, searchable PDF page checks, and exact editable Word cell checks for clean ruled tables. Each dated result states its controls and limits. Merged cells, damaged grids and arbitrary scanned layouts are not established by these samples.",
   },
   {
     question: "Are these production speed measurements?",
@@ -58,9 +64,10 @@ export default function BenchmarksPage() {
   const datasetJsonLd = {
     "@context": "https://schema.org",
     "@type": "Dataset",
-    name: TITLE,
-    description: DESCRIPTION,
-    url: `${APP_URL}/benchmarks`,
+    "@id": `${APP_URL}/benchmarks#results-heading`,
+    name: "PDF-to-Office local baseline: Word, Excel and PowerPoint",
+    description: "Controlled two-page selectable-text PDF baseline, measured on 3 October 2026. OCR page-retention uses a prepared searchable input stub and does not measure recognition accuracy.",
+    url: `${APP_URL}/benchmarks#results-heading`,
     dateModified: CONVERSION_BENCHMARK.measuredOnIso,
     creator: { "@type": "Organization", name: APP_NAME, url: APP_URL },
     measurementTechnique:
@@ -79,6 +86,7 @@ export default function BenchmarksPage() {
       <JsonLd
         data={[
           datasetJsonLd,
+          ...ocrBenchmarkDatasets(),
           breadcrumbJsonLd([
             { name: "Home", path: "/" },
             { name: "Benchmarks", path: "/benchmarks" },
@@ -88,7 +96,7 @@ export default function BenchmarksPage() {
       />
       <MarketingPageShell
         title={TITLE}
-        description="Reproducible evidence from a controlled release check, with the limits stated beside the results."
+        description="Dated local results for Office conversion and scanned PDFs, with the checks and limits beside each result."
         eyebrow="Conversion evidence"
         heroStyle="centered"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Benchmarks" }]}
@@ -115,9 +123,14 @@ export default function BenchmarksPage() {
               regression retained every tested page. This result is reproducible local evidence;
               it is not a promise that every PDF converts perfectly.
             </p>
-            <a href="#document-corpus" className="mt-4 inline-flex min-h-11 items-center font-semibold text-pd-brand hover:underline">
-              See the expanded language and document results
-            </a>
+            <nav aria-label="Benchmark sections" className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+              <a href="#ocr-results" className="inline-flex min-h-11 items-center font-semibold text-pd-brand hover:underline">
+                See English OCR and table results
+              </a>
+              <a href="#document-corpus" className="inline-flex min-h-11 items-center font-semibold text-pd-brand hover:underline">
+                See language and document results
+              </a>
+            </nav>
           </div>
         </section>
 
@@ -213,6 +226,8 @@ export default function BenchmarksPage() {
             </p>
           </div>
         </section>
+
+        <OcrBenchmarkResults />
 
         <DocumentCorpusResults />
 

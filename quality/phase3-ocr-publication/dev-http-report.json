@@ -1,0 +1,58 @@
+{
+  "phase": "3.2H",
+  "checkedAt": "2026-10-06T21:25:59.614Z",
+  "baseUrl": "http://127.0.0.1:3001",
+  "method": "Read-only local HTTP HTML, JSON-LD, streamed payload and sitemap checks; no conversion requests",
+  "htmlBytes": 163244,
+  "htmlSha256": "49bdecbfde4c8b34bd4db948c6f2af5f7bacac4289e720d01af035a811630ba4",
+  "checks": [
+    {
+      "name": "HTML response",
+      "passed": true
+    },
+    {
+      "name": "Five separate Dataset records",
+      "passed": true
+    },
+    {
+      "name": "ocr-english-word: live evidence and structured data",
+      "passed": true
+    },
+    {
+      "name": "ocr-ocr-page-geometry: live evidence and structured data",
+      "passed": true
+    },
+    {
+      "name": "ocr-single-ruled-table: live evidence and structured data",
+      "passed": true
+    },
+    {
+      "name": "ocr-two-ruled-tables: live evidence and structured data",
+      "passed": true
+    },
+    {
+      "name": "Historical baseline and stub disclosure retained",
+      "passed": true
+    },
+    {
+      "name": "New controls and local limitations visible",
+      "passed": true
+    },
+    {
+      "name": "No private report content in HTML or RSC payload",
+      "passed": false,
+      "message": "The expression evaluated to a falsy value:\n\n  assert(!/C:(?:\\\\|\\/)|sourceSha256|outputDocxPath|sourcePreviewPaths|tmp\\/pdfs|quality\\/phase3-/.test(html))\n"
+    },
+    {
+      "name": "OCR FAQ included in structured data",
+      "passed": true
+    },
+    {
+      "name": "Benchmark sitemap modification date",
+      "passed": true
+    }
+  ],
+  "passed": 10,
+  "total": 11,
+  "allPassed": false
+}

@@ -1,0 +1,57 @@
+{
+  "phase": "3.2H",
+  "checkedAt": "2026-10-06T21:27:03.147Z",
+  "baseUrl": "http://127.0.0.1:3002",
+  "method": "Read-only local HTTP HTML, JSON-LD, streamed payload and sitemap checks; no conversion requests",
+  "htmlBytes": 136116,
+  "htmlSha256": "b320a82ec898ff7af1dcd3957c4046beca16afca2acdd048dc5581e38b061590",
+  "checks": [
+    {
+      "name": "HTML response",
+      "passed": true
+    },
+    {
+      "name": "Five separate Dataset records",
+      "passed": true
+    },
+    {
+      "name": "ocr-english-word: live evidence and structured data",
+      "passed": true
+    },
+    {
+      "name": "ocr-ocr-page-geometry: live evidence and structured data",
+      "passed": true
+    },
+    {
+      "name": "ocr-single-ruled-table: live evidence and structured data",
+      "passed": true
+    },
+    {
+      "name": "ocr-two-ruled-tables: live evidence and structured data",
+      "passed": true
+    },
+    {
+      "name": "Historical baseline and stub disclosure retained",
+      "passed": true
+    },
+    {
+      "name": "New controls and local limitations visible",
+      "passed": true
+    },
+    {
+      "name": "No private report content in HTML or RSC payload",
+      "passed": true
+    },
+    {
+      "name": "OCR FAQ included in structured data",
+      "passed": true
+    },
+    {
+      "name": "Benchmark sitemap modification date",
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "total": 11,
+  "allPassed": true
+}

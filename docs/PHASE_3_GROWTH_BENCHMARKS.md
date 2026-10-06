@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F and two-table pages 3.2G complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F, two-table pages 3.2G and English OCR evidence publication 3.2H complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -105,11 +105,21 @@ spacing are not claimed. The 139 focused tests, eight existing HTTP conversions,
 two unreadable-input rejections and last-page regression pass. See
 [the implementation, evidence and limits](PHASE_3_2G_ENGLISH_MULTITABLE_WORD.md).
 
-**Next bounded English task (3.2H):** add the verified 3.2D–G OCR results to the
-local English `/benchmarks` page, preserving the historical baseline and stating
-each report's dates, controlled fixture counts and unsupported-layout limits.
-Include data-contract, structured-data, responsive and build checks. This is
-evidence presentation, with no conversion-engine change or public deployment.
+## Task 3.2H: publish verified English OCR results
+
+Complete locally: `/benchmarks#ocr-results` now shows the four 3.2D–G test sets
+with their retained pass counts, UTC dates, control files and scope. Each has
+matching Dataset metadata and working tool links. The historical baseline and
+its OCR stub note remain intact. All 52 focused tests, ESLint, the final webpack
+production build and 11 built-page HTTP checks pass. Browser checks at 390,
+768 and 1280 pixels found no horizontal overflow. No conversion-engine change
+or public deployment was made. See
+[the implementation and verification record](PHASE_3_2H_ENGLISH_OCR_BENCHMARKS.md).
+
+**Next proposed bounded English task (3.3):** create an evidence-based guide to
+scanned PDF conversion: searchable PDF versus editable Word, demonstrated table
+support, and layouts that need review. This continues the educational-content
+roadmap item. The task has not started.
 Hindi pages and Hindi-specific improvements remain on hold.
 Real-customer feedback and deferred production launch gates remain open. Selected
 fixture passes do not establish universal accuracy or production capacity.

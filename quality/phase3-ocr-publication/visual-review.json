@@ -1,0 +1,23 @@
+{
+  "phase": "3.2H",
+  "reviewedOn": "2026-10-07",
+  "status": "passed",
+  "method": "CUA in-app browser DOM geometry, direct screenshots and visible link navigation against the running offline preview. Agent review, not human sign-off.",
+  "url": "http://127.0.0.1:3001/benchmarks#ocr-results",
+  "viewports": [
+    {"width": 390, "height": 844, "documentScrollWidth": 382, "ocrCards": 4, "cardWidth": 350.4, "cardClientWidth": 349, "cardScrollWidth": 349, "layout": "one column", "horizontalOverflow": false},
+    {"width": 768, "height": 1024, "documentScrollWidth": 760, "ocrCards": 4, "cardWidth": 346, "cardClientWidth": 344, "cardScrollWidth": 344, "layout": "two columns", "horizontalOverflow": false},
+    {"width": 1280, "height": 900, "documentScrollWidth": 1272, "ocrCards": 4, "cardWidth": 594, "layout": "two columns", "horizontalOverflow": false}
+  ],
+  "findings": [
+    "Counts, UTC dates, headings, method and amber scope panels remain readable without overlapping text.",
+    "The desktop OCR section and tablet table-result cards were visually inspected; the mobile two-table card was separately inspected.",
+    "All five live Dataset records have corresponding visible anchors and the expected historical dates.",
+    "The OCR section jump link and both tool destinations worked. The destinations displayed their PDF-to-Word and OCR-PDF headings and upload controls.",
+    "No warnings or errors were returned by the inspected browser console log.",
+    "The viewport override was reset and the OCR benchmark section was left open as the user deliverable."
+  ],
+  "blockingFindings": [],
+  "screenshots": "Displayed and inspected in the task; no screenshot files archived.",
+  "scope": "Presentation and navigation review only. No new document conversions, account operations or public deployment."
+}
