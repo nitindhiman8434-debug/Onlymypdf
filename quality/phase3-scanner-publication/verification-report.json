@@ -1,0 +1,136 @@
+{
+  "phase": "3.5",
+  "recordedAt": "2026-10-06T23:55:24.836606+00:00",
+  "localCompletionDate": "2026-10-07",
+  "timezone": "Asia/Calcutta",
+  "status": "scoped local publication task complete",
+  "phaseComplete": true,
+  "scope": "Publish retained Scanner evidence with truthful counts, limits, deterministic dates, Dataset metadata and reciprocal navigation.",
+  "sourceHashes": {
+    "src/config/scanner-benchmark.ts": "7586327be83cda4742d41b2fbca71a2ff59afda32f7be9670f3846ae764f6315",
+    "src/config/scanner-benchmark.test.ts": "0ea96c681e088d7d08288df856d0fb13f6beecd6dc2446a2a53224eee286bd31",
+    "src/app/benchmarks/scanner-results.tsx": "30a30be3878eae9d71c7b03d4ea0262f8b36c7fd489ee5facabb2e2b0334db4b",
+    "src/app/benchmarks/scanner-results.test.ts": "3c3fc76a6444e49dbaf1634277caa3e35ddf2f47c2be21faa256b87314c35cf2",
+    "src/app/benchmarks/page.tsx": "5a05fe987ab242dcd8d33639dc88d4f088023f61c103c4bbd3fb6de3c62e0720",
+    "src/app/benchmarks/ocr-results.test.ts": "f97d7f02cb15f93e351e30193f8ec0b8297a4d0d184e5823952eba1b1644f47f",
+    "src/app/(tools)/pdf-scanner/page.tsx": "0b802441ab801dfc9641465f0da96c3ed09731299f9473df64096f626d2a3f86",
+    "scripts/phase3-scanner-publication-check.mjs": "bfc68fda9546db86618c35117cb21f492c94e9686ea1d83efc8563ecb2cfde6a"
+  },
+  "retainedMeasurements": {
+    "report": "quality/phase3-scanner/first-report.json",
+    "sha256": "5a1d3e353d998bbb14623d807394f57181b7b37ecf4c6a99e89d21c101921030",
+    "measuredOnUtc": "2026-10-06",
+    "positivePassed": 5,
+    "positiveTotal": 5,
+    "negativePassed": 6,
+    "negativeTotal": 6,
+    "outputPages": 14,
+    "renderedPages": 14,
+    "rerunInThisPhase": false
+  },
+  "unitTests": {
+    "passed": 45,
+    "failed": 0,
+    "report": "quality/phase3-scanner-publication/unit-report.json",
+    "sha256": "66ad50bec1120d0e30c408f300c6a87a61af0fe34017dd4cf603c3209dfc4f95"
+  },
+  "parserSelfTests": {
+    "passed": 8,
+    "failed": 0,
+    "networkRequests": 0,
+    "command": "node scripts/phase3-scanner-publication-check.mjs --self-test"
+  },
+  "httpPublication": {
+    "passed": 21,
+    "failed": 0,
+    "baseUrl": "http://127.0.0.1:3002",
+    "report": "quality/phase3-scanner-publication/http-report.json",
+    "sha256": "6a4a8f62263828151ff53923a9d64d96023b7fc64667cd4420b12287ec9bd7d9",
+    "environment": "offline-configured webpack production build, temporary loopback port 3002"
+  },
+  "lint": {
+    "status": "passed",
+    "files": [
+      "src/config/scanner-benchmark.ts",
+      "src/config/scanner-benchmark.test.ts",
+      "src/app/benchmarks/scanner-results.tsx",
+      "src/app/benchmarks/scanner-results.test.ts",
+      "src/app/benchmarks/page.tsx",
+      "src/app/benchmarks/ocr-results.test.ts",
+      "src/app/(tools)/pdf-scanner/page.tsx",
+      "scripts/phase3-scanner-publication-check.mjs"
+    ]
+  },
+  "build": {
+    "status": "passed",
+    "exitCode": 0,
+    "generatedEntries": 170,
+    "totalEntries": 170,
+    "command": "node .local-dev/phase3-5-build.cjs",
+    "log": ".local-dev/phase3-5-build-final.log",
+    "logSha256": "bd1aebe2d560056a8096b6b0f52b937379575ee9dd64ce54c83603719802579a",
+    "warnings": [
+      "Existing custom Cache-Control header warning",
+      "Existing middleware-to-proxy convention deprecation",
+      "Existing legacy Buffer constructor deprecation"
+    ]
+  },
+  "browserReview": {
+    "status": "passed",
+    "environment": "Codex in-app browser, offline development preview at http://127.0.0.1:3001",
+    "viewports": [
+      {
+        "width": 390,
+        "height": 844,
+        "documentScrollWidth": 382,
+        "horizontalOverflow": false
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "documentScrollWidth": 760,
+        "horizontalOverflow": false
+      },
+      {
+        "width": 1280,
+        "height": 900,
+        "documentScrollWidth": 1272,
+        "horizontalOverflow": false
+      }
+    ],
+    "checks": [
+      "Scanner anchor displays separate 5/5, 6/6, 14, 14 metrics",
+      "Eleven case cards and 6 October 2026 UTC date",
+      "Benchmark to Scanner navigation",
+      "Scanner reciprocal benchmark anchor",
+      "Scanner section guide link reaches Scanned PDF to Word: OCR Guide",
+      "Back navigation returns to benchmark section"
+    ],
+    "consoleWarnings": 0,
+    "consoleErrors": 0,
+    "screenshots": "Reviewed inline at all three viewports; files not archived",
+    "viewportReset": true
+  },
+  "localPreview": {
+    "restored": true,
+    "baseUrl": "http://127.0.0.1:3001",
+    "httpChecks": {
+      "/benchmarks": 200,
+      "/pdf-scanner": 200
+    },
+    "newSectionAndLinkPresent": true,
+    "temporaryPort3002ServerStopped": true
+  },
+  "issuesResolved": [
+    "Initial focused-test environment memory failure avoided with one bounded worker",
+    "Test TypeScript union accesses narrowed and component props inference corrected",
+    "Browser attachment issue recovered after task resume; interrupted preview restarted"
+  ],
+  "boundaries": [
+    "No new conversion measurements or engine changes",
+    "No Hindi page or translation edits",
+    "No cloud configuration, paid service or public deployment changes",
+    "Physical cameras, arbitrary documents, universal accuracy, real-customer acceptance and production capacity remain outside this task",
+    "Phase 3.4 manual file-save gate uses explicit user confirmation; saved user bytes were not independently inspected"
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "phase": "3.5",
+  "checkedAt": "2026-10-06T23:26:15.693Z",
+  "baseUrl": "http://127.0.0.1:3002",
+  "method": "Read-only loopback HTTP publication checks on a production build; no uploads, server start or response-script execution. Actual server HTML is resolved only through parsed top-level React transfer calls and bound hidden segments.",
+  "contract": {
+    "measuredOnIso": "2026-10-06",
+    "positiveCases": 5,
+    "negativeCases": 6,
+    "pdfPages": 14,
+    "datasets": 6
+  },
+  "limitations": [
+    "This checks publication of retained evidence; it does not run conversions, certify OCR, camera devices, arbitrary image quality, production capacity, public availability or search ranking.",
+    "Hydrated browser behavior and responsive visual inspection are separate checks.",
+    "Frozen Phase 3.5 contract: changes to the retained corpus or visible/schema labels require intentional review of this checker."
+  ],
+  "responses": [
+    {
+      "route": "/benchmarks",
+      "audience": "html-limited-crawler",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 169146,
+      "sha256": "7409a766fa30133b00201ea0b9b520148e227bb9fe87320e1f8ab9387e698662"
+    },
+    {
+      "route": "/benchmarks",
+      "audience": "ordinary",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 169410,
+      "sha256": "300785065573d304839730c407fb104dae70c4b8dd8c6001f7edb4b4dab58241"
+    },
+    {
+      "route": "/pdf-scanner",
+      "audience": "html-limited-crawler",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 81337,
+      "sha256": "c40fa849d84026718549f93d11275b5c57936ad77124a4cf3f3996d56ae1e40a"
+    },
+    {
+      "route": "/guides/scanned-pdf-to-word",
+      "audience": "html-limited-crawler",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 94508,
+      "sha256": "36d1ac7601b4d5a1ddb01ea55270df0e601d096fae8874124a474e2e66ce624d"
+    }
+  ],
+  "streamResolutions": [
+    {
+      "route": "/benchmarks",
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/pdf-scanner",
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/guides/scanned-pdf-to-word",
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "Stream extraction rejects quoted, unbound, comment-only and RSC-only markup",
+      "passed": true
+    },
+    {
+      "name": "/benchmarks (html-limited-crawler): HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "name": "Production English main contains exactly one actual Scanner section",
+      "passed": true
+    },
+    {
+      "name": "Canonical remains the English benchmark URL",
+      "passed": true
+    },
+    {
+      "name": "Visible metrics keep conversions, invalid-input checks and output pages separate",
+      "passed": true
+    },
+    {
+      "name": "All five positive and six negative cases have the correct individual outcome",
+      "passed": true
+    },
+    {
+      "name": "Visible measurement date remains 6 October 2026 UTC",
+      "passed": true
+    },
+    {
+      "name": "Filter and orientation wording is limited to retained evidence",
+      "passed": true
+    },
+    {
+      "name": "Method and limitations prevent OCR, accuracy, camera or capacity overclaims",
+      "passed": true
+    },
+    {
+      "name": "Scanner links lead to its tool and the existing English guide",
+      "passed": true
+    },
+    {
+      "name": "Scanner anchors and labelled headings are unique in actual main markup",
+      "passed": true
+    },
+    {
+      "name": "Six unique Dataset records preserve the five historical entries",
+      "passed": true
+    },
+    {
+      "name": "Exactly one Scanner Dataset matches visible case and page counts",
+      "passed": true
+    },
+    {
+      "name": "Scanner section and Dataset do not expose private evidence fields or hashes",
+      "passed": true
+    },
+    {
+      "name": "Full crawler HTML and streamed payload do not expose scanner artifacts or private confirmation",
+      "passed": true
+    },
+    {
+      "name": "/benchmarks (ordinary): HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "name": "Ordinary benchmark HTML and streamed payload preserve evidence privacy",
+      "passed": true
+    },
+    {
+      "name": "/pdf-scanner (html-limited-crawler): HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "name": "/pdf-scanner: existing destination has an actual page heading",
+      "passed": true
+    },
+    {
+      "name": "/guides/scanned-pdf-to-word (html-limited-crawler): HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "name": "/guides/scanned-pdf-to-word: existing destination has an actual page heading",
+      "passed": true
+    }
+  ],
+  "passed": 21,
+  "total": 21,
+  "allPassed": true
+}

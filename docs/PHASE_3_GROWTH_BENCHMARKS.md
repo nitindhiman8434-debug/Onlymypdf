@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F, two-table pages 3.2G, English OCR evidence publication 3.2H, scanned-PDF guide 3.3 and Scanner output/limits 3.4 complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F, two-table pages 3.2G, English OCR evidence publication 3.2H, scanned-PDF guide 3.3, Scanner output/limits 3.4 and Scanner evidence publication 3.5 complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -142,6 +142,18 @@ The focused suite passes 66/66 and the independent local HTTP corpus passes
 170/170 entries. On 7 October 2026 the user confirmed clicking Download PDF
 and saving the file, closing the final manual browser gate. Phase 3.4 is
 complete for its scoped local checks. See [implementation, checks and limitations](PHASE_3_4_SCANNER_OUTPUT_AND_LIMITS.md).
+
+## Task 3.5: publish PDF Scanner evidence
+
+Complete locally: `/benchmarks#scanner-results` publishes the retained five
+successful conversion cases, six invalid-input checks and fourteen independently
+rendered output pages separately, with the original 6 October UTC measurement
+date and matching Dataset metadata. A fixed evidence contract prevents missing
+or failed records from appearing as a clean pass. Scanner and guide links work.
+All 45 focused tests, eight parser self-tests, 21 production-build HTTP checks,
+ESLint, webpack build (170/170 entries) and responsive browser review pass.
+The original Office and English OCR evidence remains intact. See
+[implementation, verification and limits](PHASE_3_5_SCANNER_BENCHMARK_PUBLICATION.md).
 
 Hindi pages and Hindi-specific improvements remain on hold.
 Real-customer feedback and deferred production launch gates remain open. Selected

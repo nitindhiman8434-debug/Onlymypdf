@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ToolPageShell } from "@/components/layout/tool-page-shell";
 import { PdfScannerWorkspace } from "@/components/tools/lazy-workspaces";
 import { mapFaqs, mapRelatedTools } from "@/components/tools/tool-helpers";
@@ -54,6 +55,12 @@ export default function PDFScannerPage() {
       faqs={mapFaqs(FAQS)}
     >
       <PdfScannerWorkspace />
+      <p className="mt-4 text-sm leading-relaxed text-pd-muted">
+        See what was checked in our{" "}
+        <Link href="/benchmarks#scanner-results" className="inline-flex min-h-11 items-center font-semibold text-pd-brand underline underline-offset-4">
+          PDF Scanner test results and limitations
+        </Link>.
+      </p>
     </ToolPageShell>
   );
 }

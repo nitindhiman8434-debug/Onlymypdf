@@ -45,16 +45,16 @@ describe("English OCR benchmark publication", () => {
     }
   });
 
-  it("publishes five valid datasets while preserving the original dated baseline and OCR stub disclosure", () => {
+  it("publishes six valid datasets while preserving the original dated baseline and OCR stub disclosure", () => {
     const html = renderToStaticMarkup(createElement(BenchmarksPage));
     const match = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/);
     expect(match).not.toBeNull();
     const json = JSON.parse(match![1]) as Array<Record<string, unknown>>;
     const datasets = json.filter((item) => item["@type"] === "Dataset");
-    expect(datasets).toHaveLength(5);
+    expect(datasets).toHaveLength(6);
     expect(datasets[0].dateModified).toBe(CONVERSION_BENCHMARK.measuredOnIso);
     expect(datasets[0].description).toContain("stub");
-    expect(new Set(datasets.map((item) => item["@id"])).size).toBe(5);
+    expect(new Set(datasets.map((item) => item["@id"])).size).toBe(6);
     expect(html).toContain("does not measure Tesseract recognition accuracy");
     expect(html).toContain('href="#ocr-results"');
     expect(html).toContain('id="document-corpus"');

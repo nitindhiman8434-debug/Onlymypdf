@@ -15,10 +15,11 @@ import { breadcrumbJsonLd, faqPageJsonLd, JsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { DocumentCorpusResults } from "./document-corpus-results";
 import { OcrBenchmarkResults, ocrBenchmarkDatasets } from "./ocr-results";
+import { ScannerBenchmarkResults, scannerBenchmarkDataset } from "./scanner-results";
 
-const TITLE = "PDF Conversion Benchmarks: Office and OCR";
+const TITLE = "PDF Conversion Benchmarks: Office, OCR and Scanner";
 const DESCRIPTION =
-  "Explore OnlyMyPDF's local PDF-to-Office and English OCR results, including editable tables, searchable page checks, test dates and measured limitations.";
+  "Explore OnlyMyPDF's local PDF-to-Office, English OCR and PDF Scanner results, including editable tables, image pages, input checks, dates and limitations.";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `${TITLE} | ${APP_NAME}`,
@@ -87,6 +88,7 @@ export default function BenchmarksPage() {
         data={[
           datasetJsonLd,
           ...ocrBenchmarkDatasets(),
+          scannerBenchmarkDataset(),
           breadcrumbJsonLd([
             { name: "Home", path: "/" },
             { name: "Benchmarks", path: "/benchmarks" },
@@ -96,7 +98,7 @@ export default function BenchmarksPage() {
       />
       <MarketingPageShell
         title={TITLE}
-        description="Dated local results for Office conversion and scanned PDFs, with the checks and limits beside each result."
+        description="Dated local results for Office conversion, English OCR and PDF Scanner, with the checks and limits beside each result."
         eyebrow="Conversion evidence"
         heroStyle="centered"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Benchmarks" }]}
@@ -129,6 +131,9 @@ export default function BenchmarksPage() {
               </a>
               <a href="#document-corpus" className="inline-flex min-h-11 items-center font-semibold text-pd-brand hover:underline">
                 See language and document results
+              </a>
+              <a href="#scanner-results" className="inline-flex min-h-11 items-center font-semibold text-pd-brand hover:underline">
+                See PDF Scanner results
               </a>
             </nav>
           </div>
@@ -228,6 +233,8 @@ export default function BenchmarksPage() {
         </section>
 
         <OcrBenchmarkResults />
+
+        <ScannerBenchmarkResults />
 
         <DocumentCorpusResults />
 
