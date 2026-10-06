@@ -21,6 +21,7 @@ spec.loader.exec_module(corpus)
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", default="http://127.0.0.1:3001")
+    parser.add_argument("--report", type=Path, default=ROOT / "quality/phase3-english-word/rejection-report.json")
     args = parser.parse_args()
     transport = corpus.transport_module.LocalTransport(args.base_url, 180)
     directory = ROOT / "tmp/pdfs/phase3.2d-english-word"
@@ -63,7 +64,7 @@ def main() -> int:
                         "passed": passed, "artifactReturned": artifact})
     report = {"scope": "local English Word OCR rejection", "results": results,
               "passed": sum(row["passed"] for row in results), "allPassed": all(row["passed"] for row in results)}
-    report_path = ROOT / "quality/phase3-english-word/rejection-report.json"
+    report_path = args.report
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))

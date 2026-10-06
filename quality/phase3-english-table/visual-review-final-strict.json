@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.2F",
+  "title": "Final strict-guard output visual continuity verification",
+  "agent": "/root/english_table_corpus",
+  "reviewedAtUtc": "2026-10-06T20:39:36Z",
+  "status": "passed",
+  "reviewMethod": "Exact Pillow decoded-pixel comparison of every final-strict output preview against its previously visually inspected final output preview. Mode, dimensions and every decoded pixel byte match; PNG file hashes also match. No redundant visual inspection of identical images was performed.",
+  "originalVisualReview": {
+    "path": "quality/phase3-english-table/visual-review.json",
+    "sha256": "6072e93a3b840da22bfe6eec140633f59b2d0e6ee98a47889a4299c446b7a801",
+    "status": "passed"
+  },
+  "previousConversionReport": {
+    "path": "quality/phase3-english-table/final-report.json",
+    "sha256": "20e8c8d1cfaf9f7d0653fdbdc8daf3d9ba08ef48e9fb9c31022d3a7c4f531f55"
+  },
+  "currentConversionReport": {
+    "path": "quality/phase3-english-table/final-strict-report.json",
+    "sha256": "ef16667aa7be70f585fd4804b3e47ae991ce46f3170cb25fc43a6c5def66f71a",
+    "automatedCasesPassed": 4,
+    "automatedCasesTotal": 4,
+    "allPassed": true
+  },
+  "oracleUnchanged": {
+    "fixtureDefinitionsSha256": "232ec45c3c6cca80674599e283b90020c7a21c0502dc50593eed59caf6c3203c",
+    "validatorSha256": "b238d10b5df58a69a936f344b86ec1004e61b0ec047cd63d28cbdd1799a258eb"
+  },
+  "summary": {
+    "expectedPages": 5,
+    "comparedPages": 5,
+    "pixelIdenticalPages": 5,
+    "differentPages": 0,
+    "allPixelsIdentical": true
+  },
+  "pages": [
+    {
+      "caseId": "english-ruled-invoice-scan",
+      "page": 1,
+      "status": "passed",
+      "previouslyReviewedPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-ruled-invoice-scan-output-preview-page-1.png",
+      "currentPreviewPath": "tmp/pdfs/phase3.2f-english-table/final-strict/english-ruled-invoice-scan-output-preview-page-1.png",
+      "sameMode": true,
+      "mode": "RGB",
+      "sameDimensions": true,
+      "dimensionsPixels": [
+        1020,
+        1320
+      ],
+      "decodedPixelBytesIdentical": true,
+      "decodedPixelSha256": "11e92a8f661a951ca4483fc2355b82d45c0555f98cba546aad40f612c35a18d1",
+      "previousFileSha256": "fc41bb7453d5c397d83eb3624ec5d46b03b8fa8b1ea83085d346b4ad833fa6cf",
+      "currentFileSha256": "fc41bb7453d5c397d83eb3624ec5d46b03b8fa8b1ea83085d346b4ad833fa6cf"
+    },
+    {
+      "caseId": "english-wrapped-invoice-scan",
+      "page": 1,
+      "status": "passed",
+      "previouslyReviewedPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-wrapped-invoice-scan-output-preview-page-1.png",
+      "currentPreviewPath": "tmp/pdfs/phase3.2f-english-table/final-strict/english-wrapped-invoice-scan-output-preview-page-1.png",
+      "sameMode": true,
+      "mode": "RGB",
+      "sameDimensions": true,
+      "dimensionsPixels": [
+        1020,
+        1320
+      ],
+      "decodedPixelBytesIdentical": true,
+      "decodedPixelSha256": "4befa4f5a950459e36445610cb2517b410fe593067c2858336c829d439a20886",
+      "previousFileSha256": "c5aa4b4d422005c5cb8d4d5909e0c85ad6897b738539bf15c92d7599dea5709c",
+      "currentFileSha256": "c5aa4b4d422005c5cb8d4d5909e0c85ad6897b738539bf15c92d7599dea5709c"
+    },
+    {
+      "caseId": "english-two-invoice-scan",
+      "page": 1,
+      "status": "passed",
+      "previouslyReviewedPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-two-invoice-scan-output-preview-page-1.png",
+      "currentPreviewPath": "tmp/pdfs/phase3.2f-english-table/final-strict/english-two-invoice-scan-output-preview-page-1.png",
+      "sameMode": true,
+      "mode": "RGB",
+      "sameDimensions": true,
+      "dimensionsPixels": [
+        1020,
+        1320
+      ],
+      "decodedPixelBytesIdentical": true,
+      "decodedPixelSha256": "09d6b7310d6a8342c1d4a72f72c2b31b2fdaa2159e5c074241d76e37c82e1877",
+      "previousFileSha256": "778833ba5c916eacc94905fc10668a3bbfa25a7d867edda56fd35b5ed6791bf7",
+      "currentFileSha256": "778833ba5c916eacc94905fc10668a3bbfa25a7d867edda56fd35b5ed6791bf7"
+    },
+    {
+      "caseId": "english-two-invoice-scan",
+      "page": 2,
+      "status": "passed",
+      "previouslyReviewedPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-two-invoice-scan-output-preview-page-2.png",
+      "currentPreviewPath": "tmp/pdfs/phase3.2f-english-table/final-strict/english-two-invoice-scan-output-preview-page-2.png",
+      "sameMode": true,
+      "mode": "RGB",
+      "sameDimensions": true,
+      "dimensionsPixels": [
+        1320,
+        1020
+      ],
+      "decodedPixelBytesIdentical": true,
+      "decodedPixelSha256": "91e52e70b2fd338840aaa064b65a8a73646a89c9d3050a3e4873460ea6776758",
+      "previousFileSha256": "d3656d0ba50eb403e616e584f50703954560ab6299f1492dc85955c895c64947",
+      "currentFileSha256": "d3656d0ba50eb403e616e584f50703954560ab6299f1492dc85955c895c64947"
+    },
+    {
+      "caseId": "english-borderless-memo-scan",
+      "page": 1,
+      "status": "passed",
+      "previouslyReviewedPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-borderless-memo-scan-output-preview-page-1.png",
+      "currentPreviewPath": "tmp/pdfs/phase3.2f-english-table/final-strict/english-borderless-memo-scan-output-preview-page-1.png",
+      "sameMode": true,
+      "mode": "RGB",
+      "sameDimensions": true,
+      "dimensionsPixels": [
+        1020,
+        1320
+      ],
+      "decodedPixelBytesIdentical": true,
+      "decodedPixelSha256": "676b1f5023b23491cf083708d9b2eb9e38a3037b25c7d002f5fd02dfdfd7eb73",
+      "previousFileSha256": "c82e47fbfbaac78f758ba4047edc2d59ccc112fdfbe3b3ab4fab835dac56df8c",
+      "currentFileSha256": "c82e47fbfbaac78f758ba4047edc2d59ccc112fdfbe3b3ab4fab835dac56df8c"
+    }
+  ],
+  "findings": [
+    "All five current output pages are pixel-identical to the pages covered by visual-review.json; its readability, cell association, wrapping, clipping and page-completeness conclusions carry over.",
+    "The original review nonblocking typography, spacing, wrap-location and memo-alignment differences remain unchanged.",
+    "Native editable cell structure and exact textual content are independently revalidated by final-strict-report.json; image identity alone is not used to establish editability."
+  ],
+  "limitations": [
+    "This evidence covers only the five referenced output preview pages and unchanged bounded synthetic English corpus.",
+    "This is an agent visual-review continuity check, not human sign-off or a claim of general layout fidelity."
+  ]
+}

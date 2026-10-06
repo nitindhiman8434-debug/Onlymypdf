@@ -1,0 +1,43 @@
+{
+  "phase": "3.2F",
+  "verifiedAtUtc": "2026-10-06T20:38:41.303473+00:00",
+  "results": [
+    {
+      "pattern": "test_ocr_ruled_tables.py",
+      "tests": 29,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_ocr_table_integration.py",
+      "tests": 4,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_ocr_english_docx.py",
+      "tests": 21,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_phase3_english_table_corpus.py",
+      "tests": 19,
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "pattern": "test_phase3_english_word_corpus.py",
+      "tests": 24,
+      "passed": true,
+      "exitCode": 0
+    }
+  ],
+  "tests": 97,
+  "allPassed": true,
+  "productionSha256": {
+    "ocr_ruled_tables.py": "450f94a509dff02f445f8800caebaadddde9e9380d3cc0a752945b7e4f6676a7",
+    "ocr_english_docx.py": "708c2b2064236463ea971a7f23142fd6558d787654e593c18ecf9259592030e5",
+    "pdf-to-docx.py": "47ed3b59349edf769cbf6bcd7081a5ff2f9ae94a33c1e03c92d597c1874a461f"
+  }
+}

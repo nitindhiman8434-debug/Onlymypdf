@@ -156,6 +156,29 @@ class EnglishOcrDocxTests(unittest.TestCase):
         fallback.assert_not_called()
         recognition.assert_not_called()
 
+    def test_actual_fallback_passes_detected_native_table_to_writer(self) -> None:
+        self.source_pages((612, 792), (792, 612))
+        raw = ["Invoice 001234 Description Amount Analysis package 120.25 Total 120.25",
+               "Last page retains the complete English reference paragraph"]
+        layout = {"before": ["Invoice 001234"],
+                  "rows": [["Description", "Amount"], ["Analysis package", "120.25"]],
+                  "after": ["Total 120.25"], "columnWidths": [0.75, 0.25]}
+
+        def recognize(_source, *, language, dpi, page_layouts):
+            page_layouts.extend([layout, None])
+            return raw
+
+        with patch.object(converter, "_build_searchable_ocr_pdf", side_effect=self.prepared_ocr(raw)), \
+             patch.object(converter, "install_pdf2docx_devanagari_support"), \
+             patch("pdf2docx.Converter", self.incomplete_converter()), \
+             patch("ocr_english_docx.recognize_ocr_transcripts", side_effect=recognize), \
+             contextlib.redirect_stderr(io.StringIO()) as diagnostics:
+            self.assertTrue(converter.convert_scanned_pdf_with_ocr(str(self.source), str(self.output), language="eng"))
+        document = Document(self.output)
+        self.assertEqual([[cell.text for cell in row.cells] for row in document.tables[0].rows], layout["rows"])
+        self.assertIn(raw[1], [paragraph.text for paragraph in document.paragraphs])
+        self.assertIn("method=editable-latin-table", diagnostics.getvalue())
+
     def test_non_latin_ocr_retains_the_existing_reference_fallback(self) -> None:
         self.source_pages((612, 792), (612, 792))
         texts = ["\u039a\u03b1\u03bb\u03b7\u03bc\u03ad\u03c1\u03b1 English mixed reference paragraph", "A second full paragraph for the existing routine"]
@@ -189,7 +212,7 @@ class EnglishOcrDocxTests(unittest.TestCase):
             self.assertTrue(converter.convert_scanned_pdf_with_ocr(str(self.source), str(self.output), language="eng"))
         text = [paragraph.text for paragraph in Document(self.output).paragraphs if paragraph.text]
         self.assertEqual(text, [*raw[0].splitlines(), *raw[1].splitlines()])
-        recognition.assert_called_once_with(str(self.source), language="eng", dpi=220)
+        recognition.assert_called_once_with(str(self.source), language="eng", dpi=220, page_layouts=[])
 
     def test_empty_hidden_page_can_recover_from_actual_raw_text_before_rejection(self) -> None:
         self.source_pages((612, 792), (792, 612))

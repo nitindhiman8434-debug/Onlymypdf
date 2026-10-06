@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.2F",
+  "title": "English scanned invoice final native-table visual review",
+  "agent": "/root/english_table_corpus",
+  "reviewedAtUtc": "2026-10-06T20:33:09Z",
+  "status": "passed",
+  "scope": "All five final output PNG pages compared with their five previously inspected source PNG pages; four fixed synthetic English cases only.",
+  "reviewMethod": "Agent visual inspection through view_image. This is not human sign-off or pixel-difference scoring. Native editability and exact cell values are established separately by final-report.json XML checks.",
+  "conversionReport": {
+    "path": "quality/phase3-english-table/final-report.json",
+    "sha256": "20e8c8d1cfaf9f7d0653fdbdc8daf3d9ba08ef48e9fb9c31022d3a7c4f531f55",
+    "automatedCasesPassed": 4,
+    "automatedCasesTotal": 4
+  },
+  "pagesInspected": 5,
+  "sourcePagesCompared": 5,
+  "blockingFindings": [],
+  "nonblockingDifferences": [
+    "Output uses smaller regular-weight headings and regular-weight table headers instead of the source bold styling.",
+    "Output row heights, rule weight, paragraph spacing and margins differ from the source; content remains readable with no clipping or overlap.",
+    "Wrapped-description line-break locations differ while both complete descriptions remain inside their own cells.",
+    "The borderless memo's tab-aligned amount column becomes inline paragraph text; the required ordered content and zero-table result are retained. Exact tab positioning was not part of this gate."
+  ],
+  "cases": [
+    {
+      "caseId": "english-ruled-invoice-scan",
+      "status": "passed",
+      "pages": [
+        {
+          "page": 1,
+          "sourcePreviewPath": "tmp/pdfs/phase3.2f-english-table/sources/english-ruled-invoice-scan-source-preview-page-1.png",
+          "outputPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-ruled-invoice-scan-output-preview-page-1.png",
+          "orientationObserved": "portrait",
+          "automatedDimensionsPoints": [612, 792],
+          "findings": [
+            "One visible four-column table contains the header and all three item rows with clear separating rules.",
+            "00421 stays with Analysis package, quantity 2 and 240.50; 00632 stays with Review service, quantity 3 and 135.30; 00874 stays with Archive support, quantity 1 and 19.95.",
+            "Invoice header, customer paragraph, pre-table paragraph, 395.75 total and final paragraph are readable once in source order.",
+            "No text clipping, table overflow, overlapping cells, duplicated page image or spurious extra page is visible."
+          ]
+        }
+      ]
+    },
+    {
+      "caseId": "english-wrapped-invoice-scan",
+      "status": "passed",
+      "pages": [
+        {
+          "page": 1,
+          "sourcePreviewPath": "tmp/pdfs/phase3.2f-english-table/sources/english-wrapped-invoice-scan-source-preview-page-1.png",
+          "outputPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-wrapped-invoice-scan-output-preview-page-1.png",
+          "orientationObserved": "portrait",
+          "automatedDimensionsPoints": [612, 792],
+          "findings": [
+            "Both long descriptions occupy two lines inside their respective description cells, and horizontal rules enclose each complete item row.",
+            "00542 and the complete research-team description stay with quantity 2 and 280.50; 00763 and the complete project description stay with quantity 3 and 165.30.",
+            "The 00985 Archive support row retains quantity 1 and 29.95; the 475.75 total and complete final paragraph remain below the table.",
+            "No continuation line crosses into the next item row or follows a numeric amount outside the table. No clipping or overlap is visible."
+          ]
+        }
+      ]
+    },
+    {
+      "caseId": "english-two-invoice-scan",
+      "status": "passed",
+      "pages": [
+        {
+          "page": 1,
+          "sourcePreviewPath": "tmp/pdfs/phase3.2f-english-table/sources/english-two-invoice-scan-source-preview-page-1.png",
+          "outputPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-two-invoice-scan-output-preview-page-1.png",
+          "orientationObserved": "portrait",
+          "automatedDimensionsPoints": [612, 792],
+          "findings": [
+            "The first invoice appears on a portrait page with one complete header-plus-three-row table.",
+            "00124, 00345 and 00567 remain visibly associated with their own descriptions, quantities and amounts; total 385.75 is below the table.",
+            "The full first-page closing paragraph remains on page one. No clipping, spillover or content from invoice two is visible."
+          ]
+        },
+        {
+          "page": 2,
+          "sourcePreviewPath": "tmp/pdfs/phase3.2f-english-table/sources/english-two-invoice-scan-source-preview-page-2.png",
+          "outputPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-two-invoice-scan-output-preview-page-2.png",
+          "orientationObserved": "landscape",
+          "automatedDimensionsPoints": [792, 612],
+          "findings": [
+            "The second invoice remains on a separate landscape page and its four-column table fits within the page width.",
+            "00235, 00456 and 00678 remain visibly associated with their own descriptions, quantities and amounts; total 515.75 is below the table.",
+            "The final paragraph of the second invoice and whole document is fully visible. No clipping, duplicate first-page content or extra page is visible."
+          ]
+        }
+      ]
+    },
+    {
+      "caseId": "english-borderless-memo-scan",
+      "status": "passed",
+      "pages": [
+        {
+          "page": 1,
+          "sourcePreviewPath": "tmp/pdfs/phase3.2f-english-table/sources/english-borderless-memo-scan-source-preview-page-1.png",
+          "outputPreviewPath": "tmp/pdfs/phase3.2f-english-table/final/english-borderless-memo-scan-output-preview-page-1.png",
+          "orientationObserved": "portrait",
+          "automatedDimensionsPoints": [612, 792],
+          "findings": [
+            "No visible table or ruling is invented; references and amounts remain three readable lines of prose.",
+            "006731 stays with 81.25, 008952 with 42.60 and 003174 with 19.95, in source order.",
+            "Heading, explanatory paragraph and complete final paragraph are visible once with no clipping or overlap."
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "This review establishes the scoped readability, wrapping, association and completeness checks for the inspected generated artifacts only.",
+    "It does not claim exact source typography, pixel-identical layout, arbitrary borderless-table reconstruction, merged-cell support or multiple tables on one page.",
+    "Page dimensions and native cell editability are supported by independent automated checks in the referenced final report rather than inferred from image appearance alone."
+  ]
+}

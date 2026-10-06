@@ -1,0 +1,1454 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.2D",
+  "generatedAt": "2026-10-06T20:33:30.750123+00:00",
+  "baseUrl": "http://127.0.0.1:3001",
+  "generateOnly": false,
+  "limitations": [
+    "Four controlled synthetic English documents; not a universal PDF-to-Word or OCR accuracy score.",
+    "Only the shared loopback HTTP transport is reused. No previous language corpus is generated or run.",
+    "Exact NFC comparisons collapse existing whitespace to one space; they never delete word spaces or forgive character/amount differences.",
+    "The controlled originals fit comfortably on their declared pages. Equal rendered page counts are required for these cases, not asserted for arbitrary documents.",
+    "Invoice row association is required. Native editable table cells are measured separately, not implied by a correct plain-text row.",
+    "The sources contain no intended page pictures or multiple text columns. Unexpected page images and image-plus-text side-by-side wrappers fail this scoped layout contract.",
+    "Font sizes, page dimensions and image geometry are reported; exact fonts, pixel-identical positioning, arbitrary layout fidelity and accessibility are not guaranteed.",
+    "Independent LibreOffice rendering checks visible PDF text and pagination; screenshots still require visual inspection.",
+    "No paid services, downloads, public deployment or non-loopback requests are performed by this runner."
+  ],
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Windows",
+    "packages": {
+      "PyMuPDF": "1.27.2.3",
+      "python-docx": "1.2.0",
+      "Pillow": "12.2.0"
+    }
+  },
+  "cases": [
+    {
+      "caseId": "english-memo-selectable",
+      "inputKind": "selectable",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "English document quality check"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 006731"
+          },
+          {
+            "kind": "paragraph",
+            "text": "An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule."
+          },
+          {
+            "kind": "paragraph",
+            "text": "The approved amount is 1245.60 USD. The final reference is 71936."
+          }
+        ]
+      ],
+      "numericValues": [
+        "006731",
+        "1245.60",
+        "71936"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2f-english-table/regression/english-memo-selectable.pdf",
+        "inputSha256": "3a4fdb078ad38388e2a95de90225ec3fa3c969fd28bb399385448c4fbc294e58",
+        "inputBytes": 48774,
+        "inputKind": "selectable",
+        "selectableCharactersByPage": [
+          378
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2f-english-table/regression/english-memo-selectable-original.docx",
+        "literalDocxSha256": "f015d7c14069943a52d1921877818cd0560bcd9a2089ea11eaff17254fa69c17",
+        "literalDocxTextPassed": true,
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936.",
+              "actualText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2f-english-table/regression/original-pdfs/english-memo-selectable-original.pdf",
+          "pdfSha256": "3a4fdb078ad38388e2a95de90225ec3fa3c969fd28bb399385448c4fbc294e58",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2f-english-table/regression/english-memo-selectable-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "english-memo-scan",
+      "inputKind": "scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "English document quality check"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 006731"
+          },
+          {
+            "kind": "paragraph",
+            "text": "An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule."
+          },
+          {
+            "kind": "paragraph",
+            "text": "The approved amount is 1245.60 USD. The final reference is 71936."
+          }
+        ]
+      ],
+      "numericValues": [
+        "006731",
+        "1245.60",
+        "71936"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2f-english-table/regression/english-memo-scan.pdf",
+        "inputSha256": "681274267877d2011ade1623b48127f8b3d4ee59746a5f8154adcb2b38ee4936",
+        "inputBytes": 114192,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2f-english-table/regression/english-memo-scan-original.docx",
+        "literalDocxSha256": "dc4116391b3a1eb472c62f2056c5e3b49f0689571cffdc47eda5daca2c99d90d",
+        "literalDocxTextPassed": true,
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936.",
+              "actualText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2f-english-table/regression/original-pdfs/english-memo-scan-original.pdf",
+          "pdfSha256": "acfcdc069c6d35a34163b69dc7346319c00f18eb77437bd408457eec9be7624c",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2f-english-table/regression/english-memo-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "english-invoice-scan",
+      "inputKind": "scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "English service invoice"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Invoice number 004218"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Customer: Example Research Company"
+          },
+          {
+            "kind": "paragraph",
+            "text": "This invoice covers the completed analysis and review services. All line items and values are synthetic test information."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Description",
+                "Quantity",
+                "Unit price",
+                "Line total"
+              ],
+              [
+                "Analysis package",
+                "2",
+                "120.25",
+                "240.50"
+              ],
+              [
+                "Review service",
+                "3",
+                "45.10",
+                "135.30"
+              ],
+              [
+                "Archive support",
+                "1",
+                "19.95",
+                "19.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Amount due: 395.75 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Please keep each description with its quantity and prices. The final invoice reference is 86274."
+          }
+        ]
+      ],
+      "numericValues": [
+        "004218",
+        "120.25",
+        "240.50",
+        "45.10",
+        "135.30",
+        "19.95",
+        "19.95",
+        "395.75",
+        "86274"
+      ],
+      "invoiceRows": [
+        [
+          "Analysis package",
+          "2",
+          "120.25",
+          "240.50"
+        ],
+        [
+          "Review service",
+          "3",
+          "45.10",
+          "135.30"
+        ],
+        [
+          "Archive support",
+          "1",
+          "19.95",
+          "19.95"
+        ]
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2f-english-table/regression/english-invoice-scan.pdf",
+        "inputSha256": "1fe13cbe78e61b09189b5ffcf1f38a00cd51a49d301095d2d40c11b7c71c70f4",
+        "inputBytes": 147206,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2f-english-table/regression/english-invoice-scan-original.docx",
+        "literalDocxSha256": "c6711f043e745e3b5e464d5d1ec9fd97652c2e2dc74f4e8036bd927cda5a3b07",
+        "literalDocxTextPassed": true,
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "English service invoice Invoice number 004218 Customer: Example Research Company This invoice covers the completed analysis and review services. All line items and values are synthetic test information. Description Quantity Unit price Line total Analysis package 2 120.25 240.50 Review service 3 45.10 135.30 Archive support 1 19.95 19.95 Amount due: 395.75 USD Please keep each description with its quantity and prices. The final invoice reference is 86274.",
+              "actualText": "English service invoice Invoice number 004218 Customer: Example Research Company This invoice covers the completed analysis and review services. All line items and values are synthetic test information. Description Quantity Unit price Line total Analysis package 2 120.25 240.50 Review service 3 45.10 135.30 Archive support 1 19.95 19.95 Amount due: 395.75 USD Please keep each description with its quantity and prices. The final invoice reference is 86274."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2f-english-table/regression/original-pdfs/english-invoice-scan-original.pdf",
+          "pdfSha256": "34f30bcd1ec3080e094028850e6873f208c8bc9c0588d50641a53fecef5b827f",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2f-english-table/regression/english-invoice-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "english-two-page-scan",
+      "inputKind": "scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "Project review: first page"
+          },
+          {
+            "kind": "paragraph",
+            "text": "First page reference 58324"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The research team completed the initial review on Monday. The complete first paragraph must remain readable and editable in the exported document."
+          },
+          {
+            "kind": "paragraph",
+            "text": "The approved first page amount is 240.00 USD. Reviewers should keep the source notes with the supporting schedule."
+          },
+          {
+            "kind": "paragraph",
+            "text": "This is the last paragraph of the first page. Its closing reference is 63128."
+          }
+        ],
+        [
+          {
+            "kind": "heading",
+            "text": "Project review: second page"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Second page reference 94716"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page."
+          },
+          {
+            "kind": "paragraph",
+            "text": "The approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page."
+          },
+          {
+            "kind": "paragraph",
+            "text": "This is the final paragraph of the whole document. Its closing reference is 25869."
+          }
+        ]
+      ],
+      "pageSizesPoints": [
+        [
+          612,
+          792
+        ],
+        [
+          792,
+          612
+        ]
+      ],
+      "numericValues": [
+        "58324",
+        "240.00",
+        "63128",
+        "94716",
+        "980.75",
+        "25869"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2f-english-table/regression/english-two-page-scan.pdf",
+        "inputSha256": "b697d4e0403f8d004cf7fccbecdc7a792e7ad05f6940f5eaadce7c4b22b91c32",
+        "inputBytes": 215805,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0,
+          0
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2f-english-table/regression/english-two-page-scan-original.docx",
+        "literalDocxSha256": "10b98c718c362c96f0bc0a881cb8c2e90d4997069835ea46af085d320bfd0c6f",
+        "literalDocxTextPassed": true,
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 2,
+          "actualPageCount": 2,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "Project review: first page First page reference 58324 The research team completed the initial review on Monday. The complete first paragraph must remain readable and editable in the exported document. The approved first page amount is 240.00 USD. Reviewers should keep the source notes with the supporting schedule. This is the last paragraph of the first page. Its closing reference is 63128.",
+              "actualText": "Project review: first page First page reference 58324 The research team completed the initial review on Monday. The complete first paragraph must remain readable and editable in the exported document. The approved first page amount is 240.00 USD. Reviewers should keep the source notes with the supporting schedule. This is the last paragraph of the first page. Its closing reference is 63128."
+            },
+            {
+              "page": 2,
+              "fullTextMatches": true,
+              "expectedText": "Project review: second page Second page reference 94716 The operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page. The approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page. This is the final paragraph of the whole document. Its closing reference is 25869.",
+              "actualText": "Project review: second page Second page reference 94716 The operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page. The approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page. This is the final paragraph of the whole document. Its closing reference is 25869."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            },
+            {
+              "page": 2,
+              "expectedWidthPoints": 792,
+              "expectedHeightPoints": 612,
+              "actual": {
+                "widthPoints": 792.0,
+                "heightPoints": 612.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2f-english-table/regression/original-pdfs/english-two-page-scan-original.pdf",
+          "pdfSha256": "9029f68659db32795bb081b3a89fb65f874bf4008b96d21660c866e5778ea2b5",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2f-english-table/regression/english-two-page-scan-source-preview-page-1.png",
+            "tmp/pdfs/phase3.2f-english-table/regression/english-two-page-scan-source-preview-page-2.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            {
+              "widthPoints": 792.0,
+              "heightPoints": 612.0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "results": [
+    {
+      "caseId": "english-memo-selectable",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 37045,
+      "responseSha256": "10e47ec99cc4b7ca488aaa5b3478599594c934ed2160445d0855a2d6bc9c34e9",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 2500,
+      "outputPath": "tmp/pdfs/phase3.2f-english-table/regression/english-memo-selectable-result.docx",
+      "document": {
+        "passed": true,
+        "validZip": true,
+        "visibleEditableCharacters": 378,
+        "visibleParagraphCount": 3,
+        "content": {
+          "passed": true,
+          "fullNormalizedTextMatches": true,
+          "blockOccurrences": [
+            {
+              "text": "English document quality check",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Reference 006731",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                31
+              ]
+            },
+            {
+              "text": "An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                48
+              ]
+            },
+            {
+              "text": "Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                196
+              ]
+            },
+            {
+              "text": "The approved amount is 1245.60 USD. The final reference is 71936.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                311
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "English document quality check",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Reference 006731",
+              "position": 31,
+              "passed": true
+            },
+            {
+              "text": "An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team.",
+              "position": 48,
+              "passed": true
+            },
+            {
+              "text": "Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule.",
+              "position": 196,
+              "passed": true
+            },
+            {
+              "text": "The approved amount is 1245.60 USD. The final reference is 71936.",
+              "position": 311,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "006731",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "1245.60",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "71936",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "English document quality check  Reference 006731  An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team.\nEach paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule.\nThe approved amount is 1245.60 USD. The final reference is 71936.",
+          "normalizedText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [
+            12.0,
+            17.0
+          ],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        }
+      },
+      "rendered": {
+        "passed": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": true,
+            "expectedText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936.",
+            "actualText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2f-english-table/regression/rendered-outputs/english-memo-selectable-result.pdf",
+        "pdfSha256": "f44d60f377c2e76ecfe2f706fc656d8408aa917f08494e826ff602124b212f46",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2f-english-table/regression/english-memo-selectable-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "passed",
+      "totalDurationMs": 4828
+    },
+    {
+      "caseId": "english-memo-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 36862,
+      "responseSha256": "0357d3de0904c9f63ceb1175d6b82d90b7bb2079c176af581355510cf2363842",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 3687,
+      "outputPath": "tmp/pdfs/phase3.2f-english-table/regression/english-memo-scan-result.docx",
+      "document": {
+        "passed": true,
+        "validZip": true,
+        "visibleEditableCharacters": 376,
+        "visibleParagraphCount": 7,
+        "content": {
+          "passed": true,
+          "fullNormalizedTextMatches": true,
+          "blockOccurrences": [
+            {
+              "text": "English document quality check",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Reference 006731",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                31
+              ]
+            },
+            {
+              "text": "An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                48
+              ]
+            },
+            {
+              "text": "Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                196
+              ]
+            },
+            {
+              "text": "The approved amount is 1245.60 USD. The final reference is 71936.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                311
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "English document quality check",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Reference 006731",
+              "position": 31,
+              "passed": true
+            },
+            {
+              "text": "An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team.",
+              "position": 48,
+              "passed": true
+            },
+            {
+              "text": "Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule.",
+              "position": 196,
+              "passed": true
+            },
+            {
+              "text": "The approved amount is 1245.60 USD. The final reference is 71936.",
+              "position": 311,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "006731",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "1245.60",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "71936",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "English document quality check\nReference 006731\nAn editable document must keep spaces between words. The amber folder belongs to the\ndesign team, while the blue folder belongs to the review team.\nEach paragraph has a different purpose. Reviewers must read the project notes before\napproving the final schedule.\nThe approved amount is 1245.60 USD. The final reference is 71936.",
+          "normalizedText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        }
+      },
+      "rendered": {
+        "passed": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": true,
+            "expectedText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936.",
+            "actualText": "English document quality check Reference 006731 An editable document must keep spaces between words. The amber folder belongs to the design team, while the blue folder belongs to the review team. Each paragraph has a different purpose. Reviewers must read the project notes before approving the final schedule. The approved amount is 1245.60 USD. The final reference is 71936."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2f-english-table/regression/rendered-outputs/english-memo-scan-result.pdf",
+        "pdfSha256": "0aa074174317a96fb7ebdd374135a6aa76fb5edea6e9ad2b23e0dfaf7f238b74",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2f-english-table/regression/english-memo-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "passed",
+      "totalDurationMs": 5250
+    },
+    {
+      "caseId": "english-invoice-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 37163,
+      "responseSha256": "3f04bda3078f43868a0fd270a9868d442232be8dc2c461367e37f495bc4f5551",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 4219,
+      "outputPath": "tmp/pdfs/phase3.2f-english-table/regression/english-invoice-scan-result.docx",
+      "document": {
+        "passed": true,
+        "validZip": true,
+        "visibleEditableCharacters": 458,
+        "visibleParagraphCount": 23,
+        "content": {
+          "passed": true,
+          "fullNormalizedTextMatches": true,
+          "blockOccurrences": [
+            {
+              "text": "English service invoice",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Invoice number 004218",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                24
+              ]
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                46
+              ]
+            },
+            {
+              "text": "This invoice covers the completed analysis and review services. All line items and values are synthetic test information.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                81
+              ]
+            },
+            {
+              "text": "Description Quantity Unit price Line total",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                203
+              ]
+            },
+            {
+              "text": "Analysis package 2 120.25 240.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                246
+              ]
+            },
+            {
+              "text": "Review service 3 45.10 135.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                279
+              ]
+            },
+            {
+              "text": "Archive support 1 19.95 19.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                309
+              ]
+            },
+            {
+              "text": "Amount due: 395.75 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                339
+              ]
+            },
+            {
+              "text": "Please keep each description with its quantity and prices. The final invoice reference is 86274.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                362
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "English service invoice",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Invoice number 004218",
+              "position": 24,
+              "passed": true
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "position": 46,
+              "passed": true
+            },
+            {
+              "text": "This invoice covers the completed analysis and review services. All line items and values are synthetic test information.",
+              "position": 81,
+              "passed": true
+            },
+            {
+              "text": "Description Quantity Unit price Line total",
+              "position": 203,
+              "passed": true
+            },
+            {
+              "text": "Analysis package 2 120.25 240.50",
+              "position": 246,
+              "passed": true
+            },
+            {
+              "text": "Review service 3 45.10 135.30",
+              "position": 279,
+              "passed": true
+            },
+            {
+              "text": "Archive support 1 19.95 19.95",
+              "position": 309,
+              "passed": true
+            },
+            {
+              "text": "Amount due: 395.75 USD",
+              "position": 339,
+              "passed": true
+            },
+            {
+              "text": "Please keep each description with its quantity and prices. The final invoice reference is 86274.",
+              "position": 362,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "004218",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "120.25",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "240.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "45.10",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "135.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "19.95",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "395.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "86274",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [
+            {
+              "expectedCells": [
+                "Analysis package",
+                "2",
+                "120.25",
+                "240.50"
+              ],
+              "occurrences": 1,
+              "passed": true
+            },
+            {
+              "expectedCells": [
+                "Review service",
+                "3",
+                "45.10",
+                "135.30"
+              ],
+              "occurrences": 1,
+              "passed": true
+            },
+            {
+              "expectedCells": [
+                "Archive support",
+                "1",
+                "19.95",
+                "19.95"
+              ],
+              "occurrences": 1,
+              "passed": true
+            }
+          ],
+          "visibleText": "English service invoice\nInvoice number 004218\nCustomer: Example Research Company\nThis invoice covers the completed analysis and review services. All line items and values are\nsynthetic test information.\nDescription\nQuantity\nUnit price\nLine total\nAnalysis package\n2\n120.25\n240.50\nReview service\n3\n45.10\n135.30\nArchive support\n1\n19.95\n19.95\nAmount due: 395.75 USD\nPlease keep each description with its quantity and prices. The final invoice reference is 86274.",
+          "normalizedText": "English service invoice Invoice number 004218 Customer: Example Research Company This invoice covers the completed analysis and review services. All line items and values are synthetic test information. Description Quantity Unit price Line total Analysis package 2 120.25 240.50 Review service 3 45.10 135.30 Archive support 1 19.95 19.95 Amount due: 395.75 USD Please keep each description with its quantity and prices. The final invoice reference is 86274."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [
+            [
+              "Description",
+              "Quantity",
+              "Unit price",
+              "Line total"
+            ],
+            [
+              "Analysis package",
+              "2",
+              "120.25",
+              "240.50"
+            ],
+            [
+              "Review service",
+              "3",
+              "45.10",
+              "135.30"
+            ],
+            [
+              "Archive support",
+              "1",
+              "19.95",
+              "19.95"
+            ]
+          ],
+          "nativeInvoiceTableChecks": [
+            {
+              "expectedCells": [
+                "Analysis package",
+                "2",
+                "120.25",
+                "240.50"
+              ],
+              "matchedRows": 1
+            },
+            {
+              "expectedCells": [
+                "Review service",
+                "3",
+                "45.10",
+                "135.30"
+              ],
+              "matchedRows": 1
+            },
+            {
+              "expectedCells": [
+                "Archive support",
+                "1",
+                "19.95",
+                "19.95"
+              ],
+              "matchedRows": 1
+            }
+          ],
+          "nativeInvoiceTableReconstructed": true,
+          "nativeTableReconstructionRequired": false
+        }
+      },
+      "rendered": {
+        "passed": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": true,
+            "expectedText": "English service invoice Invoice number 004218 Customer: Example Research Company This invoice covers the completed analysis and review services. All line items and values are synthetic test information. Description Quantity Unit price Line total Analysis package 2 120.25 240.50 Review service 3 45.10 135.30 Archive support 1 19.95 19.95 Amount due: 395.75 USD Please keep each description with its quantity and prices. The final invoice reference is 86274.",
+            "actualText": "English service invoice Invoice number 004218 Customer: Example Research Company This invoice covers the completed analysis and review services. All line items and values are synthetic test information. Description Quantity Unit price Line total Analysis package 2 120.25 240.50 Review service 3 45.10 135.30 Archive support 1 19.95 19.95 Amount due: 395.75 USD Please keep each description with its quantity and prices. The final invoice reference is 86274."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2f-english-table/regression/rendered-outputs/english-invoice-scan-result.pdf",
+        "pdfSha256": "4929b52dcbf9528a493d40add41366d1887eb832efb192dd85225dc5923b81c8",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2f-english-table/regression/english-invoice-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "passed",
+      "totalDurationMs": 5235
+    },
+    {
+      "caseId": "english-two-page-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 37036,
+      "responseSha256": "c6fb1484e7679dae7d171f5ef59dedcee81a567563c76802b05b3bcbe3e94160",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 5078,
+      "outputPath": "tmp/pdfs/phase3.2f-english-table/regression/english-two-page-scan-result.docx",
+      "document": {
+        "passed": true,
+        "validZip": true,
+        "visibleEditableCharacters": 779,
+        "visibleParagraphCount": 12,
+        "content": {
+          "passed": true,
+          "fullNormalizedTextMatches": true,
+          "blockOccurrences": [
+            {
+              "text": "Project review: first page",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "First page reference 58324",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                27
+              ]
+            },
+            {
+              "text": "The research team completed the initial review on Monday. The complete first paragraph must remain readable and editable in the exported document.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                54
+              ]
+            },
+            {
+              "text": "The approved first page amount is 240.00 USD. Reviewers should keep the source notes with the supporting schedule.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                201
+              ]
+            },
+            {
+              "text": "This is the last paragraph of the first page. Its closing reference is 63128.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                316
+              ]
+            },
+            {
+              "text": "Project review: second page",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                394
+              ]
+            },
+            {
+              "text": "Second page reference 94716",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                422
+              ]
+            },
+            {
+              "text": "The operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                450
+              ]
+            },
+            {
+              "text": "The approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                575
+              ]
+            },
+            {
+              "text": "This is the final paragraph of the whole document. Its closing reference is 25869.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                697
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "Project review: first page",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "First page reference 58324",
+              "position": 27,
+              "passed": true
+            },
+            {
+              "text": "The research team completed the initial review on Monday. The complete first paragraph must remain readable and editable in the exported document.",
+              "position": 54,
+              "passed": true
+            },
+            {
+              "text": "The approved first page amount is 240.00 USD. Reviewers should keep the source notes with the supporting schedule.",
+              "position": 201,
+              "passed": true
+            },
+            {
+              "text": "This is the last paragraph of the first page. Its closing reference is 63128.",
+              "position": 316,
+              "passed": true
+            },
+            {
+              "text": "Project review: second page",
+              "position": 394,
+              "passed": true
+            },
+            {
+              "text": "Second page reference 94716",
+              "position": 422,
+              "passed": true
+            },
+            {
+              "text": "The operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page.",
+              "position": 450,
+              "passed": true
+            },
+            {
+              "text": "The approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page.",
+              "position": 575,
+              "passed": true
+            },
+            {
+              "text": "This is the final paragraph of the whole document. Its closing reference is 25869.",
+              "position": 697,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "58324",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "240.00",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "63128",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "94716",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "980.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "25869",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "Project review: first page\nFirst page reference 58324\nThe research team completed the initial review on Monday. The complete first paragraph must\nremain readable and editable in the exported document.\nThe approved first page amount is 240.00 USD. Reviewers should keep the source notes with\nthe supporting schedule.\nThis is the last paragraph of the first page. Its closing reference is 63128.\nProject review: second page\nSecond page reference 94716\nThe operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page.\nThe approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page.\nThis is the final paragraph of the whole document. Its closing reference is 25869.",
+          "normalizedText": "Project review: first page First page reference 58324 The research team completed the initial review on Monday. The complete first paragraph must remain readable and editable in the exported document. The approved first page amount is 240.00 USD. Reviewers should keep the source notes with the supporting schedule. This is the last paragraph of the first page. Its closing reference is 63128. Project review: second page Second page reference 94716 The operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page. The approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page. This is the final paragraph of the whole document. Its closing reference is 25869."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1,
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        }
+      },
+      "rendered": {
+        "passed": true,
+        "expectedPageCount": 2,
+        "actualPageCount": 2,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": true,
+            "expectedText": "Project review: first page First page reference 58324 The research team completed the initial review on Monday. The complete first paragraph must remain readable and editable in the exported document. The approved first page amount is 240.00 USD. Reviewers should keep the source notes with the supporting schedule. This is the last paragraph of the first page. Its closing reference is 63128.",
+            "actualText": "Project review: first page First page reference 58324 The research team completed the initial review on Monday. The complete first paragraph must remain readable and editable in the exported document. The approved first page amount is 240.00 USD. Reviewers should keep the source notes with the supporting schedule. This is the last paragraph of the first page. Its closing reference is 63128."
+          },
+          {
+            "page": 2,
+            "fullTextMatches": true,
+            "expectedText": "Project review: second page Second page reference 94716 The operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page. The approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page. This is the final paragraph of the whole document. Its closing reference is 25869.",
+            "actualText": "Project review: second page Second page reference 94716 The operations team completed the final review on Tuesday. This paragraph belongs after every paragraph from the first page. The approved second page amount is 980.75 USD. No line from this page may be silently dropped or moved to the first page. This is the final paragraph of the whole document. Its closing reference is 25869."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          },
+          {
+            "page": 2,
+            "expectedWidthPoints": 792,
+            "expectedHeightPoints": 612,
+            "actual": {
+              "widthPoints": 792.0,
+              "heightPoints": 612.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2f-english-table/regression/rendered-outputs/english-two-page-scan-result.pdf",
+        "pdfSha256": "b767eafc72f98773b903cb1aae850ae9b3a2df829b6a190f071e9e87879651c7",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2f-english-table/regression/english-two-page-scan-output-preview-page-1.png",
+          "tmp/pdfs/phase3.2f-english-table/regression/english-two-page-scan-output-preview-page-2.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          },
+          {
+            "widthPoints": 792.0,
+            "heightPoints": 612.0
+          }
+        ]
+      },
+      "status": "passed",
+      "totalDurationMs": 6219
+    }
+  ],
+  "summary": {
+    "casesSelected": 4,
+    "fixturesGenerated": 4,
+    "fixturesFailed": 0,
+    "routesTested": 4,
+    "passed": 4,
+    "failed": 0,
+    "errors": 0,
+    "allPassed": true
+  }
+}

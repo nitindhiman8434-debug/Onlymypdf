@@ -1,0 +1,3477 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.2F",
+  "runLabel": "after",
+  "generatedAt": "2026-10-06T20:24:41.253736+00:00",
+  "baseUrl": "http://127.0.0.1:3001",
+  "generateOnly": false,
+  "limitations": [
+    "Four fixed synthetic English-only cases; not a universal table or OCR quality claim.",
+    "Three positive cases use complete rectangular black ruling, four unmerged columns and a header plus three body rows per invoice.",
+    "The negative memo contains aligned borderless prose; conservative output must preserve it as paragraphs with zero native tables.",
+    "Complete cell matrices, leading-zero identifiers, decimal amounts and surrounding text are exact after NFC and existing-whitespace collapse only.",
+    "Source DOCX and independently rendered source PDF must pass before any image-only upload is made.",
+    "Returned DOCX is independently rendered with LibreOffice; PNG paths are evidence for separate manual visual QA, not an automatic visual pass.",
+    "Reports and artifact directories use exclusive run names; baseline and final evidence cannot overwrite one another.",
+    "No paid services, downloads, public deployment, non-loopback requests or other-language fixture generation are performed."
+  ],
+  "validatorSha256": "b238d10b5df58a69a936f344b86ec1004e61b0ec047cd63d28cbdd1799a258eb",
+  "fixtureDefinitionsSha256": "232ec45c3c6cca80674599e283b90020c7a21c0502dc50593eed59caf6c3203c",
+  "manualVisualQa": {
+    "status": "required",
+    "instructions": "Inspect every source/output PNG for borders, cell association, clipping, wrapping and page completeness."
+  },
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Windows",
+    "packages": {
+      "PyMuPDF": "1.27.2.3",
+      "python-docx": "1.2.0",
+      "Pillow": "12.2.0"
+    }
+  },
+  "cases": [
+    {
+      "caseId": "english-ruled-invoice-scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "English service invoice"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Invoice number 004218"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Customer: Example Research Company"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The following completed services are synthetic test information."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00421",
+                "Analysis package",
+                "2",
+                "240.50"
+              ],
+              [
+                "00632",
+                "Review service",
+                "3",
+                "135.30"
+              ],
+              [
+                "00874",
+                "Archive support",
+                "1",
+                "19.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Amount due: 395.75 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Please keep every service with its item identifier and amount."
+          }
+        ]
+      ],
+      "inputKind": "scan",
+      "numericValues": [
+        "004218",
+        "00421",
+        "2",
+        "240.50",
+        "00632",
+        "3",
+        "135.30",
+        "00874",
+        "1",
+        "19.95",
+        "395.75"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2f-english-table/sources/english-ruled-invoice-scan.pdf",
+        "inputSha256": "d5e5f92f291be2b92050f27022dfb72983d988fa82c107e90184f446c563596c",
+        "inputBytes": 136840,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "imageCountByPage": [
+          1
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2f-english-table/sources/english-ruled-invoice-scan-original.docx",
+        "literalDocxSha256": "fe07d3d95452d314502d2094de4088065c6675a70d4839119ea3ef4d51119e71",
+        "literalDocxChecks": {
+          "passed": true,
+          "validZip": true,
+          "visibleEditableCharacters": 363,
+          "visibleParagraphCount": 22,
+          "content": {
+            "passed": true,
+            "fullNormalizedTextMatches": true,
+            "blockOccurrences": [
+              {
+                "text": "English service invoice",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  0
+                ]
+              },
+              {
+                "text": "Invoice number 004218",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  24
+                ]
+              },
+              {
+                "text": "Customer: Example Research Company",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  46
+                ]
+              },
+              {
+                "text": "The following completed services are synthetic test information.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  81
+                ]
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  146
+                ]
+              },
+              {
+                "text": "00421 Analysis package 2 240.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  181
+                ]
+              },
+              {
+                "text": "00632 Review service 3 135.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  213
+                ]
+              },
+              {
+                "text": "00874 Archive support 1 19.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  243
+                ]
+              },
+              {
+                "text": "Amount due: 395.75 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  273
+                ]
+              },
+              {
+                "text": "Please keep every service with its item identifier and amount.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  296
+                ]
+              }
+            ],
+            "orderedBlocks": [
+              {
+                "text": "English service invoice",
+                "position": 0,
+                "passed": true
+              },
+              {
+                "text": "Invoice number 004218",
+                "position": 24,
+                "passed": true
+              },
+              {
+                "text": "Customer: Example Research Company",
+                "position": 46,
+                "passed": true
+              },
+              {
+                "text": "The following completed services are synthetic test information.",
+                "position": 81,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 146,
+                "passed": true
+              },
+              {
+                "text": "00421 Analysis package 2 240.50",
+                "position": 181,
+                "passed": true
+              },
+              {
+                "text": "00632 Review service 3 135.30",
+                "position": 213,
+                "passed": true
+              },
+              {
+                "text": "00874 Archive support 1 19.95",
+                "position": 243,
+                "passed": true
+              },
+              {
+                "text": "Amount due: 395.75 USD",
+                "position": 273,
+                "passed": true
+              },
+              {
+                "text": "Please keep every service with its item identifier and amount.",
+                "position": 296,
+                "passed": true
+              }
+            ],
+            "numericValues": [
+              {
+                "value": "004218",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00421",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "2",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "240.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00632",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "3",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "135.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00874",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "1",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "19.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "395.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              }
+            ],
+            "invoiceRowAssociation": [],
+            "visibleText": " English service invoice\n Invoice number 004218\n Customer: Example Research Company\n The following completed services are synthetic test information.\nItem ID\nDescription\nQty\nLine total\n00421\nAnalysis package\n2\n240.50\n00632\nReview service\n3\n135.30\n00874\nArchive support\n1\n19.95\n Amount due: 395.75 USD\n Please keep every service with its item identifier and amount.",
+            "normalizedText": "English service invoice Invoice number 004218 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Amount due: 395.75 USD Please keep every service with its item identifier and amount."
+          },
+          "layout": {
+            "passed": true,
+            "unexpectedEmbeddedImages": [],
+            "imageTextSideBySideWrappers": 0,
+            "sectionColumns": [
+              1
+            ],
+            "explicitFontSizesPt": [
+              17.0
+            ],
+            "imageGeometry": [],
+            "nativeTableRows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00421",
+                "Analysis package",
+                "2",
+                "240.50"
+              ],
+              [
+                "00632",
+                "Review service",
+                "3",
+                "135.30"
+              ],
+              [
+                "00874",
+                "Archive support",
+                "1",
+                "19.95"
+              ]
+            ],
+            "nativeInvoiceTableChecks": [],
+            "nativeInvoiceTableReconstructed": false,
+            "nativeTableReconstructionRequired": false
+          },
+          "nativeTables": {
+            "passed": true,
+            "expectedTableCount": 1,
+            "actualTableCount": 1,
+            "expectedMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00421",
+                  "Analysis package",
+                  "2",
+                  "240.50"
+                ],
+                [
+                  "00632",
+                  "Review service",
+                  "3",
+                  "135.30"
+                ],
+                [
+                  "00874",
+                  "Archive support",
+                  "1",
+                  "19.95"
+                ]
+              ]
+            ],
+            "actualMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00421",
+                  "Analysis package",
+                  "2",
+                  "240.50"
+                ],
+                [
+                  "00632",
+                  "Review service",
+                  "3",
+                  "135.30"
+                ],
+                [
+                  "00874",
+                  "Archive support",
+                  "1",
+                  "19.95"
+                ]
+              ]
+            ],
+            "completeMatricesMatch": true,
+            "unexpectedMergeProperties": [],
+            "nestedOrWrappedTables": false,
+            "nativeTableReconstructionRequired": true,
+            "zeroTablesRequired": false
+          }
+        },
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "English service invoice Invoice number 004218 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Amount due: 395.75 USD Please keep every service with its item identifier and amount.",
+              "actualText": "English service invoice Invoice number 004218 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Amount due: 395.75 USD Please keep every service with its item identifier and amount."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2f-english-table/sources/original-pdfs/english-ruled-invoice-scan-original.pdf",
+          "pdfSha256": "9f5db5ffd29edde960a677f9bb285334e031095c9daa447cea0b84713026081c",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2f-english-table/sources/english-ruled-invoice-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        },
+        "sourceRulingAndWrapping": {
+          "passed": true,
+          "pages": [
+            {
+              "page": 1,
+              "horizontalAxes": [
+                157.9,
+                185.7,
+                213.6,
+                241.4,
+                269.3
+              ],
+              "verticalAxes": [
+                49.9,
+                124.9,
+                411.1,
+                461.1,
+                561.1
+              ],
+              "expectedRuledTables": 1,
+              "passed": true
+            }
+          ],
+          "wrappedDescriptions": []
+        }
+      }
+    },
+    {
+      "caseId": "english-wrapped-invoice-scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "Detailed service invoice"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Invoice number 005329"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Customer: Example Research Company"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The following completed services are synthetic test information."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00542",
+                "Monthly analysis and reporting package for the research team",
+                "2",
+                "280.50"
+              ],
+              [
+                "00763",
+                "Final review service and document preparation for the project",
+                "3",
+                "165.30"
+              ],
+              [
+                "00985",
+                "Archive support",
+                "1",
+                "29.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Amount due: 475.75 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The descriptions continue inside their own cells and retain their amounts."
+          }
+        ]
+      ],
+      "requiredWrappedDescriptions": [
+        "Monthly analysis and reporting package for the research team",
+        "Final review service and document preparation for the project"
+      ],
+      "inputKind": "scan",
+      "numericValues": [
+        "005329",
+        "00542",
+        "2",
+        "280.50",
+        "00763",
+        "3",
+        "165.30",
+        "00985",
+        "1",
+        "29.95",
+        "475.75"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2f-english-table/sources/english-wrapped-invoice-scan.pdf",
+        "inputSha256": "fa2c7adab37093a5c953aee25b1954288261dd9a70433cc983eedd32b4fea233",
+        "inputBytes": 155647,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "imageCountByPage": [
+          1
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2f-english-table/sources/english-wrapped-invoice-scan-original.docx",
+        "literalDocxSha256": "907a920b090e4d1ed0ce2b822f52159fc2f2d21dddb3a352c8fc1e800c609531",
+        "literalDocxChecks": {
+          "passed": true,
+          "validZip": true,
+          "visibleEditableCharacters": 467,
+          "visibleParagraphCount": 22,
+          "content": {
+            "passed": true,
+            "fullNormalizedTextMatches": true,
+            "blockOccurrences": [
+              {
+                "text": "Detailed service invoice",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  0
+                ]
+              },
+              {
+                "text": "Invoice number 005329",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  25
+                ]
+              },
+              {
+                "text": "Customer: Example Research Company",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  47
+                ]
+              },
+              {
+                "text": "The following completed services are synthetic test information.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  82
+                ]
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  147
+                ]
+              },
+              {
+                "text": "00542 Monthly analysis and reporting package for the research team 2 280.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  182
+                ]
+              },
+              {
+                "text": "00763 Final review service and document preparation for the project 3 165.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  258
+                ]
+              },
+              {
+                "text": "00985 Archive support 1 29.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  335
+                ]
+              },
+              {
+                "text": "Amount due: 475.75 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  365
+                ]
+              },
+              {
+                "text": "The descriptions continue inside their own cells and retain their amounts.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  388
+                ]
+              }
+            ],
+            "orderedBlocks": [
+              {
+                "text": "Detailed service invoice",
+                "position": 0,
+                "passed": true
+              },
+              {
+                "text": "Invoice number 005329",
+                "position": 25,
+                "passed": true
+              },
+              {
+                "text": "Customer: Example Research Company",
+                "position": 47,
+                "passed": true
+              },
+              {
+                "text": "The following completed services are synthetic test information.",
+                "position": 82,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 147,
+                "passed": true
+              },
+              {
+                "text": "00542 Monthly analysis and reporting package for the research team 2 280.50",
+                "position": 182,
+                "passed": true
+              },
+              {
+                "text": "00763 Final review service and document preparation for the project 3 165.30",
+                "position": 258,
+                "passed": true
+              },
+              {
+                "text": "00985 Archive support 1 29.95",
+                "position": 335,
+                "passed": true
+              },
+              {
+                "text": "Amount due: 475.75 USD",
+                "position": 365,
+                "passed": true
+              },
+              {
+                "text": "The descriptions continue inside their own cells and retain their amounts.",
+                "position": 388,
+                "passed": true
+              }
+            ],
+            "numericValues": [
+              {
+                "value": "005329",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00542",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "2",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "280.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00763",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "3",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "165.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00985",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "1",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "29.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "475.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              }
+            ],
+            "invoiceRowAssociation": [],
+            "visibleText": " Detailed service invoice\n Invoice number 005329\n Customer: Example Research Company\n The following completed services are synthetic test information.\nItem ID\nDescription\nQty\nLine total\n00542\nMonthly analysis and reporting package for the research team\n2\n280.50\n00763\nFinal review service and document preparation for the project\n3\n165.30\n00985\nArchive support\n1\n29.95\n Amount due: 475.75 USD\n The descriptions continue inside their own cells and retain their amounts.",
+            "normalizedText": "Detailed service invoice Invoice number 005329 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Final review service and document preparation for the project 3 165.30 00985 Archive support 1 29.95 Amount due: 475.75 USD The descriptions continue inside their own cells and retain their amounts."
+          },
+          "layout": {
+            "passed": true,
+            "unexpectedEmbeddedImages": [],
+            "imageTextSideBySideWrappers": 0,
+            "sectionColumns": [
+              1
+            ],
+            "explicitFontSizesPt": [
+              17.0
+            ],
+            "imageGeometry": [],
+            "nativeTableRows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00542",
+                "Monthly analysis and reporting package for the research team",
+                "2",
+                "280.50"
+              ],
+              [
+                "00763",
+                "Final review service and document preparation for the project",
+                "3",
+                "165.30"
+              ],
+              [
+                "00985",
+                "Archive support",
+                "1",
+                "29.95"
+              ]
+            ],
+            "nativeInvoiceTableChecks": [],
+            "nativeInvoiceTableReconstructed": false,
+            "nativeTableReconstructionRequired": false
+          },
+          "nativeTables": {
+            "passed": true,
+            "expectedTableCount": 1,
+            "actualTableCount": 1,
+            "expectedMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00542",
+                  "Monthly analysis and reporting package for the research team",
+                  "2",
+                  "280.50"
+                ],
+                [
+                  "00763",
+                  "Final review service and document preparation for the project",
+                  "3",
+                  "165.30"
+                ],
+                [
+                  "00985",
+                  "Archive support",
+                  "1",
+                  "29.95"
+                ]
+              ]
+            ],
+            "actualMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00542",
+                  "Monthly analysis and reporting package for the research team",
+                  "2",
+                  "280.50"
+                ],
+                [
+                  "00763",
+                  "Final review service and document preparation for the project",
+                  "3",
+                  "165.30"
+                ],
+                [
+                  "00985",
+                  "Archive support",
+                  "1",
+                  "29.95"
+                ]
+              ]
+            ],
+            "completeMatricesMatch": true,
+            "unexpectedMergeProperties": [],
+            "nestedOrWrappedTables": false,
+            "nativeTableReconstructionRequired": true,
+            "zeroTablesRequired": false
+          }
+        },
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "Detailed service invoice Invoice number 005329 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Final review service and document preparation for the project 3 165.30 00985 Archive support 1 29.95 Amount due: 475.75 USD The descriptions continue inside their own cells and retain their amounts.",
+              "actualText": "Detailed service invoice Invoice number 005329 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Final review service and document preparation for the project 3 165.30 00985 Archive support 1 29.95 Amount due: 475.75 USD The descriptions continue inside their own cells and retain their amounts."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2f-english-table/sources/original-pdfs/english-wrapped-invoice-scan-original.pdf",
+          "pdfSha256": "ac31839365a4cbed7f4b12a3aed2cc11b090e9182a7fd27a1d752e67b4e915f8",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2f-english-table/sources/english-wrapped-invoice-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        },
+        "sourceRulingAndWrapping": {
+          "passed": true,
+          "pages": [
+            {
+              "page": 1,
+              "horizontalAxes": [
+                157.9,
+                185.7,
+                229.4,
+                273.1,
+                301.0
+              ],
+              "verticalAxes": [
+                49.9,
+                124.9,
+                411.1,
+                461.1,
+                561.1
+              ],
+              "expectedRuledTables": 1,
+              "passed": true
+            }
+          ],
+          "wrappedDescriptions": [
+            {
+              "text": "Monthly analysis and reporting package for the research team",
+              "page": 1,
+              "lineCount": 2,
+              "passed": true
+            },
+            {
+              "text": "Final review service and document preparation for the project",
+              "page": 1,
+              "lineCount": 2,
+              "passed": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "caseId": "english-two-invoice-scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "First page service invoice"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Invoice number 006431"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Customer: Example Research Company"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The following completed services are synthetic test information."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00124",
+                "Planning package",
+                "2",
+                "220.50"
+              ],
+              [
+                "00345",
+                "Design review",
+                "3",
+                "125.30"
+              ],
+              [
+                "00567",
+                "Record storage",
+                "1",
+                "39.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Amount due: 385.75 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The first invoice ends here before the second page begins."
+          }
+        ],
+        [
+          {
+            "kind": "heading",
+            "text": "Second page service invoice"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Invoice number 007542"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Customer: Example Research Company"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The following completed services are synthetic test information."
+          },
+          {
+            "kind": "table",
+            "rows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00235",
+                "Delivery package",
+                "2",
+                "320.50"
+              ],
+              [
+                "00456",
+                "Quality review",
+                "3",
+                "145.30"
+              ],
+              [
+                "00678",
+                "Final support",
+                "1",
+                "49.95"
+              ]
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "text": "Amount due: 515.75 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "This is the final paragraph of the second invoice and the document."
+          }
+        ]
+      ],
+      "pageSizesPoints": [
+        [
+          612,
+          792
+        ],
+        [
+          792,
+          612
+        ]
+      ],
+      "inputKind": "scan",
+      "numericValues": [
+        "006431",
+        "00124",
+        "2",
+        "220.50",
+        "00345",
+        "3",
+        "125.30",
+        "00567",
+        "1",
+        "39.95",
+        "385.75",
+        "007542",
+        "00235",
+        "2",
+        "320.50",
+        "00456",
+        "3",
+        "145.30",
+        "00678",
+        "1",
+        "49.95",
+        "515.75"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2f-english-table/sources/english-two-invoice-scan.pdf",
+        "inputSha256": "bea3014e4785830f864b7190b542150bea0a2179024216392ca31a967179ed02",
+        "inputBytes": 273197,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0,
+          0
+        ],
+        "imageCountByPage": [
+          1,
+          1
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2f-english-table/sources/english-two-invoice-scan-original.docx",
+        "literalDocxSha256": "801b45a94f0c7219d5d3439bbb8ad191e19452527072974edf2a471c6dcb88c4",
+        "literalDocxChecks": {
+          "passed": true,
+          "validZip": true,
+          "visibleEditableCharacters": 732,
+          "visibleParagraphCount": 44,
+          "content": {
+            "passed": true,
+            "fullNormalizedTextMatches": true,
+            "blockOccurrences": [
+              {
+                "text": "First page service invoice",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  0
+                ]
+              },
+              {
+                "text": "Invoice number 006431",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  27
+                ]
+              },
+              {
+                "text": "Customer: Example Research Company",
+                "expected": 2,
+                "actual": 2,
+                "positions": [
+                  49,
+                  406
+                ]
+              },
+              {
+                "text": "The following completed services are synthetic test information.",
+                "expected": 2,
+                "actual": 2,
+                "positions": [
+                  84,
+                  441
+                ]
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "expected": 2,
+                "actual": 2,
+                "positions": [
+                  149,
+                  506
+                ]
+              },
+              {
+                "text": "00124 Planning package 2 220.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  184
+                ]
+              },
+              {
+                "text": "00345 Design review 3 125.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  216
+                ]
+              },
+              {
+                "text": "00567 Record storage 1 39.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  245
+                ]
+              },
+              {
+                "text": "Amount due: 385.75 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  274
+                ]
+              },
+              {
+                "text": "The first invoice ends here before the second page begins.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  297
+                ]
+              },
+              {
+                "text": "Second page service invoice",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  356
+                ]
+              },
+              {
+                "text": "Invoice number 007542",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  384
+                ]
+              },
+              {
+                "text": "00235 Delivery package 2 320.50",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  541
+                ]
+              },
+              {
+                "text": "00456 Quality review 3 145.30",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  573
+                ]
+              },
+              {
+                "text": "00678 Final support 1 49.95",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  603
+                ]
+              },
+              {
+                "text": "Amount due: 515.75 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  631
+                ]
+              },
+              {
+                "text": "This is the final paragraph of the second invoice and the document.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  654
+                ]
+              }
+            ],
+            "orderedBlocks": [
+              {
+                "text": "First page service invoice",
+                "position": 0,
+                "passed": true
+              },
+              {
+                "text": "Invoice number 006431",
+                "position": 27,
+                "passed": true
+              },
+              {
+                "text": "Customer: Example Research Company",
+                "position": 49,
+                "passed": true
+              },
+              {
+                "text": "The following completed services are synthetic test information.",
+                "position": 84,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 149,
+                "passed": true
+              },
+              {
+                "text": "00124 Planning package 2 220.50",
+                "position": 184,
+                "passed": true
+              },
+              {
+                "text": "00345 Design review 3 125.30",
+                "position": 216,
+                "passed": true
+              },
+              {
+                "text": "00567 Record storage 1 39.95",
+                "position": 245,
+                "passed": true
+              },
+              {
+                "text": "Amount due: 385.75 USD",
+                "position": 274,
+                "passed": true
+              },
+              {
+                "text": "The first invoice ends here before the second page begins.",
+                "position": 297,
+                "passed": true
+              },
+              {
+                "text": "Second page service invoice",
+                "position": 356,
+                "passed": true
+              },
+              {
+                "text": "Invoice number 007542",
+                "position": 384,
+                "passed": true
+              },
+              {
+                "text": "Customer: Example Research Company",
+                "position": 406,
+                "passed": true
+              },
+              {
+                "text": "The following completed services are synthetic test information.",
+                "position": 441,
+                "passed": true
+              },
+              {
+                "text": "Item ID Description Qty Line total",
+                "position": 506,
+                "passed": true
+              },
+              {
+                "text": "00235 Delivery package 2 320.50",
+                "position": 541,
+                "passed": true
+              },
+              {
+                "text": "00456 Quality review 3 145.30",
+                "position": 573,
+                "passed": true
+              },
+              {
+                "text": "00678 Final support 1 49.95",
+                "position": 603,
+                "passed": true
+              },
+              {
+                "text": "Amount due: 515.75 USD",
+                "position": 631,
+                "passed": true
+              },
+              {
+                "text": "This is the final paragraph of the second invoice and the document.",
+                "position": 654,
+                "passed": true
+              }
+            ],
+            "numericValues": [
+              {
+                "value": "006431",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00124",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "2",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "220.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00345",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "3",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "125.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00567",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "1",
+                "expected": 2,
+                "actual": 2,
+                "passed": true
+              },
+              {
+                "value": "39.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "385.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "007542",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00235",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "320.50",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00456",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "145.30",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "00678",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "49.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "515.75",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              }
+            ],
+            "invoiceRowAssociation": [],
+            "visibleText": " First page service invoice\n Invoice number 006431\n Customer: Example Research Company\n The following completed services are synthetic test information.\nItem ID\nDescription\nQty\nLine total\n00124\nPlanning package\n2\n220.50\n00345\nDesign review\n3\n125.30\n00567\nRecord storage\n1\n39.95\n Amount due: 385.75 USD\n The first invoice ends here before the second page begins.\n Second page service invoice\n Invoice number 007542\n Customer: Example Research Company\n The following completed services are synthetic test information.\nItem ID\nDescription\nQty\nLine total\n00235\nDelivery package\n2\n320.50\n00456\nQuality review\n3\n145.30\n00678\nFinal support\n1\n49.95\n Amount due: 515.75 USD\n This is the final paragraph of the second invoice and the document.",
+            "normalizedText": "First page service invoice Invoice number 006431 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00124 Planning package 2 220.50 00345 Design review 3 125.30 00567 Record storage 1 39.95 Amount due: 385.75 USD The first invoice ends here before the second page begins. Second page service invoice Invoice number 007542 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Quality review 3 145.30 00678 Final support 1 49.95 Amount due: 515.75 USD This is the final paragraph of the second invoice and the document."
+          },
+          "layout": {
+            "passed": true,
+            "unexpectedEmbeddedImages": [],
+            "imageTextSideBySideWrappers": 0,
+            "sectionColumns": [
+              1,
+              1
+            ],
+            "explicitFontSizesPt": [
+              17.0
+            ],
+            "imageGeometry": [],
+            "nativeTableRows": [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00124",
+                "Planning package",
+                "2",
+                "220.50"
+              ],
+              [
+                "00345",
+                "Design review",
+                "3",
+                "125.30"
+              ],
+              [
+                "00567",
+                "Record storage",
+                "1",
+                "39.95"
+              ],
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00235",
+                "Delivery package",
+                "2",
+                "320.50"
+              ],
+              [
+                "00456",
+                "Quality review",
+                "3",
+                "145.30"
+              ],
+              [
+                "00678",
+                "Final support",
+                "1",
+                "49.95"
+              ]
+            ],
+            "nativeInvoiceTableChecks": [],
+            "nativeInvoiceTableReconstructed": false,
+            "nativeTableReconstructionRequired": false
+          },
+          "nativeTables": {
+            "passed": true,
+            "expectedTableCount": 2,
+            "actualTableCount": 2,
+            "expectedMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00124",
+                  "Planning package",
+                  "2",
+                  "220.50"
+                ],
+                [
+                  "00345",
+                  "Design review",
+                  "3",
+                  "125.30"
+                ],
+                [
+                  "00567",
+                  "Record storage",
+                  "1",
+                  "39.95"
+                ]
+              ],
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00235",
+                  "Delivery package",
+                  "2",
+                  "320.50"
+                ],
+                [
+                  "00456",
+                  "Quality review",
+                  "3",
+                  "145.30"
+                ],
+                [
+                  "00678",
+                  "Final support",
+                  "1",
+                  "49.95"
+                ]
+              ]
+            ],
+            "actualMatrices": [
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00124",
+                  "Planning package",
+                  "2",
+                  "220.50"
+                ],
+                [
+                  "00345",
+                  "Design review",
+                  "3",
+                  "125.30"
+                ],
+                [
+                  "00567",
+                  "Record storage",
+                  "1",
+                  "39.95"
+                ]
+              ],
+              [
+                [
+                  "Item ID",
+                  "Description",
+                  "Qty",
+                  "Line total"
+                ],
+                [
+                  "00235",
+                  "Delivery package",
+                  "2",
+                  "320.50"
+                ],
+                [
+                  "00456",
+                  "Quality review",
+                  "3",
+                  "145.30"
+                ],
+                [
+                  "00678",
+                  "Final support",
+                  "1",
+                  "49.95"
+                ]
+              ]
+            ],
+            "completeMatricesMatch": true,
+            "unexpectedMergeProperties": [],
+            "nestedOrWrappedTables": false,
+            "nativeTableReconstructionRequired": true,
+            "zeroTablesRequired": false
+          }
+        },
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 2,
+          "actualPageCount": 2,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "First page service invoice Invoice number 006431 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00124 Planning package 2 220.50 00345 Design review 3 125.30 00567 Record storage 1 39.95 Amount due: 385.75 USD The first invoice ends here before the second page begins.",
+              "actualText": "First page service invoice Invoice number 006431 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00124 Planning package 2 220.50 00345 Design review 3 125.30 00567 Record storage 1 39.95 Amount due: 385.75 USD The first invoice ends here before the second page begins."
+            },
+            {
+              "page": 2,
+              "fullTextMatches": true,
+              "expectedText": "Second page service invoice Invoice number 007542 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Quality review 3 145.30 00678 Final support 1 49.95 Amount due: 515.75 USD This is the final paragraph of the second invoice and the document.",
+              "actualText": "Second page service invoice Invoice number 007542 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Quality review 3 145.30 00678 Final support 1 49.95 Amount due: 515.75 USD This is the final paragraph of the second invoice and the document."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            },
+            {
+              "page": 2,
+              "expectedWidthPoints": 792,
+              "expectedHeightPoints": 612,
+              "actual": {
+                "widthPoints": 792.0,
+                "heightPoints": 612.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2f-english-table/sources/original-pdfs/english-two-invoice-scan-original.pdf",
+          "pdfSha256": "4b22c8e3f128bdb85ff9db47007e5addb57310441954fd5b1b0fa7bbce839cd2",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2f-english-table/sources/english-two-invoice-scan-source-preview-page-1.png",
+            "tmp/pdfs/phase3.2f-english-table/sources/english-two-invoice-scan-source-preview-page-2.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            {
+              "widthPoints": 792.0,
+              "heightPoints": 612.0
+            }
+          ]
+        },
+        "sourceRulingAndWrapping": {
+          "passed": true,
+          "pages": [
+            {
+              "page": 1,
+              "horizontalAxes": [
+                157.9,
+                185.7,
+                213.6,
+                241.4,
+                269.3
+              ],
+              "verticalAxes": [
+                49.9,
+                124.9,
+                411.1,
+                461.1,
+                561.1
+              ],
+              "expectedRuledTables": 1,
+              "passed": true
+            },
+            {
+              "page": 2,
+              "horizontalAxes": [
+                157.9,
+                185.7,
+                213.6,
+                241.4,
+                269.3
+              ],
+              "verticalAxes": [
+                49.9,
+                124.9,
+                591.1,
+                641.1,
+                741.1
+              ],
+              "expectedRuledTables": 1,
+              "passed": true
+            }
+          ],
+          "wrappedDescriptions": []
+        }
+      }
+    },
+    {
+      "caseId": "english-borderless-memo-scan",
+      "pages": [
+        [
+          {
+            "kind": "heading",
+            "text": "Reference review memo"
+          },
+          {
+            "kind": "paragraph",
+            "text": "The following notes are plain paragraphs without a ruled table."
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 006731\tApproved amount 81.25 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 008952\tApproved amount 42.60 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Reference 003174\tApproved amount 19.95 USD"
+          },
+          {
+            "kind": "paragraph",
+            "text": "Keep these notes in order and retain the complete final paragraph."
+          }
+        ]
+      ],
+      "negativeControl": true,
+      "inputKind": "scan",
+      "numericValues": [
+        "006731",
+        "81.25",
+        "008952",
+        "42.60",
+        "003174",
+        "19.95"
+      ],
+      "source": {
+        "passed": true,
+        "inputPath": "tmp/pdfs/phase3.2f-english-table/sources/english-borderless-memo-scan.pdf",
+        "inputSha256": "cca572dc8c0a52ca732cd952a6d2e3fc52e9b36fa144b8db10c690acb1f7178b",
+        "inputBytes": 105385,
+        "inputKind": "scan",
+        "selectableCharactersByPage": [
+          0
+        ],
+        "imageCountByPage": [
+          1
+        ],
+        "fontFamily": "Arial",
+        "literalDocxPath": "tmp/pdfs/phase3.2f-english-table/sources/english-borderless-memo-scan-original.docx",
+        "literalDocxSha256": "6f9e322b49cc286170fe35d43b262975f53ff3f6c03aa7461c3e2f70b015353d",
+        "literalDocxChecks": {
+          "passed": true,
+          "validZip": true,
+          "visibleEditableCharacters": 286,
+          "visibleParagraphCount": 6,
+          "content": {
+            "passed": true,
+            "fullNormalizedTextMatches": true,
+            "blockOccurrences": [
+              {
+                "text": "Reference review memo",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  0
+                ]
+              },
+              {
+                "text": "The following notes are plain paragraphs without a ruled table.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  22
+                ]
+              },
+              {
+                "text": "Reference 006731\tApproved amount 81.25 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  86
+                ]
+              },
+              {
+                "text": "Reference 008952\tApproved amount 42.60 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  129
+                ]
+              },
+              {
+                "text": "Reference 003174\tApproved amount 19.95 USD",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  172
+                ]
+              },
+              {
+                "text": "Keep these notes in order and retain the complete final paragraph.",
+                "expected": 1,
+                "actual": 1,
+                "positions": [
+                  215
+                ]
+              }
+            ],
+            "orderedBlocks": [
+              {
+                "text": "Reference review memo",
+                "position": 0,
+                "passed": true
+              },
+              {
+                "text": "The following notes are plain paragraphs without a ruled table.",
+                "position": 22,
+                "passed": true
+              },
+              {
+                "text": "Reference 006731\tApproved amount 81.25 USD",
+                "position": 86,
+                "passed": true
+              },
+              {
+                "text": "Reference 008952\tApproved amount 42.60 USD",
+                "position": 129,
+                "passed": true
+              },
+              {
+                "text": "Reference 003174\tApproved amount 19.95 USD",
+                "position": 172,
+                "passed": true
+              },
+              {
+                "text": "Keep these notes in order and retain the complete final paragraph.",
+                "position": 215,
+                "passed": true
+              }
+            ],
+            "numericValues": [
+              {
+                "value": "006731",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "81.25",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "008952",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "42.60",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "003174",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              },
+              {
+                "value": "19.95",
+                "expected": 1,
+                "actual": 1,
+                "passed": true
+              }
+            ],
+            "invoiceRowAssociation": [],
+            "visibleText": " Reference review memo\n The following notes are plain paragraphs without a ruled table.\n Reference 006731 Approved amount 81.25 USD\n Reference 008952 Approved amount 42.60 USD\n Reference 003174 Approved amount 19.95 USD\n Keep these notes in order and retain the complete final paragraph.",
+            "normalizedText": "Reference review memo The following notes are plain paragraphs without a ruled table. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD Keep these notes in order and retain the complete final paragraph."
+          },
+          "layout": {
+            "passed": true,
+            "unexpectedEmbeddedImages": [],
+            "imageTextSideBySideWrappers": 0,
+            "sectionColumns": [
+              1
+            ],
+            "explicitFontSizesPt": [
+              17.0
+            ],
+            "imageGeometry": [],
+            "nativeTableRows": [],
+            "nativeInvoiceTableChecks": [],
+            "nativeInvoiceTableReconstructed": false,
+            "nativeTableReconstructionRequired": false
+          },
+          "nativeTables": {
+            "passed": true,
+            "expectedTableCount": 0,
+            "actualTableCount": 0,
+            "expectedMatrices": [],
+            "actualMatrices": [],
+            "completeMatricesMatch": true,
+            "unexpectedMergeProperties": [],
+            "nestedOrWrappedTables": false,
+            "nativeTableReconstructionRequired": false,
+            "zeroTablesRequired": true
+          }
+        },
+        "trustedOriginal": {
+          "passed": true,
+          "expectedPageCount": 1,
+          "actualPageCount": 1,
+          "pageCountPassed": true,
+          "perPage": [
+            {
+              "page": 1,
+              "fullTextMatches": true,
+              "expectedText": "Reference review memo The following notes are plain paragraphs without a ruled table. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD Keep these notes in order and retain the complete final paragraph.",
+              "actualText": "Reference review memo The following notes are plain paragraphs without a ruled table. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD Keep these notes in order and retain the complete final paragraph."
+            }
+          ],
+          "pageGeometry": [
+            {
+              "page": 1,
+              "expectedWidthPoints": 612,
+              "expectedHeightPoints": 792,
+              "actual": {
+                "widthPoints": 612.0,
+                "heightPoints": 792.0
+              },
+              "tolerancePoints": 1,
+              "passed": true
+            }
+          ],
+          "pdfPath": "tmp/pdfs/phase3.2f-english-table/sources/original-pdfs/english-borderless-memo-scan-original.pdf",
+          "pdfSha256": "10cc17513a3e056e3b03a2c31814d171621d4c14ef728372c07bc2b4f3008c03",
+          "previewPaths": [
+            "tmp/pdfs/phase3.2f-english-table/sources/english-borderless-memo-scan-source-preview-page-1.png"
+          ],
+          "pageDimensions": [
+            {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            }
+          ]
+        },
+        "sourceRulingAndWrapping": {
+          "passed": true,
+          "pages": [
+            {
+              "page": 1,
+              "horizontalAxes": [],
+              "verticalAxes": [],
+              "expectedRuledTables": 0,
+              "passed": true
+            }
+          ],
+          "wrappedDescriptions": []
+        }
+      }
+    }
+  ],
+  "results": [
+    {
+      "caseId": "english-ruled-invoice-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 36888,
+      "responseSha256": "22cdb20a5ca7465eee7f63da202746e3878068e2a67fdba1db8b65dcb4c10ecf",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 5391,
+      "outputPath": "tmp/pdfs/phase3.2f-english-table/after/english-ruled-invoice-scan-result.docx",
+      "document": {
+        "passed": false,
+        "validZip": true,
+        "visibleEditableCharacters": 363,
+        "visibleParagraphCount": 10,
+        "content": {
+          "passed": false,
+          "fullNormalizedTextMatches": false,
+          "blockOccurrences": [
+            {
+              "text": "English service invoice",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Invoice number 004218",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                24
+              ]
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                46
+              ]
+            },
+            {
+              "text": "The following completed services are synthetic test information.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                81
+              ]
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "expected": 1,
+              "actual": 0,
+              "positions": []
+            },
+            {
+              "text": "00421 Analysis package 2 240.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                186
+              ]
+            },
+            {
+              "text": "00632 Review service 3 135.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                218
+              ]
+            },
+            {
+              "text": "00874 Archive support 1 19.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                248
+              ]
+            },
+            {
+              "text": "Amount due: 395.75 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                278
+              ]
+            },
+            {
+              "text": "Please keep every service with its item identifier and amount.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                301
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "English service invoice",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Invoice number 004218",
+              "position": 24,
+              "passed": true
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "position": 46,
+              "passed": true
+            },
+            {
+              "text": "The following completed services are synthetic test information.",
+              "position": 81,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00421 Analysis package 2 240.50",
+              "position": 186,
+              "passed": true
+            },
+            {
+              "text": "00632 Review service 3 135.30",
+              "position": 218,
+              "passed": true
+            },
+            {
+              "text": "00874 Archive support 1 19.95",
+              "position": 248,
+              "passed": true
+            },
+            {
+              "text": "Amount due: 395.75 USD",
+              "position": 278,
+              "passed": true
+            },
+            {
+              "text": "Please keep every service with its item identifier and amount.",
+              "position": 301,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "004218",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00421",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "2",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "240.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00632",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "3",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "135.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00874",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "1",
+              "expected": 1,
+              "actual": 2,
+              "passed": false
+            },
+            {
+              "value": "19.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "395.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "English service invoice\nInvoice number 004218\nCustomer: Example Research Company\nThe following completed services are synthetic test information.\nitem 1D | ID Description Qty Line total\n00421 Analysis package 2 240.50\n00632 Review service 3 135.30\n00874 Archive support 1 19.95\nAmount due: 395.75 USD\nPlease keep every service with its item identifier and amount.",
+          "normalizedText": "English service invoice Invoice number 004218 Customer: Example Research Company The following completed services are synthetic test information. item 1D | ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Amount due: 395.75 USD Please keep every service with its item identifier and amount."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        },
+        "nativeTables": {
+          "passed": false,
+          "expectedTableCount": 1,
+          "actualTableCount": 0,
+          "expectedMatrices": [
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00421",
+                "Analysis package",
+                "2",
+                "240.50"
+              ],
+              [
+                "00632",
+                "Review service",
+                "3",
+                "135.30"
+              ],
+              [
+                "00874",
+                "Archive support",
+                "1",
+                "19.95"
+              ]
+            ]
+          ],
+          "actualMatrices": [],
+          "completeMatricesMatch": false,
+          "unexpectedMergeProperties": [],
+          "nestedOrWrappedTables": false,
+          "nativeTableReconstructionRequired": true,
+          "zeroTablesRequired": false
+        }
+      },
+      "rendered": {
+        "passed": false,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": false,
+            "expectedText": "English service invoice Invoice number 004218 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Amount due: 395.75 USD Please keep every service with its item identifier and amount.",
+            "actualText": "English service invoice Invoice number 004218 Customer: Example Research Company The following completed services are synthetic test information. item 1D | ID Description Qty Line total 00421 Analysis package 2 240.50 00632 Review service 3 135.30 00874 Archive support 1 19.95 Amount due: 395.75 USD Please keep every service with its item identifier and amount."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2f-english-table/after/rendered-outputs/english-ruled-invoice-scan-result.pdf",
+        "pdfSha256": "57e8bf42592ed9503277869ed23ce9c976ed62434aece025af57e2a77474a442",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2f-english-table/after/english-ruled-invoice-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "failed",
+      "totalDurationMs": 7703
+    },
+    {
+      "caseId": "english-wrapped-invoice-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 36950,
+      "responseSha256": "2ee55a0e6f25eee0431353b0569a640ce13cf8cc6bbc58e260141b440362d9c6",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 5203,
+      "outputPath": "tmp/pdfs/phase3.2f-english-table/after/english-wrapped-invoice-scan-result.docx",
+      "document": {
+        "passed": false,
+        "validZip": true,
+        "visibleEditableCharacters": 469,
+        "visibleParagraphCount": 12,
+        "content": {
+          "passed": false,
+          "fullNormalizedTextMatches": false,
+          "blockOccurrences": [
+            {
+              "text": "Detailed service invoice",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Invoice number 005329",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                25
+              ]
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                47
+              ]
+            },
+            {
+              "text": "The following completed services are synthetic test information.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                82
+              ]
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "expected": 1,
+              "actual": 0,
+              "positions": []
+            },
+            {
+              "text": "00542 Monthly analysis and reporting package for the research team 2 280.50",
+              "expected": 1,
+              "actual": 0,
+              "positions": []
+            },
+            {
+              "text": "00763 Final review service and document preparation for the project 3 165.30",
+              "expected": 1,
+              "actual": 0,
+              "positions": []
+            },
+            {
+              "text": "00985 Archive support 1 29.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                342
+              ]
+            },
+            {
+              "text": "Amount due: 475.75 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                372
+              ]
+            },
+            {
+              "text": "The descriptions continue inside their own cells and retain their amounts.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                395
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "Detailed service invoice",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Invoice number 005329",
+              "position": 25,
+              "passed": true
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "position": 47,
+              "passed": true
+            },
+            {
+              "text": "The following completed services are synthetic test information.",
+              "position": 82,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00542 Monthly analysis and reporting package for the research team 2 280.50",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00763 Final review service and document preparation for the project 3 165.30",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00985 Archive support 1 29.95",
+              "position": 342,
+              "passed": true
+            },
+            {
+              "text": "Amount due: 475.75 USD",
+              "position": 372,
+              "passed": true
+            },
+            {
+              "text": "The descriptions continue inside their own cells and retain their amounts.",
+              "position": 395,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "005329",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00542",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "2",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "280.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00763",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "3",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "165.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00985",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "1",
+              "expected": 1,
+              "actual": 2,
+              "passed": false
+            },
+            {
+              "value": "29.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "475.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "Detailed service invoice\nInvoice number 005329\nCustomer: Example Research Company\nThe following completed services are synthetic test information.\nitem 1D | ID Description Qty Line total\n00542 Monthly analysis and reporting package for the 2 280.50\nresearch team\n00763 Final review service and document preparation for | 3 165.30\nthe project\n00985 Archive support 1 29.95\nAmount due: 475.75 USD\nThe descriptions continue inside their own cells and retain their amounts.",
+          "normalizedText": "Detailed service invoice Invoice number 005329 Customer: Example Research Company The following completed services are synthetic test information. item 1D | ID Description Qty Line total 00542 Monthly analysis and reporting package for the 2 280.50 research team 00763 Final review service and document preparation for | 3 165.30 the project 00985 Archive support 1 29.95 Amount due: 475.75 USD The descriptions continue inside their own cells and retain their amounts."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        },
+        "nativeTables": {
+          "passed": false,
+          "expectedTableCount": 1,
+          "actualTableCount": 0,
+          "expectedMatrices": [
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00542",
+                "Monthly analysis and reporting package for the research team",
+                "2",
+                "280.50"
+              ],
+              [
+                "00763",
+                "Final review service and document preparation for the project",
+                "3",
+                "165.30"
+              ],
+              [
+                "00985",
+                "Archive support",
+                "1",
+                "29.95"
+              ]
+            ]
+          ],
+          "actualMatrices": [],
+          "completeMatricesMatch": false,
+          "unexpectedMergeProperties": [],
+          "nestedOrWrappedTables": false,
+          "nativeTableReconstructionRequired": true,
+          "zeroTablesRequired": false
+        }
+      },
+      "rendered": {
+        "passed": false,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": false,
+            "expectedText": "Detailed service invoice Invoice number 005329 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00542 Monthly analysis and reporting package for the research team 2 280.50 00763 Final review service and document preparation for the project 3 165.30 00985 Archive support 1 29.95 Amount due: 475.75 USD The descriptions continue inside their own cells and retain their amounts.",
+            "actualText": "Detailed service invoice Invoice number 005329 Customer: Example Research Company The following completed services are synthetic test information. item 1D | ID Description Qty Line total 00542 Monthly analysis and reporting package for the 2 280.50 research team 00763 Final review service and document preparation for | 3 165.30 the project 00985 Archive support 1 29.95 Amount due: 475.75 USD The descriptions continue inside their own cells and retain their amounts."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2f-english-table/after/rendered-outputs/english-wrapped-invoice-scan-result.pdf",
+        "pdfSha256": "d0810fafd75495da385d6bcffe8c011f7f0c1c6b2907698ce794c84912af87f6",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2f-english-table/after/english-wrapped-invoice-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "failed",
+      "totalDurationMs": 6281
+    },
+    {
+      "caseId": "english-two-invoice-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 37033,
+      "responseSha256": "72ef635c74876044ea6e839fe381b6c8335eb5900c1e6447bbe99029da731c68",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 6609,
+      "outputPath": "tmp/pdfs/phase3.2f-english-table/after/english-two-invoice-scan-result.docx",
+      "document": {
+        "passed": false,
+        "validZip": true,
+        "visibleEditableCharacters": 731,
+        "visibleParagraphCount": 20,
+        "content": {
+          "passed": false,
+          "fullNormalizedTextMatches": false,
+          "blockOccurrences": [
+            {
+              "text": "First page service invoice",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "Invoice number 006431",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                27
+              ]
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "expected": 2,
+              "actual": 2,
+              "positions": [
+                49,
+                411
+              ]
+            },
+            {
+              "text": "The following completed services are synthetic test information.",
+              "expected": 2,
+              "actual": 2,
+              "positions": [
+                84,
+                446
+              ]
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "expected": 2,
+              "actual": 0,
+              "positions": []
+            },
+            {
+              "text": "00124 Planning package 2 220.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                189
+              ]
+            },
+            {
+              "text": "00345 Design review 3 125.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                221
+              ]
+            },
+            {
+              "text": "00567 Record storage 1 39.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                250
+              ]
+            },
+            {
+              "text": "Amount due: 385.75 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                279
+              ]
+            },
+            {
+              "text": "The first invoice ends here before the second page begins.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                302
+              ]
+            },
+            {
+              "text": "Second page service invoice",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                361
+              ]
+            },
+            {
+              "text": "Invoice number 007542",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                389
+              ]
+            },
+            {
+              "text": "00235 Delivery package 2 320.50",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                551
+              ]
+            },
+            {
+              "text": "00456 Quality review 3 145.30",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                583
+              ]
+            },
+            {
+              "text": "00678 Final support 1 49.95",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                613
+              ]
+            },
+            {
+              "text": "Amount due: 515.75 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                641
+              ]
+            },
+            {
+              "text": "This is the final paragraph of the second invoice and the document.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                664
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "First page service invoice",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "Invoice number 006431",
+              "position": 27,
+              "passed": true
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "position": 49,
+              "passed": true
+            },
+            {
+              "text": "The following completed services are synthetic test information.",
+              "position": 84,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00124 Planning package 2 220.50",
+              "position": 189,
+              "passed": true
+            },
+            {
+              "text": "00345 Design review 3 125.30",
+              "position": 221,
+              "passed": true
+            },
+            {
+              "text": "00567 Record storage 1 39.95",
+              "position": 250,
+              "passed": true
+            },
+            {
+              "text": "Amount due: 385.75 USD",
+              "position": 279,
+              "passed": true
+            },
+            {
+              "text": "The first invoice ends here before the second page begins.",
+              "position": 302,
+              "passed": true
+            },
+            {
+              "text": "Second page service invoice",
+              "position": 361,
+              "passed": true
+            },
+            {
+              "text": "Invoice number 007542",
+              "position": 389,
+              "passed": true
+            },
+            {
+              "text": "Customer: Example Research Company",
+              "position": 411,
+              "passed": true
+            },
+            {
+              "text": "The following completed services are synthetic test information.",
+              "position": 446,
+              "passed": true
+            },
+            {
+              "text": "Item ID Description Qty Line total",
+              "position": null,
+              "passed": false
+            },
+            {
+              "text": "00235 Delivery package 2 320.50",
+              "position": 551,
+              "passed": true
+            },
+            {
+              "text": "00456 Quality review 3 145.30",
+              "position": 583,
+              "passed": true
+            },
+            {
+              "text": "00678 Final support 1 49.95",
+              "position": 613,
+              "passed": true
+            },
+            {
+              "text": "Amount due: 515.75 USD",
+              "position": 641,
+              "passed": true
+            },
+            {
+              "text": "This is the final paragraph of the second invoice and the document.",
+              "position": 664,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "006431",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00124",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "2",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "220.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00345",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "3",
+              "expected": 2,
+              "actual": 2,
+              "passed": true
+            },
+            {
+              "value": "125.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00567",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "1",
+              "expected": 2,
+              "actual": 4,
+              "passed": false
+            },
+            {
+              "value": "39.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "385.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "007542",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00235",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "320.50",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00456",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "145.30",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "00678",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "49.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "515.75",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "First page service invoice\nInvoice number 006431\nCustomer: Example Research Company\nThe following completed services are synthetic test information.\nitem 1D | ID Description Qty Line total\n00124 Planning package 2 220.50\n00345 Design review 3 125.30\n00567 Record storage 1 39.95\nAmount due: 385.75 USD\nThe first invoice ends here before the second page begins.\nSecond page service invoice\nInvoice number 007542\nCustomer: Example Research Company\nThe following completed services are synthetic test information.\nitem 1D | ID Description Qty Line total\n00235 Delivery package 2 320.50\n00456 Quality review 3 145.30\n00678 Final support 1 49.95\nAmount due: 515.75 USD\nThis is the final paragraph of the second invoice and the document.",
+          "normalizedText": "First page service invoice Invoice number 006431 Customer: Example Research Company The following completed services are synthetic test information. item 1D | ID Description Qty Line total 00124 Planning package 2 220.50 00345 Design review 3 125.30 00567 Record storage 1 39.95 Amount due: 385.75 USD The first invoice ends here before the second page begins. Second page service invoice Invoice number 007542 Customer: Example Research Company The following completed services are synthetic test information. item 1D | ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Quality review 3 145.30 00678 Final support 1 49.95 Amount due: 515.75 USD This is the final paragraph of the second invoice and the document."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1,
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        },
+        "nativeTables": {
+          "passed": false,
+          "expectedTableCount": 2,
+          "actualTableCount": 0,
+          "expectedMatrices": [
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00124",
+                "Planning package",
+                "2",
+                "220.50"
+              ],
+              [
+                "00345",
+                "Design review",
+                "3",
+                "125.30"
+              ],
+              [
+                "00567",
+                "Record storage",
+                "1",
+                "39.95"
+              ]
+            ],
+            [
+              [
+                "Item ID",
+                "Description",
+                "Qty",
+                "Line total"
+              ],
+              [
+                "00235",
+                "Delivery package",
+                "2",
+                "320.50"
+              ],
+              [
+                "00456",
+                "Quality review",
+                "3",
+                "145.30"
+              ],
+              [
+                "00678",
+                "Final support",
+                "1",
+                "49.95"
+              ]
+            ]
+          ],
+          "actualMatrices": [],
+          "completeMatricesMatch": false,
+          "unexpectedMergeProperties": [],
+          "nestedOrWrappedTables": false,
+          "nativeTableReconstructionRequired": true,
+          "zeroTablesRequired": false
+        }
+      },
+      "rendered": {
+        "passed": false,
+        "expectedPageCount": 2,
+        "actualPageCount": 2,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": false,
+            "expectedText": "First page service invoice Invoice number 006431 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00124 Planning package 2 220.50 00345 Design review 3 125.30 00567 Record storage 1 39.95 Amount due: 385.75 USD The first invoice ends here before the second page begins.",
+            "actualText": "First page service invoice Invoice number 006431 Customer: Example Research Company The following completed services are synthetic test information. item 1D | ID Description Qty Line total 00124 Planning package 2 220.50 00345 Design review 3 125.30 00567 Record storage 1 39.95 Amount due: 385.75 USD The first invoice ends here before the second page begins."
+          },
+          {
+            "page": 2,
+            "fullTextMatches": false,
+            "expectedText": "Second page service invoice Invoice number 007542 Customer: Example Research Company The following completed services are synthetic test information. Item ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Quality review 3 145.30 00678 Final support 1 49.95 Amount due: 515.75 USD This is the final paragraph of the second invoice and the document.",
+            "actualText": "Second page service invoice Invoice number 007542 Customer: Example Research Company The following completed services are synthetic test information. item 1D | ID Description Qty Line total 00235 Delivery package 2 320.50 00456 Quality review 3 145.30 00678 Final support 1 49.95 Amount due: 515.75 USD This is the final paragraph of the second invoice and the document."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          },
+          {
+            "page": 2,
+            "expectedWidthPoints": 792,
+            "expectedHeightPoints": 612,
+            "actual": {
+              "widthPoints": 792.0,
+              "heightPoints": 612.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2f-english-table/after/rendered-outputs/english-two-invoice-scan-result.pdf",
+        "pdfSha256": "454f2c4192892413c12011cae0f8e1b1a99544efee0ae0a03d270f4572411efd",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2f-english-table/after/english-two-invoice-scan-output-preview-page-1.png",
+          "tmp/pdfs/phase3.2f-english-table/after/english-two-invoice-scan-output-preview-page-2.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          },
+          {
+            "widthPoints": 792.0,
+            "heightPoints": 612.0
+          }
+        ]
+      },
+      "status": "failed",
+      "totalDurationMs": 8062
+    },
+    {
+      "caseId": "english-borderless-memo-scan",
+      "tool": "pdf-to-word",
+      "httpStatus": 200,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "outputBytes": 36795,
+      "responseSha256": "1334a14866a7b4509a19ec73139c6ecfe6a0f74bd28aa395aac6efd73e832c95",
+      "responseEngine": "pdf2docx",
+      "conversionDurationMs": 3954,
+      "outputPath": "tmp/pdfs/phase3.2f-english-table/after/english-borderless-memo-scan-result.docx",
+      "document": {
+        "passed": true,
+        "validZip": true,
+        "visibleEditableCharacters": 281,
+        "visibleParagraphCount": 6,
+        "content": {
+          "passed": true,
+          "fullNormalizedTextMatches": true,
+          "blockOccurrences": [
+            {
+              "text": "Reference review memo",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                0
+              ]
+            },
+            {
+              "text": "The following notes are plain paragraphs without a ruled table.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                22
+              ]
+            },
+            {
+              "text": "Reference 006731\tApproved amount 81.25 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                86
+              ]
+            },
+            {
+              "text": "Reference 008952\tApproved amount 42.60 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                129
+              ]
+            },
+            {
+              "text": "Reference 003174\tApproved amount 19.95 USD",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                172
+              ]
+            },
+            {
+              "text": "Keep these notes in order and retain the complete final paragraph.",
+              "expected": 1,
+              "actual": 1,
+              "positions": [
+                215
+              ]
+            }
+          ],
+          "orderedBlocks": [
+            {
+              "text": "Reference review memo",
+              "position": 0,
+              "passed": true
+            },
+            {
+              "text": "The following notes are plain paragraphs without a ruled table.",
+              "position": 22,
+              "passed": true
+            },
+            {
+              "text": "Reference 006731\tApproved amount 81.25 USD",
+              "position": 86,
+              "passed": true
+            },
+            {
+              "text": "Reference 008952\tApproved amount 42.60 USD",
+              "position": 129,
+              "passed": true
+            },
+            {
+              "text": "Reference 003174\tApproved amount 19.95 USD",
+              "position": 172,
+              "passed": true
+            },
+            {
+              "text": "Keep these notes in order and retain the complete final paragraph.",
+              "position": 215,
+              "passed": true
+            }
+          ],
+          "numericValues": [
+            {
+              "value": "006731",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "81.25",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "008952",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "42.60",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "003174",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            },
+            {
+              "value": "19.95",
+              "expected": 1,
+              "actual": 1,
+              "passed": true
+            }
+          ],
+          "invoiceRowAssociation": [],
+          "visibleText": "Reference review memo\nThe following notes are plain paragraphs without a ruled table.\nReference 006731 Approved amount 81.25 USD\nReference 008952 Approved amount 42.60 USD\nReference 003174 Approved amount 19.95 USD\nKeep these notes in order and retain the complete final paragraph.",
+          "normalizedText": "Reference review memo The following notes are plain paragraphs without a ruled table. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD Keep these notes in order and retain the complete final paragraph."
+        },
+        "layout": {
+          "passed": true,
+          "unexpectedEmbeddedImages": [],
+          "imageTextSideBySideWrappers": 0,
+          "sectionColumns": [
+            1
+          ],
+          "explicitFontSizesPt": [],
+          "imageGeometry": [],
+          "nativeTableRows": [],
+          "nativeInvoiceTableChecks": [],
+          "nativeInvoiceTableReconstructed": false,
+          "nativeTableReconstructionRequired": false
+        },
+        "nativeTables": {
+          "passed": true,
+          "expectedTableCount": 0,
+          "actualTableCount": 0,
+          "expectedMatrices": [],
+          "actualMatrices": [],
+          "completeMatricesMatch": true,
+          "unexpectedMergeProperties": [],
+          "nestedOrWrappedTables": false,
+          "nativeTableReconstructionRequired": false,
+          "zeroTablesRequired": true
+        }
+      },
+      "rendered": {
+        "passed": true,
+        "expectedPageCount": 1,
+        "actualPageCount": 1,
+        "pageCountPassed": true,
+        "perPage": [
+          {
+            "page": 1,
+            "fullTextMatches": true,
+            "expectedText": "Reference review memo The following notes are plain paragraphs without a ruled table. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD Keep these notes in order and retain the complete final paragraph.",
+            "actualText": "Reference review memo The following notes are plain paragraphs without a ruled table. Reference 006731 Approved amount 81.25 USD Reference 008952 Approved amount 42.60 USD Reference 003174 Approved amount 19.95 USD Keep these notes in order and retain the complete final paragraph."
+          }
+        ],
+        "pageGeometry": [
+          {
+            "page": 1,
+            "expectedWidthPoints": 612,
+            "expectedHeightPoints": 792,
+            "actual": {
+              "widthPoints": 612.0,
+              "heightPoints": 792.0
+            },
+            "tolerancePoints": 1,
+            "passed": true
+          }
+        ],
+        "pdfPath": "tmp/pdfs/phase3.2f-english-table/after/rendered-outputs/english-borderless-memo-scan-result.pdf",
+        "pdfSha256": "008206e431ebe30cd839a08ed0b344b32668e49c4873b9bf286713053c82bb7d",
+        "previewPaths": [
+          "tmp/pdfs/phase3.2f-english-table/after/english-borderless-memo-scan-output-preview-page-1.png"
+        ],
+        "pageDimensions": [
+          {
+            "widthPoints": 612.0,
+            "heightPoints": 792.0
+          }
+        ]
+      },
+      "status": "passed",
+      "totalDurationMs": 5094
+    }
+  ],
+  "reusedSourceReport": {
+    "path": "quality\\phase3-english-table\\sources-report.json",
+    "sha256": "4dc4e01829cc44bc69dc43cc95557f57469a5f6b8e639ac8467b1cbf8b500907"
+  },
+  "summary": {
+    "casesSelected": 4,
+    "fixturesValidated": 4,
+    "fixturesFailed": 0,
+    "routesTested": 4,
+    "passed": 1,
+    "failed": 3,
+    "errors": 0,
+    "allPassed": false
+  }
+}

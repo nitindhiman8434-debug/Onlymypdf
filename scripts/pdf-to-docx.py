@@ -658,6 +658,7 @@ def convert_scanned_pdf_with_ocr(
             dpi=dpi,
         )
         minimum_chars = max(20, pages * 12)
+        page_layouts: list[dict | None] = []
         latin_transcript = supports_latin_ocr(transcripts)
         recovered_hidden_text = latin_transcript and (
             recognized_chars < minimum_chars or any(not text.strip() for text in transcripts)
@@ -666,7 +667,7 @@ def convert_scanned_pdf_with_ocr(
             # A sparse/empty PDF text layer can still have readable OCR TXT.
             # Recover before judging the scan, and do not accept a primary DOCX
             # made from the incomplete hidden layer.
-            transcripts = recognize_ocr_transcripts(pdf_path, language=language, dpi=dpi)
+            transcripts = recognize_ocr_transcripts(pdf_path, language=language, dpi=dpi, page_layouts=page_layouts)
             validate_page_transcripts(transcripts, pages)
             recognized_chars = sum(len(text) for text in transcripts)
             latin_transcript = supports_latin_ocr(transcripts)
@@ -703,7 +704,7 @@ def convert_scanned_pdf_with_ocr(
             if latin_transcript and not recovered_hidden_text:
                 # Raw recognizer TXT preserves spaces and rows which can be lost
                 # when extracting glyph positions from its hidden PDF layer.
-                transcripts = recognize_ocr_transcripts(pdf_path, language=language, dpi=dpi)
+                transcripts = recognize_ocr_transcripts(pdf_path, language=language, dpi=dpi, page_layouts=page_layouts)
                 validate_page_transcripts(transcripts, pages)
                 recognized_chars = sum(len(text) for text in transcripts)
                 minimum_output_chars = max(minimum_chars, int(recognized_chars * 0.6))
@@ -718,9 +719,9 @@ def convert_scanned_pdf_with_ocr(
             if latin_transcript:
                 # OCR intermediates may have enlarged physical page sizes.
                 # Only the original input supplies output section dimensions.
-                write_english_ocr_docx(pdf_path, docx_path, transcripts)
+                write_english_ocr_docx(pdf_path, docx_path, transcripts, page_layouts=page_layouts)
                 ok = validate_docx(docx_path)
-                method = "editable-latin-transcript"
+                method = "editable-latin-table" if any(page_layouts) else "editable-latin-transcript"
             else:
                 ok = _build_ocr_reference_transcript_docx(
                     searchable_pdf,

@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D and OCR geometry 3.2E complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E and English Word tables 3.2F complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -82,8 +82,20 @@ under independent Poppler rendering; full text, word bounds and page order pass.
 The two unreadable-input checks and 32 focused tests also pass. See
 [the fix, evidence and limits](PHASE_3_2E_OCR_PDF_GEOMETRY.md).
 
-**Next bounded English task:** reconstruct scanned invoice rows as native editable
-Word table cells. Hindi pages and Hindi-specific improvements remain on hold.
+## Task 3.2F: native editable tables from English scanned invoices
+
+Complete locally: the unchanged four-case corpus improved from **1/4 to 4/4**.
+Complete ruled grids now become native editable Word cells in the Latin OCR
+fallback. Wrapped descriptions, leading-zero identifiers, quantities and amounts
+remain correctly associated. A two-page portrait/landscape case keeps both tables;
+borderless prose stays as paragraphs. All five output pages pass independent
+render and visual checks. The 97 focused automated tests, four existing English
+HTTP conversions and two unreadable-input checks pass. See
+[the implementation, evidence and boundaries](PHASE_3_2F_ENGLISH_WORD_TABLES.md).
+
+**Next bounded English task:** support two separate clean ruled tables on one
+page with paragraphs before, between and after them. Hindi pages and
+Hindi-specific improvements remain on hold.
 Real-customer feedback and deferred production launch gates remain open. Selected
 fixture passes do not establish universal accuracy or production capacity.
 No paid deployment was made for these tasks.

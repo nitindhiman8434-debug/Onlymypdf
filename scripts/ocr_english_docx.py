@@ -24,12 +24,14 @@ class OcrRuntimeUnavailableError(RuntimeError):
     """The executable or its requested trained data cannot be used."""
 
 
-def recognize_ocr_transcripts(source_pdf: str, *, language: str, dpi: int) -> list[str]:
+def recognize_ocr_transcripts(source_pdf: str, *, language: str, dpi: int,
+                              page_layouts: list[dict | None] | None = None) -> list[str]:
     """Read Tesseract's own word boundaries rather than reconstructing PDF glyphs.
 
     Called only for the Latin-script fallback selected by the converter. One
     bounded PSM 3 pass per original page keeps actual lines, spaces and repeated
-    content. It does not merge segmentation modes or repair recognized words.
+    content. Optional TSV geometry is emitted by that same pass; incomplete or
+    ambiguous table evidence leaves the original transcript unchanged.
     """
     import pymupdf as fitz
 
@@ -38,18 +40,31 @@ def recognize_ocr_transcripts(source_pdf: str, *, language: str, dpi: int) -> li
         raise OcrRuntimeUnavailableError("Tesseract executable unavailable")
 
     transcripts: list[str] = []
+    if page_layouts is not None:
+        page_layouts.clear()
     with fitz.open(source_pdf) as source, tempfile.TemporaryDirectory(prefix="pdf2docx-ocr-text-") as temp:
         image_path = Path(temp) / "page.png"
         output_base = Path(temp) / "recognized"
         output_text = output_base.with_suffix(".txt")
+        output_tsv = output_base.with_suffix(".tsv")
         for page in source:
-            page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB, alpha=False).save(image_path)
+            pixmap = page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB, alpha=False)
+            prepared_image = None
+            if page_layouts is not None:
+                from ocr_ruled_tables import prepare_ruled_table_ocr_image
+                prepared_image = prepare_ruled_table_ocr_image(pixmap)
+            if prepared_image is None:
+                pixmap.save(image_path)
+            else:
+                image_path.write_bytes(prepared_image)
             # A successful prior page must never stand in for a missing result.
             output_text.unlink(missing_ok=True)
+            output_tsv.unlink(missing_ok=True)
+            formats = ["txt", "tsv"] if page_layouts is not None else ["txt"]
             try:
                 result = subprocess.run(
                     [executable, str(image_path), str(output_base), "-l", language,
-                     "--dpi", str(dpi), "--psm", "3", "txt"],
+                     "--dpi", str(dpi), "--psm", "3", *formats],
                     capture_output=True, text=True, timeout=90, check=False,
                 )
             except FileNotFoundError as exc:
@@ -64,7 +79,18 @@ def recognize_ocr_transcripts(source_pdf: str, *, language: str, dpi: int) -> li
             if not output_text.is_file():
                 raise RuntimeError("Tesseract text recognition produced no transcript")
             # Keep actual blank lines, repeated rows and intra-line spacing.
-            transcripts.append(output_text.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n"))
+            transcript = output_text.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+            transcripts.append(transcript)
+            if page_layouts is not None:
+                layout = None
+                if output_tsv.is_file() and supports_latin_ocr([transcript]):
+                    from ocr_ruled_tables import build_ruled_table_layout
+                    try:
+                        tsv_text = output_tsv.read_text(encoding="utf-8")
+                    except UnicodeError:
+                        tsv_text = ""  # Invalid optional geometry must not discard valid TXT.
+                    layout = build_ruled_table_layout(pixmap, tsv_text, transcript)
+                page_layouts.append(layout)
     return transcripts
 
 
@@ -82,7 +108,8 @@ def validate_page_transcripts(transcripts: list[str], page_count: int) -> None:
             raise EmptyOcrPageError(page_number)
 
 
-def write_english_ocr_docx(source_pdf: str, output_path: str, transcripts: list[str]) -> None:
+def write_english_ocr_docx(source_pdf: str, output_path: str, transcripts: list[str], *,
+                           page_layouts: list[dict | None] | None = None) -> None:
     """Write full-width OCR lines and preserve each source page's section size.
 
     Dimensions must come from the original input PDF, not a generated OCR PDF
@@ -93,12 +120,15 @@ def write_english_ocr_docx(source_pdf: str, output_path: str, transcripts: list[
     import pymupdf as fitz
     from docx import Document
     from docx.enum.section import WD_ORIENT, WD_SECTION_START
+    from docx.oxml import OxmlElement
     from docx.shared import Pt
 
     with fitz.open(source_pdf) as source:
         validate_page_transcripts(transcripts, len(source))
         if not supports_latin_ocr(transcripts):
             raise ValueError("The readable English OCR fallback requires Latin-script text")
+        if page_layouts and len(page_layouts) != len(transcripts):
+            raise ValueError("OCR table layout count does not match the source page count")
 
         word = Document()
         normal = word.styles["Normal"]
@@ -116,8 +146,36 @@ def write_english_ocr_docx(source_pdf: str, output_path: str, transcripts: list[
             section.left_margin = section.right_margin = Pt(min(43.2, width / 10))
             section.top_margin = section.bottom_margin = Pt(min(43.2, height / 10))
 
-            # Keep repeated lines and actual spaces. Each OCR line is editable
-            # separately; no paragraph semantics or table structure are invented.
+            def add_lines(lines):
+                for line in lines:
+                    paragraph = word.add_paragraph(line)
+                    paragraph.paragraph_format.keep_with_next = False
+                    paragraph.paragraph_format.widow_control = True
+
+            layout = page_layouts[page_index] if page_layouts else None
+            if layout:
+                add_lines(layout["before"])
+                rows = layout["rows"]
+                table = word.add_table(rows=len(rows), cols=len(rows[0]))
+                table.style = "Table Grid"
+                table.autofit = False
+                usable_width = section.page_width.pt - section.left_margin.pt - section.right_margin.pt
+                for index, fraction in enumerate(layout["columnWidths"]):
+                    table.columns[index].width = Pt(usable_width * fraction)
+                    for cell in table.columns[index].cells:
+                        cell.width = Pt(usable_width * fraction)
+                for row_index, values in enumerate(rows):
+                    row = table.rows[row_index]
+                    row._tr.get_or_add_trPr().append(OxmlElement("w:cantSplit"))
+                    for cell, value in zip(row.cells, values):
+                        cell.text = value
+                        for paragraph in cell.paragraphs:
+                            paragraph.paragraph_format.space_after = Pt(2)
+                            paragraph.paragraph_format.keep_with_next = False
+                add_lines(layout["after"])
+                continue
+
+            # Keep the exact original lines when no confident ruled table exists.
             for line in transcripts[page_index].splitlines():
                 paragraph = word.add_paragraph(line)
                 paragraph.paragraph_format.keep_with_next = False
