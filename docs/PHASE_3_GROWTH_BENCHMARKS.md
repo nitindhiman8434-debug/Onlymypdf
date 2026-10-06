@@ -128,10 +128,21 @@ All 63 focused tests, ESLint, webpack build (170/170 entries), 35 built-page HTT
 checks and browser review at 390, 768 and 1280 pixels passed. See
 [the implementation and verification record](PHASE_3_3_SCANNED_PDF_GUIDE.md).
 
-**Next proposed bounded task (3.4):** align PDF Scanner filters with downloaded
-output, disclose/enforce its 10-image limit consistently and correct unsupported
-English scanner claims. Verify actual output pixels. These pre-existing gaps
-were identified during guide review; the task has not started.
+## Task 3.4: PDF Scanner output and limits
+
+Implemented locally: the three filter controls now affect exported pixels;
+phone orientation is applied before embedding. The UI and API share the
+10-image cap, reject an oversized selection as a whole and preserve page order.
+Processing locks, camera capture guards, result-link lifecycle and explicit
+invalid-input errors prevent stale or partial results. English scanner copy
+now states its actual image-only output and supported filter behavior.
+
+The focused suite passes 66/66 and the independent local HTTP corpus passes
+11/11, including 14 rendered output pages. The saved-browser-download gate
+remains open: the in-app browser reports a ready PDF but its download action
+has not produced a confirmed saved file. This phase is not marked 100% complete
+until that gate is verified. See [implementation, checks and limitations](PHASE_3_4_SCANNER_OUTPUT_AND_LIMITS.md).
+
 Hindi pages and Hindi-specific improvements remain on hold.
 Real-customer feedback and deferred production launch gates remain open. Selected
 fixture passes do not establish universal accuracy or production capacity.

@@ -88,7 +88,11 @@ Product steps were checked against the actual local implementation.
 
 ## Next phase gate
 
-**Proposed Phase 3.4: PDF Scanner output and limit consistency. Not started.**
+**Phase 3.4: PDF Scanner output and limit consistency. Started 7 October 2026.**
+
+The original follow-up findings are listed below. Their implementation and
+current verification status are now recorded in
+[the Phase 3.4 document](PHASE_3_4_SCANNER_OUTPUT_AND_LIMITS.md).
 
 1. Align scanner filter values: the workspace sends `original`, `bw`,
    `enhanced`, while the API recognizes `none`, `grayscale`, `blackwhite`,
@@ -102,5 +106,5 @@ Product steps were checked against the actual local implementation.
    verified implementation behavior.
 
 These pre-existing scanner issues do not invalidate the guide's narrower
-image-based-PDF description. They remain open for the next scoped phase.
+image-based-PDF description. Their closure is tracked separately in Phase 3.4.
 Real-customer feedback and deferred public launch gates remain separate.

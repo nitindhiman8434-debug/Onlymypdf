@@ -1,0 +1,904 @@
+{
+  "schemaVersion": 1,
+  "phase": "3.4",
+  "generatedAt": "2026-10-06T22:07:47.736671+00:00",
+  "runLabel": "first",
+  "baseUrl": "http://127.0.0.1:3001",
+  "generateOnly": false,
+  "validatorSha256": "a333b734817199a8383060ca6365a3e66f2e196d1ce389724d8f13633fab471f",
+  "method": "Actual loopback HTTP; Pillow source and EXIF oracle; MuPDF PDF/image extraction; independent Poppler 96 DPI output renders. No app processing code imported.",
+  "limitations": [
+    "Synthetic static JPG/PNG/WebP images only; no real-customer acceptance, handwriting, OCR, animation, automatic crop or perspective-correction claim.",
+    "Enhanced checks measure a deliberate low-contrast fixture, not universal readability or quality improvement.",
+    "JPEG allows independent decoder rounding only (mean channel difference <=1, max<=8); lossless PNG/WebP and grayscale B&W thresholds require exact pixels.",
+    "All source and output previews need separate visual inspection; HTTP timings are individual local observations.",
+    "No cloud requests, paid services, browser actions, source code changes, response redirects or configured HTTP proxies are used."
+  ],
+  "sources": [
+    {
+      "caseId": "original-color-png",
+      "filter": "original",
+      "check": "original",
+      "files": [
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/original-color.png",
+          "sha256": "fa3f18206ae0936c0f144fbfb2f2644f9de2fc15ac8dd0f56b77dc77990db050",
+          "format": "PNG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "9e2c4ae8a2b304d60587109f33bb10ad540bb97940e5feaca1ea589d52a72741",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/original-color-expected-upright.png"
+        }
+      ]
+    },
+    {
+      "caseId": "bw-gray-levels",
+      "filter": "bw",
+      "check": "bw",
+      "files": [
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/bw-gray-levels.png",
+          "sha256": "b8e4e365beaaf4ebe4fff824bce2707118bb591dc19ac973d384ab310decd2f4",
+          "format": "PNG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "0e2c5b3e272b2b49cbe4ea0a3339a6114c8ed945ee40ded87109a17a103cf5ae",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/bw-gray-levels-expected-upright.png"
+        }
+      ]
+    },
+    {
+      "caseId": "enhanced-low-contrast",
+      "filter": "enhanced",
+      "check": "enhanced",
+      "files": [
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/enhanced-low-contrast.png",
+          "sha256": "7d5b8e876a90d0a46ec8bcd2891b84dcbd09250b28fa23dacaece0ced3374f4a",
+          "format": "PNG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "0c18e10364866b64e48ffb4a7a83a213578fd913bead00302ce675665c2cdb82",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/enhanced-low-contrast-expected-upright.png"
+        }
+      ]
+    },
+    {
+      "caseId": "exif-6-upright-jpeg",
+      "filter": "original",
+      "check": "original",
+      "files": [
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/phone-exif-6.jpg",
+          "sha256": "b88ced8d2d1b565f34b312c9bd9d9a78c178788c8391f305138385bbeec52116",
+          "format": "JPEG",
+          "storedPixels": [
+            880,
+            640
+          ],
+          "orientation": 6,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "d82eb795f7e1d4cbfc50c48dc0fda6cc8c019998129260a62ac60813c1b7cbff",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/phone-exif-6-expected-upright.png"
+        }
+      ]
+    },
+    {
+      "caseId": "ten-mixed-pages-in-order",
+      "filter": "original",
+      "check": "original",
+      "files": [
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-01.png",
+          "sha256": "b1ffc7dcf087aeaff7215468f13b00cb6940d24a7ddcaead2c0aa09803ed1439",
+          "format": "PNG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "f65563d3d9d2c9488b9ca716dbc4c6839e9909b77a52eec8bdfd0cebbe1f882a",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-01-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-02.jpg",
+          "sha256": "70b3b0935d8254d24e65faefb53978bee9ec4b5aae964865507241730bf8427f",
+          "format": "JPEG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "55830cbd316518be92a87d01f148d154de1bb8948017c89463301577814d1743",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-02-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-03.webp",
+          "sha256": "ca9f39f94543c243a2e4cd1dca5a84a180cccddd8b4f42972690f3f9f2963bba",
+          "format": "WEBP",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "64bcc8ca8aaa3e46c46ee9bdd2860dff3a7d29f5cc4a3be5fa3ef40ed153e239",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-03-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-04.png",
+          "sha256": "69487399fc9ba339690717259b7f181355343a104c3b79167ccc28be402a685f",
+          "format": "PNG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "8016de9879d8cd2f2e569f84fd0a42fe1b93b3028151e56a543bde9e32ada4b0",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-04-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-05.jpg",
+          "sha256": "d94c216057362560b38d300803c8313da792c78efd98f4d02e44424e896ad589",
+          "format": "JPEG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "1041b1c0cab952bbe3ea13460ae7365095b2f378e92cd7a63a22a1fc559e9b35",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-05-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-06.webp",
+          "sha256": "a3bbf49c45d565a5380d8f4f6019594964b4b25328db97f833cf937b0da59c75",
+          "format": "WEBP",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "48b8b2a8c644b1f947e3881aaccc9e356c611efce09871094db1dfc685cb2334",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-06-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-07.png",
+          "sha256": "68d9780580b6618401fe70c141953c7e50ee402dd43cca0ffda676d87d60586b",
+          "format": "PNG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "2e26b09554f4c62db1774271c99b83ce4a5ced66a34edc4a9fb2fbbdb25caa8b",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-07-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-08.jpg",
+          "sha256": "684ede4def13af7261980148b132d68a6558d6034e01943f9c0c3958e5c92b5a",
+          "format": "JPEG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "f7bbf422fca2fc12b2c4c386f82cca5a10a2afd1593c5d16fdc5aac1a0e770ba",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-08-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-09.webp",
+          "sha256": "ea4fa8c3c411a21be1fc71e6bac8763ff7b529e4f9f3216329c5c7db25b9635e",
+          "format": "WEBP",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "2cfa62ab81c1d350859ab86c0408ce29c65aed2ff36077beaf8a2eedeb2bb7d7",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-09-expected-upright.png"
+        },
+        {
+          "path": "tmp/pdfs/phase3-scanner/first/sources/mixed-10.png",
+          "sha256": "ed9d8facc96e76af7c9ffb10922aa1a4f8a9336bc4308cbdd68cd8ad66b4decb",
+          "format": "PNG",
+          "storedPixels": [
+            640,
+            880
+          ],
+          "orientation": 1,
+          "expectedPixels": [
+            640,
+            880
+          ],
+          "expectedDecodedPixelSha256": "712c78c93a7f5fd9cca6289ee3979be4cde0abf92688ba0896165f710c17417c",
+          "previewPath": "tmp/pdfs/phase3-scanner/first/sources/mixed-10-expected-upright.png"
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "caseId": "original-color-png",
+      "filter": "original",
+      "inputFiles": 1,
+      "kind": "positive",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "outputBytes": 27909,
+      "responseSha256": "dc0380ff4ee09989f5060ba6a31cbb75602c6e863686f3a1e46356e53961be4a",
+      "httpSeconds": 8.641,
+      "outputPath": "tmp/pdfs/phase3-scanner/first/original-color-png-result.pdf",
+      "validation": {
+        "passed": true,
+        "pageCount": 1,
+        "pages": [
+          {
+            "page": 1,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/original-color.png",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/original-color-png-embedded-01.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "singleChannelDifferenceMax": 0
+              }
+            },
+            "passed": true
+          }
+        ],
+        "pageOrderMethod": "Each embedded page is compared to its same-index literal source, including distinct page number and color patches."
+      },
+      "renderedPreviewPaths": [
+        "tmp/pdfs/phase3-scanner/first/original-color-png-output-1.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "caseId": "bw-gray-levels",
+      "filter": "bw",
+      "inputFiles": 1,
+      "kind": "positive",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "outputBytes": 10955,
+      "responseSha256": "4383f22a1280360536c44d8b65ac26111f3b3f27572571fc98b4a3dd810166ae",
+      "httpSeconds": 0.234,
+      "outputPath": "tmp/pdfs/phase3-scanner/first/bw-gray-levels-result.pdf",
+      "validation": {
+        "passed": true,
+        "pageCount": 1,
+        "pages": [
+          {
+            "page": 1,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/bw-gray-levels.png",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/bw-gray-levels-embedded-01.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Exact threshold of independent grayscale source pixels",
+              "threshold": 128,
+              "pixelLevels": [
+                0,
+                255
+              ],
+              "differentChannels": 0
+            },
+            "passed": true
+          }
+        ],
+        "pageOrderMethod": "Each embedded page is compared to its same-index literal source, including distinct page number and color patches."
+      },
+      "renderedPreviewPaths": [
+        "tmp/pdfs/phase3-scanner/first/bw-gray-levels-output-1.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "caseId": "enhanced-low-contrast",
+      "filter": "enhanced",
+      "inputFiles": 1,
+      "kind": "positive",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "outputBytes": 26647,
+      "responseSha256": "7d9d99f4b36629a5669e152ea42fbbf57de6bac21285b989c9a7bc7bce9e7884",
+      "httpSeconds": 0.203,
+      "outputPath": "tmp/pdfs/phase3-scanner/first/enhanced-low-contrast-result.pdf",
+      "validation": {
+        "passed": true,
+        "pageCount": 1,
+        "pages": [
+          {
+            "page": 1,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/enhanced-low-contrast.png",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/enhanced-low-contrast-embedded-01.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Low-contrast fixture changed and retained ordered gray patches",
+              "meanAbsoluteChannelDifference": 47.58360795454546,
+              "sourceP95P5Range": 49.0,
+              "outputP95P5Range": 201.0,
+              "orderedPatchMeans": [
+                6.333333333333333,
+                53.0,
+                99.0,
+                149.0
+              ],
+              "limitations": "Demonstrates this filter changed this fixture; does not prove readability on every photo."
+            },
+            "passed": true
+          }
+        ],
+        "pageOrderMethod": "Each embedded page is compared to its same-index literal source, including distinct page number and color patches."
+      },
+      "renderedPreviewPaths": [
+        "tmp/pdfs/phase3-scanner/first/enhanced-low-contrast-output-1.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "caseId": "exif-6-upright-jpeg",
+      "filter": "original",
+      "inputFiles": 1,
+      "kind": "positive",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "outputBytes": 79488,
+      "responseSha256": "3ae00329e1094a93af9e3d84a611962360a4bc1f8b0af3ad9ffee077020066b5",
+      "httpSeconds": 0.203,
+      "outputPath": "tmp/pdfs/phase3-scanner/first/exif-6-upright-jpeg-result.pdf",
+      "validation": {
+        "passed": true,
+        "pageCount": 1,
+        "pages": [
+          {
+            "page": 1,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/phone-exif-6.jpg",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/exif-6-upright-jpeg-embedded-01.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "meanAbsoluteChannelDifferenceMax": 1,
+                "singleChannelDifferenceMax": 8,
+                "reason": "Independent Pillow and app JPEG decoder color rounding; fixture uses 4:4:4 sampling."
+              }
+            },
+            "passed": true
+          }
+        ],
+        "pageOrderMethod": "Each embedded page is compared to its same-index literal source, including distinct page number and color patches."
+      },
+      "renderedPreviewPaths": [
+        "tmp/pdfs/phase3-scanner/first/exif-6-upright-jpeg-output-1.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "caseId": "ten-mixed-pages-in-order",
+      "filter": "original",
+      "inputFiles": 10,
+      "kind": "positive",
+      "httpStatus": 200,
+      "contentType": "application/pdf",
+      "outputBytes": 430898,
+      "responseSha256": "da757c38f603129d49f099ce03da3ddbd33ecaf551c51e87abadebe1b46143e9",
+      "httpSeconds": 1.985,
+      "outputPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-result.pdf",
+      "validation": {
+        "passed": true,
+        "pageCount": 10,
+        "pages": [
+          {
+            "page": 1,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-01.png",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-01.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "singleChannelDifferenceMax": 0
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 2,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-02.jpg",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-02.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "meanAbsoluteChannelDifferenceMax": 1,
+                "singleChannelDifferenceMax": 8,
+                "reason": "Independent Pillow and app JPEG decoder color rounding; fixture uses 4:4:4 sampling."
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 3,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-03.webp",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-03.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "singleChannelDifferenceMax": 0
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 4,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-04.png",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-04.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "singleChannelDifferenceMax": 0
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 5,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-05.jpg",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-05.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "meanAbsoluteChannelDifferenceMax": 1,
+                "singleChannelDifferenceMax": 8,
+                "reason": "Independent Pillow and app JPEG decoder color rounding; fixture uses 4:4:4 sampling."
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 6,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-06.webp",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-06.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "singleChannelDifferenceMax": 0
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 7,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-07.png",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-07.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "singleChannelDifferenceMax": 0
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 8,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-08.jpg",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-08.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "meanAbsoluteChannelDifferenceMax": 1,
+                "singleChannelDifferenceMax": 8,
+                "reason": "Independent Pillow and app JPEG decoder color rounding; fixture uses 4:4:4 sampling."
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 9,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-09.webp",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-09.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "singleChannelDifferenceMax": 0
+              }
+            },
+            "passed": true
+          },
+          {
+            "page": 10,
+            "sourcePath": "tmp/pdfs/phase3-scanner/first/sources/mixed-10.png",
+            "widthPoints": 595.280029296875,
+            "heightPoints": 841.8900146484375,
+            "embeddedPixels": [
+              640,
+              880
+            ],
+            "embeddedPreviewPath": "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-embedded-10.png",
+            "imageBoundsPoints": [
+              20.0,
+              39.19000244140625,
+              575.280029296875,
+              802.7000122070312
+            ],
+            "selectableTextCharacters": 0,
+            "pixelCheck": {
+              "passed": true,
+              "method": "Independent Pillow decoded, EXIF-transposed source compared pixelwise",
+              "meanAbsoluteChannelDifference": 0.0,
+              "maximumChannelDifference": 0,
+              "tolerance": {
+                "singleChannelDifferenceMax": 0
+              }
+            },
+            "passed": true
+          }
+        ],
+        "pageOrderMethod": "Each embedded page is compared to its same-index literal source, including distinct page number and color patches."
+      },
+      "renderedPreviewPaths": [
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-01.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-02.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-03.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-04.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-05.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-06.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-07.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-08.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-09.png",
+        "tmp/pdfs/phase3-scanner/first/ten-mixed-pages-in-order-output-10.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "caseId": "reject-eleven-images",
+      "filter": "original",
+      "inputFiles": 11,
+      "kind": "negative",
+      "httpStatus": 400,
+      "contentType": "application/json",
+      "outputBytes": 105,
+      "responseSha256": "a584bec273ad7437d68547993bf2b0f7d62af3159e10b10ae9d5f396f232bb95",
+      "httpSeconds": 0.047,
+      "error": "Maximum 10 images allowed for scanning",
+      "noPdfArtifact": true,
+      "status": "passed"
+    },
+    {
+      "caseId": "reject-unknown-filter",
+      "filter": "unknown-filter",
+      "inputFiles": 1,
+      "kind": "negative",
+      "httpStatus": 400,
+      "contentType": "application/json",
+      "outputBytes": 134,
+      "responseSha256": "584c805ddc1d6709faa81febae6770efca3dad1ba79d482c71cea53724a9ce1d",
+      "httpSeconds": 0.032,
+      "error": "Invalid scanner filter. Choose Original, Black & White or Enhanced.",
+      "noPdfArtifact": true,
+      "status": "passed"
+    },
+    {
+      "caseId": "reject-no-images",
+      "filter": "original",
+      "inputFiles": 0,
+      "kind": "negative",
+      "httpStatus": 400,
+      "contentType": "application/json",
+      "outputBytes": 102,
+      "responseSha256": "1245a01ed10cf0af7bc7dfcf6326dc05326e9ee1235c0d332cdc29323098ae6f",
+      "httpSeconds": 0.031,
+      "error": "At least one image file is required",
+      "noPdfArtifact": true,
+      "status": "passed"
+    },
+    {
+      "caseId": "reject-non-image",
+      "filter": "original",
+      "inputFiles": 1,
+      "kind": "negative",
+      "httpStatus": 400,
+      "contentType": "application/json",
+      "outputBytes": 134,
+      "responseSha256": "552b4cda4350541f3cbc13c7b6c8e84b9d369705c909834464dd1e290f589ec9",
+      "httpSeconds": 0.031,
+      "error": "Invalid file type: not-an-image.txt. Only image files are accepted.",
+      "noPdfArtifact": true,
+      "status": "passed"
+    },
+    {
+      "caseId": "reject-truncated-image",
+      "filter": "original",
+      "inputFiles": 1,
+      "kind": "negative",
+      "httpStatus": 400,
+      "contentType": "application/json",
+      "outputBytes": 158,
+      "responseSha256": "25853db0ae0a7e1a026118c0c66287bc6ca53666e257e171538486cd0911066e",
+      "httpSeconds": 0.047,
+      "error": "An image could not be read. Check that each file is a valid, supported image and try again.",
+      "noPdfArtifact": true,
+      "status": "passed"
+    },
+    {
+      "caseId": "reject-entire-mixed-corrupt-batch",
+      "filter": "original",
+      "inputFiles": 2,
+      "kind": "negative",
+      "httpStatus": 400,
+      "contentType": "application/json",
+      "outputBytes": 158,
+      "responseSha256": "c2e6981afd69b2943207a2d19ce5c22ce3152aa491ef76def555cc35448ed8a5",
+      "httpSeconds": 0.031,
+      "error": "An image could not be read. Check that each file is a valid, supported image and try again.",
+      "noPdfArtifact": true,
+      "status": "passed"
+    }
+  ],
+  "summary": {
+    "positiveCases": 5,
+    "negativeCases": 6,
+    "routesTested": 11,
+    "passed": 11,
+    "failed": 0,
+    "renderedPages": 14,
+    "allPassed": true
+  },
+  "outputContactSheet": "tmp/pdfs/phase3-scanner/first/output-contact-sheet.png"
+}

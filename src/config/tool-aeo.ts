@@ -1,5 +1,6 @@
 import type { HowToStep, ToolAeo } from "@/types";
 import { compressToolAeoSizeFact } from "@/lib/billing/billing-copy";
+import { SCANNER_MAX_IMAGES } from "@/config/pdf-scanner";
 
 function aeo(
   shortAnswer: string,
@@ -192,14 +193,15 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ["1 free summary/day with login", "Unlimited on Pro", "Key points and action items", "AI-powered analysis", "Summaries for informational use"]
   ),
   "pdf-scanner": aeo(
-    "OnlyMyPDF PDF Scanner uses your device camera to capture documents and save them as a clean PDF with edge detection.",
-    "PDF Scanner turns phone or webcam photos of documents into PDF pages suitable for sharing or OCR.",
+    `OnlyMyPDF PDF Scanner combines up to ${SCANNER_MAX_IMAGES} camera captures or JPG, PNG, and WebP uploads into one image-based PDF. Choose Original, Black & White, or Enhanced and review the downloaded pages.`,
+    "PDF Scanner places each image on an A4 portrait page with 20-point margins. It uses the framing you provide and creates a PDF without OCR or a searchable text layer.",
     [
-      { name: "Open scanner", text: "Open PDF Scanner and allow camera access." },
-      { name: "Capture pages", text: "Photograph each document page; edge detection crops the scan." },
-      { name: "Export PDF", text: "Combine captures into one PDF and download." },
+      { name: "Prepare images", text: "Photograph the full document straight on. Crop or straighten images before uploading." },
+      { name: "Add pages", text: `Allow camera access to capture pages, or upload JPG, PNG, or WebP images. Add up to ${SCANNER_MAX_IMAGES} images total on any plan, in the order you want them in the PDF.` },
+      { name: "Choose a filter", text: "Original applies no enhancement. Black & White creates a two-tone image. Enhanced normalizes contrast and sharpens the image; results depend on the source." },
+      { name: "Download and review", text: "The preview is approximate. Create the PDF, then check every downloaded page for framing, order, and readability. Use OCR separately if you need recognized text." },
     ],
-    ["Camera-based capture", "Edge detection", "Multi-page scans", "Free online tool", "Works on mobile browsers"]
+    [`Up to ${SCANNER_MAX_IMAGES} images total on every plan`, "JPG, PNG, and WebP inputs", "Original, Black & White, and Enhanced filters", "A4 portrait pages with 20-point margins", "Image-based PDF without OCR", "Published file-retention window"]
   ),
   "unlock-pdf": aeo(
     "OnlyMyPDF Unlock PDF removes known passwords from PDFs you own or are authorized to open, producing an unrestricted copy.",

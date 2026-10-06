@@ -8,6 +8,8 @@ import { resolveMutationToolUser } from "@/lib/auth/tool-mutation-auth";
 import { validateSingleUpload, uploadValidationResponse } from "@/lib/server/upload-validation";
 import { FILE_LIMITS } from "@/config/constants";
 import { clientIpForLogs } from "@/lib/server/request-security";
+import { SCANNER_MAX_IMAGES, parseScannerFilter } from "@/config/pdf-scanner";
+import { prepareScannerImage } from "@/lib/services/pdf-scanner-image";
 
 export const maxDuration = 60;
 
@@ -33,17 +35,29 @@ export async function POST(request: NextRequest) {
       return toolJsonError(request, usageResult.message ?? "Daily usage limit reached.", 429);
     }
 
-    const formData = await request.formData();
-    const files = formData.getAll("files") as File[];
-    const filter = (formData.get("filter") as string) || "none";
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch {
+      return toolJsonError(request, "Upload too large or invalid. Try fewer images or check your connection.", 413);
+    }
+    const entries = formData.getAll("files");
+    const filter = parseScannerFilter(formData.get("filter"));
+    if (filter === null || formData.getAll("filter").length > 1) {
+      return toolJsonError(request, "Invalid scanner filter. Choose Original, Black & White or Enhanced.", 400);
+    }
 
-    if (!files || files.length === 0) {
+    if (entries.length === 0) {
       return toolJsonError(request, "At least one image file is required", 400);
     }
 
-    if (files.length > 10) {
-      return toolJsonError(request, "Maximum 10 images allowed for scanning", 400);
+    if (entries.length > SCANNER_MAX_IMAGES) {
+      return toolJsonError(request, `Maximum ${SCANNER_MAX_IMAGES} images allowed for scanning`, 400);
     }
+    if (!entries.every((entry): entry is File => entry instanceof File)) {
+      return toolJsonError(request, "Only image files are accepted.", 400);
+    }
+    const files = entries;
 
     const imageBuffers: Buffer[] = [];
     for (const file of files) {
@@ -57,36 +71,15 @@ export async function POST(request: NextRequest) {
       imageBuffers.push(validated.buffer);
     }
 
-    const sharp = (await import("sharp")).default;
-
-    const processedImages = await Promise.all(
-      files.map(async (_, index) => {
-        let imageBuffer: Buffer = imageBuffers[index];
-
-        if (filter !== "none") {
-          let pipeline = sharp(imageBuffer);
-
-          switch (filter) {
-            case "grayscale":
-              pipeline = pipeline.grayscale();
-              break;
-            case "blackwhite":
-              pipeline = pipeline.grayscale().threshold(128);
-              break;
-            case "highcontrast":
-              pipeline = pipeline.normalize().sharpen();
-              break;
-            case "brighten":
-              pipeline = pipeline.modulate({ brightness: 1.3 });
-              break;
-          }
-
-          imageBuffer = await pipeline.png().toBuffer() as Buffer;
-        }
-
-        return imageBuffer;
-      })
-    );
+    // Avoid decoding ten large photos concurrently; retain their upload order.
+    const processedImages: Buffer[] = [];
+    try {
+      for (const imageBuffer of imageBuffers) {
+        processedImages.push(await prepareScannerImage(imageBuffer, filter));
+      }
+    } catch {
+      return toolJsonError(request, "An image could not be read. Check that each file is a valid, supported image and try again.", 400);
+    }
 
     const pdfBuffer = await jpgToPdf(processedImages, {
       pageSize: "a4",

@@ -1,5 +1,6 @@
 import type { ToolSEO } from "@/types";
 import { planFileSizeFaqLine } from "@/lib/billing/billing-copy";
+import { SCANNER_MAX_IMAGES } from "@/config/pdf-scanner";
 
 export { planFileSizeFaqLine };
 
@@ -308,25 +309,40 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "pdf-scanner": {
     title: "PDF Scanner — Scan Documents to PDF Online | OnlyMyPDF",
     metaDescription:
-      "Convert scanned images and photos of documents into clean, professional PDFs. Enhance contrast and readability automatically.",
-    h1: "PDF Scanner — Turn Photos into Clean PDFs",
+      `Capture or upload up to ${SCANNER_MAX_IMAGES} JPG, PNG, or WebP images and save one image-based PDF. Choose Original, Black & White, or Enhanced and review the download.`,
+    h1: "PDF Scanner — Turn Photos into a PDF",
     seoContent:
-      "Transform photos of documents, receipts, whiteboards, and notes into clean, professional-looking PDFs. OnlyMyPDF's PDF Scanner applies automatic image enhancement including contrast adjustment, perspective correction, and background cleanup to make your scanned documents look crisp and readable. Upload photos from your phone or computer and get a clean PDF in seconds. Perfect for digitizing paper documents on the go.",
+      `Capture pages with your device camera or upload JPG, PNG, or WebP images. Add up to ${SCANNER_MAX_IMAGES} images total per PDF on any plan. Photograph documents straight on and crop or straighten images before uploading; the scanner uses the framing you provide. Original applies no enhancement, Black & White creates a two-tone image, and Enhanced normalizes contrast and sharpens the image. The preview is approximate, and filters can affect faint text or shading. Each image is fitted inside an A4 portrait page with 20-point margins. Review every page of the downloaded PDF for framing, page order, and readability. The output contains images without OCR or a searchable text layer; use OCR separately when you need recognized text.`,
     faqs: [
       {
         question: "What types of images can I scan to PDF?",
         answer:
-          "You can upload photos or scans of documents, receipts, business cards, whiteboards, notes, or any physical document in JPG, PNG, or WebP format.",
+          "Capture a page with your device camera or upload an image in JPG, PNG, or WebP format. Photograph the whole document and crop or straighten your images before uploading.",
       },
       {
         question: "Does the scanner enhance image quality?",
         answer:
-          "Yes, our scanner automatically adjusts contrast, brightness, and sharpness to make your scanned documents more readable and professional-looking.",
+          "Choose Original for no enhancement, Black & White for a two-tone image, or Enhanced to normalize contrast and sharpen the image. Results depend on the source, and faint text or shading can be lost. The preview is approximate; check the downloaded PDF before relying on its readability.",
       },
       {
         question: "Can I scan multiple pages into one PDF?",
         answer:
-          "Yes, upload up to 10 images (more for Pro users) and combine them into a single multi-page PDF document.",
+          `Yes. Add up to ${SCANNER_MAX_IMAGES} images total per PDF, including camera captures and uploads. The same image-count limit applies to every plan. Each image becomes one page in the displayed order. ${planFileSizeFaqLine()}`,
+      },
+      {
+        question: "What page size does the scanner use?",
+        answer:
+          "Each image is fitted inside an A4 portrait page with 20-point margins. Review the downloaded PDF to check framing, page order, and readability.",
+      },
+      {
+        question: "Does the scanner add searchable or editable text?",
+        answer:
+          "The scanner creates an image-based PDF without OCR or a searchable text layer. Use OCR separately if you need recognized text for searching, copying, or editing.",
+      },
+      {
+        question: "How are uploaded files handled?",
+        answer:
+          "Files are uploaded for processing over HTTPS/TLS. Under the published retention policy, files are scheduled for deletion within 2 hours for Free users or 24 hours for Pro users.",
       },
     ],
   },

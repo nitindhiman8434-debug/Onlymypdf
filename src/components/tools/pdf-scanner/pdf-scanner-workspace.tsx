@@ -30,21 +30,25 @@ import {
 
 import { cn } from "@/lib/utils/cn";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 import { ToolErrorBanner, ToolHiddenFileInput, ToolUploadSizeHint } from "@/components/tools/tool-ui";
 
 import { useToolWorkspaceMessages } from "@/hooks/use-tool-workspace-messages";
 
+import { SCANNER_IMAGE_MIME_TYPES, SCANNER_MAX_IMAGES, type ScannerFilter } from "@/config/pdf-scanner";
+
+import { scannerSelectionError } from "./scanner-selection";
 
 
-type ScanFilter = "original" | "bw" | "enhanced";
+
+type ScannerPage = { id: string; file: File; preview: string };
 
 type InputMode = "camera" | "upload";
 
 
 
-const FILTER_CSS: Record<ScanFilter, string> = {
+const FILTER_CSS: Record<ScannerFilter, string> = {
 
   original: "",
 
@@ -178,11 +182,11 @@ export function PdfScannerWorkspace() {
 
 
 
-  const [images, setImages] = useState<{ id: string; file: File; preview: string }[]>([]);
+  const [images, setImages] = useState<ScannerPage[]>([]);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const [filter, setFilter] = useState<ScanFilter>("enhanced");
+  const [filter, setFilter] = useState<ScannerFilter>("enhanced");
 
   const [inputMode, setInputMode] = useState<InputMode>("upload");
 
@@ -190,11 +194,17 @@ export function PdfScannerWorkspace() {
 
   const [progress, setProgress] = useState(0);
 
-  const [result, setResult] = useState<Blob | null>(null);
+  const [resultUrl, setResultUrl] = useState<string | null>(null);
+
+  const [resultPageCount, setResultPageCount] = useState(0);
 
   const [error, setError] = useState("");
 
   const [cameraActive, setCameraActive] = useState(false);
+
+  const [cameraStarting, setCameraStarting] = useState(false);
+
+  const [capturePending, setCapturePending] = useState(false);
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -208,6 +218,16 @@ export function PdfScannerWorkspace() {
 
   const streamRef = useRef<MediaStream | null>(null);
 
+  const imagesRef = useRef<ScannerPage[]>([]);
+  const processingRef = useRef(false);
+  const resultRef = useRef(false);
+  const resultUrlRef = useRef<string | null>(null);
+  const mountedRef = useRef(true);
+  const cameraRequestRef = useRef(0);
+  const cameraStartingRef = useRef(false);
+  const pendingCaptureRef = useRef<symbol | null>(null);
+  const processAbortRef = useRef<AbortController | null>(null);
+
 
 
   const activeFilterCss = FILTER_CSS[filter];
@@ -216,261 +236,223 @@ export function PdfScannerWorkspace() {
 
   const hasPages = images.length > 0;
 
+  const atPageLimit = images.length >= SCANNER_MAX_IMAGES;
 
 
-  const addImages = useCallback((files: FileList | File[]) => {
 
-    const newImages = Array.from(files)
-
-      .filter((f) => f.type.startsWith("image/"))
-
-      .map((f) => ({
-
-        id: crypto.randomUUID(),
-
-        file: f,
-
-        preview: URL.createObjectURL(f),
-
-      }));
-
-    if (newImages.length === 0) return;
-
-    setImages((prev) => {
-
-      const next = [...prev, ...newImages];
-
-      setSelectedIndex(next.length - newImages.length);
-
-      return next;
-
-    });
-
-    setResult(null);
-
-    setError("");
-
+  const stopCamera = useCallback((cancelPendingCapture = false) => {
+    if (pendingCaptureRef.current && !cancelPendingCapture) return;
+    pendingCaptureRef.current = null;
+    setCapturePending(false);
+    cameraRequestRef.current++;
+    cameraStartingRef.current = false;
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    if (videoRef.current) videoRef.current.srcObject = null;
+    setCameraActive(false);
+    setCameraStarting(false);
   }, []);
 
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      pendingCaptureRef.current = null;
+      cameraRequestRef.current++;
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+      processAbortRef.current?.abort();
+      if (resultUrlRef.current) URL.revokeObjectURL(resultUrlRef.current);
+      resultUrlRef.current = null;
+      imagesRef.current.forEach((image) => URL.revokeObjectURL(image.preview));
+      imagesRef.current = [];
+    };
+  }, []);
 
+  const addImages = useCallback((files: FileList | File[]) => {
+    if (!mountedRef.current || processingRef.current || resultRef.current) return;
+    const batch = Array.from(files);
+    if (!batch.length) return;
+    const selectionError = scannerSelectionError(imagesRef.current.length, batch);
+    if (selectionError) {
+      setError(selectionError);
+      return;
+    }
+    const newImages: ScannerPage[] = [];
+    try {
+      for (const file of batch) {
+        newImages.push({ id: crypto.randomUUID(), file, preview: URL.createObjectURL(file) });
+      }
+    } catch {
+      newImages.forEach((image) => URL.revokeObjectURL(image.preview));
+      setError("These images could not be previewed. Try selecting them again.");
+      return;
+    }
+    // Update the ref immediately so rapid uploads and asynchronous camera blobs
+    // share the same limit before React commits another render.
+    const firstAddedIndex = imagesRef.current.length;
+    const next = [...imagesRef.current, ...newImages];
+    imagesRef.current = next;
+    setImages(next);
+    setSelectedIndex(firstAddedIndex);
+    setError("");
+  }, []);
 
   const removeImage = (id: string) => {
-
-    setImages((prev) => {
-
-      const idx = prev.findIndex((i) => i.id === id);
-
-      const img = prev.find((i) => i.id === id);
-
-      if (img) URL.revokeObjectURL(img.preview);
-
-      const next = prev.filter((i) => i.id !== id);
-
-      setSelectedIndex((cur) => {
-
-        if (next.length === 0) return 0;
-
-        if (idx <= cur) return Math.max(0, cur - 1);
-
-        return Math.min(cur, next.length - 1);
-
-      });
-
-      return next;
-
+    if (processingRef.current || resultRef.current) return;
+    const previous = imagesRef.current;
+    const index = previous.findIndex((image) => image.id === id);
+    if (index < 0) return;
+    URL.revokeObjectURL(previous[index].preview);
+    const next = previous.filter((image) => image.id !== id);
+    imagesRef.current = next;
+    setImages(next);
+    setSelectedIndex((current) => {
+      if (!next.length) return 0;
+      return Math.min(index <= current ? Math.max(0, current - 1) : current, next.length - 1);
     });
-
+    setError("");
   };
-
-
 
   const startCamera = async () => {
-
+    if (!mountedRef.current || processingRef.current || resultRef.current
+        || cameraStartingRef.current || streamRef.current || imagesRef.current.length >= SCANNER_MAX_IMAGES) return;
+    const request = cameraRequestRef.current + 1;
+    cameraRequestRef.current = request;
+    cameraStartingRef.current = true;
+    setCameraStarting(true);
     try {
-
       const stream = await navigator.mediaDevices.getUserMedia({
-
         video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } },
-
       });
-
-      streamRef.current = stream;
-
-      if (videoRef.current) {
-
-        videoRef.current.srcObject = stream;
-
-        await videoRef.current.play();
-
+      if (!mountedRef.current || request !== cameraRequestRef.current
+          || processingRef.current || resultRef.current || imagesRef.current.length >= SCANNER_MAX_IMAGES) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
       }
-
+      streamRef.current = stream;
       setCameraActive(true);
-
       setError("");
-
     } catch {
-
-      setError(ws.cameraAccessDenied);
-
+      if (mountedRef.current && request === cameraRequestRef.current) setError(ws.cameraAccessDenied);
+    } finally {
+      if (mountedRef.current && request === cameraRequestRef.current) {
+        cameraStartingRef.current = false;
+        setCameraStarting(false);
+      }
     }
-
   };
-
-
 
   const capturePhoto = () => {
-
-    if (!videoRef.current || !canvasRef.current) return;
-
+    if (processingRef.current || resultRef.current || pendingCaptureRef.current || imagesRef.current.length >= SCANNER_MAX_IMAGES
+        || !videoRef.current || !canvasRef.current || !streamRef.current) return;
     const video = videoRef.current;
-
+    if (!video.videoWidth || !video.videoHeight) {
+      setError("The camera is still starting. Try capturing the page again.");
+      return;
+    }
     const canvas = canvasRef.current;
-
+    const request = cameraRequestRef.current;
     canvas.width = video.videoWidth;
-
     canvas.height = video.videoHeight;
-
-    canvas.getContext("2d")?.drawImage(video, 0, 0);
-
-    canvas.toBlob(
-
-      (blob) => {
-
-        if (blob) addImages([new File([blob], `scan-${Date.now()}.jpg`, { type: "image/jpeg" })]);
-
-      },
-
-      "image/jpeg",
-
-      0.92
-
-    );
-
+    const context = canvas.getContext("2d");
+    if (!context) return;
+    context.drawImage(video, 0, 0);
+    const capture = Symbol("pending camera capture");
+    pendingCaptureRef.current = capture;
+    setCapturePending(true);
+    const commitCapture = (blob: Blob | null) => {
+      if (pendingCaptureRef.current !== capture) return;
+      try {
+        if (!mountedRef.current || request !== cameraRequestRef.current) return;
+        if (blob) {
+          addImages([new File([blob], `scan-${Date.now()}.jpg`, { type: "image/jpeg" })]);
+        } else {
+          setError("The captured page could not be prepared. Please capture it again.");
+        }
+      } finally {
+        if (pendingCaptureRef.current === capture) {
+          pendingCaptureRef.current = null;
+          if (mountedRef.current) setCapturePending(false);
+        }
+      }
+    };
+    try {
+      canvas.toBlob(commitCapture, "image/jpeg", 0.92);
+    } catch {
+      commitCapture(null);
+    }
   };
-
-
-
-  const stopCamera = () => {
-
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-
-    streamRef.current = null;
-
-    setCameraActive(false);
-
-  };
-
-
 
   const handleProcess = async () => {
-
-    if (!hasPages) return;
-
+    if (processingRef.current || resultRef.current || pendingCaptureRef.current || !imagesRef.current.length) return;
+    processingRef.current = true;
     setProcessing(true);
-
     setError("");
-
     setProgress(20);
-
     stopCamera();
-
+    const submittedPages = [...imagesRef.current];
+    const controller = new AbortController();
+    processAbortRef.current = controller;
     const formData = new FormData();
-
-    images.forEach((img) => formData.append("files", img.file));
-
+    submittedPages.forEach((image) => formData.append("files", image.file));
     formData.append("filter", filter);
-
     try {
-
       setProgress(55);
-
-      const res = await fetch("/api/tools/pdf-scanner", { method: "POST", body: formData });
-
-      if (!res.ok) {
-
-        const err = await res.json().catch(() => ({}));
-
-        throw new Error(err.error || ws.scanningFailed);
-
+      const response = await fetch("/api/tools/pdf-scanner", {
+        method: "POST", body: formData, signal: controller.signal,
+      });
+      if (!response.ok) {
+        const failure = await response.json().catch(() => ({}));
+        throw new Error(failure.error || ws.scanningFailed);
       }
-
-      setResult(await res.blob());
-
+      const output = await response.blob();
+      if (!mountedRef.current || controller.signal.aborted) return;
+      const outputUrl = URL.createObjectURL(output);
+      resultUrlRef.current = outputUrl;
+      resultRef.current = true;
+      setResultPageCount(submittedPages.length);
+      setResultUrl(outputUrl);
       setProgress(100);
-
-    } catch (err) {
-
-      setError(err instanceof Error ? err.message : ws.processingFailed);
-
+    } catch (failure) {
+      if (mountedRef.current && !controller.signal.aborted) {
+        setError(failure instanceof Error ? failure.message : ws.processingFailed);
+      }
     } finally {
-
-      setProcessing(false);
-
+      if (processAbortRef.current === controller) processAbortRef.current = null;
+      processingRef.current = false;
+      if (mountedRef.current) setProcessing(false);
     }
-
   };
-
-
-
-  const handleDownload = () => {
-
-    if (!result) return;
-
-    const url = URL.createObjectURL(result);
-
-    const a = document.createElement("a");
-
-    a.href = url;
-
-    a.download = "scanned-document.pdf";
-
-    a.click();
-
-    URL.revokeObjectURL(url);
-
-  };
-
-
 
   const reset = () => {
-
-    images.forEach((img) => URL.revokeObjectURL(img.preview));
-
+    if (processingRef.current) return;
+    imagesRef.current.forEach((image) => URL.revokeObjectURL(image.preview));
+    imagesRef.current = [];
+    resultRef.current = false;
+    if (resultUrlRef.current) URL.revokeObjectURL(resultUrlRef.current);
+    resultUrlRef.current = null;
     setImages([]);
-
     setSelectedIndex(0);
-
-    setResult(null);
-
+    setResultUrl(null);
+    setResultPageCount(0);
     setError("");
-
     setProgress(0);
-
-    stopCamera();
-
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    stopCamera(true);
   };
-
-
 
   const switchMode = (mode: InputMode) => {
-
+    if (processingRef.current || resultRef.current || pendingCaptureRef.current) return;
     setInputMode(mode);
-
     if (mode === "upload") stopCamera();
-
   };
-
-
 
   const triggerAdd = () => {
-
+    if (processingRef.current || resultRef.current || pendingCaptureRef.current || imagesRef.current.length >= SCANNER_MAX_IMAGES) return;
     if (inputMode === "camera") void startCamera();
-
     else fileInputRef.current?.click();
-
   };
-
-
 
   useEffect(() => {
 
@@ -486,7 +468,7 @@ export function PdfScannerWorkspace() {
 
 
 
-  if (result) {
+  if (resultUrl) {
 
     return (
 
@@ -500,17 +482,17 @@ export function PdfScannerWorkspace() {
 
         <h2 className="mt-4 text-xl font-bold text-pd-foreground">{ws.pdfReady}</h2>
 
-        <p className="mt-1 text-sm text-pd-muted">{ws.pagesScanned(images.length)}</p>
+        <p className="mt-1 text-sm text-pd-muted">{ws.pagesScanned(resultPageCount)}</p>
 
         <div className="mt-5 flex flex-wrap justify-center gap-2">
 
-          <Button onClick={handleDownload} className="rounded-lg bg-teal-700 font-semibold hover:bg-teal-800">
+          <a href={resultUrl} download="scanned-document.pdf" className={buttonVariants({ className: "rounded-lg bg-teal-700 font-semibold hover:bg-teal-800" })}>
 
             <Download className="h-4 w-4" />
 
             {ws.downloadPdf}
 
-          </Button>
+          </a>
 
           <Button variant="outline" onClick={reset} className="rounded-lg">
 
@@ -532,7 +514,7 @@ export function PdfScannerWorkspace() {
 
   return (
 
-    <div className="overflow-hidden rounded-2xl border border-pd-border/70 bg-pd-surface shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-pd-border/70 bg-pd-surface shadow-sm" aria-busy={processing}>
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-pd-border/60 bg-slate-50/80 px-3 py-2 sm:px-4">
 
@@ -558,11 +540,13 @@ export function PdfScannerWorkspace() {
 
                 onClick={() => switchMode(mode)}
 
+                disabled={processing || capturePending}
+
                 aria-pressed={inputMode === mode}
 
                 className={cn(
 
-                  "flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition",
+                  "flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50",
 
                   inputMode === mode
 
@@ -598,7 +582,9 @@ export function PdfScannerWorkspace() {
 
                 onClick={triggerAdd}
 
-                className="flex cursor-pointer items-center gap-1 rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700 hover:bg-teal-100"
+                disabled={processing || atPageLimit || cameraStarting || capturePending}
+
+                className="flex cursor-pointer items-center gap-1 rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700 hover:bg-teal-100 disabled:cursor-not-allowed disabled:opacity-50"
 
               >
 
@@ -614,7 +600,9 @@ export function PdfScannerWorkspace() {
 
                 onClick={reset}
 
-                className="cursor-pointer text-xs font-medium text-pd-muted hover:text-red-600"
+                disabled={processing}
+
+                className="cursor-pointer text-xs font-medium text-pd-muted hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 
               >
 
@@ -640,17 +628,33 @@ export function PdfScannerWorkspace() {
 
 
 
+      <p className="px-3 pt-3 text-xs text-pd-muted sm:px-4" aria-live="polite">
+        {images.length} of {SCANNER_MAX_IMAGES} images selected.
+        {atPageLimit ? " Limit reached. Remove a page to add another." : ` Add up to ${SCANNER_MAX_IMAGES} images per PDF.`}
+      </p>
+
+      {capturePending && (
+        <p className="px-3 pt-2 text-sm text-teal-800 sm:px-4" role="status" aria-atomic="true">
+          Preparing captured page. Please wait before creating the PDF or closing the camera.
+        </p>
+      )}
+
       <ToolHiddenFileInput
 
         ref={fileInputRef}
 
-        accept="image/jpeg,image/png,image/webp"
+        accept={SCANNER_IMAGE_MIME_TYPES.join(",")}
 
         multiple
 
+        disabled={processing || atPageLimit || capturePending}
+
         ariaLabel={ws.chooseImagesScan}
 
-        onChange={(e) => e.target.files && addImages(e.target.files)}
+        onChange={(event) => {
+          if (event.currentTarget.files) addImages(event.currentTarget.files);
+          event.currentTarget.value = "";
+        }}
 
       />
 
@@ -678,6 +682,10 @@ export function PdfScannerWorkspace() {
 
                     onClick={capturePhoto}
 
+                    disabled={processing || atPageLimit || capturePending}
+
+                    aria-busy={capturePending}
+
                     className="w-auto shrink-0 rounded-lg bg-teal-700 px-4 font-semibold hover:bg-teal-800"
 
                   >
@@ -688,7 +696,7 @@ export function PdfScannerWorkspace() {
 
                   </Button>
 
-                  <Button size="sm" variant="outline" onClick={stopCamera} className="w-auto shrink-0 rounded-lg">
+                  <Button size="sm" variant="outline" onClick={() => stopCamera()} disabled={processing || capturePending} className="w-auto shrink-0 rounded-lg">
 
                     {ws.close}
 
@@ -705,6 +713,8 @@ export function PdfScannerWorkspace() {
                 type="button"
 
                 onClick={() => void startCamera()}
+
+                disabled={processing || atPageLimit || cameraStarting}
 
                 className="flex w-full cursor-pointer items-center gap-4 rounded-xl border border-dashed border-teal-300/80 bg-teal-50/40 px-4 py-5 text-left transition hover:border-teal-400 hover:bg-teal-50/70 sm:py-6"
 
@@ -764,7 +774,7 @@ export function PdfScannerWorkspace() {
 
               }}
 
-              onClick={() => fileInputRef.current?.click()}
+              onClick={triggerAdd}
 
             >
 
@@ -778,11 +788,11 @@ export function PdfScannerWorkspace() {
 
                 <p className="font-semibold text-pd-foreground">{ws.dropImagesBrowse}</p>
 
-                <ToolUploadSizeHint formatNote="JPG, PNG, WebP · multi-page" />
+                <ToolUploadSizeHint formatNote={`JPG, PNG, WebP · up to ${SCANNER_MAX_IMAGES} images`} />
 
               </div>
 
-              <Button type="button" size="sm" className="hidden shrink-0 rounded-lg sm:inline-flex">
+              <Button type="button" size="sm" disabled={processing || atPageLimit} className="hidden shrink-0 rounded-lg sm:inline-flex">
 
                 {ws.browse}
 
@@ -816,6 +826,10 @@ export function PdfScannerWorkspace() {
 
                   onClick={capturePhoto}
 
+                  disabled={processing || atPageLimit || capturePending}
+
+                  aria-busy={capturePending}
+
                   className="w-auto shrink-0 rounded-lg bg-teal-700 px-4 hover:bg-teal-800"
 
                 >
@@ -824,7 +838,7 @@ export function PdfScannerWorkspace() {
 
                 </Button>
 
-                <Button size="sm" variant="outline" onClick={stopCamera} className="w-auto shrink-0">
+                <Button size="sm" variant="outline" onClick={() => stopCamera()} disabled={processing || capturePending} className="w-auto shrink-0">
 
                   {ws.done}
 
@@ -878,66 +892,42 @@ export function PdfScannerWorkspace() {
 
             <div className="flex gap-2 overflow-x-auto pb-0.5 lg:max-h-[min(280px,42vh)] lg:flex-col lg:overflow-y-auto lg:overflow-x-hidden">
 
-              {images.map((img, i) => (
-
-                <button
-
-                  key={img.id}
-
-                  type="button"
-
-                  onClick={() => setSelectedIndex(i)}
-
+              {images.map((image, index) => (
+                <div
+                  key={image.id}
                   className={cn(
-
-                    "group relative shrink-0 cursor-pointer overflow-hidden rounded-lg border-2 transition",
-
-                    selectedIndex === i ? "border-teal-500 ring-1 ring-teal-200" : "border-pd-border/70"
-
+                    "group relative shrink-0 rounded-lg border-2 transition",
+                    selectedIndex === index ? "border-teal-500 ring-1 ring-teal-200" : "border-pd-border/70"
                   )}
-
                 >
-
-                  <img
-
-                    src={img.preview}
-
-                    alt={ws.pageAlt(i + 1)}
-
-                    className="h-14 w-11 object-cover lg:h-12 lg:w-10"
-
-                    style={{ filter: activeFilterCss }}
-
-                  />
-
-                  <span className="absolute bottom-0.5 left-0.5 rounded bg-black/70 px-1 text-[9px] font-bold text-white">
-
-                    {i + 1}
-
-                  </span>
-
                   <button
-
                     type="button"
-
-                    onClick={(e) => {
-
-                      e.stopPropagation();
-
-                      removeImage(img.id);
-
-                    }}
-
-                    className="absolute -right-0.5 -top-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition group-hover:opacity-100"
-
+                    onClick={() => { if (!processingRef.current) setSelectedIndex(index); }}
+                    disabled={processing}
+                    aria-label={`Preview page ${index + 1}`}
+                    aria-pressed={selectedIndex === index}
+                    className="block overflow-hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 disabled:opacity-50"
                   >
-
-                    <X className="h-2.5 w-2.5" />
-
+                    <img
+                      src={image.preview}
+                      alt=""
+                      className="h-14 w-11 object-cover lg:h-12 lg:w-10"
+                      style={{ filter: activeFilterCss }}
+                    />
+                    <span aria-hidden="true" className="absolute bottom-0.5 left-0.5 rounded bg-black/70 px-1 text-[9px] font-bold text-white">
+                      {index + 1}
+                    </span>
                   </button>
-
-                </button>
-
+                  <button
+                    type="button"
+                    onClick={() => removeImage(image.id)}
+                    disabled={processing}
+                    aria-label={`Remove page ${index + 1}`}
+                    className="absolute right-0 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700 focus-visible:ring-offset-2 disabled:opacity-50"
+                  >
+                    <X className="h-3 w-3" aria-hidden="true" />
+                  </button>
+                </div>
               ))}
 
             </div>
@@ -960,11 +950,15 @@ export function PdfScannerWorkspace() {
 
                   type="button"
 
-                  onClick={() => setFilter(opt.value)}
+                  onClick={() => { if (!processingRef.current) setFilter(opt.value); }}
+
+                  disabled={processing}
+
+                  aria-pressed={filter === opt.value}
 
                   className={cn(
 
-                    "flex cursor-pointer items-center gap-1.5 rounded-lg border px-2 py-1 text-xs font-semibold transition",
+                    "flex cursor-pointer items-center gap-1.5 rounded-lg border px-2 py-1 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50",
 
                     filter === opt.value
 
@@ -1004,7 +998,7 @@ export function PdfScannerWorkspace() {
 
             {processing ? (
 
-              <div className="flex items-center gap-2 sm:min-w-[140px]">
+              <div className="flex items-center gap-2 sm:min-w-[140px]" role="progressbar" aria-label="Creating PDF" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
 
                 <Loader2 className="h-4 w-4 animate-spin text-teal-600" />
 
@@ -1032,6 +1026,8 @@ export function PdfScannerWorkspace() {
 
                 onClick={() => void handleProcess()}
 
+                disabled={capturePending}
+
                 className="w-full shrink-0 rounded-lg bg-teal-700 font-semibold hover:bg-teal-800 sm:w-auto"
 
               >
@@ -1045,6 +1041,8 @@ export function PdfScannerWorkspace() {
             )}
 
           </div>
+
+          <p className="mt-2 text-xs text-pd-muted">Filter preview is approximate. Review the downloaded PDF.</p>
 
         </div>
 
@@ -1067,5 +1065,4 @@ export function PdfScannerWorkspace() {
   );
 
 }
-
 

@@ -1,0 +1,48 @@
+{
+  "phase": "3.4",
+  "reviewedAt": "2026-10-06T22:28:05.245525+00:00",
+  "reviewer": "root agent",
+  "artifactContactSheet": "tmp/pdfs/phase3-scanner/first/output-contact-sheet.png",
+  "artifactContactSheetSha256": "d70956a95e069d7b5349cfb44f976fbe4b1c65252acb3368df3a01c45c178670",
+  "renderedPages": 14,
+  "artifactVisualReview": "passed",
+  "observations": [
+    "All 14 output pages inspected in the rendered contact sheet.",
+    "Upright images, expected filter appearance, readable fixture labels and no clipping.",
+    "Ten numbered mixed-format inputs retain their output page order."
+  ],
+  "browser": {
+    "url": "http://127.0.0.1:3001/pdf-scanner",
+    "viewports": [
+      {
+        "width": 1280,
+        "height": 900,
+        "documentClientWidth": 1272,
+        "documentScrollWidth": 1272
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "documentClientWidth": 382,
+        "documentScrollWidth": 382
+      }
+    ],
+    "passedChecks": [
+      "Eleven-image batch rejected without adding pages.",
+      "Ten mixed-format images accepted; Add and input disabled at cap.",
+      "Remove page restores capacity; overflow append rejects entire batch.",
+      "Same-file retry works.",
+      "No nested thumbnail buttons.",
+      "Original filter selected; conversion locks editing.",
+      "Ten-page PDF ready state and named download link present.",
+      "Preview restored after build; HTTP 200 and fresh hydrated browser tab."
+    ],
+    "consoleWarningsOrErrorsBeforeBuild": [],
+    "savedDownload": "unverified",
+    "downloadEvidence": "Download click and documented download API timed out. Stable blob link remained present; no newly saved PDF found in normal Downloads. Fresh-tab retry also timed out. User first saw the temporary build shutdown; a second manual check is pending after preview restoration.",
+    "temporaryViewportReset": true,
+    "resultTabLeftOpen": true,
+    "physicalCamera": "not exercised; lifecycle and pending-capture guards independently code reviewed",
+    "screenshots": "Inspected inline in the task; no browser screenshot file archived."
+  }
+}

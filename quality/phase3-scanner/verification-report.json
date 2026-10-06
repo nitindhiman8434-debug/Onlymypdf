@@ -1,0 +1,82 @@
+{
+  "phase": "3.4",
+  "recordedAt": "2026-10-06T22:28:05.245525+00:00",
+  "status": "implementation complete; saved-browser-download gate open",
+  "phaseComplete": false,
+  "scope": "Scanner-only output preprocessing, ten-image limits, interaction safety and truthful English content.",
+  "sourceHashes": {
+    "src/config/pdf-scanner.ts": "5604c8020db07cb803b6f4fb66641852dc41b42e4dccc7bad146e4d9f91a05ed",
+    "src/lib/services/pdf-scanner-image.ts": "f881814525e587e853ad406dd303ae19ece336b666889161f7dbe0992ac7e778",
+    "src/lib/services/pdf-scanner-image.test.ts": "3fced2c6423c118a037e5c07f64a5a4fdbc9a9153c916a477388bc40c268577c",
+    "src/app/api/tools/pdf-scanner/route.ts": "15ba82e8b4b4ab5fbb69a8b35e7ab99c7aa1c1137cc8004c5ebbd7b5fc44b9e0",
+    "src/app/api/tools/pdf-scanner/route.integration.test.ts": "a98802b638118cd8f0328760398c3430a0549386ede8a38a92506b6a5bd3e808",
+    "src/components/tools/pdf-scanner/pdf-scanner-workspace.tsx": "57acc788735039d6119bcdcca0ad8ac7fcfb0481cbabfa67dcf2f60ef92f321d",
+    "src/components/tools/pdf-scanner/scanner-selection.ts": "ae2e9b348df210ae753f2b3c1b6c3148591a1638f42b618258d4dc1fee321670",
+    "src/components/tools/pdf-scanner/scanner-selection.test.ts": "ffe1349ec388aba9c8d133efe223c5f60838d69cd335e3a83f7b55f7911810fa",
+    "src/app/(tools)/pdf-scanner/page.tsx": "b1ba3c34e0c8513da08f2f72214fda2e6e8be8eddead62c8a7ae16a41d06b65a",
+    "src/config/tools.ts": "65a7c7a4f6f66c0ab1b8fb9a221cf9a615afd2f80069463079c2275ec1950347",
+    "src/config/tool-aeo.ts": "940e9bd847274ace13aa78ffc67578fbe2134bb925aeb792f3cf6d6d0c2dbcf3",
+    "scripts/phase3-scanner-corpus.py": "a333b734817199a8383060ca6365a3e66f2e196d1ce389724d8f13633fab471f"
+  },
+  "unitTests": {
+    "passed": 66,
+    "failed": 0,
+    "report": "quality/phase3-scanner/unit-report.json",
+    "sha256": "76111bc83691e6446da860da59abc2bd5dc2e823778d209e9adf66fb548176d0"
+  },
+  "httpCorpus": {
+    "passed": 11,
+    "failed": 0,
+    "renderedPages": 14,
+    "report": "quality/phase3-scanner/first-report.json",
+    "sha256": "5a1d3e353d998bbb14623d807394f57181b7b37ecf4c6a99e89d21c101921030"
+  },
+  "visualReview": {
+    "report": "quality/phase3-scanner/visual-review.json",
+    "sha256": "41d05ce0ebf8a45782300591538dfd7176c598e835b3c0488ad113dcfbde08af"
+  },
+  "lint": {
+    "status": "passed",
+    "changedTypescriptFiles": 11
+  },
+  "build": {
+    "status": "passed",
+    "exitCode": 0,
+    "command": "node .local-dev/phase3-4-build.cjs",
+    "mode": "Next.js 16.3.6 webpack; offline child cloud values; existing Google Fonts network dependency",
+    "typeScript": "passed",
+    "routeEntries": 170,
+    "log": ".local-dev/phase3-4-build-final.log",
+    "sha256": "e2b604087e49c12cd37ebe318eccc495af67f91762fb274eaa875c31491e6e3c",
+    "notices": [
+      "Existing custom Cache-Control warning",
+      "Existing middleware convention deprecation",
+      "Existing Buffer constructor deprecation"
+    ]
+  },
+  "diagnostics": [
+    {
+      "issue": "Redundant camera cleanup failed TypeScript narrowing.",
+      "resolution": "Removed redundant cleanup; final build passed."
+    },
+    {
+      "issue": "Pending canvas encoding could drop last capture on export/close.",
+      "resolution": "Synchronous pending-token guard and disabled controls; independent code review closed finding."
+    },
+    {
+      "issue": "Immediate URL revocation and unconfirmed saved download.",
+      "resolution": "Stable rendered result link and cleanup on reset/unmount implemented. Saved-browser-file gate remains open."
+    },
+    {
+      "issue": "Host out of memory during second build.",
+      "resolution": "Temporarily stopped only verified project preview processes; separate build passed and preview restored."
+    }
+  ],
+  "limits": [
+    "Physical camera not exercised.",
+    "Synthetic static image corpus does not establish arbitrary-file accuracy, large-image capacity or production readiness.",
+    "CSS filter preview is approximate; exported pixels have independent checks.",
+    "No Hindi-specific edits, paid deployment, cloud configuration or .env.local changes.",
+    "Await user-visible file-save confirmation before marking phase 100% complete."
+  ]
+}
