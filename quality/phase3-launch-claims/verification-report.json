@@ -1,0 +1,360 @@
+{
+  "phase": "3.6",
+  "checkedAt": "2026-10-09T01:40:11.995Z",
+  "status": "complete-for-scoped-local-checks",
+  "baseCommit": "6b29c95c28370e2af9d7c0821f1b770c1da313fe",
+  "scope": "English claim consistency plus public pricing rendering before auth initialization; no conversion engine, cloud configuration or deployment change.",
+  "unit": {
+    "passed": 64,
+    "total": 64,
+    "files": 16,
+    "allPassed": true,
+    "report": "unit-report.json"
+  },
+  "lint": {
+    "exitCode": 0,
+    "errors": 0,
+    "existingWarnings": 7,
+    "log": "lint.log",
+    "notes": "Unused imports/variable, split-workspace effect dependency and existing pricing navigation warning were not broadened into runtime refactors."
+  },
+  "build": {
+    "exitCode": 0,
+    "compiler": "Next.js 16.3.6 webpack",
+    "generated": 170,
+    "total": 170,
+    "typecheckPassed": true,
+    "buildId": "pCys67iQaSXfQ258-8M2w",
+    "log": "build.log",
+    "warnings": [
+      "Custom Cache-Control for Next static assets",
+      "Deprecated middleware convention",
+      "Legacy Buffer constructor"
+    ]
+  },
+  "http": {
+    "routes": {
+      "passed": 42,
+      "total": 42
+    },
+    "assertions": {
+      "passed": 308,
+      "total": 308
+    },
+    "parserSelfTests": {
+      "passed": 8,
+      "total": 8,
+      "allPassed": true,
+      "networkRequests": 0
+    },
+    "responses": {
+      "planned": 42,
+      "requested": 42,
+      "complete": 42,
+      "completeBodyHashes": 42,
+      "totalBytes": 3252503
+    },
+    "report": "http-report.json",
+    "allPassed": true
+  },
+  "browser": {
+    "method": "Codex in-app browser; final built application on loopback port 3002 and restored local preview on port 3001. DOM checks and inline screenshot inspection; screenshots not archived.",
+    "responsive": [
+      {
+        "route": "/",
+        "requestedViewport": {
+          "width": 390,
+          "height": 844
+        },
+        "clientWidth": 382,
+        "scrollWidth": 382,
+        "horizontalOverflow": false
+      },
+      {
+        "route": "/",
+        "requestedViewport": {
+          "width": 768,
+          "height": 844
+        },
+        "clientWidth": 760,
+        "scrollWidth": 760,
+        "horizontalOverflow": false
+      },
+      {
+        "route": "/",
+        "requestedViewport": {
+          "width": 1280,
+          "height": 844
+        },
+        "clientWidth": 1272,
+        "scrollWidth": 1272,
+        "horizontalOverflow": false
+      },
+      {
+        "route": "/pricing",
+        "requestedViewport": {
+          "width": 390,
+          "height": 844
+        },
+        "clientWidth": 382,
+        "scrollWidth": 382,
+        "horizontalOverflow": false
+      },
+      {
+        "route": "/pricing",
+        "requestedViewport": {
+          "width": 768,
+          "height": 844
+        },
+        "clientWidth": 760,
+        "scrollWidth": 760,
+        "horizontalOverflow": false
+      },
+      {
+        "route": "/pricing",
+        "requestedViewport": {
+          "width": 1280,
+          "height": 844
+        },
+        "clientWidth": 1272,
+        "scrollWidth": 1272,
+        "horizontalOverflow": false
+      },
+      {
+        "route": "/trust",
+        "requestedViewport": {
+          "width": 390,
+          "height": 844
+        },
+        "clientWidth": 382,
+        "scrollWidth": 382,
+        "horizontalOverflow": false
+      },
+      {
+        "route": "/trust",
+        "requestedViewport": {
+          "width": 768,
+          "height": 844
+        },
+        "clientWidth": 760,
+        "scrollWidth": 760,
+        "horizontalOverflow": false
+      },
+      {
+        "route": "/trust",
+        "requestedViewport": {
+          "width": 1280,
+          "height": 844
+        },
+        "clientWidth": 1272,
+        "scrollWidth": 1272,
+        "horizontalOverflow": false
+      }
+    ],
+    "interactions": [
+      "Final pricing shows Free AI allowance, Teams badge, Sales-dependent Business terms and qualified temporary-link expiry.",
+      "FAQ AI, Scanner, retention and encryption questions were clicked open; the visible answers contain the actual limits and qualifications.",
+      "Final FAQ AEO summary agrees with visible privacy answers.",
+      "Restored local status page shows Application responding and explicitly excludes conversion, storage, worker, cleanup and uptime verification.",
+      "Restored local pricing page displays the final content."
+    ],
+    "inspectedConsoleWarningsAndErrors": 0,
+    "limitations": "Desktop-browser viewport emulation, not physical phone/camera testing. No payment or authenticated dashboard transaction was executed."
+  },
+  "scopeChecks": {
+    "guardedChanges": [],
+    "hindiBundleUnchanged": true,
+    "hindiLegalAndDateBranchesUnchanged": 7,
+    "method": "Git diff inspection and independent read-only AST comparison against HEAD.",
+    "configurationAndSecretsEdited": false,
+    "paidResourcesCreated": false,
+    "conversionMeasurementsRepeated": false
+  },
+  "initialAttempt": {
+    "report": "http-initial-report.json",
+    "outcome": "24 routes passed before the 180-second overall HTTP-check budget expired. Budget was bounded at 600 seconds for the final 42-route run; timing evidence and safe literal-transfer parser prefilter added. Initial cause was not established. The sandbox-only attempt could not access loopback; authorized host execution was used."
+  },
+  "remainingLaunchGates": [
+    "Public HTTPS artifacts and private access",
+    "Representative load and tool-specific capacity",
+    "Deployed cleanup, retry and scheduler freshness",
+    "Actual provider cost under an approved budget",
+    "Five real consented customer results",
+    "Operator legal and payment activation decisions"
+  ],
+  "sourceHashes": [
+    {
+      "path": "scripts/phase3-launch-claims-check.mjs",
+      "sha256": "88c8543176a63749711d3bbeba7b2771a613793cf1c4591723758b3695c9a9bc"
+    },
+    {
+      "path": "src/app/(tools)/ai-pdf-summarizer/page.tsx",
+      "sha256": "e24510604e4298d380149b06889c30b5e3b4aecf84be8bcafde98b2ad0391375"
+    },
+    {
+      "path": "src/app/(tools)/compress-pdf/page.tsx",
+      "sha256": "b6a52f7bab32844fd19f68c7d01126c61462961f9462d5f4359507cabf8bb752"
+    },
+    {
+      "path": "src/app/(tools)/html-to-pdf/page.tsx",
+      "sha256": "fd16d69ebcdeb470f27f48f234e657bfd7e90cb3fe9e3039370ddeb0393dd8e9"
+    },
+    {
+      "path": "src/app/(tools)/jpg-to-pdf/page.tsx",
+      "sha256": "ec55c9bff637098f1bb6aeb88119bb3f27a6b7795ec9ef8e2224ce94c9564052"
+    },
+    {
+      "path": "src/app/(tools)/merge-pdf/page.tsx",
+      "sha256": "13ea836860a767da7f5258abab09e2e4e65fc315c5aab11998432d45a98993bd"
+    },
+    {
+      "path": "src/app/(tools)/pdf-scanner/page.tsx",
+      "sha256": "9f5636ea8bcddaed564fc2f19286788b53f725ba4e460ffeea2b2476160f0bbc"
+    },
+    {
+      "path": "src/app/(tools)/ppt-to-pdf/page.tsx",
+      "sha256": "b6824cc6ff9196e2829b85af59ef89b33e240b9a079f9ae5f4c49c47a422b88d"
+    },
+    {
+      "path": "src/app/(tools)/txt-to-pdf/page.tsx",
+      "sha256": "873a2eea040508344bc05f77af457e1746eff46f85425f50e75f9b7ceacd278c"
+    },
+    {
+      "path": "src/app/pricing/layout.tsx",
+      "sha256": "6a710dc022cc1f92a5bb8c80e81c3ee70f3b1edf994f0a5cb5013d234a5449ce"
+    },
+    {
+      "path": "src/app/pricing/page.test.ts",
+      "sha256": "909c9993960cc91e6bd381ffbd0e94c9a7e6f2834fba422143b81aef33a422e9"
+    },
+    {
+      "path": "src/app/pricing/page.tsx",
+      "sha256": "4c7f2113952e20bbecfb816a82528b9901d9005ddfc66c6d821edc2bf6e34989"
+    },
+    {
+      "path": "src/app/status/page.tsx",
+      "sha256": "3cdf323a0ec7ecebeb735bdb103325f28699232acf9d6527f7402ce9ab98a586"
+    },
+    {
+      "path": "src/app/trust/page.tsx",
+      "sha256": "d0e36920e8a4ba453ceea798ef2d1d40ae4b50d1d2c8a2cdb6d05df5a194ed4a"
+    },
+    {
+      "path": "src/components/common/privacy-badge.tsx",
+      "sha256": "96a80249f482188272b15f62d1bb3f927d1dbb4bf739447a5b9dca5b28609206"
+    },
+    {
+      "path": "src/components/dashboard/dashboard-pricing.tsx",
+      "sha256": "4d83c3ef42b153efdc708a87581dfbd9a68a7bf3febe8fe950bedbbfee6cc894"
+    },
+    {
+      "path": "src/components/layout/footer.tsx",
+      "sha256": "095aff21c51ad4842d90421d6461b109ee6377e7d85ff8630c031bbf53d98fcc"
+    },
+    {
+      "path": "src/components/marketing/about-page-content.tsx",
+      "sha256": "46f87f8247fdb7de3712b44209c3f1a07dff1f26f62739fcc30195ca604300bf"
+    },
+    {
+      "path": "src/components/marketing/hero-visual-v2-d1.tsx",
+      "sha256": "9db33a2b2a745f8c436ffe06e8a8afd90a93359baad5e68d2e8df7f91a86c4b8"
+    },
+    {
+      "path": "src/components/marketing/home/home-sections.tsx",
+      "sha256": "681928136dcfa03cdfd224e59cfc836bc47a0a4c0b2a6a095c06d7c138fc6dbf"
+    },
+    {
+      "path": "src/components/marketing/home/home-shared.ts",
+      "sha256": "3795ac4a96143a50c448cabdb9fd7ef098956972151b7e3990795ea2c78ba8f7"
+    },
+    {
+      "path": "src/components/marketing/pricing-page-content.tsx",
+      "sha256": "1792ffda683e1a17e62766974b1767fde473cede306676507158debabc709ff3"
+    },
+    {
+      "path": "src/components/marketing/privacy-gdpr-sections.tsx",
+      "sha256": "06100ec043f4128cea3b0d4c9f7e3dc20fc45472b1040efcc33a6a55875127a3"
+    },
+    {
+      "path": "src/components/marketing/status-page-content.tsx",
+      "sha256": "9014cb625ecf97218f5e03b1fa087d58aa384659e00fc68e7e1fa9d825c5d8e6"
+    },
+    {
+      "path": "src/components/seo/page-aeo-summary.tsx",
+      "sha256": "8af865cc3cffc27398ca3d5f04b1949f29109fe48d4609e96e520a7f04b9aa5d"
+    },
+    {
+      "path": "src/components/tools/delete-pdf/delete-pdf-workspace.tsx",
+      "sha256": "174c6a4be15a4ce6188f25b6f48fc0c5f4c7fd4add38950313f25b0614c497af"
+    },
+    {
+      "path": "src/components/tools/extract-pdf/extract-pdf-workspace.tsx",
+      "sha256": "1ab038c2004a290ac3775aa710fa681cbd3ea9f8d1c453c3b9f3db664fe04de7"
+    },
+    {
+      "path": "src/components/tools/merge-pdf/merge-pdf-workspace.tsx",
+      "sha256": "cfd6dba591612dee45a967623361b1684f70f2709a193aaa18dbb1701177c2fc"
+    },
+    {
+      "path": "src/components/tools/rotate-pdf/rotate-pdf-workspace.tsx",
+      "sha256": "0017fdeae433a0589f52cea10d34a1b21c173bd335d7bb046122f54e7e54b445"
+    },
+    {
+      "path": "src/components/tools/split-pdf/split-pdf-workspace.tsx",
+      "sha256": "a8ca2eaca649c0cc07b3764eb02d174ec55b57115c47298ead584449446d1b31"
+    },
+    {
+      "path": "src/config/faq-data.ts",
+      "sha256": "839a5c22305b9881fedfa4ef18008ec5c0a1ce5e069bd981818d467cb1520da2"
+    },
+    {
+      "path": "src/config/legal.ts",
+      "sha256": "8ddfac372b0a23873b9ba0f7e42d4e81d64085dbcea9712c4034befc26a2ddce"
+    },
+    {
+      "path": "src/config/tool-aeo.ts",
+      "sha256": "2a1a43384b0cdd0363bb7a97a80f5b461011f7235078bcbcac9729ae24615869"
+    },
+    {
+      "path": "src/config/tools.ts",
+      "sha256": "41197b6fd8c5642b0ce01e04a01e8803376bd15377768daa02b3b862d6df260d"
+    },
+    {
+      "path": "src/i18n/en.json",
+      "sha256": "2dbe473e0321e88e07082682933eb8694f3090c97c1aa4398b21cb902b06bd40"
+    },
+    {
+      "path": "src/i18n/legal/legal-content.test.ts",
+      "sha256": "7d7065cfd4cb9c806fad8925ef23e7d0443f00583a62356e144ff6b0c2151229"
+    },
+    {
+      "path": "src/i18n/legal/privacy-content.ts",
+      "sha256": "0f34ef66f3a150e27269ee6d1d2eeb19f08cd59c20e574c32f779a21c4b2e82c"
+    },
+    {
+      "path": "src/i18n/legal/refund-trust-sla-content.ts",
+      "sha256": "9085a2d86177234a8dedb646e17c0bb857d1eb8c4833c0930171b635ef5417f1"
+    },
+    {
+      "path": "src/i18n/legal/terms-content.ts",
+      "sha256": "a07c8981b3d9fafb1c76702a908a43df07daad8da1894de436871c46607d91fa"
+    },
+    {
+      "path": "src/lib/billing/billing-copy.ts",
+      "sha256": "215973ed389f98b9d5a9014d25b30ff6ed4ccfb46f630195f65dcd283358433e"
+    },
+    {
+      "path": "src/lib/seo/json-ld.tsx",
+      "sha256": "65c29da0eb85b9cec5b415d2ae6598832cc834840c0e40d4046726935ac05b09"
+    },
+    {
+      "path": "src/lib/seo/marketing-aeo.ts",
+      "sha256": "bac7708621a66c1e077645526366752e32eb43b6da12d4396903b77d5bc178ca"
+    }
+  ],
+  "limitations": [
+    "This is not an exhaustive audit of every dormant design variant or signed-in screen.",
+    "Retained benchmark results were checked for publication consistency; engines were not rerun.",
+    "Passing local checks do not establish universal accuracy, production capacity, security certification or search ranking."
+  ]
+}

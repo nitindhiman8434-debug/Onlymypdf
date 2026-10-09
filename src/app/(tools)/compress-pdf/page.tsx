@@ -32,8 +32,8 @@ const RELATED_TOOLS = [
 ];
 
 const FAQS = [
-  { q: 'How much can a PDF be compressed?', a: 'Compression results vary depending on the content. Files with images typically see 40-80% reduction, while text-heavy PDFs may see 10-30% reduction.' },
-  { q: 'Will compression reduce the quality of my PDF?', a: 'Basic compression preserves quality while reducing size. Strong compression may slightly reduce image quality but keeps text crisp.' },
+  { q: 'How much can a PDF be compressed?', a: 'Savings vary by document. Basic mode may return the original file when lossless optimization gives no meaningful saving. Check the actual before-and-after size shown in the result.' },
+  { q: 'Will compression reduce the quality of my PDF?', a: 'Basic mode uses lossless optimization. Strong mode rasterizes pages, which can reduce visual quality and flatten searchable text, links, forms, and bookmarks. Review the downloaded PDF before sharing.' },
   { q: 'Is there a file size limit?', a: planFileSizeFaqLine() },
   { q: 'Can I compress multiple files at once?', a: 'Currently, compression works on one file at a time. Use our Merge tool to combine files after compressing them individually.' },
 ];

@@ -9,16 +9,18 @@ const COPY = {
     title: "Privacy at a glance",
     summary:
       "OnlyMyPDF processes files only to provide the tool you request. The full policy below explains storage, external processors, and your choices.",
-    headers: ["Data", "Published limit"],
+    headers: ["Data", "Configured expiry / cleanup target"],
     rows: [
-      ["Free plan files", `Expire within ${FILE_LIMITS.fileRetentionHours} hours`],
-      ["Pro plan files", `Expire within ${PUBLIC_RETENTION.proFileHours} hours`],
+      ["Stored Free account files", `${FILE_LIMITS.fileRetentionHours}-hour expiry`],
+      ["Stored Pro account files", `${PUBLIC_RETENTION.proFileHours}-hour expiry`],
       ["Usage and error logs", `${PUBLIC_RETENTION.usageLogDays} days`],
       ["Consent records", `${PUBLIC_RETENTION.consentRecordYears} years`],
     ],
     facts: [
-      "Private object storage and signed access links",
-      "Hourly cleanup with later retries after a failed deletion",
+      "Supported private storage and time-limited access links",
+      "Temporary previews and conversion jobs can expire sooner; download promptly",
+      "Expiry restricts access; physical cleanup may be delayed and failed deletions are retried",
+      "Hourly cleanup scheduling and retention require production verification",
       "No sale of personal data or uploaded files",
       "Feature-specific processors are disclosed before the detailed policy ends",
     ],

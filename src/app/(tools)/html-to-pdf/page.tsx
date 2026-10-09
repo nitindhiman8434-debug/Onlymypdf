@@ -452,10 +452,10 @@ export default function HtmlToPdfPage() {
           {[
             { icon: Globe, title: "Chromium Rendering", desc: "Renders embedded CSS, images, fonts, SVG, and layouts" },
             { icon: Code2, title: "Modern CSS", desc: "Handles Flexbox, Grid, media queries, and print styles" },
-            { icon: Eye, title: "Live Preview", desc: "See your HTML rendered before converting — what you see is what you get" },
+            { icon: Eye, title: "Live Preview", desc: "Preview supported HTML before converting, then check the downloaded PDF for print-layout differences" },
             { icon: Settings2, title: "Customizable", desc: "Choose page size, orientation, and margins for your PDF output" },
-            { icon: FileText, title: "Any HTML", desc: "Works with complex pages, SVGs, charts, dashboards, and reports" },
-            { icon: CheckCircle2, title: "Limited Retention", desc: "Free-plan files are scheduled for deletion within 2 hours" },
+            { icon: FileText, title: "Uploaded HTML", desc: "Upload files with embedded resources. Scripts, external requests, and URL input are not supported." },
+            { icon: CheckCircle2, title: "Limited Retention", desc: "Stored account file access: 2 hours Free / 24 hours Pro. Temporary links may expire sooner; cleanup may take longer." },
           ].map((feat) => (
             <div
               key={feat.title}

@@ -198,8 +198,9 @@ See `docs/PRODUCTION_CHECKLIST.md` and `.env.example` for the full list.
 
 ## Retention & privacy
 
-- Guest uploads: auto-delete after **2 hours**
-- Pro uploads: auto-delete after **24 hours**
+- Stored account files: configured access expiry is **2 hours Free / 24 hours Pro**; expiry is not proof of physical deletion.
+- Temporary previews and Word conversion staging use separate, potentially shorter lifetimes. Download promptly; the one-time Word result can be removed after consumption.
+- Physical deletion depends on active cleanup scheduling and successful provider operations. Check failed-deletion retries and temporary local/cloud objects separately; production retention remains an open launch gate.
 - Usage logs: **90 days** (purged by cleanup cron)
 - Admin audit logs: **90 days** (`purgeOldAdminAuditLogs` in `/api/cron/cleanup`; see `ADMIN_AUDIT_RETENTION_DAYS` in `src/lib/admin/audit-retention.ts`)
 - Cookie consent stored in `consent_records` (migration 005)

@@ -6,7 +6,7 @@ import { JsonLd, pricingProProductJsonLd } from "@/lib/seo/json-ld";
 export const metadata: Metadata = buildPageMetadata({
   title: "Pricing — Free & Pro PDF Tools Plans (India)",
   description:
-    "Compare OnlyMyPDF Free vs Pro: merge, convert, compress, AI PDF summarizer & e-sign. Start free — upgrade for 100 daily uses, priority speed & 24h file retention.",
+    "Compare OnlyMyPDF Free and Pro plans for PDF tools, signing, and AI summaries. Review daily allowances, file limits, expiry rules, and checkout availability.",
   path: "/pricing",
   keywords: [
     "PDF tools pricing India",

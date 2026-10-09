@@ -42,10 +42,10 @@ export const privacyLegal: Record<"en" | "hi", LegalDocument> = {
       {
         title: "File processing and retention",
         bullets: [
-          `Free plan files expire within ${freeRetention} hours. Pro plan files expire within ${proRetention} hours. A tool may delete temporary data sooner.`,
+          `Stored account files have a configured expiry of ${freeRetention} hours on Free and ${proRetention} hours on Pro. Temporary previews and conversion jobs can expire sooner; download results promptly.`,
           `Usage, AI usage, and error logs are scheduled for deletion after ${PUBLIC_RETENTION.usageLogDays} days. Admin audit logs are scheduled for deletion after ${PUBLIC_RETENTION.adminAuditLogDays} days.`,
           `Consent records are scheduled for deletion after ${PUBLIC_RETENTION.consentRecordYears} years. Billing and tax records may remain longer when applicable law requires it.`,
-          "Cleanup runs every hour. A failed deletion is retried on a later run, so a technical failure can delay removal beyond the target window.",
+          "Expiry restricts download access; it is not an exact physical-deletion deadline. Cleanup is configured for hourly scheduling when deployed. Failed deletions are retried, and scheduling or service failures can delay removal. Production scheduling and retention still require deployment verification.",
           "Deleting your account removes account data, account-linked files, job history, API keys, usage logs, and consent records. Short-lived conversion staging that is not linked to the profile expires through the normal cleanup window. Billing records may be anonymized and retained when legally required.",
           "Conversion feedback remains until you withdraw it from Dashboard feedback or delete your account. Withdrawing feedback deletes the stored submission; publication consent never makes a submission public automatically.",
         ],
@@ -61,10 +61,10 @@ export const privacyLegal: Record<"en" | "hi", LegalDocument> = {
       {
         title: "Infrastructure and subprocessors",
         bullets: [
-          "Supabase: authentication, database, and private object storage for account and tool data.",
-          "Cloudflare R2: private temporary object storage for supported conversion jobs.",
-          "Upstash: rate limits and conversion job coordination.",
-          "Railway: dedicated conversion worker compute.",
+          "Supabase: supported cloud authentication, database, private object storage, queues, and coordination for account and tool data.",
+          "Cloudflare R2: optional private temporary object storage for supported conversion jobs.",
+          "Upstash: a legacy optional coordination integration; it is not required by the default Supabase queue configuration.",
+          "Railway: a previously used conversion-worker host. Current worker hosting must be confirmed before public launch. The local preview processes and stores test files on the local computer.",
           "Feature-specific processors: Google Gemini for AI summaries; Razorpay for live payments; Resend for email; ConvertAPI for supported conversions; Sentry for error monitoring. These processors receive data only when the related feature is enabled and used.",
         ],
       },
@@ -88,7 +88,7 @@ export const privacyLegal: Record<"en" | "hi", LegalDocument> = {
       {
         title: "Security and children",
         paragraphs: [
-          "OnlyMyPDF uses private storage, signed access links, rate limits, access controls, and TLS. No online service can guarantee absolute security.",
+          "The application includes private-storage integrations, signed access links, rate limits, and access controls. Public deployment requires HTTPS/TLS; the loopback local preview uses HTTP. Host/storage encryption and deployed security settings require separate verification. No online service can guarantee absolute security.",
           "OnlyMyPDF is not directed to children who cannot legally consent to data processing in their country. A parent or guardian should contact us if a child submitted personal data without valid permission.",
         ],
       },

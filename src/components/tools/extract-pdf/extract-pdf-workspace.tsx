@@ -648,7 +648,7 @@ export function ExtractPdfWorkspace({
         </div>
 
         <div className="border-t border-gray-200 bg-white px-4 py-2.5 text-center text-xs text-pd-muted sm:px-5">
-          Selected pages will be extracted into a new PDF · Files auto-delete after 2 hours
+          Selected pages will be extracted into a new PDF · File access expires by plan; links may expire sooner and cleanup may take longer
         </div>
       </div>
     </>

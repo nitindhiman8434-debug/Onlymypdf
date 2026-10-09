@@ -97,10 +97,10 @@ export const trustLegal: Record<"en" | "hi", LegalDocument> = {
     lastUpdated: LEGAL_POLICY_DATE.en,
     sections: [
       {
-        title: "Verified technical controls",
+        title: "Implemented technical controls",
         bullets: [
-          "Transport Layer Security (TLS) protects browser and service traffic in transit.",
-          "Supported files use private Supabase or Cloudflare R2 object storage. Temporary upload grants expire after 15 minutes, and download links are time-limited.",
+          "Public deployment requires HTTPS/TLS for traffic in transit. The loopback local preview uses HTTP; its tests do not establish production transport security.",
+          "The application supports private Supabase or Cloudflare R2 storage. Application upload grants expire after 15 minutes, and download links are time-limited. Bucket privacy and host/storage encryption must be checked for the actual deployment.",
           "Rate limits, origin checks, signed webhooks, multi-factor authentication, step-up checks, and admin audit records protect sensitive actions.",
           "Error monitoring removes configured sensitive headers and common personal fields before an event is sent when Sentry is enabled.",
         ],
@@ -108,17 +108,24 @@ export const trustLegal: Record<"en" | "hi", LegalDocument> = {
       {
         title: "Retention controls",
         bullets: [
-          `Free files expire within ${FILE_LIMITS.fileRetentionHours} hours and Pro files within ${PUBLIC_RETENTION.proFileHours} hours.`,
-          "The cleanup task runs hourly and retries expired objects that remain after a failed attempt.",
+          `Stored account files have a configured expiry of ${FILE_LIMITS.fileRetentionHours} hours on Free and ${PUBLIC_RETENTION.proFileHours} hours on Pro. Temporary previews and conversion jobs can expire sooner; download results promptly.`,
+          "Expiry restricts access; physical deletion happens during cleanup. Cleanup is configured for hourly scheduling when deployed and retries failed deletions. Scheduling or service failures can delay removal beyond expiry.",
           "Account deletion requires recent identity verification and removes account-linked files and product history. Short-lived staging expires through normal cleanup, and legally required billing records remain in anonymized form.",
         ],
       },
       {
         title: "Provider transparency",
         bullets: [
-          "Supabase, Cloudflare R2, Upstash, and Railway support core account, storage, queue, and worker functions.",
+          "Supabase is the default cloud queue and coordination integration, alongside supported authentication, database and storage. Cloudflare R2 is an optional storage integration. Upstash remains a legacy option and Railway is a previously used worker host. Listing a supported provider does not mean it is active in the local preview.",
           "Google Gemini, Razorpay, Resend, ConvertAPI, and Sentry receive data only when their feature is enabled and used.",
           "The Privacy policy explains the data sent to each provider and the applicable retention limits.",
+        ],
+      },
+      {
+        title: "Release verification status",
+        paragraphs: [
+          "Benchmarks describe controlled local tests, their dates and limitations. They do not establish accuracy for every document, public availability, production speed or capacity.",
+          "Public HTTPS conversions, representative load, deployed cleanup and provider cost measurements remain pending. Real-customer feedback is also a separate launch gate. Implemented controls and passing local tests do not by themselves complete these checks.",
         ],
       },
       {
@@ -214,7 +221,7 @@ export const slaLegal: Record<"en" | "hi", LegalDocument> = {
       {
         title: "Status evidence",
         bullets: [
-          "The Status page checks the application health endpoint and shows when required services are degraded or unreachable.",
+          "The Status page checks whether the application responds and whether its public configuration check reports a problem. It does not independently verify conversions, storage, workers or cleanup.",
           "Incident history and update subscriptions are available only when an external public status provider is configured.",
           "A green application check is a current snapshot, not proof of historical uptime.",
         ],
@@ -223,7 +230,7 @@ export const slaLegal: Record<"en" | "hi", LegalDocument> = {
         title: "Maintenance and retention jobs",
         bullets: [
           "Admins can enable maintenance mode for tool routes.",
-          "The cleanup job is scheduled hourly. Conversion worker health is checked separately by the watchdog.",
+          "The deployment configuration supports hourly cleanup and separate worker/watchdog checks. An active scheduler and successful cleanup must be verified in the deployed environment; local checks do not prove those services are running.",
         ],
       },
       {

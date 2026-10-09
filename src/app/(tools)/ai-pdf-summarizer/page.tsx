@@ -207,7 +207,7 @@ export default function AIPDFSummarizerPage() {
     return (
       <ToolPageShell
         title="AI PDF Summarizer"
-        description="Upload a PDF and get a clear summary, key points, and action items."
+        description="AI summaries use up to the first 100,000 extracted characters. Later text in long documents may be omitted; review the summary against the source."
         relatedTools={mapRelatedTools(RELATED_TOOLS)}
         compactWorkspace
       >
@@ -217,7 +217,7 @@ export default function AIPDFSummarizerPage() {
           </div>
           <h2 className="mt-6 text-2xl font-bold text-pd-foreground">Login Required</h2>
           <p className="mt-3 text-pd-muted">
-            AI PDF Summarizer requires a free account. Sign up to get 1 free AI summary per day.
+            Sign in to use AI PDF Summarizer. Free accounts get 1 summary per day. Pro has no separate AI daily cap; rate limits and service availability apply.
           </p>
           <div className="mt-6 flex gap-3 justify-center">
             <a href="/login" className="rounded-xl bg-pd-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90">
@@ -235,7 +235,7 @@ export default function AIPDFSummarizerPage() {
   return (
     <ToolPageShell
       title="AI PDF Summarizer"
-      description="Upload a PDF and get a clear summary, key points, and action items. Free users: 1 AI summary/day | Pro users: Unlimited"
+      description="AI uses up to the first 100,000 extracted characters; later text may be omitted, so review the summary. Signed-in Free: 1/day. Pro: no separate AI daily cap; rate and service limits apply."
       relatedTools={mapRelatedTools(RELATED_TOOLS)}
       compactWorkspace
     >

@@ -578,7 +578,7 @@ export function RotatePdfWorkspace({ file, onChangeFile, onReset }: RotatePdfWor
           {rotatedCount > 0
             ? `${rotatedCount} page${rotatedCount !== 1 ? "s" : ""} rotated · `
             : ""}
-          Files auto-delete after 2 hours
+          File access expires by plan; links may expire sooner and cleanup may take longer
         </div>
       </div>
     </>

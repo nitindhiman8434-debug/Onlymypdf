@@ -15,7 +15,7 @@ export default function PricingPage() {
     }
   }, [user, loading, router]);
 
-  if (loading || user) {
+  if (!loading && user) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center bg-pd-background">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-pd-brand border-t-transparent" />

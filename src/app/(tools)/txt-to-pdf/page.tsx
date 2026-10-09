@@ -444,11 +444,11 @@ export default function TxtToPdfPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
             { icon: Type, title: "Font Options", desc: "Choose from Helvetica, Courier, or Times fonts with adjustable sizes from 9pt to 16pt" },
-            { icon: Eye, title: "Live Preview", desc: "See your text rendered before converting — the font and size you pick is what you get" },
+            { icon: Eye, title: "Live Preview", desc: "Preview your font and size choices, then review the downloaded PDF for character substitutions" },
             { icon: Settings2, title: "Customizable Layout", desc: "Page size (A4, Letter), orientation, margins — full control over your PDF output" },
             { icon: FileText, title: "Any Text Format", desc: "TXT, LOG, CSV, MD, JSON, XML, YAML, INI — converts any text-based file to PDF" },
-            { icon: Layers, title: "Word Wrapping", desc: "Long lines are intelligently wrapped to fit the page — no content is lost or cut off" },
-            { icon: CheckCircle2, title: "Privacy First", desc: "Files processed securely and auto-deleted after 2 hours — your data stays private" },
+            { icon: Layers, title: "Word Wrapping", desc: "Long lines wrap to fit the page. Unsupported characters may become '?'; review the downloaded text." },
+            { icon: CheckCircle2, title: "Limited Retention", desc: "Stored account file access: 2 hours Free / 24 hours Pro. Temporary links may expire sooner; cleanup may take longer." },
           ].map((feat) => (
             <div
               key={feat.title}

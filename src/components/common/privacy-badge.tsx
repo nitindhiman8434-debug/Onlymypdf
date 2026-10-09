@@ -14,7 +14,7 @@ export function PrivacyBadge({ className }: PrivacyBadgeProps) {
       )}
     >
       <Lock className="h-3 w-3" aria-hidden="true" />
-      <span>Files auto-delete after 2 hours</span>
+      <span>File expiry and cleanup: see Privacy</span>
     </div>
   );
 }

@@ -92,7 +92,7 @@ export function pricingProProductJsonLd() {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${APP_NAME} Pro`,
-    description: "Pro PDF tools plan with 100 daily uses, Sign PDF, AI summarizer, and priority processing.",
+    description: "Pro PDF tools plan with 100 daily uses, Sign PDF, AI summarizer, and no ads. Paid checkout is subject to availability.",
     brand: { "@type": "Brand", name: APP_NAME },
     offers: [
       {
@@ -100,7 +100,6 @@ export function pricingProProductJsonLd() {
         name: "Pro Monthly",
         price: String(PRO_PRICING.monthlyInr),
         priceCurrency: "INR",
-        availability: "https://schema.org/InStock",
         url: `${APP_URL}/pricing`,
       },
       {
@@ -108,7 +107,6 @@ export function pricingProProductJsonLd() {
         name: "Pro Yearly",
         price: String(PRO_PRICING.yearlyInr),
         priceCurrency: "INR",
-        availability: "https://schema.org/InStock",
         url: `${APP_URL}/pricing`,
       },
     ],

@@ -58,7 +58,7 @@ export function StatusPageContent({ externalStatusUrl }: { externalStatusUrl: st
         ) : (
           <p className="mt-3 flex items-center gap-2 text-sm font-semibold text-emerald-700">
             <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
-            All systems operational
+            Application responding
           </p>
         )}
         {health?.timestamp && (
@@ -67,6 +67,10 @@ export function StatusPageContent({ externalStatusUrl }: { externalStatusUrl: st
           </p>
         )}
         </div>
+        <p className="mt-3 text-sm text-pd-muted">
+          This public check covers the application response and basic configuration.
+          It does not verify conversion results, storage, worker health, cleanup or historical uptime.
+        </p>
       </div>
 
       {!externalStatusUrl && (

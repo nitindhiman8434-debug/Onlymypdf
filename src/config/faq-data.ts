@@ -23,7 +23,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "Is OnlyMyPDF free to use?",
         answer:
-          `Yes! OnlyMyPDF offers a generous free tier with 5 tool uses per day and ${FILE_SIZE_MARKETING.freeLabel.toLowerCase()}. For power users who need more, our Pro plan offers 100 daily uses, AI tools, priority processing, and more.`,
+          `Free includes 5 tool uses per day and ${FILE_SIZE_MARKETING.freeLabel.toLowerCase()}. Pro is configured for 100 daily uses. Tool-specific limits and feature availability also apply; paid access depends on live checkout being available.`,
       },
       {
         question: "Do I need to create an account?",
@@ -43,7 +43,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "How do I merge PDF files?",
         answer:
-          "Navigate to the Merge PDF tool, upload multiple PDF files (drag and drop or click to browse), arrange them in your desired order, and click 'Merge'. Your combined PDF will be ready to download within seconds.",
+          "Open Merge PDF, upload PDF files, arrange them in the desired order, and click Merge. Download when processing finishes and review the result. Processing time depends on your files and service load.",
       },
       {
         question: "What is the maximum file size I can upload?",
@@ -52,17 +52,17 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "How accurate is PDF to Word conversion?",
         answer:
-          "Our PDF to Word conversion preserves most formatting, text, images, and layout. However, complex documents with intricate formatting, custom fonts, or unusual layouts may not convert perfectly.",
+          "Results depend on the source. The Benchmarks page reports controlled tests for selectable text, English OCR and ruled tables, with their limitations. Complex layouts, fonts and scans can change; review every converted document.",
       },
       {
         question: "What does the AI PDF Summarizer do?",
         answer:
-          "The AI PDF Summarizer reads extracted PDF text and generates a concise summary with key points, action items, and important dates. Signed-in Free users get 1 summary per day; Pro users get unlimited summaries, subject to service availability.",
+          "The AI PDF Summarizer summarizes up to 100,000 characters of extracted text. Long documents may be truncated, and the result can omit or misstate information. Signed-in Free users get 1 summary per day; Pro has no separate daily summary allowance limit, subject to rate limits and service availability. Review the summary against your source.",
       },
       {
         question: "How does the PDF Scanner work?",
         answer:
-          "The PDF Scanner uses your device's camera to capture documents and converts them into clean, high-quality PDF files with edge detection and perspective correction.",
+          "Capture or upload up to 10 JPG, PNG or WebP images and choose Original, Black & White or Enhanced. Each image is placed on an A4 portrait PDF page. Crop or straighten images before uploading; automatic edge detection, perspective correction and OCR are not included. Review the downloaded pages.",
       },
     ],
   },
@@ -72,22 +72,22 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "Are my files safe?",
         answer:
-          "Files are transmitted over HTTPS/TLS. Temporary storage follows the published retention window, and optional third-party processing is disclosed before use.",
+          "Public deployment requires HTTPS/TLS and private storage configuration. The Privacy and Trust pages explain supported controls, optional processors and remaining deployment checks. No service can guarantee absolute security.",
       },
       {
         question: "How long are files stored?",
         answer:
-          "Files are scheduled for deletion within 2 hours for Free users and 24 hours for Pro users. You can also manually delete files before the retention period expires.",
+          "Stored account files have a configured expiry of 2 hours on Free and 24 hours on Pro. Temporary previews and conversion jobs can expire sooner. Expiry restricts access; physical deletion happens during cleanup and can be delayed by failures. You can delete account files from Dashboard.",
       },
       {
         question: "Is my data encrypted?",
         answer:
-          "Yes. All data in transit is protected with TLS/SSL encryption. Files stored on our servers use encryption at rest.",
+          "HTTPS/TLS protects transfers when using an HTTPS deployment; the local preview uses loopback HTTP. Encryption of stored files depends on the configured storage and host. Current local checks do not establish encryption at rest for every temporary file.",
       },
       {
         question: "Do you share my files with anyone?",
         answer:
-          "We never sell your files. Optional conversions and AI summarization use named sub-processors listed in our Privacy Policy. We do not use your documents to train AI models.",
+          "We do not sell uploaded files. Cloud storage, optional conversion services and AI summarization can send data to the processors described in the Privacy Policy when enabled. Review the applicable provider's data-use terms before submitting sensitive content.",
       },
     ],
   },
@@ -101,7 +101,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "How do I upgrade to Pro?",
         answer:
-          `Upgrade from the Pricing page or Dashboard → Pricing. ${BILLING_COPY.checkoutModel} Pro features activate immediately after successful checkout.`,
+          `When live checkout is available, upgrade from Pricing or Dashboard → Pricing. ${BILLING_COPY.checkoutModel} Access is updated after payment is verified.`,
       },
       {
         question: "What payment methods are accepted?",
@@ -128,7 +128,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "What browsers are supported?",
         answer:
-          "OnlyMyPDF works on Chrome, Firefox, Edge, Safari, and Opera. We recommend using the latest version for the best experience.",
+          "Use a current browser such as Chrome, Firefox, Edge or Safari. Camera, file-picker and download behavior depend on the browser and device; review compatibility for the tool you use.",
       },
       {
         question: "Is there a mobile app?",
@@ -138,7 +138,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
       {
         question: "Can I use OnlyMyPDF offline?",
         answer:
-          "No, OnlyMyPDF requires an internet connection as all file processing happens on our secure cloud servers.",
+          "The public website requires a connection to its processing services. The development preview can run supported conversions locally when its dependencies are installed; cloud features such as AI summaries require their configured services.",
       },
     ],
   },

@@ -659,7 +659,7 @@ export function DeletePdfWorkspace({
         </div>
 
         <div className="border-t border-gray-200 bg-white px-4 py-2.5 text-center text-xs text-pd-muted sm:px-5">
-          Deleted pages are removed on export · Files auto-delete after 2 hours
+          Deleted pages are removed on export · File access expires by plan; links may expire sooner and cleanup may take longer
         </div>
       </div>
     </>

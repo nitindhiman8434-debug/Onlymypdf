@@ -35,10 +35,10 @@ export function AboutPageContent() {
         <h2 className="text-center text-2xl font-bold text-pd-foreground">What OnlyMyPDF publishes</h2>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { icon: Zap, title: "Measured limits", desc: "Each plan publishes its file-size, daily-use, and retention limits." },
-            { icon: Shield, title: "File retention", desc: `Free files expire within ${FILE_LIMITS.fileRetentionHours} hours. Pro files expire within 24 hours.` },
+            { icon: Zap, title: "Published plan limits", desc: "Each plan publishes file-size and daily-use allowances. Tool-specific limits also apply." },
+            { icon: Shield, title: "File expiry", desc: `Stored account files are assigned a ${FILE_LIMITS.fileRetentionHours}-hour Free or 24-hour Pro expiry. Temporary links may expire sooner; cleanup may be delayed by retries.` },
             { icon: FileText, title: `${TOOLS.length} document tools`, desc: "Organize, convert, optimize, edit, sign, secure, scan, and summarize documents." },
-            { icon: Users, title: "Free to Start", desc: "5 free uses per day with no signup required." },
+            { icon: Users, title: "Free to Start", desc: "5 core-tool uses per day. Most core tools need no signup; AI requires sign-in." },
           ].map((item) => (
             <div
               key={item.title}

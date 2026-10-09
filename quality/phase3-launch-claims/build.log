@@ -1,0 +1,213 @@
+▲ Next.js 16.3.6 (webpack)
+- Environments: .env.local
+✓ Running next.config.ts took 584ms
+Warning: Custom Cache-Control headers detected for the following routes:
+  - /_next/static/:path*
+
+Setting a custom Cache-Control header can break Next.js development behavior.
+- Experiments (use with caution):
+  · cpus: 1
+  · optimizePackageImports
+  · proxyClientMaxBodySize: "220mb"
+  ✓ webpackMemoryOptimizations
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
+
+  To migrate automatically, run:
+  npx @next/codemod@canary middleware-to-proxy .
+
+  Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 54s
+  Running TypeScript ...
+  Finished TypeScript in 13.9s ...
+  Collecting page data using 1 worker ...
+(node:26908) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  Generating static pages using 1 worker (0/170) ...
+  Generating static pages using 1 worker (42/170)
+  Generating static pages using 1 worker (84/170)
+  Generating static pages using 1 worker (127/170)
+✓ Generating static pages using 1 worker (170/170) in 69s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)                                              Revalidate  Expire
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /about
+├ ƒ /account-suspended
+├ ƒ /add-watermark
+├ ƒ /admin
+├ ƒ /admin/analytics
+├ ƒ /admin/audit
+├ ƒ /admin/cleanup
+├ ƒ /admin/coupons
+├ ƒ /admin/errors
+├ ƒ /admin/jobs
+├ ƒ /admin/organizations
+├ ƒ /admin/payments
+├ ƒ /admin/settings
+├ ƒ /admin/users
+├ ƒ /ai-pdf-summarizer
+├ ○ /ai.txt                                                      1d      1y
+├ ƒ /all-tools
+├ ƒ /api/admin/analytics
+├ ƒ /api/admin/audit
+├ ƒ /api/admin/cleanup
+├ ƒ /api/admin/coupons
+├ ƒ /api/admin/dashboard
+├ ƒ /api/admin/jobs
+├ ƒ /api/admin/organizations
+├ ƒ /api/admin/payments
+├ ƒ /api/admin/settings
+├ ƒ /api/admin/users
+├ ƒ /api/ai/summarize
+├ ƒ /api/ai/summarize/export
+├ ƒ /api/auth/forgot-password/send-code
+├ ƒ /api/auth/forgot-password/verify-code
+├ ƒ /api/auth/login
+├ ƒ /api/auth/logout
+├ ƒ /api/auth/me
+├ ƒ /api/auth/mfa/enroll
+├ ƒ /api/auth/mfa/status
+├ ƒ /api/auth/mfa/verify
+├ ƒ /api/auth/oauth
+├ ƒ /api/auth/reauth/methods
+├ ƒ /api/auth/reauth/oauth
+├ ƒ /api/auth/reauth/status
+├ ƒ /api/auth/recovery-session
+├ ƒ /api/auth/reset-password
+├ ƒ /api/auth/session
+├ ƒ /api/auth/signup
+├ ƒ /api/auth/sso
+├ ƒ /api/contact
+├ ƒ /api/cron/cleanup
+├ ƒ /api/cron/conversion-worker
+├ ƒ /api/csp-report
+├ ƒ /api/enterprise/api-keys
+├ ƒ /api/enterprise/organizations
+├ ƒ /api/enterprise/organizations/billing/activate
+├ ƒ /api/enterprise/organizations/billing/sales-request
+├ ƒ /api/enterprise/organizations/detail
+├ ƒ /api/enterprise/organizations/invite
+├ ƒ /api/enterprise/organizations/members
+├ ƒ /api/feedback
+├ ƒ /api/files/[id]
+├ ƒ /api/files/upload
+├ ƒ /api/health
+├ ƒ /api/payments/create-order
+├ ƒ /api/payments/create-subscription
+├ ƒ /api/payments/mock-complete
+├ ƒ /api/payments/verify
+├ ƒ /api/payments/verify-subscription
+├ ƒ /api/payments/webhook
+├ ƒ /api/privacy/consent
+├ ƒ /api/tools/add-watermark
+├ ƒ /api/tools/compare-pdf
+├ ƒ /api/tools/compose-pdf
+├ ƒ /api/tools/compress-pdf
+├ ƒ /api/tools/crop-pdf
+├ ƒ /api/tools/delete-pdf
+├ ƒ /api/tools/edit-pdf
+├ ƒ /api/tools/excel-to-pdf
+├ ƒ /api/tools/extract-pdf
+├ ƒ /api/tools/html-to-pdf
+├ ƒ /api/tools/jpg-to-pdf
+├ ƒ /api/tools/merge-pdf
+├ ƒ /api/tools/ocr-pdf
+├ ƒ /api/tools/pdf-a
+├ ƒ /api/tools/pdf-meta
+├ ƒ /api/tools/pdf-previews
+├ ƒ /api/tools/pdf-scanner
+├ ƒ /api/tools/pdf-session
+├ ƒ /api/tools/pdf-text-blocks
+├ ƒ /api/tools/pdf-thumb
+├ ƒ /api/tools/pdf-to-excel
+├ ƒ /api/tools/pdf-to-ppt
+├ ƒ /api/tools/pdf-to-word
+├ ƒ /api/tools/pdf-to-word/download
+├ ƒ /api/tools/pdf-to-word/status
+├ ƒ /api/tools/ppt-to-pdf
+├ ƒ /api/tools/protect-pdf
+├ ƒ /api/tools/redact-pdf
+├ ƒ /api/tools/repair-pdf
+├ ƒ /api/tools/rotate-pdf
+├ ƒ /api/tools/sign-pdf
+├ ƒ /api/tools/split-pdf
+├ ƒ /api/tools/txt-to-pdf
+├ ƒ /api/tools/unlock-pdf
+├ ƒ /api/tools/word-to-pdf
+├ ƒ /api/uploads/pdf-to-word
+├ ƒ /api/user/account
+├ ƒ /api/user/billing
+├ ƒ /api/user/files
+├ ƒ /api/user/invoices
+├ ƒ /api/user/invoices/[id]
+├ ƒ /api/user/local-files/[id]
+├ ○ /apple-icon
+├ ƒ /auth/callback
+├ ƒ /benchmarks
+├ ƒ /compare-pdf
+├ ƒ /compress-pdf
+├ ƒ /contact
+├ ƒ /convert
+├ ƒ /cookies
+├ ƒ /crop-pdf
+├ ƒ /dashboard
+├ ƒ /dashboard/enterprise
+├ ƒ /dashboard/feedback
+├ ƒ /dashboard/files
+├ ƒ /dashboard/pricing
+├ ƒ /dashboard/security
+├ ƒ /dashboard/settings
+├ ƒ /delete-pdf
+├ ƒ /edit-pdf
+├ ƒ /excel-to-pdf
+├ ƒ /extract-pdf
+├ ƒ /faq
+├ ƒ /forgot-password
+├ ƒ /guides/scanned-pdf-to-word
+├ ƒ /html-to-pdf
+├ ○ /icon
+├ ○ /icon.png
+├ ƒ /jpg-to-pdf
+├ ○ /llms.txt                                                    1d      1y
+├ ƒ /login
+├ ƒ /maintenance
+├ ○ /manifest.webmanifest
+├ ƒ /merge-pdf
+├ ƒ /ocr-pdf
+├ ○ /opengraph-image
+├ ƒ /pdf-a
+├ ƒ /pdf-scanner
+├ ƒ /pdf-to-excel
+├ ƒ /pdf-to-ppt
+├ ƒ /pdf-to-word
+├ ƒ /ppt-to-pdf
+├ ƒ /pricing
+├ ƒ /privacy
+├ ƒ /protect-pdf
+├ ƒ /redact-pdf
+├ ƒ /refund
+├ ƒ /repair-pdf
+├ ƒ /reset-password
+├ ○ /robots.txt
+├ ƒ /rotate-pdf
+├ ƒ /sign-pdf
+├ ƒ /signup
+├ ○ /sitemap.xml
+├ ƒ /sla
+├ ƒ /split-pdf
+├ ƒ /status
+├ ƒ /terms
+├ ƒ /trust
+├ ƒ /txt-to-pdf
+├ ƒ /unlock-pdf
+└ ƒ /word-to-pdf
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

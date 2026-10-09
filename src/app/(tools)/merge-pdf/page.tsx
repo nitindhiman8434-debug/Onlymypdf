@@ -16,9 +16,9 @@ const RELATED_TOOLS = [
 
 const FAQS = [
   { q: 'Is there a limit to how many PDFs I can merge?', a: 'You can merge up to 20 PDF files at once (50 for Pro). File size limits follow your plan — see Pricing for current limits.' },
-  { q: 'Will the merged PDF keep the original formatting?', a: 'Yes, merging preserves all formatting, images, links, and bookmarks from the original documents.' },
+  { q: 'Will the merged PDF keep the original formatting?', a: 'Pages are copied without raster recompression. Document-level bookmarks are not rebuilt, and links may need review. Check navigation and page order in the merged PDF before sharing.' },
   { q: 'Can I reorder the files before merging?', a: 'Yes! Drag files in the grid or use the + buttons to add documents in the order you want.' },
-  { q: 'Is my data secure?', a: 'Uploads use HTTPS/TLS and follow the published retention window: up to 2 hours on Free and 24 hours on Pro.' },
+  { q: 'Is my data secure?', a: 'Uploads use HTTPS/TLS. Stored account file access expires after 2 hours on Free or 24 hours on Pro. Temporary links may expire sooner; physical cleanup may take longer.' },
 ];
 
 function isPdfFile(file: File) {

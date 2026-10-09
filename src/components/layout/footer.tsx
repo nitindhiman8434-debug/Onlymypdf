@@ -88,7 +88,7 @@ export function Footer() {
             <div className="mt-4 inline-flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50/80 px-3 py-2">
               <Shield className="h-4 w-4 text-emerald-600" />
               <span className="text-[11px] font-medium text-emerald-700">
-                HTTPS/TLS transfer · 2h Free retention
+                Stored Free files: 2h expiry; temporary links may expire sooner
               </span>
             </div>
 
@@ -198,11 +198,11 @@ export function Footer() {
                 </div>
                 <div>
                   <p className="text-lg font-extrabold text-violet-800">{FILE_LIMITS.maxFreeFileSizeMB} MB</p>
-                  <p className="text-[10px] text-pd-muted">Free file limit</p>
+                  <p className="text-[10px] text-pd-muted">Free plan file cap</p>
                 </div>
                 <div>
                   <p className="text-lg font-extrabold text-rose-800">{FILE_LIMITS.fileRetentionHours}h</p>
-                  <p className="text-[10px] text-pd-muted">Free retention</p>
+                  <p className="text-[10px] text-pd-muted">Stored Free file expiry</p>
                 </div>
               </div>
             </div>

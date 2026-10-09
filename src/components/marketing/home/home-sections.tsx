@@ -330,7 +330,7 @@ export function SecuritySection({ variant = "dark" }: { variant?: "dark" | "card
 const PRICING_LEFT_BENEFITS = [
   {
     icon: Upload,
-    title: "Start free in seconds",
+    title: "Start with a free tool",
     desc: "No signup · Works in your browser",
     accent: "text-pd-brand",
     bg: "bg-pd-brand-muted",
@@ -338,14 +338,14 @@ const PRICING_LEFT_BENEFITS = [
   {
     icon: HardDrive,
     title: "Clear file size limits",
-    desc: `${FILE_SIZE_MARKETING.freeLabel} free · ${FILE_SIZE_MARKETING.proLabel} on Pro`,
+    desc: `${FILE_SIZE_MARKETING.freeLabel} free · ${FILE_SIZE_MARKETING.proLabel} on Pro; tool-specific limits apply`,
     accent: "text-amber-600",
     bg: "bg-amber-50",
   },
   {
     icon: Shield,
-    title: "Secure by default",
-    desc: "HTTPS transfer · 2h Free retention setting",
+    title: "Published expiry rules",
+    desc: "Stored Free files: 2h expiry; temporary links may expire sooner",
     accent: "text-pd-success",
     bg: "bg-emerald-50",
   },
@@ -376,13 +376,13 @@ const PRICING_RIGHT_BENEFITS = [
   {
     icon: Users,
     title: "Built for power users",
-    desc: "Batch jobs · Priority speed",
+    desc: "Sign PDF · AI summaries · No ads",
     accent: "text-indigo-600",
     bg: "bg-indigo-50",
   },
   {
     icon: Crown,
-    title: "Most popular upgrade",
+    title: "Higher daily allowance",
     desc: "Unlock every PDF tool",
     accent: "text-pd-brand",
     bg: "bg-pd-brand-muted",

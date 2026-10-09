@@ -7,19 +7,19 @@ import { ALL_PUBLIC_TOOL_SLUGS } from "@/lib/seo/routes";
 
 export const SITE_AEO = {
   shortAnswer:
-    "OnlyMyPDF is a free online PDF toolkit to merge, split, compress, convert, edit, sign, protect, unlock, scan, and summarize PDFs in your browser. Free users get 5 tool uses per day; files are auto-deleted within 2 hours (Free) or 24 hours (Pro).",
+    "OnlyMyPDF is an online PDF toolkit to merge, split, compress, convert, edit, sign, protect, unlock, scan, and summarize PDFs in your browser. Free users get 5 core-tool uses per day. Stored account files are assigned a 2-hour Free or 24-hour Pro expiry; temporary links can expire sooner, and cleanup may be delayed by retries.",
   definition:
-    "OnlyMyPDF (onlymypdf) is a web-based PDF application that runs tools server-side with encrypted uploads and automatic file deletion — no desktop install required.",
+    "OnlyMyPDF (onlymypdf) is a web-based PDF application that runs tools server-side, with scheduled file cleanup and no desktop install required. Public service requires HTTPS; local previews do not verify deployed TLS.",
   keyFacts: [
-    `Free tier: 5 tool uses per day; Free uploads ${FILE_SIZE_MARKETING.freeLabel.toLowerCase()}, Pro ${FILE_SIZE_MARKETING.proLabel.toLowerCase()}`,
-    "Pro tier: 100 uses/day, AI summarizer, sign PDF, priority processing",
+    `Free tier: 5 core-tool uses per day; Free uploads ${FILE_SIZE_MARKETING.freeLabel.toLowerCase()}, Pro ${FILE_SIZE_MARKETING.proLabel.toLowerCase()}; tool-specific limits apply`,
+    "Pro tier: 100 uses/day, AI summarizer, sign PDF, no ads; processing time depends on the file and tool",
     "Supported formats: PDF, DOCX, DOC, XLSX, XLS, PPTX, PPT, JPG, PNG, HTML, TXT",
-    "Files deleted after 2 hours (free) or 24 hours (Pro)",
-    "HTTPS/TLS encryption for uploads in transit",
-    "Based in India; pricing in INR via Razorpay",
+    "Stored account files: 2-hour Free or 24-hour Pro expiry; download promptly because temporary links can expire sooner",
+    "Public service requires HTTPS/TLS; deployed transport protection must be verified separately from local previews",
+    "Based in India; prices in INR; Razorpay payment methods are shown when live checkout is enabled",
   ],
   howToGetStarted: [
-    { name: "Pick a tool", text: "Visit onlymypdf.com or open /all-tools and choose merge, convert, compress, or another PDF tool." },
+    { name: "Pick a tool", text: `Visit ${APP_URL}/all-tools and choose merge, convert, compress, or another PDF tool.` },
     { name: "Upload your file", text: "Drag and drop your PDF or document; most tools work without creating an account." },
     { name: "Process and download", text: "Click the action button, wait for processing, then download the result securely." },
   ],
@@ -27,11 +27,11 @@ export const SITE_AEO = {
 
 export const PRICING_AEO = {
   shortAnswer:
-    "OnlyMyPDF Free includes 5 PDF tool uses per day at ₹0. Pro costs ₹299/month or ₹2,399/year for 100 daily uses, AI summarizer, sign PDF, no ads, and 24-hour file retention.",
+    "OnlyMyPDF Free includes 5 core-tool uses per day at ₹0. Pro is priced at ₹299/month or ₹2,399/year for 100 daily uses, AI summarizer, sign PDF, and no ads, when paid checkout is available. Stored account files have a 24-hour Pro expiry; temporary links can expire sooner, and cleanup may be delayed by retries.",
   keyFacts: [
-    "Free: ₹0 — 5 uses/day, basic tools, 2-hour file retention",
+    "Free: ₹0 — 5 core-tool uses/day, basic tools, 2-hour stored-account-file expiry; temporary links may expire sooner",
     "Pro: ₹299/month or ₹2,399/year — 100 uses/day, all tools, AI summarizer",
-    "Payment via Razorpay (cards, UPI, net banking, wallets)",
+    "When live checkout is enabled, Razorpay shows the available payment methods",
     "Cancel anytime from dashboard billing",
   ],
 } as const;

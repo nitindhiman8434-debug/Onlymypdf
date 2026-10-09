@@ -13,14 +13,14 @@ function aeo(
 
 export const TOOL_AEO: Record<string, ToolAeo> = {
   "merge-pdf": aeo(
-    "OnlyMyPDF Merge PDF combines multiple PDF files into one document in your browser for free. Free users can merge up to 20 files; files are deleted from servers within 2 hours.",
+    "OnlyMyPDF Merge PDF combines uploaded PDF files into one document online. Free users can merge up to 20 files. Stored account file access expires after 2 hours on Free or 24 hours on Pro; temporary links may expire sooner and physical cleanup may take longer.",
     "Merge PDF is an online tool that joins two or more PDF documents into a single file while preserving original quality, formatting, and page order.",
     [
       { name: "Upload PDFs", text: "Open the Merge PDF tool and upload your PDF files by drag-and-drop or file picker." },
       { name: "Reorder files", text: "Drag files into the order you want pages to appear in the merged document." },
-      { name: "Merge and download", text: "Click Merge to combine the files, then download your single merged PDF instantly." },
+      { name: "Merge and download", text: "Click Merge to combine the files, then download your single merged PDF when processing finishes." },
     ],
-    ["Free: up to 20 PDFs per merge", "No software install required", "HTTPS/TLS transfer", "2-hour Free or 24-hour Pro retention window", "Pages are copied without raster recompression"]
+    ["Free: up to 20 PDFs per merge", "No software install required", "HTTPS/TLS transfer", "Account file access: 2 hours Free / 24 hours Pro", "Pages are copied without raster recompression"]
   ),
   "split-pdf": aeo(
     "OnlyMyPDF Split PDF extracts pages or page ranges from a PDF into separate files online for free. Choose all pages or custom ranges like 1-3, 5, 8-10.",
@@ -33,11 +33,11 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ["Split by page range or every page", "Original upload is not modified", "No software install required", "Free with daily usage limits", "Published file-retention window"]
   ),
   "compress-pdf": aeo(
-    "OnlyMyPDF Compress PDF offers a lossless Basic mode and a smaller Strong mode. Strong mode rasterizes pages and can flatten searchable text and interactive content.",
+    "OnlyMyPDF Compress PDF offers lossless Basic optimization and Strong page rasterization. Savings vary by document. Strong mode can reduce visual quality and flatten searchable text and interactive content.",
     "Compress PDF applies lossless structural optimization in Basic mode or page rasterization in Strong mode, then reports the actual result size.",
     [
       { name: "Upload PDF", text: "Upload the PDF you want to make smaller." },
-      { name: "Pick compression level", text: "Choose Basic for lossless optimization or Strong for larger reductions with page rasterization." },
+      { name: "Pick compression level", text: "Choose Basic for lossless optimization or Strong for page rasterization, which can affect visual quality, searchable text, links, forms, and bookmarks." },
       { name: "Download compressed PDF", text: "Process the file and download the optimized PDF with the new file size shown." },
     ],
     ["Actual savings depend on document content", "Basic and Strong modes", compressToolAeoSizeFact(), "Server-side processing", "HTTPS/TLS transfer and published retention"]
@@ -70,7 +70,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
       { name: "Select pages", text: "Click the pages you need; selections can be non-adjacent." },
       { name: "Finish and download", text: "Click Finish to build and download a PDF with only selected pages." },
     ],
-    ["Non-consecutive page selection", "Original quality preserved", "Visual page picker", "No signup required for basic use", "Files deleted after retention window"]
+    ["Non-consecutive page selection", "Original quality preserved", "Visual page picker", "No signup required for basic use", "Published file-retention window; cleanup may take longer"]
   ),
   "pdf-to-word": aeo(
     "OnlyMyPDF PDF to Word converts supported PDF text to editable .docx documents online. Complex forms may keep a visual page reference beside editable text.",
@@ -83,14 +83,14 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ["Outputs .docx format", "Preserves tables and headings when possible", "Readable scans can use OCR automatically", "Plan file-size limits apply", "Free tier available"]
   ),
   "word-to-pdf": aeo(
-    "OnlyMyPDF Word to PDF converts .doc and .docx files to PDF online while preserving fonts, images, tables, and layout.",
+    "OnlyMyPDF Word to PDF converts .doc and .docx files to PDF online. Common fonts, images, tables, and layout are retained when supported; review complex layouts and font substitutions.",
     "Word to PDF turns Microsoft Word documents into shareable, print-ready PDF files using server-side rendering.",
     [
       { name: "Upload Word file", text: "Upload a .doc or .docx document." },
       { name: "Convert to PDF", text: "Click convert; the file is processed on secure servers." },
       { name: "Download PDF", text: "Download the generated PDF and preview it in the browser if needed." },
     ],
-    ["Supports .doc and .docx", "Formatting preserved", "Browser preview available", "No install required", "Encrypted upload"]
+    ["Supports .doc and .docx", "Formatting retained when supported", "Browser preview available", "No install required", "Encrypted upload"]
   ),
   "pdf-to-excel": aeo(
     "OnlyMyPDF PDF to Excel converts PDF tables and data into .xlsx spreadsheets you can edit in Excel or Google Sheets.",
@@ -103,7 +103,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ["Outputs .xlsx", "Best for table-heavy PDFs", "Free online conversion", "HTTPS/TLS transfer", "Published file-retention window"]
   ),
   "excel-to-pdf": aeo(
-    "OnlyMyPDF Excel to PDF converts .xls and .xlsx spreadsheets into PDF documents with layout preserved for sharing and printing.",
+    "OnlyMyPDF Excel to PDF converts .xls and .xlsx spreadsheets into PDF documents for sharing and printing. Formatting may be simplified; review cell values, page breaks, and layout.",
     "Excel to PDF renders spreadsheet workbooks as fixed-layout PDF files suitable for distribution.",
     [
       { name: "Upload spreadsheet", text: "Upload an Excel .xls or .xlsx file." },
@@ -124,7 +124,7 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
   ),
   "ppt-to-pdf": aeo(
     "OnlyMyPDF PowerPoint to PDF converts .ppt and .pptx presentations into PDF for sharing, archiving, or printing.",
-    "PowerPoint to PDF flattens slides into a universal PDF document while preserving slide layout.",
+    "PowerPoint to PDF turns supported slide content into a PDF document. Fonts, complex elements, and layout can vary, so review the result before sharing.",
     [
       { name: "Upload presentation", text: "Upload a .ppt or .pptx file." },
       { name: "Convert", text: "Convert slides to PDF on OnlyMyPDF servers." },
@@ -143,28 +143,28 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ["Multiple images per PDF", "Common image formats supported", "Free online tool", "No software install", "Secure uploads"]
   ),
   "html-to-pdf": aeo(
-    "OnlyMyPDF HTML to PDF converts web pages and HTML files into PDF documents with styles and layout rendered for print or archive.",
-    "HTML to PDF captures HTML content — from files or URLs — as a portable PDF.",
+    "OnlyMyPDF HTML to PDF converts uploaded HTML files into PDF documents with supported embedded styles and resources rendered for print or archive. Scripts and external requests are blocked.",
+    "HTML to PDF renders an uploaded HTML file as a portable PDF. URL input is not supported.",
     [
-      { name: "Provide HTML", text: "Upload an HTML file or paste a URL depending on the tool input." },
+      { name: "Provide HTML", text: "Upload an HTML file with required fonts and images embedded; scripts and external requests are blocked." },
       { name: "Convert", text: "Render the HTML to PDF on the server." },
       { name: "Download PDF", text: "Save the generated PDF to your device." },
     ],
-    ["URL or file input", "Server-side rendering", "Useful for reports and archives", "Free tier", "Encrypted processing"]
+    ["Uploaded file input only", "Scripts and external requests blocked", "Server-side rendering", "Useful for reports and archives", "HTTPS/TLS transfer"]
   ),
   "txt-to-pdf": aeo(
     "OnlyMyPDF TXT to PDF converts plain text files into formatted PDF documents for sharing and printing.",
-    "TXT to PDF wraps plain text in a readable PDF layout without needing a word processor.",
+    "TXT to PDF wraps plain text in a readable PDF layout. Unsupported characters may become '?', so review the downloaded text.",
     [
       { name: "Upload text file", text: "Upload a .txt file." },
       { name: "Convert", text: "Process the text into PDF format." },
       { name: "Download PDF", text: "Download the PDF version of your text file." },
     ],
-    ["Simple text to PDF", "Fast conversion", "Browser-based", "No install", "Secure file deletion"]
+    ["Simple text to PDF", "Long lines wrap to page margins", "Unsupported characters may be substituted", "No install", "Published file-retention window"]
   ),
   "sign-pdf": aeo(
-    "OnlyMyPDF Sign PDF lets you draw, type, or upload a signature and place it on any page of a PDF online. Pro feature with legally useful e-sign workflow.",
-    "Sign PDF adds electronic signatures to PDF contracts and forms in a visual editor before export.",
+    "OnlyMyPDF Sign PDF lets you draw, type, or upload a visual signature and place it on any page of a PDF online. This Pro feature does not provide certificate-based signing.",
+    "Sign PDF adds a visual electronic signature in an editor before export. It does not issue a signing certificate or validate identity; confirm that the recipient accepts this type of signature.",
     [
       { name: "Upload PDF", text: "Upload the PDF you need to sign." },
       { name: "Add signature", text: "Draw, type, or upload your signature and position it on the page." },
@@ -183,14 +183,14 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
     ["Text or image watermarks", "Applies to all pages", "Opacity and angle controls", "Free online tool", "Published file-retention window"]
   ),
   "ai-pdf-summarizer": aeo(
-    "OnlyMyPDF AI PDF Summarizer reads a PDF and generates a concise summary with key points, action items, and dates. Available on the Pro plan.",
-    "AI PDF Summarizer uses AI models to extract the main ideas from long PDF documents without reading every page manually.",
+    "OnlyMyPDF AI PDF Summarizer generates key points, action items, and dates from up to the first 100,000 extracted characters. Signed-in Free users get 1 summary per day. Pro has no separate AI daily cap, subject to rate limits and service availability.",
+    "AI PDF Summarizer sends up to the first 100,000 extracted characters to the AI provider. Later text in long documents may be omitted; review the summary against the original PDF for omissions and errors.",
     [
-      { name: "Sign in", text: "Log in with a Pro account — summarizer requires authentication." },
+      { name: "Sign in", text: "Log in with a Free or Pro account. Free accounts include 1 summary per day." },
       { name: "Upload PDF", text: "Upload the document to summarize." },
-      { name: "Get summary", text: "Run AI summarization and read or export the generated summary." },
+      { name: "Get summary", text: "Run AI summarization, review it against the source for omissions and errors, then export if needed." },
     ],
-    ["1 free summary/day with login", "Unlimited on Pro", "Key points and action items", "AI-powered analysis", "Summaries for informational use"]
+    ["1 free summary/day with login", "Pro: no separate AI daily cap; rate and service limits apply", "Up to the first 100,000 extracted characters", "Long documents may be partly omitted", "Review summaries against the source"]
   ),
   "pdf-scanner": aeo(
     `OnlyMyPDF PDF Scanner combines up to ${SCANNER_MAX_IMAGES} camera captures or JPG, PNG, and WebP uploads into one image-based PDF. Choose Original, Black & White, or Enhanced and review the downloaded pages.`,
@@ -215,13 +215,13 @@ export const TOOL_AEO: Record<string, ToolAeo> = {
   ),
   "protect-pdf": aeo(
     "OnlyMyPDF Protect PDF adds password encryption to a PDF so only people with the password can open it.",
-    "Protect PDF applies user-password encryption to restrict opening, sharing, or printing of sensitive documents.",
+    "Protect PDF adds an open password so recipients must enter it to view the document. Separate printing, editing, copying, and annotation permission controls are unavailable.",
     [
       { name: "Upload PDF", text: "Upload the PDF you want to protect." },
       { name: "Set password", text: "Choose a strong password and confirm it." },
       { name: "Download protected PDF", text: "Download the encrypted PDF; recipients need the password to open it." },
     ],
-    ["Password encryption", "Restrict unauthorized access", "Free online tool", "SSL encrypted upload", "Files deleted after retention"]
+    ["Open-password encryption", "No separate permission controls", "Free online tool", "HTTPS/TLS transfer", "Published file-retention window; cleanup may take longer"]
   ),
   "repair-pdf": aeo(
     "OnlyMyPDF Repair PDF rebuilds readable PDF structure and writes a clean copy. Recovery depends on how much valid source data remains.",

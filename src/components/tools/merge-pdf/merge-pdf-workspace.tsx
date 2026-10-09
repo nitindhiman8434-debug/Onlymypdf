@@ -935,7 +935,7 @@ export function MergePdfWorkspace({
         </div>
 
         <div className="border-t border-pd-border px-3 py-2 text-center text-[11px] text-pd-muted sm:px-4">
-          Page order follows grid sequence · Rotate is preview-only · Files auto-delete after 2 hours
+          Page order follows grid sequence · Rotate is preview-only · File access expires by plan; links may expire sooner and cleanup may take longer
         </div>
       </div>
     </>

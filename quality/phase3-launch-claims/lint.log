@@ -1,0 +1,15 @@
+
+C:\Users\NiTiN Dhiman\Documents\Cursor\pdf-doctor\src\app\(tools)\txt-to-pdf\page.tsx
+   8:3   warning  'Minimize2' is defined but never used            @typescript-eslint/no-unused-vars
+   9:3   warning  'Scissors' is defined but never used             @typescript-eslint/no-unused-vars
+  11:3   warning  'Trash2' is defined but never used               @typescript-eslint/no-unused-vars
+  20:10  warning  'ToolResultSizeBadge' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\NiTiN Dhiman\Documents\Cursor\pdf-doctor\src\components\marketing\pricing-page-content.tsx
+  218:7  warning  Do not use `window.location.href` to navigate to internal Next.js pages. Use `redirect()` in the render phase, or `useRouter().push()` in Client Components' event handlers instead. See: https://nextjs.org/docs/messages/no-location-assign-relative-destination  @next/next/no-location-assign-relative-destination
+
+C:\Users\NiTiN Dhiman\Documents\Cursor\pdf-doctor\src\components\tools\split-pdf\split-pdf-workspace.tsx
+   43:3  warning  'slotLabel' is defined but never used                                                                  @typescript-eslint/no-unused-vars
+  199:6  warning  React Hook useEffect has a missing dependency: 'ws'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+✖ 7 problems (0 errors, 7 warnings)

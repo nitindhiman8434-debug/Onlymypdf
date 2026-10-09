@@ -31,7 +31,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Is my data safe when merging PDFs online?",
         answer:
-          "Files are transferred over HTTPS/TLS and scheduled for deletion within 2 hours (Free) or 24 hours (Pro).",
+          "Files are transferred over HTTPS/TLS. Stored account file access expires after 2 hours on Free or 24 hours on Pro. Temporary links may expire sooner; physical cleanup may take longer.",
       },
     ],
   },
@@ -40,9 +40,9 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
     title: "Split PDF — Extract Pages from PDF Online | OnlyMyPDF",
     metaDescription:
       "Split PDF files into individual pages or extract specific page ranges online for free. Fast, secure, and no signup required.",
-    h1: "Split PDF — Extract Pages Instantly",
+    h1: "Split PDF — Extract Pages Online",
     seoContent:
-      "Need to extract specific pages from a large PDF? OnlyMyPDF's Split PDF tool makes it easy. Upload your PDF, select the pages or page ranges you want, and download them as separate files. Perfect for extracting chapters from an e-book, pulling specific pages from a report, or breaking down large documents into manageable sections. Works entirely in your browser with no software needed.",
+      "Need to extract specific pages from a large PDF? OnlyMyPDF's Split PDF tool makes it easy. Upload your PDF, select the pages or page ranges you want, and download them as separate files. Useful for extracting chapters from an e-book, pulling specific pages from a report, or breaking down large documents into manageable sections. Files are uploaded for processing; no software installation is needed.",
     faqs: [
       {
         question: "How do I split a PDF into separate pages?",
@@ -66,9 +66,9 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
     title: "Compress PDF — Reduce PDF File Size Online | OnlyMyPDF",
     metaDescription:
       "Compress PDF files with lossless Basic mode or smaller Strong mode. Strong mode can flatten searchable text and interactive content.",
-    h1: "Compress PDF — Reduce File Size Instantly",
+    h1: "Compress PDF — Reduce File Size Online",
     seoContent:
-      "Basic compression applies lossless structural optimization and returns the original file when savings would be insignificant. Strong compression rasterizes pages for larger reductions, which can flatten searchable text, links, forms, and bookmarks. The result screen reports the actual method and size change.",
+      "Basic compression applies lossless structural optimization and returns the original file when savings would be insignificant. Strong compression aims for smaller files by rasterizing pages, which can flatten searchable text, links, forms, and bookmarks. Savings vary by document. The result screen reports the actual method and size change.",
     faqs: [
       {
         question: "How much can I reduce my PDF file size?",
@@ -114,7 +114,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Is there a page limit for conversion?",
         answer:
-          "There is no specific page limit. " + planFileSizeFaqLine(),
+          "Page and processing limits depend on the conversion path, including whether OCR is needed. OCR processing has a default 50-page limit. " + planFileSizeFaqLine(),
       },
     ],
   },
@@ -161,7 +161,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Can I combine multiple images into one PDF?",
         answer:
-          "Yes, you can upload up to 20 images (50 for Pro users) and combine them into a single PDF. Drag and drop to reorder the images before converting.",
+          "Yes, you can upload up to 20 images on any plan and combine them into a single PDF. Drag and drop to reorder the images before converting.",
       },
       {
         question: "What will be the quality of images in the PDF?",
@@ -202,7 +202,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Are external resources (images, fonts) included?",
         answer:
-          "Inline images (base64) and embedded resources are fully supported. External URLs referenced in the HTML may not load depending on network access. For best results, embed all resources inline.",
+          "Inline images (base64) and supported embedded resources can be included. Scripts and external network or file requests are blocked, so embed required fonts and images in the uploaded file. URL input is not supported.",
       },
     ],
   },
@@ -210,10 +210,10 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "txt-to-pdf": {
     title: "TXT to PDF — Convert Text Files to PDF Online | OnlyMyPDF",
     metaDescription:
-      "Convert TXT and other text files to professionally formatted PDF documents online for free. Choose fonts, sizes, and page layout. Fast and accurate.",
+      "Convert TXT and other text files to PDF online for free. Choose fonts, sizes, and page layout. Review unsupported characters in the output.",
     h1: "Convert TXT to PDF — Professional Formatting",
     seoContent:
-      "Convert any text file to a cleanly formatted PDF document with OnlyMyPDF's TXT to PDF converter. Supports TXT, LOG, CSV, MD, JSON, XML, YAML, INI, and other plain-text formats. Choose your preferred font (Helvetica, Courier, or Times), font size (9pt–16pt), page size (A4 or Letter), orientation, and margins. The converter intelligently wraps long lines, preserves blank lines and paragraph breaks, and produces a professional PDF that matches the original text structure. Perfect for converting code files, log files, configuration files, and plain text documents to shareable PDF format.",
+      "Convert text files to PDF with OnlyMyPDF's TXT to PDF converter. Supports TXT, LOG, CSV, MD, JSON, XML, YAML, INI, and other plain-text formats. Choose your preferred font (Helvetica, Courier, or Times), font size (9pt–16pt), page size (A4 or Letter), orientation, and margins. The converter wraps long lines and preserves blank lines and paragraph breaks. Characters unsupported by the selected standard font may be replaced with '?', so review the downloaded PDF, especially code, logs, and configuration files.",
     faqs: [
       {
         question: "What file types can I convert?",
@@ -228,7 +228,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Will long lines be cut off?",
         answer:
-          "No. Long lines are automatically word-wrapped to fit within the page margins. No text content is ever lost or cut off.",
+          "Long lines are wrapped to fit within the page margins. Characters unsupported by the selected standard font may be replaced with '?', so review the downloaded PDF for missing or substituted characters.",
       },
       {
         question: "Is there a file size limit?",
@@ -240,7 +240,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
 
 
   "sign-pdf": {
-    title: "Sign PDF — Add Digital Signature to PDF Online | OnlyMyPDF",
+    title: "Sign PDF — Add a Visual Signature to PDF Online | OnlyMyPDF",
     metaDescription:
       "Add a visual signature to a PDF by drawing, typing, or uploading an image. Certificate-based signing is not included.",
     h1: "Sign PDF Documents Online — Quick & Secure",
@@ -253,9 +253,9 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
           "You can create your signature in three ways: draw it using your mouse or touchscreen, type your name and choose a signature style font, or upload an image of your handwritten signature.",
       },
       {
-        question: "Are digital signatures legally valid?",
+        question: "Does this tool add a certificate-based digital signature?",
         answer:
-          "OnlyMyPDF adds a visual electronic signature. Whether it is legally sufficient depends on the document, parties, and local law. Use a certificate-based signing service when identity validation or a digital certificate is required.",
+          "No. OnlyMyPDF adds a visual electronic signature without a signing certificate or identity validation. Confirm that the recipient accepts this type of signature, and use a certificate-based signing service when required.",
       },
       {
         question: "Is the Sign PDF tool free?",
@@ -271,17 +271,17 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   },
 
   "ai-pdf-summarizer": {
-    title: "AI PDF Summarizer — Get Instant PDF Summary | OnlyMyPDF",
+    title: "AI PDF Summarizer — Summarize PDF Text Online | OnlyMyPDF",
     metaDescription:
-      "Use AI to summarize PDF text and get key points, action items, and important dates. Signed-in Free users get 1 summary per day; Pro users get unlimited summaries.",
-    h1: "AI PDF Summarizer — Instant Summaries & Insights",
+      "Summarize up to the first 100,000 extracted PDF characters. Free: 1/day with login. Pro: no separate AI daily cap; rate and service limits apply.",
+    h1: "AI PDF Summarizer — Summaries & Insights",
     seoContent:
-      "Let AI read extracted text from your PDF and provide a structured summary with key points, main ideas, important dates, and action items. It works best on text-heavy documents; scanned or image-heavy files may require OCR. A login is required. Signed-in Free users get 1 summary per day and Pro users get unlimited summaries, subject to service availability.",
+      "Generate a structured summary with key points, main ideas, important dates, and action items. The AI provider receives up to the first 100,000 extracted characters; later text in long documents may be omitted, so review the summary against the source. Text-heavy documents work best; scans may require OCR. Signed-in Free users get 1 summary per day. Pro has no separate AI daily cap, subject to rate limits and service availability.",
     faqs: [
       {
         question: "How does the AI PDF Summarizer work?",
         answer:
-          "Our AI reads the text content of your PDF and uses advanced language models to identify key points, main arguments, and important details. It then generates a structured summary with bullet points and main themes.",
+          "The AI provider uses up to the first 100,000 extracted characters from your PDF to generate key points and main themes. Later text in long documents may be omitted. Review the summary against the original PDF for omissions and errors.",
       },
       {
         question: "What types of documents work best?",
@@ -296,12 +296,12 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "Is this tool free to use?",
         answer:
-          "A login account is required. Signed-in Free users get 1 AI summary per day; Pro users get unlimited AI summaries, subject to service availability.",
+          "A login is required. Signed-in Free users get 1 AI summary per day. Pro has no separate AI daily cap, subject to rate limits and service availability.",
       },
       {
         question: "How long does summarization take?",
         answer:
-          "Most documents are summarized within 10-30 seconds, depending on the length and complexity of the PDF.",
+          "Processing time varies with document length, complexity, and AI service availability. A fixed completion time is not guaranteed.",
       },
     ],
   },
@@ -342,7 +342,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       {
         question: "How are uploaded files handled?",
         answer:
-          "Files are uploaded for processing over HTTPS/TLS. Under the published retention policy, files are scheduled for deletion within 2 hours for Free users or 24 hours for Pro users.",
+          "Files are uploaded for processing over HTTPS/TLS. Stored account file access expires after 2 hours on Free or 24 hours on Pro. Temporary links may expire sooner; physical cleanup may take longer.",
       },
     ],
   },
@@ -376,7 +376,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
   "protect-pdf": {
     title: "Protect PDF — Add Password to PDF Online | OnlyMyPDF",
     metaDescription:
-      "Add password protection to your PDF files online. Set open and permission passwords. Secure your sensitive documents for free.",
+      "Add an open password to your PDF online. Recipients need the password to view it. Separate printing and editing permission controls are unavailable.",
     h1: "Protect PDF — Add Password & Encrypt",
     seoContent:
       "Add an AES-256 open password to a PDF so recipients must enter it before viewing the document. Use a unique, strong password and share it through a separate channel.",
@@ -508,7 +508,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       "Rotate PDF pages online for free. Rotate individual pages or all pages at once — 90°, 180°, or 270°. Add pages from other PDFs. No signup required.",
     h1: "Rotate PDF Pages Online — Free & Visual",
     seoContent:
-      "Rotate PDF pages with a visual drag-and-drop workspace. OnlyMyPDF's Rotate PDF tool lets you preview every page, rotate individual pages or select multiple pages to rotate at once. Add blank pages or insert pages from other PDFs between existing pages. Download the result instantly — no signup, no watermarks, no quality loss.",
+      "Rotate PDF pages with a visual drag-and-drop workspace. OnlyMyPDF's Rotate PDF tool lets you preview every page, rotate individual pages or select multiple pages to rotate at once. Add blank pages or insert pages from other PDFs between existing pages. Download the result when processing finishes — no signup, no watermarks, no quality loss.",
     faqs: [
       {
         question: "How do I rotate a single page in a PDF?",
@@ -538,7 +538,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       "Delete pages from your PDF online for free. Remove individual pages or multiple pages at once. Add pages from other PDFs. No signup required.",
     h1: "Delete PDF Pages Online — Free & Visual",
     seoContent:
-      "Remove unwanted pages from your PDF with a visual workspace. OnlyMyPDF's Delete PDF Pages tool lets you preview every page, delete individual pages with one click, or select multiple pages to remove at once. You can also add blank pages or insert pages from other PDFs. Download the result instantly — no signup, no watermarks, no quality loss.",
+      "Remove unwanted pages from your PDF with a visual workspace. OnlyMyPDF's Delete PDF Pages tool lets you preview every page, delete individual pages with one click, or select multiple pages to remove at once. You can also add blank pages or insert pages from other PDFs. Download the result when processing finishes — no signup, no watermarks, no quality loss.",
     faqs: [
       {
         question: "How do I delete a single page from a PDF?",
@@ -568,7 +568,7 @@ export const TOOL_SEO: Record<string, ToolSEO> = {
       "Extract specific pages from your PDF online for free. Select the pages you need, click Finish, and download a new PDF with only those pages. No signup required.",
     h1: "Extract PDF Pages Online — Free & Visual",
     seoContent:
-      "Extract pages from any PDF with a visual workspace. OnlyMyPDF's Extract Pages tool lets you preview every page, select the ones you need, and create a new PDF with just those pages. You can also add pages from other PDFs or insert blank pages. Download instantly — no signup, no watermarks, no quality loss.",
+      "Extract pages from any PDF with a visual workspace. OnlyMyPDF's Extract Pages tool lets you preview every page, select the ones you need, and create a new PDF with just those pages. You can also add pages from other PDFs or insert blank pages. Download when processing finishes — no signup, no watermarks, no quality loss.",
     faqs: [
       {
         question: "How do I extract specific pages from a PDF?",

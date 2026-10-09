@@ -41,7 +41,7 @@ const FAQS = [
   },
   {
     q: "How are files handled?",
-    a: "Files are uploaded for processing over HTTPS/TLS. Under the published retention policy, files are scheduled for deletion within 2 hours for Free users or 24 hours for Pro users.",
+    a: "Files are uploaded for processing over HTTPS/TLS. Stored account file access expires after 2 hours on Free or 24 hours on Pro. Temporary links may expire sooner; physical cleanup may take longer.",
   },
 ];
 

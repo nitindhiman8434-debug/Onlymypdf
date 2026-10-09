@@ -56,8 +56,7 @@ const COMPARE_ROWS: CompareRow[] = [
   { labelKey: "basicTools", free: "yes", pro: "yes", business: "yes" },
   { labelKey: "convertTools", free: "yes", pro: "yes", business: "yes" },
   { labelKey: "signPdf", free: "no", pro: "yes", business: "yes" },
-  { labelKey: "aiSummarizer", free: "no", pro: "yes", business: "yes" },
-  { labelKey: "batchProcessing", free: "no", pro: "yes", business: "yes" },
+  { labelKey: "aiSummarizer", free: "text", pro: "text", business: "text", freeTextKey: "aiFree", proTextKey: "aiPro", businessTextKey: "aiPro" },
   { labelKey: "teamSeats", free: "no", pro: "no", business: "text", businessTextKey: "teamSeatsBusiness" },
   { labelKey: "apiAccess", free: "no", pro: "no", business: "yes" },
   { labelKey: "processingSpeed", free: "text", pro: "text", business: "text", freeTextKey: "speedStandard", proTextKey: "speedPriority", businessTextKey: "speedDedicated" },
@@ -373,14 +372,24 @@ export function PricingPageContent() {
                     {t("pricing.currentPlan")}
                   </div>
                 ) : null}
-                <Link href={freeCtaHref} className="block">
+                {authLoading ? (
                   <Button
+                    disabled
                     variant="outline"
                     className="h-11 w-full rounded-xl border-2 text-sm font-bold transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
                   >
                     {t("pricing.getStarted")}
                   </Button>
-                </Link>
+                ) : (
+                  <Link href={freeCtaHref} className="block">
+                    <Button
+                      variant="outline"
+                      className="h-11 w-full rounded-xl border-2 text-sm font-bold transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+                    >
+                      {t("pricing.getStarted")}
+                    </Button>
+                  </Link>
+                )}
               </>
             }
           >
@@ -428,6 +437,7 @@ export function PricingPageContent() {
                     <Button
                       className="h-11 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-sm font-bold shadow-lg shadow-blue-200/50 transition-all hover:shadow-xl hover:shadow-blue-300/40"
                       loading={checkoutLoading}
+                      disabled={authLoading}
                       onClick={() => void handleProUpgrade()}
                     >
                       <Crown className="h-4 w-4" />
@@ -520,7 +530,7 @@ export function PricingPageContent() {
               </div>
               <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-700">
                 <Users className="h-3.5 w-3.5" aria-hidden />
-                20+
+                Teams
               </span>
             </div>
 
@@ -709,6 +719,7 @@ export function PricingPageContent() {
                 variant="outline"
                 className="rounded-xl border-white/40 bg-transparent px-8 font-semibold text-white hover:bg-white/10"
                 loading={checkoutLoading}
+                disabled={authLoading}
                 onClick={() => void handleProUpgrade()}
               >
                 {t("pricing.upgrade")}

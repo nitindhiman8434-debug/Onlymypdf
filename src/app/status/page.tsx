@@ -6,7 +6,7 @@ import { StatusPageContent } from "@/components/marketing/status-page-content";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "System Status",
-  description: "Current OnlyMyPDF service health and availability information.",
+  description: "OnlyMyPDF application response, basic configuration status, and the limits of this public check.",
   path: "/status",
 });
 
@@ -18,7 +18,7 @@ export default function StatusPage() {
       <div className="mx-auto max-w-2xl">
         <h1 className="text-3xl font-bold text-pd-foreground">System Status</h1>
         <p className="mt-2 text-sm text-pd-muted">
-          Live health for OnlyMyPDF tools and API. For SLA details see{" "}
+          Application response and basic configuration status. For service targets see{" "}
           <Link href="/sla" className="text-pd-brand hover:underline">
             Service Level
           </Link>

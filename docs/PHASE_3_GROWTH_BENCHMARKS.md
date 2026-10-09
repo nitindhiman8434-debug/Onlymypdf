@@ -1,7 +1,7 @@
 # Phase 3.1: evidence-based benchmark publishing
 
 **Started:** 3 October 2026  
-**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F, two-table pages 3.2G, English OCR evidence publication 3.2H, scanned-PDF guide 3.3, Scanner output/limits 3.4 and Scanner evidence publication 3.5 complete locally
+**Status:** Tasks 3.1, 3.2A, scoped 3.2B, local OCR 3.2C, English Word 3.2D, OCR geometry 3.2E, English Word tables 3.2F, two-table pages 3.2G, English OCR evidence publication 3.2H, scanned-PDF guide 3.3, Scanner output/limits 3.4, Scanner evidence publication 3.5 and English launch-claims consistency 3.6 complete locally
 
 Phase 2 remains 90% complete. Its public HTTPS/load/retention/cost gate is deferred under the user's no-paid-plan decision, and its real-customer evidence cannot be manufactured locally. Those external launch gates remain open and are not counted as complete. This explicit deferral allows no-cost Phase 3 preparation to continue without misrepresenting Phase 2 as finished.
 
@@ -154,6 +154,23 @@ All 45 focused tests, eight parser self-tests, 21 production-build HTTP checks,
 ESLint, webpack build (170/170 entries) and responsive browser review pass.
 The original Office and English OCR evidence remains intact. See
 [implementation, verification and limits](PHASE_3_5_SCANNER_BENCHMARK_PUBLICATION.md).
+
+## Task 3.6: English launch-claims consistency
+
+Complete locally: active English tool, marketing, pricing, privacy, trust,
+status and machine-readable copy now reflects actual limits and retained
+evidence. The review corrected AI allowances/truncation, image caps, unsupported
+quality/speed/paid-feature promises and the difference between file expiry and
+physical cleanup. Business terms depend on agreement with Sales. Public pricing
+now renders before auth initialization; account-dependent actions stay disabled
+until it finishes. API, conversion, queue, storage and payment execution are unchanged.
+
+All 64 focused tests, 308 assertions across 42 built-page URLs, eight parser
+self-tests and webpack build (170/170 entries) passed. Nine responsive width
+checks, expanded FAQ answers and the restored local status/pricing pages were
+verified. The launch checklist explicitly retains public HTTPS, load, cleanup,
+cost, customer and operator decisions. See
+[findings, verification and remaining gates](PHASE_3_6_ENGLISH_LAUNCH_CLAIMS.md).
 
 Hindi pages and Hindi-specific improvements remain on hold.
 Real-customer feedback and deferred production launch gates remain open. Selected

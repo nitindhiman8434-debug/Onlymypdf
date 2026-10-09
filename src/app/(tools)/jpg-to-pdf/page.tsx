@@ -29,7 +29,7 @@ const FAQS = [
   { q: 'What image formats are supported?', a: 'We support JPEG/JPG, PNG, and WebP image formats.' },
   { q: 'Can I convert multiple images into one PDF?', a: 'Yes! Upload multiple images and they will all be combined into a single PDF document. You can reorder them before converting.' },
   { q: 'Can I choose the page size?', a: 'Yes, you can choose between A4, US Letter, or Auto (which matches the image dimensions).' },
-  { q: 'Is there a limit on the number of images?', a: 'You can convert up to 50 images at once into a single PDF.' },
+  { q: 'Is there a limit on the number of images?', a: 'You can convert up to 20 images at once into a single PDF on any plan.' },
 ];
 
 type PageSize = 'a4' | 'letter' | 'auto';

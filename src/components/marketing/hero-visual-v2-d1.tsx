@@ -154,7 +154,7 @@ export function HeroVisualV2D1() {
 
             <Scene active={scene === 3}>
               <p className="mb-4 text-xs font-bold uppercase tracking-wider text-emerald-600">
-                Done in seconds
+                Download when ready
               </p>
               <div className="flex flex-col items-center rounded-2xl border border-emerald-100 bg-white px-8 py-6 shadow-lg">
                 <CheckCircle2 className="h-12 w-12 text-emerald-500" />

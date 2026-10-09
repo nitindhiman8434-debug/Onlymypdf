@@ -53,7 +53,7 @@ export const termsLegal: Record<"en" | "hi", LegalDocument> = {
         bullets: [
           `Free plan: ${freeSizeLabel} and ${FILE_LIMITS.maxFreeUsesPerDay} tool uses per day under the default configuration.`,
           `Pro plan: ${proSizeLabel} and ${FILE_LIMITS.maxProUsesPerDay} tool uses per day under the default configuration.`,
-          `Free files expire within ${FILE_LIMITS.fileRetentionHours} hours. Pro files expire within ${PUBLIC_RETENTION.proFileHours} hours. A tool may delete temporary data sooner.`,
+          `Stored account files have a configured expiry of ${FILE_LIMITS.fileRetentionHours} hours on Free and ${PUBLIC_RETENTION.proFileHours} hours on Pro. Temporary previews and conversion jobs can expire sooner; download results promptly. Expiry restricts access; physical removal occurs during cleanup and can be delayed by failures.`,
           "The selected tool can impose a lower file-count, page-count, format, memory, or processing limit.",
         ],
       },

@@ -21,14 +21,17 @@ describe("public legal content", () => {
     }
   });
 
-  it("keeps published file retention aligned with enforced plan limits", () => {
+  it("distinguishes configured account-file expiry from physical cleanup", () => {
     const privacy = documentText(getLegalDocument("privacy", "en"));
     const terms = documentText(getLegalDocument("terms", "en"));
 
-    expect(privacy).toContain(`Free plan files expire within ${FILE_LIMITS.fileRetentionHours} hours`);
-    expect(privacy).toContain(`Pro plan files expire within ${PUBLIC_RETENTION.proFileHours} hours`);
-    expect(terms).toContain(`Free files expire within ${FILE_LIMITS.fileRetentionHours} hours`);
-    expect(terms).toContain(`Pro files expire within ${PUBLIC_RETENTION.proFileHours} hours`);
+    for (const text of [privacy, terms]) {
+      expect(text).toContain(`${FILE_LIMITS.fileRetentionHours} hours on Free`);
+      expect(text).toContain(`${PUBLIC_RETENTION.proFileHours} hours on Pro`);
+      expect(text).toContain("Temporary previews and conversion jobs can expire sooner");
+      expect(text).toMatch(/physical.*deletion|physical removal/);
+    }
+    expect(privacy).toContain("Failed deletions are retried");
   });
 
   it("names core infrastructure and labels feature-specific processors", () => {

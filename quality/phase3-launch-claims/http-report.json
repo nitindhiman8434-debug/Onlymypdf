@@ -1,0 +1,3147 @@
+{
+  "phase": "3.6",
+  "checkedAt": "2026-10-09T01:32:38.672Z",
+  "baseUrl": "http://127.0.0.1:3002",
+  "method": "Read-only sequential loopback GETs against an existing production build. No uploads, credentials, server starts, response-script execution or conversion runs. Claims are checked only in actual resolved main HTML, rendered metadata, actual JSON-LD script elements and plain-text machine guides; React payload strings are excluded.",
+  "bounds": {
+    "requestTimeoutMs": 15000,
+    "totalRequestBudgetMs": 600000,
+    "maxResponseBytes": 5242880,
+    "redirectPolicy": "error"
+  },
+  "contract": {
+    "toolRoutes": 28,
+    "marketingHtmlRoutes": 12,
+    "totalHtmlRoutes": 40,
+    "machineGuides": 2,
+    "legalRevisionDate": "2026-10-09",
+    "jpgToPdfMaxImages": 20,
+    "scannerMaxImages": 10,
+    "retainedScannerPositiveCases": 5,
+    "retainedScannerNegativeCases": 6,
+    "retainedScannerOutputPages": 14,
+    "retainedScannerRenderedPages": 14,
+    "retainedDatasets": 6
+  },
+  "limitations": [
+    "These are publication consistency assertions, not new engine, output-artifact, privacy-control, TLS, payment, uptime or deployment verification.",
+    "Hydrated interactions, the status health label, collapsed FAQ UI behavior and responsive screenshots require separate browser checks.",
+    "Only the 42 explicit English routes are requested; translations, private routes, authenticated state, API health and external links are not exercised.",
+    "Negative checks target the audited claims and are not an exhaustive semantic review of every possible claim. Benchmark counts are retained evidence, not fresh conversions.",
+    "Request or extraction errors are failures; skipped assertions after such failures are not counted as passes. Parser self-tests are reported separately from route checks."
+  ],
+  "parserSelfTests": {
+    "passed": 8,
+    "total": 8,
+    "allPassed": true,
+    "networkRequests": 0
+  },
+  "responseCounts": {
+    "planned": 42,
+    "requested": 42,
+    "complete": 42,
+    "completeBodyHashes": 42,
+    "totalBytes": 3252503
+  },
+  "routeCounts": {
+    "passed": 42,
+    "total": 42
+  },
+  "routeChecks": {
+    "passed": 308,
+    "total": 308
+  },
+  "routeResults": [
+    {
+      "route": "/merge-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/split-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/rotate-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/delete-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/extract-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/pdf-to-word",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/pdf-to-excel",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/word-to-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/excel-to-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 10,
+      "total": 10,
+      "allPassed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/txt-to-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/edit-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/sign-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/add-watermark",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 10,
+      "total": 10,
+      "allPassed": true
+    },
+    {
+      "route": "/unlock-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/protect-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/repair-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/ocr-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/pdf-a",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/redact-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/crop-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/compare-pdf",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/pricing",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 9,
+      "total": 9,
+      "allPassed": true
+    },
+    {
+      "route": "/privacy",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/trust",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/terms",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/sla",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/status",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/faq",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 8,
+      "total": 8,
+      "allPassed": true
+    },
+    {
+      "route": "/about",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/benchmarks",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 10,
+      "total": 10,
+      "allPassed": true
+    },
+    {
+      "route": "/convert",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/all-tools",
+      "kind": "HTML",
+      "requested": true,
+      "passed": 7,
+      "total": 7,
+      "allPassed": true
+    },
+    {
+      "route": "/llms.txt",
+      "kind": "plain text",
+      "requested": true,
+      "passed": 4,
+      "total": 4,
+      "allPassed": true
+    },
+    {
+      "route": "/ai.txt",
+      "kind": "plain text",
+      "requested": true,
+      "passed": 4,
+      "total": 4,
+      "allPassed": true
+    }
+  ],
+  "responses": [
+    {
+      "route": "/merge-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 78670,
+      "sha256": "a783bf1fd6f9c61d00bca9115aacc889499d465d49cf1b9838ca64a19938f208",
+      "bodyComplete": true,
+      "timeToHeadersMs": 765,
+      "bodyReadMs": 7098,
+      "durationMs": 7863,
+      "inspectionMs": 25
+    },
+    {
+      "route": "/split-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76722,
+      "sha256": "5a9d5ca0d18ea80052f12c54e5766068c9bd37472c8236ed51ce6804679cc9da",
+      "bodyComplete": true,
+      "timeToHeadersMs": 81,
+      "bodyReadMs": 7065,
+      "durationMs": 7146,
+      "inspectionMs": 17
+    },
+    {
+      "route": "/rotate-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 77044,
+      "sha256": "6ee134635036506e61943b5149f3794ef78884dfbd3c970fc492153454b928d6",
+      "bodyComplete": true,
+      "timeToHeadersMs": 74,
+      "bodyReadMs": 7077,
+      "durationMs": 7151,
+      "inspectionMs": 11
+    },
+    {
+      "route": "/delete-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76826,
+      "sha256": "12d82c49a2a4ec99b91bbbb8296b389a467d7ccfa324cd0cf1c7415df149a512",
+      "bodyComplete": true,
+      "timeToHeadersMs": 52,
+      "bodyReadMs": 7065,
+      "durationMs": 7117,
+      "inspectionMs": 9
+    },
+    {
+      "route": "/extract-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 77360,
+      "sha256": "6f7b14154226097fee9065500bab5536b4598a1c1e5b2092c3d8be5e5612cf15",
+      "bodyComplete": true,
+      "timeToHeadersMs": 43,
+      "bodyReadMs": 7134,
+      "durationMs": 7177,
+      "inspectionMs": 11
+    },
+    {
+      "route": "/compress-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 79177,
+      "sha256": "497714ceeebf23d4101c20817c0286ec96f316b12627713f05ba54989782dce6",
+      "bodyComplete": true,
+      "timeToHeadersMs": 56,
+      "bodyReadMs": 7065,
+      "durationMs": 7121,
+      "inspectionMs": 7
+    },
+    {
+      "route": "/pdf-to-word",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 79615,
+      "sha256": "9756e851113f1a2dc335b13070393b423b14d1b9215d7268f32f3cb0b3460afa",
+      "bodyComplete": true,
+      "timeToHeadersMs": 49,
+      "bodyReadMs": 7083,
+      "durationMs": 7132,
+      "inspectionMs": 6
+    },
+    {
+      "route": "/pdf-to-excel",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76775,
+      "sha256": "7cc1da93ba07de6d98688632ba33aa121a798168faa079b8f60ccac6942ca320",
+      "bodyComplete": true,
+      "timeToHeadersMs": 45,
+      "bodyReadMs": 7069,
+      "durationMs": 7114,
+      "inspectionMs": 8
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 77546,
+      "sha256": "cc350b4eb399a91871354ac3d56eaa66a139cd7255542215f8d330bc2a9e9887",
+      "bodyComplete": true,
+      "timeToHeadersMs": 41,
+      "bodyReadMs": 14157,
+      "durationMs": 14198,
+      "inspectionMs": 8
+    },
+    {
+      "route": "/word-to-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76622,
+      "sha256": "7c5d279d3b574a26b81534c3d087a458c33697a3383ccb40a4f337ba5d8ff45d",
+      "bodyComplete": true,
+      "timeToHeadersMs": 45,
+      "bodyReadMs": 7053,
+      "durationMs": 7098,
+      "inspectionMs": 8
+    },
+    {
+      "route": "/excel-to-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 75182,
+      "sha256": "ecb080ff7a787f65932f52fa6672467aa67f672975aafce499bb6c247d9102d2",
+      "bodyComplete": true,
+      "timeToHeadersMs": 44,
+      "bodyReadMs": 7061,
+      "durationMs": 7105,
+      "inspectionMs": 6
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 75402,
+      "sha256": "9fbefab1ae7dab1909813be9936917dafe09b977bfa7de123d60f6b6e51be6e2",
+      "bodyComplete": true,
+      "timeToHeadersMs": 41,
+      "bodyReadMs": 7038,
+      "durationMs": 7079,
+      "inspectionMs": 8
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76860,
+      "sha256": "0a1e1bf652fa716ecb62ac1be9d97bae295c9d0d4bc421202d03d52a095253cc",
+      "bodyComplete": true,
+      "timeToHeadersMs": 111,
+      "bodyReadMs": 7144,
+      "durationMs": 7255,
+      "inspectionMs": 10
+    },
+    {
+      "route": "/html-to-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 72521,
+      "sha256": "282f5406294ba1531f41461b7a2d242c77301c2e6c03690c7a97830d81c36c77",
+      "bodyComplete": true,
+      "timeToHeadersMs": 2818,
+      "bodyReadMs": 7047,
+      "durationMs": 9865,
+      "inspectionMs": 7
+    },
+    {
+      "route": "/txt-to-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 72113,
+      "sha256": "a809c8b1fcd124d9f5ae3ade03e26587d46612500dd57b2deb9a1ef494bac92d",
+      "bodyComplete": true,
+      "timeToHeadersMs": 45,
+      "bodyReadMs": 7086,
+      "durationMs": 7131,
+      "inspectionMs": 6
+    },
+    {
+      "route": "/edit-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 75901,
+      "sha256": "a4d52865e9cad659c864d0baccd5f313c4d2afefdf077069442b22ef6210010f",
+      "bodyComplete": true,
+      "timeToHeadersMs": 36,
+      "bodyReadMs": 7040,
+      "durationMs": 7076,
+      "inspectionMs": 6
+    },
+    {
+      "route": "/sign-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 77805,
+      "sha256": "62371bfd91a4110f8cbdb103b77b3be913df7bad3aabe03a889eac9e4200518f",
+      "bodyComplete": true,
+      "timeToHeadersMs": 42,
+      "bodyReadMs": 7078,
+      "durationMs": 7120,
+      "inspectionMs": 8
+    },
+    {
+      "route": "/add-watermark",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 72596,
+      "sha256": "7d3d4276d1ef5379b863a0fb6cc9e50e6b15ce1c0590c46004251947d697f1af",
+      "bodyComplete": true,
+      "timeToHeadersMs": 45,
+      "bodyReadMs": 7071,
+      "durationMs": 7116,
+      "inspectionMs": 6
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 79075,
+      "sha256": "126e4443c61b8540263bbe21991efe44d49a7760a313dcf79cc622baf19c4622",
+      "bodyComplete": true,
+      "timeToHeadersMs": 42,
+      "bodyReadMs": 7046,
+      "durationMs": 7088,
+      "inspectionMs": 8
+    },
+    {
+      "route": "/pdf-scanner",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 81526,
+      "sha256": "610b39f92acb199948d217acc3dc376a239b8a1a760dbd0f044552e764c12ab5",
+      "bodyComplete": true,
+      "timeToHeadersMs": 45,
+      "bodyReadMs": 7084,
+      "durationMs": 7129,
+      "inspectionMs": 8
+    },
+    {
+      "route": "/unlock-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 77616,
+      "sha256": "45fcb760487e05a943fe6cf6abb0a452b95784bb17c1b22e25143a7eec1f79d2",
+      "bodyComplete": true,
+      "timeToHeadersMs": 45,
+      "bodyReadMs": 7052,
+      "durationMs": 7097,
+      "inspectionMs": 5
+    },
+    {
+      "route": "/protect-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 77353,
+      "sha256": "edaadd24d154e95aad5118379d6bad6151834c903592f4ea7788bba3d620ce54",
+      "bodyComplete": true,
+      "timeToHeadersMs": 42,
+      "bodyReadMs": 7073,
+      "durationMs": 7115,
+      "inspectionMs": 7
+    },
+    {
+      "route": "/repair-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 75729,
+      "sha256": "0b86892271624ffbd936bec9c7cc007db8cd59903b8d83f29c960ca66709d354",
+      "bodyComplete": true,
+      "timeToHeadersMs": 40,
+      "bodyReadMs": 7043,
+      "durationMs": 7083,
+      "inspectionMs": 6
+    },
+    {
+      "route": "/ocr-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76304,
+      "sha256": "b3f8080ac6c24da1203cd4e0c93d23fbcab4e1416cc3b55976031851e594cc2e",
+      "bodyComplete": true,
+      "timeToHeadersMs": 41,
+      "bodyReadMs": 7086,
+      "durationMs": 7127,
+      "inspectionMs": 7
+    },
+    {
+      "route": "/pdf-a",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76095,
+      "sha256": "b2819ab9bbcbfa8797d89840d37d3145c36cb14a9fc453476fb5d7938d5b917a",
+      "bodyComplete": true,
+      "timeToHeadersMs": 43,
+      "bodyReadMs": 7072,
+      "durationMs": 7115,
+      "inspectionMs": 4
+    },
+    {
+      "route": "/redact-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 75894,
+      "sha256": "72410f19d0a212090fecfe87a456438de2214ce5ba05351b0785b7165b574a39",
+      "bodyComplete": true,
+      "timeToHeadersMs": 36,
+      "bodyReadMs": 7061,
+      "durationMs": 7097,
+      "inspectionMs": 5
+    },
+    {
+      "route": "/crop-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 76269,
+      "sha256": "604915581d0f1608a015f06025faddeaad796c2a5e8a64d173daaa2a9798eade",
+      "bodyComplete": true,
+      "timeToHeadersMs": 50,
+      "bodyReadMs": 7235,
+      "durationMs": 7285,
+      "inspectionMs": 6
+    },
+    {
+      "route": "/compare-pdf",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 75851,
+      "sha256": "8d3a39517516ca47931bcfedc244f4b3f6e0d9eefbadfa1739a0b403deac4b78",
+      "bodyComplete": true,
+      "timeToHeadersMs": 41,
+      "bodyReadMs": 7057,
+      "durationMs": 7098,
+      "inspectionMs": 5
+    },
+    {
+      "route": "/",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 196979,
+      "sha256": "2f9bf90f2838334b83a56daa1e8cf6f89eb7f27c767384daf60c2159e6c511dd",
+      "bodyComplete": true,
+      "timeToHeadersMs": 74,
+      "bodyReadMs": 12,
+      "durationMs": 86,
+      "inspectionMs": 23
+    },
+    {
+      "route": "/pricing",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 113261,
+      "sha256": "d16c1b731f0b46b10adf80019c5e43daf8c0cdf119af19e4e12ce4cac4e6eb2b",
+      "bodyComplete": true,
+      "timeToHeadersMs": 38,
+      "bodyReadMs": 7,
+      "durationMs": 45,
+      "inspectionMs": 10
+    },
+    {
+      "route": "/privacy",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 61133,
+      "sha256": "08e7c6bc1d1dceb784b7f3298d574bfbdf62011571d8476021144ab8058e73a1",
+      "bodyComplete": true,
+      "timeToHeadersMs": 35,
+      "bodyReadMs": 4,
+      "durationMs": 39,
+      "inspectionMs": 4
+    },
+    {
+      "route": "/trust",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 55448,
+      "sha256": "382239deed7df2cb49062552f1dc2a0804ccd8e8db1b2b68bd3adcffb6392f8c",
+      "bodyComplete": true,
+      "timeToHeadersMs": 26,
+      "bodyReadMs": 4,
+      "durationMs": 30,
+      "inspectionMs": 4
+    },
+    {
+      "route": "/terms",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 57389,
+      "sha256": "6f02d33501449ea2bad8bf8d3eadebce0562a9ab5fe1a39cd912a4a416b41fbe",
+      "bodyComplete": true,
+      "timeToHeadersMs": 38,
+      "bodyReadMs": 6,
+      "durationMs": 44,
+      "inspectionMs": 4
+    },
+    {
+      "route": "/sla",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 52761,
+      "sha256": "5f90d6a46ba7e8a2961a2f94c32157decab60067d3e6b83290db356ba72843f9",
+      "bodyComplete": true,
+      "timeToHeadersMs": 31,
+      "bodyReadMs": 4,
+      "durationMs": 35,
+      "inspectionMs": 3
+    },
+    {
+      "route": "/status",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 51179,
+      "sha256": "6ea4fbc5d39ea8de151f250dfa4153785842a3ac95109b709018a3ab2435a779",
+      "bodyComplete": true,
+      "timeToHeadersMs": 35,
+      "bodyReadMs": 3,
+      "durationMs": 38,
+      "inspectionMs": 4
+    },
+    {
+      "route": "/faq",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 81757,
+      "sha256": "7b59f19e3c4c17e6c772363f76b91f7551967b51ab1d7a846623268b400202a0",
+      "bodyComplete": true,
+      "timeToHeadersMs": 30,
+      "bodyReadMs": 6,
+      "durationMs": 36,
+      "inspectionMs": 7
+    },
+    {
+      "route": "/about",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 57549,
+      "sha256": "7c7d0907911c72639c41e1b637e807feb3fc73300e2906bb0aa07124b82eda4a",
+      "bodyComplete": true,
+      "timeToHeadersMs": 31,
+      "bodyReadMs": 4,
+      "durationMs": 35,
+      "inspectionMs": 3
+    },
+    {
+      "route": "/benchmarks",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 169182,
+      "sha256": "05e54607dfbffdabab72d533460e8f7d99161fec9d5c1c8fdcb5c387e297ce59",
+      "bodyComplete": true,
+      "timeToHeadersMs": 76,
+      "bodyReadMs": 10,
+      "durationMs": 86,
+      "inspectionMs": 21
+    },
+    {
+      "route": "/convert",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 66598,
+      "sha256": "7c73332f06a4203000e993c9158c72a790cf5cedd01408aaf13025adce2797b8",
+      "bodyComplete": true,
+      "timeToHeadersMs": 32,
+      "bodyReadMs": 5,
+      "durationMs": 37,
+      "inspectionMs": 5
+    },
+    {
+      "route": "/all-tools",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bytes": 120292,
+      "sha256": "7e88c327b2e9616e88f80d24412e9c3cbb90c4832c0e08bbd36db7cccec83ae7",
+      "bodyComplete": true,
+      "timeToHeadersMs": 44,
+      "bodyReadMs": 6,
+      "durationMs": 50,
+      "inspectionMs": 6
+    },
+    {
+      "route": "/llms.txt",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 11240,
+      "sha256": "f3ffb29132c3da1aa30fead612804234101e4282148a758d68cf26e3fd2caf37",
+      "bodyComplete": true,
+      "timeToHeadersMs": 24,
+      "bodyReadMs": 0,
+      "durationMs": 24
+    },
+    {
+      "route": "/ai.txt",
+      "audience": "html-limited-crawler",
+      "requested": true,
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 11286,
+      "sha256": "d8ae660e782993b3f9bb05e8567c548588509a5827b5ef8f0f08964bb6a55868",
+      "bodyComplete": true,
+      "timeToHeadersMs": 19,
+      "bodyReadMs": 1,
+      "durationMs": 20
+    }
+  ],
+  "streamResolutions": [
+    {
+      "route": "/merge-pdf",
+      "durationMs": 17,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/split-pdf",
+      "durationMs": 12,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/rotate-pdf",
+      "durationMs": 6,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/delete-pdf",
+      "durationMs": 6,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/extract-pdf",
+      "durationMs": 8,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/compress-pdf",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/pdf-to-word",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/pdf-to-excel",
+      "durationMs": 5,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "durationMs": 5,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/word-to-pdf",
+      "durationMs": 4,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/excel-to-pdf",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "durationMs": 4,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "durationMs": 6,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/html-to-pdf",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/txt-to-pdf",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/edit-pdf",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/sign-pdf",
+      "durationMs": 6,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/add-watermark",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "durationMs": 4,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/pdf-scanner",
+      "durationMs": 5,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/unlock-pdf",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/protect-pdf",
+      "durationMs": 4,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/repair-pdf",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/ocr-pdf",
+      "durationMs": 4,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/pdf-a",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/redact-pdf",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/crop-pdf",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/compare-pdf",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "durationMs": 17,
+      "linkedSegments": [
+        {
+          "boundary": "B:1",
+          "segment": "S:1"
+        },
+        {
+          "boundary": "B:2",
+          "segment": "S:2"
+        },
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/pricing",
+      "durationMs": 5,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/privacy",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/trust",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/terms",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/sla",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/status",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/faq",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/about",
+      "durationMs": 2,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/benchmarks",
+      "durationMs": 7,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/convert",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    },
+    {
+      "route": "/all-tools",
+      "durationMs": 3,
+      "linkedSegments": [
+        {
+          "boundary": "B:0",
+          "segment": "S:0"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "route": "/merge-pdf",
+      "h1": "Merge PDF Files Online — Free & Fast",
+      "mainTextCharacters": 2474
+    },
+    {
+      "route": "/split-pdf",
+      "h1": "Split PDF — Extract Pages Online",
+      "mainTextCharacters": 2128
+    },
+    {
+      "route": "/rotate-pdf",
+      "h1": "Rotate PDF Pages Online — Free & Visual",
+      "mainTextCharacters": 2066
+    },
+    {
+      "route": "/delete-pdf",
+      "h1": "Delete PDF Pages Online — Free & Visual",
+      "mainTextCharacters": 2137
+    },
+    {
+      "route": "/extract-pdf",
+      "h1": "Extract PDF Pages Online — Free & Visual",
+      "mainTextCharacters": 2195
+    },
+    {
+      "route": "/compress-pdf",
+      "h1": "Compress PDF — Reduce File Size Online",
+      "mainTextCharacters": 2606
+    },
+    {
+      "route": "/pdf-to-word",
+      "h1": "Convert PDF to Word — Free Online Converter",
+      "mainTextCharacters": 2740
+    },
+    {
+      "route": "/pdf-to-excel",
+      "h1": "Convert PDF to Excel — Free Online Tool",
+      "mainTextCharacters": 1966
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "h1": "Convert PDF to PowerPoint — Free Online Tool",
+      "mainTextCharacters": 2185
+    },
+    {
+      "route": "/word-to-pdf",
+      "h1": "Convert Word to PDF — Free Online Tool",
+      "mainTextCharacters": 1974
+    },
+    {
+      "route": "/excel-to-pdf",
+      "h1": "Convert Excel to PDF — Free Online Converter",
+      "mainTextCharacters": 1546
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "h1": "Convert PowerPoint to PDF — Free Online Converter",
+      "mainTextCharacters": 1628
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "h1": "Convert Images to PDF — JPG, PNG & More",
+      "mainTextCharacters": 1940
+    },
+    {
+      "route": "/html-to-pdf",
+      "h1": "HTML to PDF",
+      "mainTextCharacters": 1569
+    },
+    {
+      "route": "/txt-to-pdf",
+      "h1": "TXT to PDF",
+      "mainTextCharacters": 1529
+    },
+    {
+      "route": "/edit-pdf",
+      "h1": "Edit PDF Online — Add Text & Images Free",
+      "mainTextCharacters": 2002
+    },
+    {
+      "route": "/sign-pdf",
+      "h1": "Sign PDF Documents Online — Quick & Secure",
+      "mainTextCharacters": 2120
+    },
+    {
+      "route": "/add-watermark",
+      "h1": "Add Watermark to PDF — Free Online Tool",
+      "mainTextCharacters": 1627
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "h1": "AI PDF Summarizer — Summaries & Insights",
+      "mainTextCharacters": 3040
+    },
+    {
+      "route": "/pdf-scanner",
+      "h1": "PDF Scanner — Turn Photos into a PDF",
+      "mainTextCharacters": 4006
+    },
+    {
+      "route": "/unlock-pdf",
+      "h1": "Unlock PDF — Remove Password Protection",
+      "mainTextCharacters": 2077
+    },
+    {
+      "route": "/protect-pdf",
+      "h1": "Protect PDF — Add Password & Encrypt",
+      "mainTextCharacters": 1933
+    },
+    {
+      "route": "/repair-pdf",
+      "h1": "Repair PDF Files Online",
+      "mainTextCharacters": 1861
+    },
+    {
+      "route": "/ocr-pdf",
+      "h1": "OCR PDF — Make Scans Searchable",
+      "mainTextCharacters": 1843
+    },
+    {
+      "route": "/pdf-a",
+      "h1": "Convert PDF to PDF/A Online",
+      "mainTextCharacters": 1947
+    },
+    {
+      "route": "/redact-pdf",
+      "h1": "Redact Text from PDF Online",
+      "mainTextCharacters": 1889
+    },
+    {
+      "route": "/crop-pdf",
+      "h1": "Crop PDF Page Margins Online",
+      "mainTextCharacters": 1660
+    },
+    {
+      "route": "/compare-pdf",
+      "h1": "Compare Two PDF Files Online",
+      "mainTextCharacters": 1851
+    },
+    {
+      "route": "/",
+      "h1": "Your PDF problem, handled in one place.",
+      "mainTextCharacters": 10205
+    },
+    {
+      "route": "/pricing",
+      "h1": "Choose your PDF plan",
+      "mainTextCharacters": 5611
+    },
+    {
+      "route": "/privacy",
+      "h1": "Privacy policy",
+      "mainTextCharacters": 6994
+    },
+    {
+      "route": "/trust",
+      "h1": "Trust center",
+      "mainTextCharacters": 3264
+    },
+    {
+      "route": "/terms",
+      "h1": "Terms of service",
+      "mainTextCharacters": 4492
+    },
+    {
+      "route": "/sla",
+      "h1": "Service level and status",
+      "mainTextCharacters": 1293
+    },
+    {
+      "route": "/status",
+      "h1": "System Status",
+      "mainTextCharacters": 410
+    },
+    {
+      "route": "/faq",
+      "h1": "Frequently Asked Questions",
+      "mainTextCharacters": 1325
+    },
+    {
+      "route": "/faq",
+      "faqAnswers": 22
+    },
+    {
+      "route": "/about",
+      "h1": "About OnlyMyPDF",
+      "mainTextCharacters": 1293
+    },
+    {
+      "route": "/benchmarks",
+      "h1": "PDF Conversion Benchmarks: Office, OCR and Scanner",
+      "mainTextCharacters": 11850
+    },
+    {
+      "route": "/benchmarks",
+      "datasets": 6,
+      "scannerPositiveCases": 5,
+      "scannerNegativeCases": 6,
+      "scannerOutputPages": 14,
+      "scannerRenderedPages": 14
+    },
+    {
+      "route": "/convert",
+      "h1": "Convert PDF Files",
+      "mainTextCharacters": 943
+    },
+    {
+      "route": "/all-tools",
+      "h1": "All PDF Tools",
+      "mainTextCharacters": 2257
+    }
+  ],
+  "checks": [
+    {
+      "route": "/merge-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/merge-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/merge-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/merge-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/merge-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/merge-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/merge-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/split-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/split-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/split-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/split-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/split-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/split-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/split-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/rotate-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/rotate-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/rotate-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/rotate-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/rotate-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/rotate-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/rotate-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/delete-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/delete-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/delete-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/delete-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/delete-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/delete-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/delete-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/extract-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/extract-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/extract-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/extract-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/extract-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/extract-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/extract-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/compress-pdf",
+      "name": "Compression explains Basic, Strong and variable results",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-word",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-word",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-word",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-word",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-word",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-word",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-word",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-excel",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-excel",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-excel",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-excel",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-excel",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-excel",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-excel",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/pdf-to-ppt",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/word-to-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/word-to-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/word-to-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/word-to-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/word-to-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/word-to-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/word-to-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/excel-to-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/excel-to-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/excel-to-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/excel-to-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/excel-to-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/excel-to-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/excel-to-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/ppt-to-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "Visible image cap is 20",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "JSON-LD image cap is 20",
+      "passed": true
+    },
+    {
+      "route": "/jpg-to-pdf",
+      "name": "No higher Pro image allowance is advertised",
+      "passed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/html-to-pdf",
+      "name": "HTML input and external-resource limits are stated",
+      "passed": true
+    },
+    {
+      "route": "/txt-to-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/txt-to-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/txt-to-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/txt-to-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/txt-to-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/txt-to-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/txt-to-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/edit-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/edit-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/edit-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/edit-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/edit-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/edit-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/edit-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/sign-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/sign-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/sign-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/sign-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/sign-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/sign-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/sign-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/add-watermark",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/add-watermark",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/add-watermark",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/add-watermark",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/add-watermark",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/add-watermark",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/add-watermark",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/ai-pdf-summarizer",
+      "name": "Free AI access is stated in visible content and schema",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "Visible image cap is 10",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "JSON-LD image cap is 10",
+      "passed": true
+    },
+    {
+      "route": "/pdf-scanner",
+      "name": "No higher Pro image allowance is advertised",
+      "passed": true
+    },
+    {
+      "route": "/unlock-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/unlock-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/unlock-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/unlock-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/unlock-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/unlock-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/unlock-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/protect-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/protect-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/protect-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/protect-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/protect-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/protect-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/protect-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/repair-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/repair-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/repair-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/repair-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/repair-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/repair-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/repair-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/ocr-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/ocr-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/ocr-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/ocr-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/ocr-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/ocr-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/ocr-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/pdf-a",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/pdf-a",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/pdf-a",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/pdf-a",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/pdf-a",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/pdf-a",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/pdf-a",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/redact-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/redact-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/redact-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/redact-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/redact-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/redact-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/redact-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/crop-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/crop-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/crop-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/crop-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/crop-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/crop-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/crop-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/compare-pdf",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/compare-pdf",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/compare-pdf",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/compare-pdf",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/compare-pdf",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/compare-pdf",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/compare-pdf",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "Pricing offers qualify checkout and avoid unconditional InStock",
+      "passed": true
+    },
+    {
+      "route": "/pricing",
+      "name": "Business card qualifies Sales agreement and has no fixed 20+ seat badge",
+      "passed": true
+    },
+    {
+      "route": "/privacy",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/privacy",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/privacy",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/privacy",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/privacy",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/privacy",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/privacy",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/privacy",
+      "name": "Visible legal revision date is 9 October 2026",
+      "passed": true
+    },
+    {
+      "route": "/trust",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/trust",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/trust",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/trust",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/trust",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/trust",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/trust",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/trust",
+      "name": "Visible legal revision date is 9 October 2026",
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/terms",
+      "name": "Visible legal revision date is 9 October 2026",
+      "passed": true
+    },
+    {
+      "route": "/sla",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/sla",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/sla",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/sla",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/sla",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/sla",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/sla",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/sla",
+      "name": "Visible legal revision date is 9 October 2026",
+      "passed": true
+    },
+    {
+      "route": "/status",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/status",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/status",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/status",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/status",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/status",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/status",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/status",
+      "name": "Status description and visible explanation limit the check",
+      "passed": true
+    },
+    {
+      "route": "/faq",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/faq",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/faq",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/faq",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/faq",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/faq",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/faq",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/faq",
+      "name": "Collapsed FAQ answers are inspected from actual FAQPage JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/about",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/about",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/about",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/about",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/about",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/about",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/about",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Scanner retains separate 5/5 positive, 6/6 rejection and 14-page metrics",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Scanner retains all five positive and six negative case outcomes",
+      "passed": true
+    },
+    {
+      "route": "/benchmarks",
+      "name": "Six Dataset records and retained measurement dates are preserved",
+      "passed": true
+    },
+    {
+      "route": "/convert",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/convert",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/convert",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/convert",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/convert",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/convert",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/convert",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/all-tools",
+      "name": "HTTP 200 HTML",
+      "passed": true
+    },
+    {
+      "route": "/all-tools",
+      "name": "Actual English production main has a nonempty H1 and content",
+      "passed": true
+    },
+    {
+      "route": "/all-tools",
+      "name": "Actual title, description and English canonical are present",
+      "passed": true
+    },
+    {
+      "route": "/all-tools",
+      "name": "Actual JSON-LD is valid and nonempty",
+      "passed": true
+    },
+    {
+      "route": "/all-tools",
+      "name": "Audited unsupported claims absent from main text",
+      "passed": true
+    },
+    {
+      "route": "/all-tools",
+      "name": "Audited unsupported claims absent from metadata",
+      "passed": true
+    },
+    {
+      "route": "/all-tools",
+      "name": "Audited unsupported claims absent from JSON-LD",
+      "passed": true
+    },
+    {
+      "route": "/llms.txt",
+      "name": "HTTP 200 plain text",
+      "passed": true
+    },
+    {
+      "route": "/llms.txt",
+      "name": "Machine guide contains all 28 public tool URLs",
+      "passed": true
+    },
+    {
+      "route": "/llms.txt",
+      "name": "Audited unsupported claims absent from machine guide",
+      "passed": true
+    },
+    {
+      "route": "/llms.txt",
+      "name": "Machine guide preserves distinct image caps and Free AI access",
+      "passed": true
+    },
+    {
+      "route": "/ai.txt",
+      "name": "HTTP 200 plain text",
+      "passed": true
+    },
+    {
+      "route": "/ai.txt",
+      "name": "Machine guide contains all 28 public tool URLs",
+      "passed": true
+    },
+    {
+      "route": "/ai.txt",
+      "name": "Audited unsupported claims absent from machine guide",
+      "passed": true
+    },
+    {
+      "route": "/ai.txt",
+      "name": "Machine guide preserves distinct image caps and Free AI access",
+      "passed": true
+    }
+  ],
+  "allPassed": true
+}

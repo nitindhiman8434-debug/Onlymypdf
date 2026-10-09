@@ -49,7 +49,6 @@ const COMPARE_SECTIONS: { titleKey: string; rows: CompareRow[] }[] = [
     rows: [
       { labelKey: "dailyUses", free: "daily5", pro: "daily100", highlight: true },
       { labelKey: "fileSize", free: "fileSizeFree", pro: "fileSizePro" },
-      { labelKey: "batch", free: "no", pro: "yes" },
     ],
   },
   {
@@ -58,7 +57,7 @@ const COMPARE_SECTIONS: { titleKey: string; rows: CompareRow[] }[] = [
       { labelKey: "organize", free: "yes", pro: "yes" },
       { labelKey: "convert", free: "yes", pro: "yes" },
       { labelKey: "sign", free: "no", pro: "yes", highlight: true },
-      { labelKey: "ai", free: "no", pro: "yes", highlight: true },
+      { labelKey: "ai", free: "aiFree", pro: "aiPro", highlight: true },
     ],
   },
   {
@@ -92,6 +91,7 @@ const FREE_FEATURES = [
   "featCompress",
   "featConvertBasic",
   "featDaily5",
+  "featAiFree",
   "featRetention2h",
 ] as const;
 
@@ -102,7 +102,6 @@ const PRO_FEATURES = [
   "featPriority",
   "featRetention24h",
   "featNoAds",
-  "featBatch",
   "featSupport",
 ] as const;
 

@@ -14,7 +14,7 @@ export const LEGAL_CONTACT = {
 } as const;
 
 export const LEGAL_POLICY_DATE = {
-  en: "September 24, 2026",
+  en: "October 9, 2026",
   hi: "24 सितंबर, 2026",
 } as const;
 

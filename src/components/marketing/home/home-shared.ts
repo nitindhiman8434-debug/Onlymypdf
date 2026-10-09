@@ -79,7 +79,7 @@ export const TOOL_KEYS = [
   { slug: "edit-pdf", icon: "PenLine", nameKey: "tools.editPdf.name", descKey: "tools.editPdf.description", category: "edit" },
   { slug: "sign-pdf", icon: "PenTool", nameKey: "tools.signPdf.name", descKey: "tools.signPdf.description", category: "edit", isPro: true },
   { slug: "add-watermark", icon: "Stamp", nameKey: "tools.addWatermark.name", descKey: "tools.addWatermark.description", category: "edit" },
-  { slug: "ai-pdf-summarizer", icon: "Sparkles", nameKey: "tools.aiPdfSummarizer.name", descKey: "tools.aiPdfSummarizer.description", category: "ai", isPro: true },
+  { slug: "ai-pdf-summarizer", icon: "Sparkles", nameKey: "tools.aiPdfSummarizer.name", descKey: "tools.aiPdfSummarizer.description", category: "ai" },
   { slug: "pdf-scanner", icon: "ScanLine", nameKey: "tools.pdfScanner.name", descKey: "tools.pdfScanner.description", category: "scan" },
   { slug: "unlock-pdf", icon: "Unlock", nameKey: "tools.unlockPdf.name", descKey: "tools.unlockPdf.description", category: "security" },
   { slug: "protect-pdf", icon: "Lock", nameKey: "tools.protectPdf.name", descKey: "tools.protectPdf.description", category: "security" },
@@ -95,20 +95,20 @@ export const FAQ_KEYS = ["faq1", "faq2", "faq3", "faq4", "faq5", "faq6", "faq7"]
 
 export const FREE_FEATURES = [
   "5 tool uses per day",
-  FILE_SIZE_MARKETING.freeLabel,
-  "Basic PDF tools",
-  "Standard processing speed",
-  "Files deleted after 2 hours",
+  `${FILE_SIZE_MARKETING.freeLabel}; tool-specific limits apply`,
+  "Core PDF tools + 1 AI summary/day when signed in",
+  "Processing time varies by file and tool",
+  "Stored account files: 2h expiry; temporary links may expire sooner",
 ];
 
 export const PRO_FEATURES = [
   "100 tool uses per day",
-  FILE_SIZE_MARKETING.proLabel,
-  "All PDF tools including Sign & AI",
-  "AI PDF Summarizer",
-  "Priority processing",
+  `${FILE_SIZE_MARKETING.proLabel}; tool-specific limits apply`,
+  "PDF tools including Pro signing",
+  "AI summaries: no separate daily cap; service and rate limits apply",
+  "Processing time varies by file and tool",
   "No ads",
-  "Batch processing",
+  "Stored account files: 24h expiry; temporary links may expire sooner",
 ];
 
 export const TOOL_CATEGORIES = [

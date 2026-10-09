@@ -19,7 +19,7 @@ const VARIANT_COPY: Record<
   },
   faq: {
     shortAnswer:
-      "OnlyMyPDF FAQ covers pricing, security, file limits, supported formats, and how each PDF tool works. Uploads use HTTPS/TLS, files follow the published retention window, and Free users get 5 uses per day.",
+      "OnlyMyPDF FAQ covers pricing, security, file limits, supported formats, and how each PDF tool works. Public service requires HTTPS/TLS. Stored account files have a 2-hour Free or 24-hour Pro expiry; temporary links may expire sooner, and cleanup may be delayed by retries. Free users get 5 core-tool uses per day.",
     extra:
       "Browse categories: General, Tools, Privacy & Security, Account & Billing, and Technical support.",
   },
@@ -29,11 +29,11 @@ const VARIANT_COPY: Record<
   },
   convert: {
     shortAnswer:
-      "OnlyMyPDF Convert hub links PDF to Word, Excel, PowerPoint and reverse converters (Word/Excel/PPT/JPG/HTML/TXT to PDF). All conversions run online with encrypted uploads.",
+      "OnlyMyPDF Convert hub links PDF to Word, Excel, PowerPoint and reverse converters (Word/Excel/PPT/JPG/HTML/TXT to PDF). Conversions run online; public service requires HTTPS/TLS, and tool-specific limits apply.",
   },
   "all-tools": {
     shortAnswer:
-      "OnlyMyPDF offers 20+ free online PDF tools: merge, split, compress, rotate, delete pages, extract pages, convert, edit, sign, watermark, protect, unlock, scan, and AI summarize.",
+      "OnlyMyPDF offers 20+ online PDF tools to organize, convert, edit, sign, protect, scan, and summarize documents. Core tools have a Free daily allowance. Signing requires Pro; signed-in Free users get 1 AI summary per day. Tool-specific limits apply.",
   },
 };
 

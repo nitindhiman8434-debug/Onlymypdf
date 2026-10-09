@@ -1,5 +1,29 @@
 # OnlyMyPDF — Production Environment Checklist
 
+## Current release gates — 9 October 2026
+
+This is a launch checklist, not proof of a running public deployment. The user
+has retained the no-paid-plan decision. Local implementation and publication
+checks do not close the production gates below. Do not enable billing, create
+paid resources or expose the development preview as part of this checklist.
+
+| Gate | Required evidence | Current disposition |
+|---|---|---|
+| English product claims | Tool, pricing, privacy, trust, status and structured-data copy agrees with implemented behavior and retained tests | Scoped Phase 3.6 local review complete; see its verification report |
+| Public HTTPS conversion | Real downloaded Word, Excel and PowerPoint outputs, failure handling and private access on the selected deployment | Deferred; no public launch approval in this task |
+| Limits and resource use | Representative small/typical/large documents and concurrency; observed CPU, RAM, disk, queue/processing time and failure rate | Pending production measurements; plan upload caps are not processing-capacity proof |
+| Retention and deletion | Expired download denied; persistent, preview and Word-staging objects removed; failed deletion retried; scheduler freshness observed | Pending on the new deployment |
+| Actual provider cost | Measured usage and invoice-based cost per job under an approved budget | Pending; local wall time cannot establish a provider bill |
+| Real customer evidence | Five actual customers submit their own consented feedback after eligible conversions; privacy/withdrawal workflow checked | Still 0/5 in the recorded project evidence; no synthetic substitution |
+| Legal/commercial readiness | Operator and monitored contact confirmed; independent review and payment activation decisions made by the operator | Separate external decisions; copy consistency is not legal certification |
+
+The public `/status` check proves only an application response and basic
+configuration status. Even detailed health's aggregate result must not replace
+inspection of `cleanup_last_run`, `storage_cleanup`, worker freshness, private
+bucket settings and real artifacts. Define rollback/disable criteria before a
+pilot: invalid output, leaked access, sustained failures, stale cleanup or
+unapproved spend. Keep live checkout disabled until separately verified.
+
 
 
 Copy this checklist when deploying to Vercel, Docker, or any host. Production requires a private storage bucket, migration 023's durable Supabase queue, and an isolated conversion worker.
@@ -14,7 +38,7 @@ Copy this checklist when deploying to Vercel, Docker, or any host. Production re
 
 |----------|---------|
 
-| `NEXT_PUBLIC_APP_URL` | Canonical site URL (e.g. `https://onlymypdf.com`) |
+| `NEXT_PUBLIC_APP_URL` | Canonical site URL (e.g. `https://onlymypdf.in`; verify domain ownership and HTTPS before launch) |
 
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 
@@ -74,7 +98,7 @@ Use `BILLING_MODE=disabled` for a production preview with checkout unavailable. 
 
 | `RESEND_API_KEY` | **Required for production email** — contact form, password reset, team invites |
 
-| `EMAIL_FROM` | From address (e.g. `OnlyMyPDF <noreply@onlymypdf.com>`) |
+| `EMAIL_FROM` | Verified sending identity (e.g. `OnlyMyPDF <noreply@onlymypdf.in>` only after domain verification) |
 
 | `CONTACT_INBOX_EMAIL` | Inbox for `/api/contact` (default: `support@onlymypdf.in`) |
 
@@ -100,7 +124,7 @@ Use `BILLING_MODE=disabled` for a production preview with checkout unavailable. 
 
 | `NEXT_PUBLIC_DROPBOX_APP_KEY` | Dropbox picker |
 
-| `CONVERTAPI_SECRET` | Best PDF→Word quality (Smallpdf-class cloud API) — see `docs/PDF_TO_WORD_PRODUCTION.md` |
+| `CONVERTAPI_SECRET` | Optional external PDF→Word provider; output quality and cost require separate verification |
 
 | `PDF2DOCX_PYTHON` | Path to Python for pdf2docx fallback |
 
@@ -118,7 +142,7 @@ Use `BILLING_MODE=disabled` for a production preview with checkout unavailable. 
 
 |--------|---------|
 
-| `PRODUCTION_URL` | Post-deploy smoke in `cd.yml` / `deploy-smoke.yml` (e.g. `https://onlymypdf.com`) |
+| `PRODUCTION_URL` | Actual approved HTTPS deployment used by post-deploy smoke; confirm its target before running |
 
 | `HEALTH_CHECK_SECRET` | Authenticated detailed health check in deploy smoke |
 
@@ -174,6 +198,15 @@ Execute in order in Supabase SQL Editor:
 
 21. `supabase/migrations/021_phase1_conversion_operations.sql`
 
+22. `supabase/migrations/022_payment_processing_updated_at.sql`
+
+23. `supabase/migrations/023_supabase_conversion_queue.sql`
+
+24. `supabase/migrations/024_verified_customer_feedback.sql`
+
+Check the target environment's applied migrations first; this list is not an
+instruction to rerun already-applied migrations.
+
 
 
 Configure **Storage** bucket `pdf-files` as **private** (see `DEPLOYMENT_GUIDE.md`).
@@ -226,8 +259,8 @@ Manual checks:
 
 - [ ] Cron cleanup runs hourly (Vercel cron + `CRON_SECRET`, or external scheduler with Bearer auth)
 - [ ] Either a dedicated worker is continuously running, or scheduled mode calls `/api/cron/conversion-worker?maxJobs=1` at least once per minute
-- [ ] Detailed health shows private `pdf-files` storage, direct-upload security, fresh worker heartbeat, queue, output validity, latency and latest cleanup as healthy
-- [ ] Real 25 MB and 200 MB files complete through ingress, worker, storage and download
+- [ ] Inspect detailed health's individual storage, upload-security, queue, worker and cleanup records; verify actual conversions independently of aggregate health
+- [ ] Test representative files at each supported per-tool cap through ingress, worker, storage and download; a padded 200 MB transport fixture is not complex-document capacity evidence
 
 - [ ] Upload → convert → download on one tool (smoke test)
 
@@ -264,7 +297,9 @@ docker run -p 3000:3000 --env-file .env.production onlymypdf:full
 
 
 
-Set `NEXT_PUBLIC_APP_NAME=OnlyMyPDF` to match SEO/canonical branding.
+The current brand name is `APP_NAME` in `src/config/constants.ts`. Set the
+approved canonical URL with `NEXT_PUBLIC_APP_URL`; changing an unused brand
+environment variable does not change the site.
 
 
 
